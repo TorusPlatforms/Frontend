@@ -1,8 +1,10 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import AuthScreen from "./screens/auth";
 import * as Notifications from 'expo-notifications';
 import firebase from "firebase/compat/app";
+
+import AuthScreen from "./screens/auth";
+import SignUpScreen from "./screens/signup"
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -37,6 +39,7 @@ function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Auth" component={AuthScreen} options={{headerShown: false}} />
+        <Stack.Screen name="SignUp" component={SignUpScreen} options={{headerShown: false}} />
       </Stack.Navigator>
     </NavigationContainer>
   );

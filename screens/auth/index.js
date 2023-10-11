@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, KeyboardAvoidingView, Keyboard } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import styles from "./styles";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AuthScreen() {
     const windowWidth = Dimensions.get('window').width;
@@ -13,11 +13,12 @@ export default function AuthScreen() {
     const navigation = useNavigation()
 
     const [email, onChangeEmail] = useState()
+    const [password, onChangePassword] = useState()
 
     useEffect(() => {
         Animated.sequence([
             Animated.timing(moveLogoAnim, {
-                toValue: windowHeight / 16,
+                toValue: 200,
                 duration: 1000,
                 useNativeDriver: true,
               }),
@@ -30,16 +31,16 @@ export default function AuthScreen() {
        .start();
       }, [moveLogoAnim, fadeAnim]);
 
-
+    console.log(moveLogoAnim)
     return (
-        <KeyboardAvoidingView behavior="height" style={styles.container}>
+        <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
              <Animated.View style={{
                     flex: 0.2,
                     translateY: moveLogoAnim,
                     justifyContent: "center",
                     alignItems: "center",
-                    marginBottom: 70,
-                    marginTop: 40
+                    marginVertical: 40
                 }}>
                     <Image style={{width: windowWidth, height: windowHeight / 3, resizeMode: "contain"}} source={require('../../assets/torus.png')}></Image>
                 </Animated.View>
@@ -62,8 +63,8 @@ export default function AuthScreen() {
                     />
                 
                      <TextInput 
-                        onChangeText={onChangeEmail} 
-                        value={email}
+                        onChangeText={onChangePassword} 
+                        value={password}
                         placeholder="Password"
                         placeholderTextColor={"white"}
                         style={{borderRadius: 10, borderColor: "white", borderWidth: 1, width: windowWidth - 50, marginBottom: 15, color: "white", padding: 10, fontSize: 16}}
@@ -88,7 +89,7 @@ export default function AuthScreen() {
 
                     <View style={{paddingVertical: 10, alignItems: "center", justifyContent: "center", flexDirection: "row"}}>
                         <Text style={{color: "white"}}>Don't have an account?   </Text>
-                        <Pressable>
+                        <Pressable onPress={() => navigation.navigate("SignUp")}>
                             {({pressed}) => 
                                 <Text style={{color: pressed ? 'gray' : 'white'}}>Sign Up</Text>
                             }
@@ -98,5 +99,6 @@ export default function AuthScreen() {
             </Animated.View>
 
         </KeyboardAvoidingView>
+        </SafeAreaView>
     )
 }
