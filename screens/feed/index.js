@@ -20,6 +20,29 @@ export default function Feed() {
     // function handleScroll(e) {
     //   scrollY.setValue(e.nativeEvent.contentOffset.y);
     // }
+    
+    const scrollY = useRef(new Animated.Value(0)).current;
+
+    // Interpolations for animating styles
+    const headerHeight = scrollY.interpolate({
+        inputRange: [0, 100],
+        outputRange: [100, 70], // Change these values to achieve the desired effect
+        extrapolate: 'clamp',
+    });
+
+    const logoSize = scrollY.interpolate({
+        inputRange: [0, 100],
+        outputRange: [75, 50], // Change these values according to the initial and final sizes of your logo
+        extrapolate: 'clamp',
+    });
+
+    const textSize = scrollY.interpolate({
+        inputRange: [0, 100],
+        outputRange: [15, 10], // Change these values according to the initial and final font sizes
+        extrapolate: 'clamp',
+    });
+
+
 
     function handleLike() {
       console.log("Liked a post!")
@@ -92,23 +115,21 @@ export default function Feed() {
                 </Pressable>
             </View> */}
 
-          <View style={{marginTop: 5, flex: 0.5}}>
-              <View style={{flex: 0.5, justifyContent: 'center', alignItems: "center"}}>
-                <Image
-                  style={styles.torusLogo}
-                  source={require('../../assets/torus.png')}
+          <Animated.View style={{ height: headerHeight, marginTop: 5, justifyContent: 'center', alignItems: "center" }}>
+                <Animated.Image
+                    style={[styles.torusLogo, { width: logoSize, height: logoSize }]}
+                    source={require('../../assets/torus.png')}
                 />
-              </View>
-              <View style={{flex : 0.5, flexDirection: "row", justifyContent: "space-evenly", width: "100%", padding: 10}}>
-                <Pressable>
-                  <Text style={{color: "white", textDecorationLine: "underline", fontWeight: "bold", fontSize: 15}}>For You</Text>
-                </Pressable>
+                <Animated.View style={{ flexDirection: "row", justifyContent: "space-evenly", width: "100%", padding: 10 }}>
+                    <Pressable>
+                        <Animated.Text style={{color: "white", textDecorationLine: "underline", fontWeight: "bold", fontSize: textSize}}>For You</Animated.Text>
+                    </Pressable>
+                    <Pressable>
+                        <Animated.Text style={{color: "white", textDecorationLine: "underline", fontWeight: "bold", fontSize: textSize}}>Friends</Animated.Text>
+                    </Pressable>
+                </Animated.View>
+            </Animated.View>
 
-                <Pressable>
-                  <Text style={{color: "white", textDecorationLine: "underline", fontWeight: "bold", fontSize: 15}}>Friends</Text>
-                </Pressable>
-              </View>
-            </View>
 
             <View style={{flex: 6}}>
               <FlatList
@@ -117,6 +138,11 @@ export default function Feed() {
                     renderItem={({item}) => <Ping data={item} />}
                     ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
                     //onScroll={handleScroll}
+                    onScroll={Animated.event(
+                      [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                      { useNativeDriver: false } // Set to true if only animating opacity or transform
+                  )}
+                  scrollEventThrottle={16}
                 />
             </View>
         </SafeAreaView>
