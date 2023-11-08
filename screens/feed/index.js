@@ -2,24 +2,24 @@ import React, { useState, useRef } from 'react'
 import { StyleSheet, Text, View, TextInput, Dimensions, Pressable, FlatList, Image, Animated } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { FontAwesome5 } from '@expo/vector-icons'; 
 
 import styles from "./styles";
 
 export default function Feed() {
-    //const [text, onChangeText] = useState();
+    const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+    const [scrollY] = useState(new Animated.Value(0));
 
-    // const scrollY = new Animated.Value(0);
-    // const diffClamp = Animated.diffClamp(scrollY, 0, 150);
-    // const translateY = diffClamp.interpolate({
-    //   inputRange: [0, 150],
-    //   outputRange: [0, -150],
-    // });
- 
+    const headerHeight = scrollY.interpolate({
+      inputRange: [0, 70],
+      outputRange: [70, 0],
+      extrapolate: 'clamp',
+    })
 
-    // function handleScroll(e) {
-    //   scrollY.setValue(e.nativeEvent.contentOffset.y);
-    // }
+    const headerOpacity = scrollY.interpolate({
+      inputRange: [0, 70],
+      outputRange: [1, 0],
+      extrapolate: 'clamp',
+    });
 
     function handleLike() {
       console.log("Liked a post!")
@@ -92,7 +92,7 @@ export default function Feed() {
                 </Pressable>
             </View> */}
 
-          <View style={{marginTop: 5, flex: 0.5}}>
+          <Animated.View style={{height: headerHeight, opacity: headerOpacity}}>
               <View style={{flex: 0.5, justifyContent: 'center', alignItems: "center"}}>
                 <Image
                   style={styles.torusLogo}
@@ -108,15 +108,19 @@ export default function Feed() {
                   <Text style={{color: "white", textDecorationLine: "underline", fontWeight: "bold", fontSize: 15}}>Friends</Text>
                 </Pressable>
               </View>
-            </View>
+            </Animated.View>
 
             <View style={{flex: 6}}>
-              <FlatList
+              <AnimatedFlatList
                     style={{paddingHorizontal: 20}}
                     data={data}
                     renderItem={({item}) => <Ping data={item} />}
                     ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
-                    //onScroll={handleScroll}
+                    onScroll={Animated.event(
+                      [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                      { useNativeDriver: false }
+                    )}
+                    scrollEventThrottle={16}
                 />
             </View>
         </SafeAreaView>
