@@ -1,24 +1,27 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, KeyboardAvoidingView, Keyboard } from "react-native";
+import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, KeyboardAvoidingView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 import styles from "./styles";
 
 export default function AuthScreen() {
-    const windowWidth = Dimensions.get('window').width;
-    const windowHeight = Dimensions.get('window').height;
-    const moveLogoAnim = useRef(new Animated.Value(windowHeight / 2)).current
-    const fadeAnim = useRef(new Animated.Value(0)).current 
     const navigation = useNavigation()
 
-    const [email, onChangeEmail] = useState()
-    const [password, onChangePassword] = useState()
+    const windowWidth = Dimensions.get('window').width;
+    const windowHeight = Dimensions.get('window').height;
+
+    const moveLogoAnim = useRef(new Animated.Value(windowHeight / 2)).current
+    const fadeAnim = useRef(new Animated.Value(0)).current 
+
+    const [email, onChangeEmail] = useState("tanujsiripurapu@gmail.com")
+    const [password, onChangePassword] = useState("abc123")
 
     useEffect(() => {
         Animated.sequence([
             Animated.timing(moveLogoAnim, {
-                toValue: 200,
+                toValue: (windowHeight / 16) - 20,
                 duration: 1000,
                 useNativeDriver: true,
               }),
@@ -30,18 +33,20 @@ export default function AuthScreen() {
         ])
        .start();
       }, [moveLogoAnim, fadeAnim]);
+    
+    
+    async function login() {
+        const auth = getAuth();
+        await signInWithEmailAndPassword(auth, email, password)
+        console.log("Logged in with user", auth.currentUser)
+        navigation.navigate("Home")
+    }
 
-    console.log(moveLogoAnim)
+    
     return (
         <SafeAreaView style={styles.container}>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-             <Animated.View style={{
-                    flex: 0.2,
-                    translateY: moveLogoAnim,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginVertical: 40
-                }}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'position' : 'height'} style={styles.container}>
+             <Animated.View style={[{transform: [{translateY: moveLogoAnim}]}, styles.animation]}>
                     <Image style={{width: windowWidth, height: windowHeight / 3, resizeMode: "contain"}} source={require('../../assets/torus.png')}></Image>
                 </Animated.View>
                 
@@ -51,15 +56,15 @@ export default function AuthScreen() {
                 flex: 1
             }}>
 
-                <View style={{flex: 1, alignItems: "center", justifyContent: "center"}}>
-                    <Text style={{color: "white", fontSize: 24, margin: 20}}>Login to Torus</Text>
+                <View style={styles.loginContainer}>
+                    <Text style={styles.text}>Login to Torus</Text>
 
                     <TextInput 
                         onChangeText={onChangeEmail} 
                         value={email}
                         placeholder="Email"
                         placeholderTextColor={"white"}
-                        style={{borderRadius: 10, borderColor: "white", borderWidth: 1, width: windowWidth - 50, marginBottom: 15, color: "white", padding: 10, fontSize: 16}}
+                        style={[{width: windowWidth - 50}, styles.submissionBox]}
                     />
                 
                      <TextInput 
@@ -67,10 +72,10 @@ export default function AuthScreen() {
                         value={password}
                         placeholder="Password"
                         placeholderTextColor={"white"}
-                        style={{borderRadius: 10, borderColor: "white", borderWidth: 1, width: windowWidth - 50, marginBottom: 15, color: "white", padding: 10, fontSize: 16}}
+                        style={[{width: windowWidth - 50}, styles.submissionBox]}
                     />
                 
-                    <Pressable style={{alignSelf: "flex-start", paddingHorizontal: 20}}>
+                    <Pressable style={{alignSelf: "flex-start", marginLeft: (Platform.OS === "ios" ? 30 : 0)}}>
                         {({pressed}) => 
                             <Text style={{color: pressed ? 'gray' : 'white'}}>Forgot your password?</Text>
                         }
@@ -80,14 +85,14 @@ export default function AuthScreen() {
                     
 
             
-                <View style={{flex: 0.5, justifyContent: "flex-end", padding: 20}}>
-                    <Pressable style={{borderRadius: 10, borderWidth: 1, borderColor: "white", width: windowWidth - 50, padding: 20, alignItems: "center", justifyContent: "center"}}>
+                <View style={styles.welcomeBackContainer}>
+                    <Pressable onPress={login} style={[styles.submissionBox, styles.welcomeBack, {width: windowWidth - 50}]}>
                         {({pressed}) => 
                             <Text style={[{color: pressed ? 'gray' : 'white'}, {fontSize: 16}]}>Welcome Back</Text>
                         }
                     </Pressable>
 
-                    <View style={{paddingVertical: 10, alignItems: "center", justifyContent: "center", flexDirection: "row"}}>
+                    <View style={styles.signUpButton}>
                         <Text style={{color: "white"}}>Don't have an account?   </Text>
                         <Pressable onPress={() => navigation.navigate("SignUp")}>
                             {({pressed}) => 
