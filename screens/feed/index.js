@@ -2,27 +2,29 @@ import React, { useState, useRef } from 'react'
 import { StyleSheet, Text, View, TextInput, Dimensions, Pressable, FlatList, Image, Animated } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { FontAwesome5 } from '@expo/vector-icons'; 
 
 import styles from "./styles";
 
 export default function Feed() {
-    const [text, onChangeText] = useState();
+    //const [text, onChangeText] = useState();
 
-    const windowWidth = Dimensions.get('window').width;
-    const windowHeight = Dimensions.get('window').height;
-
-    const scrollY = new Animated.Value(0);
-    const diffClamp = Animated.diffClamp(scrollY, 0, 100);
-    const translateY = diffClamp.interpolate({
-      inputRange: [0, 100],
-      outputRange: [0, -100],
-    });
+    // const scrollY = new Animated.Value(0);
+    // const diffClamp = Animated.diffClamp(scrollY, 0, 150);
+    // const translateY = diffClamp.interpolate({
+    //   inputRange: [0, 150],
+    //   outputRange: [0, -150],
+    // });
  
 
-    function handleScroll(e) {
-      scrollY.setValue(e.nativeEvent.contentOffset.y);
-      
+    // function handleScroll(e) {
+    //   scrollY.setValue(e.nativeEvent.contentOffset.y);
+    // }
+
+    function handleLike() {
+      console.log("Liked a post!")
     }
+
     const Ping = ({data}) => (
       <View style={{marginVertical: 10, width: "95%", flexDirection: "row"}}>
         <View style={{flexDirection: "col"}}>
@@ -45,19 +47,29 @@ export default function Feed() {
           />
 
           <View style={{flexDirection: "row", marginVertical: 5}}>
-            <Ionicons style={styles.pingIcon} name="heart-outline" size={20}></Ionicons>
-            <Ionicons style={styles.pingIcon} name="chatbubble-outline" size={20}></Ionicons>
-            <Ionicons style={styles.pingIcon} name="share-social-outline" size={20}></Ionicons>
-            <Ionicons style={styles.pingIcon} name="paper-plane-outline" size={20}></Ionicons>
+            <Pressable onPress={handleLike}>
+              <Ionicons style={[styles.pingIcon, {color: data.isLiked ? "red" : "white"}]} name={data.isLiked ? "heart" : "heart-outline"} size={20}></Ionicons>
+            </Pressable>
+
+            <Pressable>
+              <Ionicons style={styles.pingIcon} name="chatbubble-outline" size={20}></Ionicons>
+            </Pressable>
+
+            <Pressable>
+              <Ionicons style={styles.pingIcon} name="share-social-outline" size={20}></Ionicons>
+            </Pressable>
+
+            <Pressable>
+              <Ionicons style={styles.pingIcon} name="paper-plane-outline" size={20}></Ionicons>
+            </Pressable>
           </View>
 
           <Text style={styles.stats}>{data.likes} Likes • {data.comments} Replies</Text>
-
         </View>
       </View>
     );
     
-    const examplePing = {attatchment: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Glazed-Donut.jpg/1200px-Glazed-Donut.jpg", author: 'GrantHough', likes: 20, comments: 30, caption: 'Funny Caption. Hilarious even. My name is Grant Hough and I love dogs!', pfp: 'https://cdn.discordapp.com/avatars/393834794057728000/661f702722649b4aeb5a660c295d1ee3.webp?size=96'}
+    const examplePing = {isLiked: true, attatchment: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Glazed-Donut.jpg/1200px-Glazed-Donut.jpg", author: 'GrantHough', likes: 20, comments: 30, caption: 'Funny Caption. Hilarious even. My name is Grant Hough and I love dogs!', pfp: 'https://cdn.discordapp.com/avatars/393834794057728000/661f702722649b4aeb5a660c295d1ee3.webp?size=96'}
     const data = new Array(6).fill(examplePing);
     
   
@@ -80,7 +92,7 @@ export default function Feed() {
                 </Pressable>
             </View> */}
 
-          <Animated.View style={{transform: [{translateY: translateY}], marginTop: 5, flex: 0.5}}>
+          <View style={{marginTop: 5, flex: 0.5}}>
               <View style={{flex: 0.5, justifyContent: 'center', alignItems: "center"}}>
                 <Image
                   style={styles.torusLogo}
@@ -96,17 +108,17 @@ export default function Feed() {
                   <Text style={{color: "white", textDecorationLine: "underline", fontWeight: "bold", fontSize: 15}}>Friends</Text>
                 </Pressable>
               </View>
-            </Animated.View>
+            </View>
 
-            <Animated.View style={{flex: 6}}>
+            <View style={{flex: 6}}>
               <FlatList
                     style={{paddingHorizontal: 20}}
                     data={data}
                     renderItem={({item}) => <Ping data={item} />}
                     ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
-                    onScroll={handleScroll}
+                    //onScroll={handleScroll}
                 />
-            </Animated.View>
+            </View>
         </SafeAreaView>
     )
 }

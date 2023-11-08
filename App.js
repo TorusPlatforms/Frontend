@@ -46,7 +46,11 @@ const Tab = createBottomTabNavigator();
 
 function Tabs() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator  
+      screenOptions={{
+        tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)' },
+     }}
+    >
       <Tab.Screen name="Feed" component={Feed} options={{headerShown: false}}/>
       <Tab.Screen name="Loops" component={Loops} options={{headerShown: false}}/>
       <Tab.Screen name="Profile" component={Profile} options={{headerShown: false}}/>

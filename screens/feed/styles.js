@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     },
 
     pingIcon: {
-        color: "white", 
+        color: "white",
         marginRight: 10,
     },
 
