@@ -139,7 +139,7 @@ export default function Feed() {
                     //onScroll={handleScroll}
                     onScroll={Animated.event(
                       [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                      { useNativeDriver: false } // Set to true if only animating opacity or transform
+                      { useNativeDriver: false } 
                   )}
                   scrollEventThrottle={16}
                 />
