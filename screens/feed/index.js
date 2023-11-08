@@ -1,3 +1,4 @@
+
 import React, { useState, useRef } from 'react'
 import { StyleSheet, Text, View, TextInput, Dimensions, Pressable, FlatList, Image, Animated } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,42 +7,23 @@ import { FontAwesome5 } from '@expo/vector-icons';
 
 import styles from "./styles";
 
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+
 export default function Feed() {
-    //const [text, onChangeText] = useState();
-
-    // const scrollY = new Animated.Value(0);
-    // const diffClamp = Animated.diffClamp(scrollY, 0, 150);
-    // const translateY = diffClamp.interpolate({
-    //   inputRange: [0, 150],
-    //   outputRange: [0, -150],
-    // });
- 
-
-    // function handleScroll(e) {
-    //   scrollY.setValue(e.nativeEvent.contentOffset.y);
-    // }
-    
-    const scrollY = useRef(new Animated.Value(0)).current;
+  
+    const [scrollY] = useState(new Animated.Value(0));
 
     const headerHeight = scrollY.interpolate({
-        inputRange: [0, 100],
-        outputRange: [100, 70], 
-        extrapolate: 'clamp',
+      inputRange: [0, 70],
+      outputRange: [70, 0],
+      extrapolate: 'clamp',
     });
 
-    const logoSize = scrollY.interpolate({
-        inputRange: [0, 100],
-        outputRange: [75, 50],
-        extrapolate: 'clamp',
+    const headerOpacity = scrollY.interpolate({
+      inputRange: [0, 70],
+      outputRange: [1, 0],
+      extrapolate: 'clamp',
     });
-
-    const textSize = scrollY.interpolate({
-        inputRange: [0, 100],
-        outputRange: [15, 10], 
-        extrapolate: 'clamp',
-    });
-
-
 
     function handleLike() {
       console.log("Liked a post!")
@@ -113,35 +95,42 @@ export default function Feed() {
                   <Ionicons name="send" size={20} color="white" />
                 </Pressable>
             </View> */}
-
-          <Animated.View style={{ height: headerHeight, marginTop: 5, justifyContent: 'center', alignItems: "center" }}>
-                <Animated.Image
-                    style={[styles.torusLogo, { width: logoSize, height: logoSize }]}
-                    source={require('../../assets/torus.png')}
+            <Animated.View
+              style={{
+                height: headerHeight, 
+                opacity: headerOpacity, 
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <View style={{flex: 0.5, justifyContent: 'center', alignItems: "center"}}>
+                <Image
+                  style={styles.torusLogo}
+                  source={require('../../assets/torus.png')}
                 />
-                <Animated.View style={{ flexDirection: "row", justifyContent: "space-evenly", width: "100%", padding: 10 }}>
-                    <Pressable>
-                        <Animated.Text style={{color: "white", textDecorationLine: "underline", fontWeight: "bold", fontSize: textSize}}>For You</Animated.Text>
-                    </Pressable>
-                    <Pressable>
-                        <Animated.Text style={{color: "white", textDecorationLine: "underline", fontWeight: "bold", fontSize: textSize}}>Friends</Animated.Text>
-                    </Pressable>
-                </Animated.View>
-            </Animated.View>
+              </View>
+              <View style={{flex : 0.5, flexDirection: "row", justifyContent: "space-evenly", width: "100%", padding: 10}}>
+                <Pressable>
+                  <Text style={{color: "white", textDecorationLine: "underline", fontWeight: "bold", fontSize: 15}}>For You</Text>
+                </Pressable>
 
+                <Pressable>
+                  <Text style={{color: "white", textDecorationLine: "underline", fontWeight: "bold", fontSize: 15}}>Friends</Text>
+                </Pressable>
+              </View>
+              </Animated.View>
 
             <View style={{flex: 6}}>
-              <FlatList
+              <AnimatedFlatList
                     style={{paddingHorizontal: 20}}
                     data={data}
                     renderItem={({item}) => <Ping data={item} />}
                     ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
-                    //onScroll={handleScroll}
                     onScroll={Animated.event(
                       [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                      { useNativeDriver: false } 
-                  )}
-                  scrollEventThrottle={16}
+                      { useNativeDriver: false }
+                    )}
+                    scrollEventThrottle={16}
                 />
             </View>
         </SafeAreaView>
