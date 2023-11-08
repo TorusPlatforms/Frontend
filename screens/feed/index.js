@@ -23,22 +23,21 @@ export default function Feed() {
     
     const scrollY = useRef(new Animated.Value(0)).current;
 
-    // Interpolations for animating styles
     const headerHeight = scrollY.interpolate({
         inputRange: [0, 100],
-        outputRange: [100, 70], // Change these values to achieve the desired effect
+        outputRange: [100, 70], 
         extrapolate: 'clamp',
     });
 
     const logoSize = scrollY.interpolate({
         inputRange: [0, 100],
-        outputRange: [75, 50], // Change these values according to the initial and final sizes of your logo
+        outputRange: [75, 50],
         extrapolate: 'clamp',
     });
 
     const textSize = scrollY.interpolate({
         inputRange: [0, 100],
-        outputRange: [15, 10], // Change these values according to the initial and final font sizes
+        outputRange: [15, 10], 
         extrapolate: 'clamp',
     });
 
