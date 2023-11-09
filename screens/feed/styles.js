@@ -47,10 +47,11 @@ const styles = StyleSheet.create({
     },
 
     attatchment: {
-        aspectRatio: 1,
-        width: 200,
-        borderRadius: 20,
-        marginVertical: 10
+        aspectRatio: 1.5,
+        minWidth: 200,
+        maxWidth: 500,
+        marginVertical: 10,
+        borderRadius: 20
     }
 })
 

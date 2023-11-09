@@ -38,7 +38,7 @@ export default function AuthScreen() {
     async function login() {
         const auth = getAuth();
         await signInWithEmailAndPassword(auth, email, password)
-        console.log("Logged in with user", auth.currentUser)
+        console.log("Logged in with user UID:", auth.currentUser.uid)
         navigation.navigate("Home")
     }
 
