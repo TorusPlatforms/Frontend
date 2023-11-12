@@ -13,8 +13,7 @@ import SignUpScreen from "./screens/signup"
 import Feed from "./screens/feed"
 import Profile from "./screens/profile"
 import Loops from "./screens/loops"
-import FollowersScreen from './screens/mutualuserlists/followers';
-import FollowingScreen from './screens/mutualuserlists/following';
+import MutualsScreen from './screens/mutualuserlists';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -58,11 +57,11 @@ function Tabs() {
   )
 };
 
-function TopTabs() {
+function TopTabs(route) {
   return (
     <TopTab.Navigator screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)'}, tabBarLabelStyle: { "color": "white" }}}>
-      <TopTab.Screen name="Following" component={FollowingScreen} options={{headerShown: false}} />
-      <TopTab.Screen name="Followers" component={FollowersScreen} options={{headerShown: false}} />
+      <TopTab.Screen name="Following" component={MutualsScreen} initialParams={{get: "following"}} options={{headerShown: false}} />
+      <TopTab.Screen name="Followers" component={MutualsScreen} initialParams={{get: "followers"}} options={{headerShown: false}} />
     </TopTab.Navigator>
   )
 }

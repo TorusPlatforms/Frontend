@@ -132,7 +132,7 @@ export default function Profile() {
 
                 <View style={styles.userRelationsContainer}>
                     <View style={styles.followCounts}>
-                        <Pressable onPress={() => navigation.navigate("MutualUserLists", {name: exampleUserData.username})}>
+                        <Pressable onPress={() => navigation.navigate("MutualUserLists", {name: exampleUserData.username, users: new Array(10).fill(exampleUserData)})}>
                             <Text style={{color: "white", fontWeight: "bold", textAlign: "center"}}>{exampleUserData.followers}</Text>
                             <Text style={{color: "white", textAlign: "center"}}>Followers</Text>
                         </Pressable>
