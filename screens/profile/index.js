@@ -17,7 +17,7 @@ const exampleUserData = {
 
 const exampleLoopsData = {name: "Dorm", pfp: "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png"}
 
-const exampleLoopsArray = new Array(6).fill(exampleLoopsData)
+const exampleLoopsArray = new Array(4).fill(exampleLoopsData)
 
 
 export default function Profile() {
@@ -81,7 +81,7 @@ export default function Profile() {
               style={{
                 position: "absolute",
                 left: x,
-                top: y
+                top: y,
               }}
             >
                 <Image

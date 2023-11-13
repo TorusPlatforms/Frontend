@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     },
 
     centerLoop: {
-        borderColor: "yellow",
+        borderColor: "gold",
         borderWidth: 1,
         width: 250,
         height: 250,

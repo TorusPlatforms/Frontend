@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as Notifications from 'expo-notifications';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
@@ -14,6 +15,8 @@ import Feed from "./screens/feed"
 import Profile from "./screens/profile"
 import Loops from "./screens/loops"
 import MutualsScreen from './screens/mutualuserlists';
+import CreatePing from './screens/createping';
+import Search from "./screens/search";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -49,10 +52,12 @@ const TopTab = createMaterialTopTabNavigator();
 
 function Tabs() {
   return (
-    <Tab.Navigator screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)' }}}>
-      <Tab.Screen name="Feed" component={Feed} options={{headerShown: false}}/>
-      <Tab.Screen name="Loops" component={Loops} options={{headerShown: false}}/>
-      <Tab.Screen name="Profile" component={Profile} options={{headerShown: false}}/>
+    <Tab.Navigator screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)'}, headerShown: false, tabBarShowLabel: false}}>
+      <Tab.Screen name="Feed" component={Feed} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "home" : "home-outline"} color={"white"} size={size}/>)}}/>
+      <Tab.Screen name="Loops" component={Loops} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "people" : "people-outline"} color={"white"} size={size}/>)}}/>
+      <Tab.Screen name="Create" component={CreatePing} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "add-circle" : "add-circle-outline"} color={"white"} size={size}/>)}} />
+      <Tab.Screen name="Search" component={Search} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "search" : "search-outline"} color={"white"} size={size}/>)}}/>
+      <Tab.Screen name="Profile" component={Profile} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "person" : "person-outline"} color={"white"} size={size}/>)}}/>
     </Tab.Navigator>
   )
 };

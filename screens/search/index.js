@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import styles from "./styles";
 
-export default function Loops() {
+export default function Search() {
     return (
         <SafeAreaView style={styles.container}>
             
