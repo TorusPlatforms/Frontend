@@ -55,7 +55,7 @@ export default function Profile() {
         const unread = true
 
         if (unread) {
-            return <View style={{width: 15, height: 15, borderRadius: 7.5, backgroundColor: 'red', position: 'absolute', alignSelf: 'flex-end', justifyContent: "center", alignItems: "center"}}/>
+            return <View style={{width: 15, height: 15, borderRadius: 7.5, backgroundColor: 'red', position: 'absolute', alignSelf: 'flex-end'}}/>
         }
     };
 
@@ -82,6 +82,7 @@ export default function Profile() {
                 position: "absolute",
                 left: x,
                 top: y,
+                alignItems: "center",
               }}
             >
                 <Image
@@ -92,7 +93,7 @@ export default function Profile() {
                     }}
                     source={{ uri: 'https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png' }}
                 />
-
+                
                 {renderNotification()}
                 
             </Animated.View>

@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as Notifications from 'expo-notifications';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, Modal, FlatList, Button } from "react-native";
 
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
@@ -49,27 +50,51 @@ Notifications.setNotificationHandler({
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const TopTab = createMaterialTopTabNavigator();
+const config = {
+  animation: 'spring',
+  config: {
+    stiffness: 1000,
+    damping: 500,
+    mass: 3,
+    overshootClamping: true,
+    restDisplacementThreshold: 0.01,
+    restSpeedThreshold: 0.01,
+  },
+};
 
-function Tabs() {
+function handleModal(e) {
+  
+}
+const Tabs = () => {
   return (
     <Tab.Navigator screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)'}, headerShown: false, tabBarShowLabel: false}}>
       <Tab.Screen name="Feed" component={Feed} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "home" : "home-outline"} color={"white"} size={size}/>)}}/>
-      <Tab.Screen name="Loops" component={Loops} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "people" : "people-outline"} color={"white"} size={size}/>)}}/>
-      <Tab.Screen name="Create" component={CreatePing} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "add-circle" : "add-circle-outline"} color={"white"} size={size}/>)}} />
+      <Tab.Screen name="Loops" component={LoopsTabs} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "people" : "people-outline"} color={"white"} size={size}/>)}}/>
+      <Tab.Screen name="CreateContainer" listeners={({ navigation }) => ({tabPress: (e) => {e.preventDefault(); navigation.navigate("Create")}})} component={CreatePing} options={{ presentation: "modal", tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "add-circle" : "add-circle-outline"} color={"white"} size={size}/>)}} />
       <Tab.Screen name="Search" component={Search} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "search" : "search-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="Profile" component={Profile} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "person" : "person-outline"} color={"white"} size={size}/>)}}/>
     </Tab.Navigator>
   )
 };
 
-function TopTabs(route) {
+const FollowTabs = () => {
   return (
     <TopTab.Navigator screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)'}, tabBarLabelStyle: { "color": "white" }}}>
       <TopTab.Screen name="Following" component={MutualsScreen} initialParams={{get: "following"}} options={{headerShown: false}} />
       <TopTab.Screen name="Followers" component={MutualsScreen} initialParams={{get: "followers"}} options={{headerShown: false}} />
     </TopTab.Navigator>
   )
-}
+};
+
+const LoopsTabs = () => {
+  return (
+    <TopTab.Navigator screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)', paddingTop: 50}, tabBarLabelStyle: { "color": "white" }}}>
+      <TopTab.Screen name="Discover" component={Loops} initialParams={{get: "Discover"}} options={{headerShown: false}} />
+      <TopTab.Screen name="My Loops" component={Loops} initialParams={{get: "Main"}} options={{headerShown: false}} />
+    </TopTab.Navigator>
+  )
+};
+
 function App() {
   return (
     <NavigationContainer>
@@ -77,7 +102,8 @@ function App() {
         <Stack.Screen name="Auth" component={AuthScreen} options={{headerShown: false}} />
         <Stack.Screen name="SignUp" component={SignUpScreen} options={{headerShown: false}} />
         <Stack.Screen name="Home" component={Tabs} options={{headerShown: false}} />
-        <Stack.Screen name="MutualUserLists" component={TopTabs} options={({ route }) => ({ title: route.params.name, headerStyle: {backgroundColor: "rgb(22, 23, 24)"}, headerTitleStyle: {color: "white"}, headerTintColor: 'white'})}/>
+        <Stack.Screen name="Create" component={CreatePing} options={{headerShown: false, presentation: "modal"}} />
+        <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ title: route.params.name, headerStyle: {backgroundColor: "rgb(22, 23, 24)"}, headerTitleStyle: {color: "white"}, headerTintColor: 'white'})}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
