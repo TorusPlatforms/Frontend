@@ -4,8 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import styles from "./styles";
+import { useNavigation } from '@react-navigation/native';
 
-export default function Feed() {
+export default function Feed({ route, navigation }) {
     const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
     const [scrollY] = useState(new Animated.Value(0));
 
@@ -93,36 +94,34 @@ export default function Feed() {
             </View> */}
 
           <Animated.View style={{height: headerHeight, opacity: headerOpacity}}>
-              <View style={{flex: 0.5, justifyContent: 'center', alignItems: "center"}}>
+              {/* <View style={{flex: 0.5, justifyContent: 'center', alignItems: "center"}}>
                 <Image
                   style={styles.torusLogo}
                   source={require('../../assets/torus.png')}
                 />
-              </View>
-              <View style={{flex : 0.5, flexDirection: "row", justifyContent: "space-evenly", width: "100%", padding: 10}}>
-                <Pressable>
-                  <Text style={{color: "white", textDecorationLine: "underline", fontWeight: "bold", fontSize: 15}}>For You</Text>
+              </View> */}
+              <View style={styles.header}>
+                <Pressable onPress={() => navigation.navigate("ForYou")}>
+                  <Text style={{color: route.params.get === "foryou" ? "white" : "gray", textDecorationLine: "underline", fontWeight: "bold", fontSize: 15}}>For You</Text>
                 </Pressable>
 
-                <Pressable>
-                  <Text style={{color: "white", textDecorationLine: "underline", fontWeight: "bold", fontSize: 15}}>Friends</Text>
+                <Pressable onPress={() => navigation.navigate("Friends")}>
+                  <Text style={{color: route.params.get === "friends" ? "white" : "gray", textDecorationLine: "underline", fontWeight: "bold", fontSize: 15}}>Friends</Text>
                 </Pressable>
               </View>
             </Animated.View>
 
-            <View style={{flex: 6}}>
-              <AnimatedFlatList
-                    style={{paddingHorizontal: 20}}
-                    data={data}
-                    renderItem={({item}) => <Ping data={item} />}
-                    ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
-                    onScroll={Animated.event(
-                      [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                      { useNativeDriver: false }
-                    )}
-                    scrollEventThrottle={16}
-                />
-            </View>
+            <AnimatedFlatList
+                  style={{paddingHorizontal: 20}}
+                  data={data}
+                  renderItem={({item}) => <Ping data={item} />}
+                  ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+                  onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                    { useNativeDriver: false }
+                  )}
+                  scrollEventThrottle={16}
+              />
         </SafeAreaView>
     )
 }

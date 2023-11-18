@@ -2,11 +2,15 @@ import React, { useState, useRef, useEffect } from "react";
 import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, KeyboardAvoidingView, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { SearchBar } from "react-native-elements";
 
 import styles from "./styles";
 
 export default function MutualsScreen({ route, navigation }) {
-    function getLoops(type) {
+    const [loops, setLoops] = useState([])
+    const [search, setSearch] = useState("")
+
+    function getLoops() {
         //handle getting discover/main feed
 
         const exampleLoopData = {
@@ -19,8 +23,23 @@ export default function MutualsScreen({ route, navigation }) {
         return new Array(20).fill(exampleLoopData)
     }
 
-    const loops = getLoops(route.params.get)
     
+    const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+    const [scrollY] = useState(new Animated.Value(0));
+
+    const headerHeight = scrollY.interpolate({
+      inputRange: [0, 70],
+      outputRange: [70, 0],
+      extrapolate: 'clamp',
+    })
+
+    const headerOpacity = scrollY.interpolate({
+      inputRange: [0, 70],
+      outputRange: [1, 0],
+      extrapolate: 'clamp',
+    });
+
+
     const Loop = ({data}) => (
         <View style={{marginVertical: 20, width: "100%", flexDirection: "row", paddingHorizontal: 20}}>
             <Image style={{width: 100, height: 100, borderRadius: 50}} source={{uri: data.pfp}}/>
@@ -31,18 +50,37 @@ export default function MutualsScreen({ route, navigation }) {
             </View>
         </View>
       );
-    
-      if (loops) {
+        
 
-        return (
+    useEffect(() => {
+        setLoops(getLoops())
+      }, []);
+
+    return (
             <SafeAreaView style={styles.container}>
-                <FlatList 
+                <Animated.View style={{height: headerHeight, opacity: headerOpacity}}>
+                    <View style={{padding: 10}}>
+                       <SearchBar 
+                        placeholder="Discover Loops & People..." 
+                        containerStyle={{backgroundColor: "rgb(22, 23, 24)", borderTopWidth: 0,  borderBottomWidth: 0, color: "rgb(22, 23, 24)"}} 
+                        onChangeText={setSearch}
+                        value={search}
+                        />
+                    </View>
+                </Animated.View>
+
+                <AnimatedFlatList
+                    style={{paddingHorizontal: 20}}
                     data={loops}
                     renderItem={({item}) => <Loop data={item} />}
                     ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+                    onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+                    { useNativeDriver: false }
+                    )}
+                    scrollEventThrottle={16}
                 />
             </SafeAreaView>
-        )
-      }
-
+            )
+  
 }

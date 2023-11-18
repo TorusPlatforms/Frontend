@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef} from 'react'
 import { StyleSheet, Text, View, SafeAreaView, Image, Animated, Easing, FlatList, Pressable } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 
@@ -17,18 +18,13 @@ const exampleUserData = {
 
 const exampleLoopsData = {name: "Dorm", pfp: "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png"}
 
-const exampleLoopsArray = new Array(4).fill(exampleLoopsData)
+const exampleLoopsArray = new Array(6).fill(exampleLoopsData)
 
 
 export default function Profile() {
     const navigation = useNavigation()
 
-    const symbolSize = 50;
-    const radius = 125 
-    const center = 125
-
-    const circleAngleOrder = [0, 180, 270, 90, 45, 135, 225, 315]
-    const movingAngleUnit = useRef(new Animated.Value(0)).current;
+    const movingLine = useRef(new Animated.Value(0)).current;
 
     async function copyUsernameToClipboard() {
         await Clipboard.setStringAsync(exampleUserData.username);
@@ -55,48 +51,54 @@ export default function Profile() {
         const unread = true
 
         if (unread) {
-            return <View style={{width: 15, height: 15, borderRadius: 7.5, backgroundColor: 'red', position: 'absolute', alignSelf: 'flex-end'}}/>
+            return <View style={{width: 15, height: 15, borderRadius: 7.5, backgroundColor: 'red', bottom: 30, position: 'absolute', alignSelf: 'flex-end', zIndex: 1}}/>
         }
     };
 
+    const symbolSize = 50;
+    const radius = 125 
+    const center = 125
+
+    function degToRad(deg) {
+        return deg * Math.PI / 180
+    }
+
+    const iconStyles = [
+        {left: radius * Math.cos(degToRad(90)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(90)) + center - symbolSize / 2}, 
+        {left: radius * Math.cos(degToRad(150)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(150)) + center - symbolSize / 2},
+        {left: radius * Math.cos(degToRad(50)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(50)) + center - symbolSize / 2},
+        {left: radius * Math.cos(degToRad(215)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(215)) + center - symbolSize / 2},
+        {left: radius * Math.cos(degToRad(330)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(330)) + center - symbolSize / 2},
+        {left: radius * Math.cos(degToRad(275)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(275)) + center - symbolSize / 2}
+    ]
+    
+    const x = movingLine.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 80],
+        });
+
+          
+    const lineStyles = [{top: 50}, {right: -25, top: 25, transform: [{rotate: "-50deg"}]}, {top: 40, left: 0, transform: [{rotate: "35deg"}]}, {transform: [{rotate: "60deg"}], right: -10, bottom: 0}, {left: -15, bottom: 0, transform: [{rotate: "-60deg"}]}, {bottom: 20, transform: [{rotate: "-10deg"}]}]
 
     function renderLoops() {
         return exampleLoopsArray.map((item, index) => {
-          const angle = circleAngleOrder[index] * (Math.PI / 180);
-
-          const x = movingAngleUnit.interpolate({
-            inputRange: [0, 1],
-            easing: Easing.sin,
-            outputRange: [radius * 1 + center - symbolSize / 2, radius * Math.cos(angle) + center - symbolSize / 2],
-          });
-      
-          const y = movingAngleUnit.interpolate({
-            inputRange: [0, 1],
-            outputRange: [center - symbolSize / 2, radius * Math.sin(angle) + center - symbolSize / 2],
-          });
-      
+        
           return (
-            <Animated.View
-              key={index}
-              style={{
-                position: "absolute",
-                left: x,
-                top: y,
-                alignItems: "center",
-              }}
-            >
-                <Image
-                    style={{
-                    width: symbolSize,
-                    height: symbolSize,
-                    borderRadius: symbolSize / 2,
-                    }}
-                    source={{ uri: 'https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png' }}
-                />
-                
-                {renderNotification()}
-                
-            </Animated.View>
+            <View key={index} style={ [iconStyles[index], {justifyContent: "center", position: "absolute"}] }>
+                  <Image
+                      style={{
+                          width: symbolSize,
+                          height: symbolSize,
+                          borderRadius: symbolSize / 2,
+                          zIndex: 1
+                      }}
+                      source={{ uri: 'https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png' }} />
+
+                  {renderNotification()}
+
+                  <Animated.View style={[lineStyles[index], { backgroundColor: "gray", width: 2, height: x, alignSelf: "center", position: "absolute"}]} />
+
+              </View>
           );
         });
       }
@@ -104,14 +106,14 @@ export default function Profile() {
     useEffect(() => {
         Animated.sequence([
         Animated.delay(300),
-        Animated.timing(movingAngleUnit, {
+        Animated.timing(movingLine, {
             toValue: 1, // 1 represents the final angle
             duration: 1000,
-            useNativeDriver: false, 
+            useNativeDriver: false
           })
         ]).start();
     
-      }, [movingAngleUnit]);
+      }, [movingLine]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -156,6 +158,9 @@ export default function Profile() {
 
             <View style={styles.torusContainer}>
                 <View style={styles.centerLoop}>
+                    <View style={{width: 80, height: 80, borderRadius: 80, alignSelf: "center", top: 100, zIndex: 1, justifyContent: "center", alignItems: "center"}}>
+                        <MaterialCommunityIcons name="google-circles-communities" color={"gray"} size={60}/>
+                    </View>
                     {renderLoops()}
                 </View>
             </View>

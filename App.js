@@ -50,33 +50,28 @@ Notifications.setNotificationHandler({
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const TopTab = createMaterialTopTabNavigator();
-const config = {
-  animation: 'spring',
-  config: {
-    stiffness: 1000,
-    damping: 500,
-    mass: 3,
-    overshootClamping: true,
-    restDisplacementThreshold: 0.01,
-    restSpeedThreshold: 0.01,
-  },
-};
 
-function handleModal(e) {
-  
-}
+
 const Tabs = () => {
   return (
     <Tab.Navigator screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)'}, headerShown: false, tabBarShowLabel: false}}>
-      <Tab.Screen name="Feed" component={Feed} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "home" : "home-outline"} color={"white"} size={size}/>)}}/>
-      <Tab.Screen name="Loops" component={LoopsTabs} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "people" : "people-outline"} color={"white"} size={size}/>)}}/>
+      <Tab.Screen name="Feed" component={FeedScreens} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "home" : "home-outline"} color={"white"} size={size}/>)}}/>
+      <Tab.Screen name="Loops" component={Loops} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "search" : "search-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="CreateContainer" listeners={({ navigation }) => ({tabPress: (e) => {e.preventDefault(); navigation.navigate("Create")}})} component={CreatePing} options={{ presentation: "modal", tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "add-circle" : "add-circle-outline"} color={"white"} size={size}/>)}} />
-      <Tab.Screen name="Search" component={Search} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "search" : "search-outline"} color={"white"} size={size}/>)}}/>
+      <Tab.Screen name="Search" component={Search} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "chatbox" : "chatbox-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="Profile" component={Profile} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "person" : "person-outline"} color={"white"} size={size}/>)}}/>
     </Tab.Navigator>
   )
 };
 
+const FeedScreens = () => {
+  return (
+  <Stack.Navigator>
+      <Stack.Screen name="ForYou" component={Feed} initialParams={{get: "foryou"}} options={{headerShown: false}} />
+        <Stack.Screen name="Friends" component={Feed} initialParams={{get: "friends"}} options={{headerShown: false}} />
+  </Stack.Navigator>
+  )
+}
 const FollowTabs = () => {
   return (
     <TopTab.Navigator screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)'}, tabBarLabelStyle: { "color": "white" }}}>
@@ -86,14 +81,6 @@ const FollowTabs = () => {
   )
 };
 
-const LoopsTabs = () => {
-  return (
-    <TopTab.Navigator screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)', paddingTop: 50}, tabBarLabelStyle: { "color": "white" }}}>
-      <TopTab.Screen name="Discover" component={Loops} initialParams={{get: "Discover"}} options={{headerShown: false}} />
-      <TopTab.Screen name="My Loops" component={Loops} initialParams={{get: "Main"}} options={{headerShown: false}} />
-    </TopTab.Navigator>
-  )
-};
 
 function App() {
   return (

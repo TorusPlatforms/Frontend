@@ -52,6 +52,13 @@ const styles = StyleSheet.create({
         maxWidth: 500,
         marginVertical: 10,
         borderRadius: 20
+    },
+
+    header: {
+        flexDirection: "row", 
+        justifyContent: "space-evenly", 
+        width: "100%", 
+        padding: 10
     }
 })
 

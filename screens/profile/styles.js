@@ -79,19 +79,15 @@ const styles = StyleSheet.create({
     },
 
     centerLoop: {
-        borderColor: "gold",
-        borderWidth: 1,
         width: 250,
         height: 250,
-        borderRadius: 250 / 2,
-        justifyContent: "center",
-        alignItems: 'center'
+        borderRadius: 250 /2,
     },
 
     torusContainer: {
         flex: 3, 
         justifyContent: "center", 
-        alignItems: "center"
+        alignItems: "center",
     },
 
     loopsContainer: {
