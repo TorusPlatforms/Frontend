@@ -18,7 +18,8 @@ import MutualsScreen from './screens/mutualuserlists';
 import CreatePing from './screens/createping';
 import Search from "./screens/search";
 import Messages from "./screens/messages" 
-import DirectMessage from "./screens/directmessage"
+import DirectMessage from "./screens/directmessage";
+import Settings from "./screens/settings";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -94,13 +95,14 @@ const FollowTabs = () => {
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerTitleStyle: {color: "white"}, headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}}}>
-        <Stack.Screen name="Auth" component={AuthScreen} options={{headerShown: false}} />
-        <Stack.Screen name="SignUp" component={SignUpScreen} options={{headerShown: false}} />
-        <Stack.Screen name="Home" component={Tabs} options={{headerShown: false}} />
-        <Stack.Screen name="Create" component={CreatePing} options={{headerShown: false, presentation: "modal"}} />
+      <Stack.Navigator screenOptions={{headerShown: false, headerTitleStyle: {color: "white"}, headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}}}>
+        <Stack.Screen name="Auth" component={AuthScreen}/>
+        <Stack.Screen name="SignUp" component={SignUpScreen}/>
+        <Stack.Screen name="Home" component={Tabs}/>
+        <Stack.Screen name="Create" component={CreatePing} options={{presentation: "modal"}} />
         <Stack.Screen name="DirectMessage" component={DirectMessage} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
-        <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ title: route.params.name, })}/>
+        <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.name, })}/>
+        <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
