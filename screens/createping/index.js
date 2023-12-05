@@ -43,7 +43,7 @@ const CreatePing = () => {
           <Image style={{ width: 50, height: 50, borderRadius: 20, marginLeft: -10 }} source={{ uri: exampleUserData.pfp }} />
           <TextInput
             ref={textInputRef}
-            style={{ marginLeft: 20, paddingVertical: 10, color: "white", fontSize: 18 }}
+            style={{ marginLeft: 20, paddingVertical: 10, color: "white", fontSize: 18,minWidth:150 }}
             placeholder="Type something..."
             placeholderTextColor="gray"
             value={textInputValue}
