@@ -36,7 +36,7 @@ export default function Profile() {
 
             <View style={{flexDirection: 'col', marginLeft: 10, flex: 5}}>
                 <Text style={{color: 'white', fontWeight: "bold"}}>Example Loop</Text>
-                <Text style={{color: 'white'}}>GrantHough said "my last message"</Text>
+                <Text style={{color: 'white'}}>GrantHough said "FUCK YOU"</Text>
             </View>
             
             <View style={{flex: 1}}>
