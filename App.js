@@ -57,7 +57,7 @@ const username = "@GrantHough"
 function DirectMessageHeader(props) {
   console.log(props)
   return (
-    <Text style={{color: "blue", fontWeight: "bold", fontSize: 18, marginBottom: 5}}>{props.params.username}</Text>
+    <Text style={{color: "white", fontWeight: "bold", fontSize: 18, marginBottom: 5}}>{props.params.username}</Text>
   );
 }
 
