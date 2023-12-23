@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { View, TouchableOpacity, Image, Text, TextInput } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Icon from '@expo/vector-icons/Ionicons';
 
 import styles from "./styles";
 
@@ -53,10 +54,24 @@ const CreatePing = () => {
             onChangeText={(text) => setTextInputValue(text)}
           />
         </View>
+
+
+        <View style={{flexDirection: "row", marginTop: 20}}>
+           
+        <TouchableOpacity onPress={Post} style={{marginRight:7}}>
+            <Icon name="camera-outline" size={30} color="#ff0000" />
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={Post} style={{marginLeft:7}}>
+            <Icon name="images-outline" size={30} color="#ff0000" />
+        </TouchableOpacity> 
+        </View>
+        
+        
+
         <TouchableOpacity
           style={{ backgroundColor: "rgb(247, 212, 114)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop: 20 }}
-          onPress={Post}
-        >
+          onPress={Post}>
           <Text style={{ color: "black", textAlign: "center" }}>Post</Text>
         </TouchableOpacity>
       </View>
