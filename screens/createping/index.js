@@ -40,13 +40,14 @@ const CreatePing = () => {
 
       <View style={{ flexDirection: "column", alignItems: "center", marginTop: 20 }}>
         <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-          <Image style={{ width: 50, height: 50, borderRadius: 20, }} source={{ uri: exampleUserData.pfp }} />
+          <Image style={{ width: 50, height: 50, marginLeft:20, borderRadius: 20, }} source={{ uri: exampleUserData.pfp }} />
           <TextInput
             ref={textInputRef}
-            style={{ marginLeft: 20, paddingVertical: 10,marginTop:10, color: "white", fontSize: 18,minWidth:150, maxWidth:300 }}
+            style={{ marginLeft: 20, paddingRight:20, paddingVertical: 10,marginTop:10, color: "white", fontSize: 18,minWidth:150, maxWidth:300 }}
             placeholder="Type something..."
             multiline
             numberOfLines={4}
+            maxLength={40}
             placeholderTextColor="gray"
             value={textInputValue}
             onChangeText={(text) => setTextInputValue(text)}
