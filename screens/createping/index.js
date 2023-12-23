@@ -6,7 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import styles from "./styles";
 
 const exampleUserData = {
-  pfp: "https://cdn.discordapp.com/avatars/393834794057728000/661f702722649b4aeb5a660c295d1ee3.webp?size=128",
+  pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
   displayName: "Grant Hough",
   username: "@granthough",
   following: 128,
@@ -39,12 +39,14 @@ const CreatePing = () => {
       </View>
 
       <View style={{ flexDirection: "column", alignItems: "center", marginTop: 20 }}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Image style={{ width: 50, height: 50, borderRadius: 20, marginLeft: -10 }} source={{ uri: exampleUserData.pfp }} />
+        <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+          <Image style={{ width: 50, height: 50, borderRadius: 20, }} source={{ uri: exampleUserData.pfp }} />
           <TextInput
             ref={textInputRef}
-            style={{ marginLeft: 20, paddingVertical: 10, color: "white", fontSize: 18,minWidth:150 }}
+            style={{ marginLeft: 20, paddingVertical: 10,marginTop:10, color: "white", fontSize: 18,minWidth:150, maxWidth:300 }}
             placeholder="Type something..."
+            multiline
+            numberOfLines={4}
             placeholderTextColor="gray"
             value={textInputValue}
             onChangeText={(text) => setTextInputValue(text)}
