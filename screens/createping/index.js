@@ -3,6 +3,9 @@ import { View, TouchableOpacity, Image, Text, TextInput } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from '@expo/vector-icons/Ionicons';
+import Camera from "./camera.js";
+import ImagePicker from "./imagepicker.js";
+
 
 import styles from "./styles";
 
@@ -14,6 +17,7 @@ const exampleUserData = {
   followers: 259,
   description: "A pretty funny guy. Has a strong affinity for dogs. \n Stefan Murphy: 'The test is in'"
 }
+
 
 const CreatePing = () => {
   const navigation = useNavigation();
@@ -58,13 +62,9 @@ const CreatePing = () => {
 
         <View style={{flexDirection: "row", marginTop: 20}}>
            
-        <TouchableOpacity onPress={Post} style={{marginRight:7}}>
-            <Icon name="camera-outline" size={30} color="#ff0000" />
-        </TouchableOpacity>
+        <Camera/>
+        <ImagePicker/>
 
-        <TouchableOpacity onPress={Post} style={{marginLeft:7}}>
-            <Icon name="images-outline" size={30} color="#ff0000" />
-        </TouchableOpacity> 
         </View>
         
         
