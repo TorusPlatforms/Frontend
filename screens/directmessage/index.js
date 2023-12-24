@@ -27,6 +27,20 @@ export default function DirectMessage() {
     )
   }, [])
 
+
+  const renderBubble = (props) => { // styling of the text bubble of the other user
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={{
+          left: {
+            marginLeft: 5,
+          },
+        }}
+      />
+    );
+  }
+
   return (
     <View style={styles.container}>
       <GiftedChat
@@ -36,6 +50,7 @@ export default function DirectMessage() {
             user={{
                 _id: 1,
             }}
+            renderBubble={renderBubble}
         />
     </View>
     )

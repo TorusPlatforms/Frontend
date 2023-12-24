@@ -23,10 +23,10 @@ export default function Messages() {
 
     const DirectMessage = ({data}) => (
         <Pressable onPress={() => navigation.navigate("DirectMessage", {username: "@StefanMurphy"})} style={{marginVertical: 20, width: "100%", flexDirection: "row", paddingHorizontal: 20}}>
-            <Image style={{width: 50, height: 50, borderRadius: 50}} source={{uri: data.pfp}}/>
+            <Image style={{width: 50, height: 50, borderRadius: 50,}} source={{uri: data.pfp}}/>
             <View style={{marginLeft: 20, justifyContent: "space-around"}}>
                 <Text style={{color: "white", fontWeight: "bold"}}>{data.displayName}</Text>
-                <View style={{flexDirection: "row"}}>
+                <View style={{flexDirection: "row",}}>
                     <Text style={{color: "lightgrey"}}>{data.lastMesssage}</Text>
                     <Text style={{color: "lightgrey", marginLeft: 10}}>•    {data.messageSent} Ago</Text>
                 </View>
