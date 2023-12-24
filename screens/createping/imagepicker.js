@@ -1,46 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, Image } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from '@expo/vector-icons/Ionicons';
 
-const ImagePickerComponent = () => {
-  const [selectedImage, setSelectedImage] = useState(null);
+const ImagePickerComponent = ({ setSelectedImage }) => {
+  const [selectedImageLocal, setSelectedImageLocal] = useState(null); // Fix: Added an initial value
 
   useEffect(() => {
+    // Request permission to access the camera roll
     (async () => {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to make this work!');
+      if (status !== "granted") {
+        console.error("Permission to access camera roll was denied");
       }
     })();
   }, []);
 
-  const selectImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  const pickImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
 
-    if (!result.cancelled) {
-      setSelectedImage({ uri: result.uri });
+      if (!result.cancelled) {
+        console.log("Selected Image in ImagePicker:", result);
+        setSelectedImage(result);
+      }
+    } catch (error) {
+      console.error("Error picking an image", error);
     }
   };
 
   return (
-    <View>
-      <TouchableOpacity onPress={selectImage}>
-        <Icon name="image-outline" size={30} color="#ff0000" />
-      </TouchableOpacity>
-
-      {selectedImage && (
-        <Image
-          source={{ uri: selectedImage.uri }}
-          style={{ width: 200, height: 200 }}
-        />
-      )}
-    </View>
+    <TouchableOpacity style={{ marginRight: 20 }} onPress={pickImage}>
+      <Icon name="image-outline" size={30} color="#FFFFFF" />
+    </TouchableOpacity>
   );
 };
 
