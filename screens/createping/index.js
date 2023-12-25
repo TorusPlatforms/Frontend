@@ -25,7 +25,7 @@ const CreatePing = () => {
   const textInputRef = useRef(null);
 
   useEffect(() => {
-    // This effect will run whenever selectedImage changes
+    // run this whenever the selected image changes
     if (selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri) {
       console.log('Image is available:', selectedImage.assets[0].uri);
       
@@ -58,7 +58,7 @@ const CreatePing = () => {
   
     if (selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri) {
       console.log('\n img', selectedImage.assets[0].uri);
-      // Perform any actions with the selected image, e.g., upload it to a server.
+      // log image if there is one
     } else {
       console.log('\n No img');
     }

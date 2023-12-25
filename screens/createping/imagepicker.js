@@ -8,7 +8,7 @@ const ImagePickerComponent = ({ setSelectedImage }) => {
   const [selectedImageLocal, setSelectedImageLocal] = useState(null); // Fix: Added an initial value
 
   useEffect(() => {
-    // Request permission to access the camera roll
+    // Request camera roll permission
     (async () => {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
@@ -16,7 +16,7 @@ const ImagePickerComponent = ({ setSelectedImage }) => {
       }
     })();
 
-    // Request permission to access the camera
+    // request camera permission
     (async () => {
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
       if (status !== 'granted') {
