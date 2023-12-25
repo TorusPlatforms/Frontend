@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedbac
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from '@expo/vector-icons/Ionicons';
-import Camera from "./camera.js";
+import CameraComponent from "./camera.js";
 import ImagePickerComponent from "./imagepicker.js";
 
 import styles from "./styles";
@@ -21,6 +21,7 @@ const CreatePing = () => {
   const navigation = useNavigation();
   const [textInputValue, setTextInputValue] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
+  const [imageUri, setImageUri] = useState(null);
   const textInputRef = useRef(null);
 
   useEffect(() => {
@@ -44,6 +45,10 @@ const CreatePing = () => {
   const handleImageSelect = (image) => {
     setSelectedImage(image);
     console.log("Selected Image in CreatePing:", image);
+  };
+
+  const handlePictureTaken = (uri) => {
+    setSelectedImage({ assets: [{ uri }] });
   };
 
   const Post = () => {
@@ -87,17 +92,14 @@ const CreatePing = () => {
           </View>
 
           <View style={{ flexDirection: "row", marginTop: 20 }}>
-            <TouchableOpacity style={{ marginRight: 20 }}>
-              <Icon name="camera-outline" size={30} color="#FFFFFF" />
-            </TouchableOpacity>
+
             {/* Render the ImagePickercomponeent and pass the callback function */}
             <ImagePickerComponent setSelectedImage={handleImageSelect} />
           </View>
 
           {selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri && (
-        <Image source={{ uri: selectedImage.assets[0].uri }} style={{ width: 200, height: 200, borderWidth: 2, borderColor: "white", marginTop: 15 }} />
-        )}
-
+            <Image source={{ uri: selectedImage.assets[0].uri }} style={{ width: 200, height: 200, borderWidth: 2, borderColor: "white", marginTop: 15 }} />
+          )}
 
           <TouchableOpacity
             style={{ backgroundColor: "rgb(247, 212, 114)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop: 20 }}
