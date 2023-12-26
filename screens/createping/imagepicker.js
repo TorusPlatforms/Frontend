@@ -85,11 +85,11 @@ const ImagePickerComponent = ({ setSelectedImage }) => {
   return (
     <View style={{flexDirection:"row"}}>
 
-        <TouchableOpacity style={{ marginRight: 20 }} onPress={pickImage}>
+        <TouchableOpacity style={{ marginRight: 10 }} onPress={pickImage}>
     <Icon name="image-outline" size={30} color="#FFFFFF" />
   </TouchableOpacity>
 
-    <TouchableOpacity style={{ marginRight: 20 }} onPress={openCamera}>
+    <TouchableOpacity style={{ marginLeft: 10 }} onPress={openCamera}>
       <Icon name="camera-outline" size={30} color="#FFFFFF" />
     </TouchableOpacity>
     </View>

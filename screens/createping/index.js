@@ -51,17 +51,41 @@ const CreatePing = () => {
     setSelectedImage({ assets: [{ uri }] });
   };
 
-  const Post = () => {
+  const removeImage = () => {
+
+    setSelectedImage(null); // set image to null (delete image)
+  };
+
+
+
+  const Post = () => { // when you click post
     var string = textInputValue;
+
     const newStr = string.replace(/\n{2,}/g, '\n\n');
-    console.log(newStr);
-  
-    if (selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri) {
-      console.log('\n img', selectedImage.assets[0].uri);
-      // log image if there is one
-    } else {
-      console.log('\n No img');
+    var imageValid = (selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri)
+
+    if(newStr.trim() != "" || (imageValid) ){
+        var postData; // object for post data
+
+            if (imageValid) {
+                postData = {
+                    "text": newStr,
+                    "image": selectedImage.assets[0].uri // if theres an image use it in the post
+                };
+            } else {
+                postData = {
+                    "text": newStr,
+                    "image": null // if there isnt an image dont include one
+                };
+            }
+            
+            console.log(postData); // log the ping data, eventually make this a server upload shenanigan
+
     }
+
+
+    
+
   };
   
   return (
@@ -93,13 +117,22 @@ const CreatePing = () => {
 
           <View style={{ flexDirection: "row", marginTop: 20 }}>
 
-            {/* Render the ImagePickercomponeent and pass the callback function */}
-            <ImagePickerComponent setSelectedImage={handleImageSelect} />
+            {/* Render the ImagePickercomponeent and pass the callback function, image picker contrains both the camera and camera roll buttons */}
+            <ImagePickerComponent setSelectedImage={handleImageSelect} /> 
           </View>
 
           {selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri && (
+            <View>
             <Image source={{ uri: selectedImage.assets[0].uri }} style={{ width: 200, height: 200, borderWidth: 2, borderColor: "white", marginTop: 15 }} />
+            <TouchableOpacity onPress={removeImage}>
+                <Text style={{alignSelf:"center", marginTop:10, color:"red", textDecorationLine:"underline"}}>Remove Image</Text>
+            </TouchableOpacity>
+             </View>
+            
+            
           )}
+
+            
 
           <TouchableOpacity
             style={{ backgroundColor: "rgb(247, 212, 114)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop: 20 }}
