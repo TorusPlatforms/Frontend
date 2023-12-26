@@ -17,9 +17,9 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "We need your camera",
-        "NSMicrophoneUsageDescription": "We need to listen",
-        "NSPhotoLibraryUsageDescription": "Lets look are your camera roll buddy"
+        "NSCameraUsageDescription": "This feature requires access to your camera",
+        "NSMicrophoneUsageDescription": "This feature requires access to your microphone",
+        "NSPhotoLibraryUsageDescription": "This feature requires access to your camera roll"
       }
     },
     "android": {
