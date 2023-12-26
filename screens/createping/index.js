@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedbac
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from '@expo/vector-icons/Ionicons';
-import CameraComponent from "./camera.js";
+
 import ImagePickerComponent from "./imagepicker.js";
 
 import styles from "./styles";
