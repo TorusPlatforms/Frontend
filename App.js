@@ -20,6 +20,7 @@ import Search from "./screens/search";
 import Messages from "./screens/messages" 
 import DirectMessage from "./screens/directmessage";
 import Settings from "./screens/settings";
+import LoopsPage from './screens/loop';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -78,6 +79,7 @@ const FeedScreens = () => {
   <Stack.Navigator>
       <Stack.Screen name="ForYou" component={Feed} initialParams={{get: "foryou"}} options={{headerShown: false}} />
       <Stack.Screen name="Friends" component={Feed} initialParams={{get: "friends"}} options={{headerShown: false}} />
+      <Stack.Screen name="Loop" component={LoopsPage} initialParams={{get:"loop"}} options={{headerShown:false}}/>
   </Stack.Navigator>
   )
 }

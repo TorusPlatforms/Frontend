@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef} from 'react'
-import { StyleSheet, Text, View, SafeAreaView, Image, Animated, Easing, FlatList, Pressable } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, Image, Animated, Easing, FlatList, Pressable, TouchableOpacity } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
@@ -30,13 +30,21 @@ export default function Profile() {
         await Clipboard.setStringAsync(exampleUserData.username);
       };
 
+      const goToLoop = () => {
+        navigation.navigate('Loop'); 
+      };
+
+
     const Loop = ({data}) => (
         <View style={{marginVertical: 10, width: "100%", flexDirection: "row", paddingHorizontal: 20}}>
             <Image style={{width: 50, height: 50, borderRadius: 25, flex: 1}} source={{uri: data.pfp}}/>
 
             <View style={{flexDirection: 'col', marginLeft: 10, flex: 5}}>
+                <TouchableOpacity onPress={goToLoop}>
                 <Text style={{color: 'white', fontWeight: "bold"}}>Example Loop</Text>
                 <Text style={{color: 'white'}}>GrantHough said "my last message"</Text>
+                </TouchableOpacity>
+                
             </View>
             
             <View style={{flex: 1}}>
