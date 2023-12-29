@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { View } from "react-native";
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, InputToolbar, Avatar } from 'react-native-gifted-chat';
 import styles from "./styles";
 
 export default function DirectMessage() {
@@ -27,31 +27,72 @@ export default function DirectMessage() {
     )
   }, [])
 
+  const CustomInputToolbar = props => {
+    return (
+      <InputToolbar
+        {...props}
+        containerStyle={{
+          backgroundColor: 'transparent', 
+          borderTopWidth: 0, 
+          paddingHorizontal: 10, 
+          marginBottom: 25
+        }}
+      />
+    );
+  };
 
-  const renderBubble = (props) => { // styling of the text bubble of the other user
+  const renderBubble = (props) => {
     return (
       <Bubble
         {...props}
         wrapperStyle={{
           left: {
             marginLeft: 5,
+            marginBottom: 20,
           },
         }}
       />
     );
   }
 
+  const renderAvatar = (props) => {
+    return (
+        <View style={{marginBottom:20}}>
+            <Avatar 
+            {...props}
+            containerStyle={{ marginLeft: 10, marginRight: 10 }} 
+            imageStyle={{ borderRadius: 20 }} 
+            />
+
+        </View>
+      
+    );
+  };
+
   return (
     <View style={styles.container}>
       <GiftedChat
-            textInputStyle={{backgroundColor: "rgb(22, 23, 24)", color: "white"}}
-            messages={messages}
-            onSend={messages => onSend(messages)}
-            user={{
-                _id: 1,
-            }}
-            renderBubble={renderBubble}
-        />
+        textInputStyle={{
+          backgroundColor: "rgb(50,50,50)",
+          color: "white",
+          marginLeft: 5,
+          marginTop: 10,
+          paddingLeft:10,
+          borderRadius:25
+        }}
+        messages={messages}
+        onSend={messages => onSend(messages)}
+        user={{
+          _id: 1,
+        }}
+        renderBubble={renderBubble}
+        renderInputToolbar={props => <CustomInputToolbar {...props} />}
+        textInputProps={{
+          placeholderTextColor: 'gray',
+          multiline: false,
+        }}
+        renderAvatar={renderAvatar}
+      />
     </View>
-    )
+  );
 }

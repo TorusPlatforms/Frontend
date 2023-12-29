@@ -10,9 +10,16 @@ const exampleLoopData = {
     displayName: "Grant's Group",
     following: 128,
     followers: 259,
-    description: "A place for Grants and Hoes to chill"
+    description: "A place for Grants and Hoes to chill",
+    chats: ['Chat 1', 'Chat 2', 'Chat 3', 'Chat 4', 'Chat 5','Chat 6', 'Chat 7', 'Chat 8', 'Chat 9']
 }
 
+const ChatButton = ({ name }) => (
+    <TouchableOpacity
+      style={{alignSelf: 'center', marginVertical: 10, backgroundColor: 'rgb(50,50,50)', paddingVertical: 15,paddingHorizontal: 50, borderRadius: 40,zIndex:0}}>
+      <Text style={{ color: 'white', fontSize: 20 }}>{name}</Text>
+    </TouchableOpacity>
+  );
 
 
 const LoopsPage = () => {
@@ -30,17 +37,17 @@ const LoopsPage = () => {
           <Image style={{height:150, width:150, alignSelf:'center', borderRadius:200}}source={{uri: exampleLoopData.pfp}}/>
           <Text style={{color:"white", fontSize:30,marginTop:20, alignSelf:"center"}}>{exampleLoopData.displayName}</Text>
           <Text style={{color:"white", fontSize:20, alignSelf:"center"}}>{exampleLoopData.description}</Text>
-          <ScrollView style={{marginTop:40, alignSelf:"center",alignContent:"center",maxHeight:100, borderWidth:5,borderColor:'white', minWidth:200}}>
-            <Text style ={{color:"white", fontSize:40,alignSelf:"center"}}>poo</Text>
-            <Text style ={{color:"white", fontSize:40,alignSelf:"center"}}>poo</Text>
-            <Text style ={{color:"white", fontSize:40,alignSelf:"center"}}>poo</Text>
-            <Text style ={{color:"white", fontSize:40,alignSelf:"center"}}>poo</Text>
-            <Text style ={{color:"white", fontSize:40,alignSelf:"center"}}>poo</Text>
-            <Text style ={{color:"white", fontSize:40,alignSelf:"center"}}>poo</Text>
-            <Text style ={{color:"white", fontSize:40,alignSelf:"center"}}>poo</Text>
-            <Text style ={{color:"white", fontSize:40,alignSelf:"center"}}>poo</Text>
-            
+          
+            <TouchableOpacity
+            style={{alignSelf: 'center', marginTop:25, backgroundColor: 'rgb(50,50,50)', paddingVertical: 15,paddingHorizontal: 50, borderRadius: 40,zIndex:0}}>
+            <Text style={{ color: 'white', fontSize: 20 }}>Announcements</Text>
+            </TouchableOpacity>
 
+            <ScrollView style={{marginTop:30, alignSelf:"center",alignContent:"center",maxHeight:300,borderBottomWidth:0,borderTopWidth:0,borderColor:'white', minWidth:"100%",}}>
+            {exampleLoopData.chats.map((name, index) => (
+            <ChatButton key={index} name={name} />
+            ))}
+            
             </ScrollView>
         </View>
       );
