@@ -21,6 +21,7 @@ import Messages from "./screens/messages"
 import DirectMessage from "./screens/directmessage";
 import Settings from "./screens/settings";
 import LoopsPage from './screens/loop';
+import LoopChat from './screens/loopchat'
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -79,7 +80,6 @@ const FeedScreens = () => {
   <Stack.Navigator>
       <Stack.Screen name="ForYou" component={Feed} initialParams={{get: "foryou"}} options={{headerShown: false}} />
       <Stack.Screen name="Friends" component={Feed} initialParams={{get: "friends"}} options={{headerShown: false}} />
-      <Stack.Screen name="Loop" component={LoopsPage} initialParams={{get:"loop"}} options={{headerShown:false}}/>
   </Stack.Navigator>
   )
 }
@@ -105,6 +105,8 @@ function App() {
         <Stack.Screen name="DirectMessage" component={DirectMessage} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.name, })}/>
         <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>
+        <Stack.Screen name="Loop" component={LoopsPage} initialParams={{get:"loop"}} options={{headerShown:false}}/>
+        <Stack.Screen name="LoopChat" component={LoopChat} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
       </Stack.Navigator>
     </NavigationContainer>
   );
