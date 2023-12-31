@@ -64,27 +64,32 @@ export default function Profile() {
     }
 
     const iconStyles = [
-        {left: radius * Math.cos(degToRad(90)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(90)) + center - symbolSize / 2}, 
-        {left: radius * Math.cos(degToRad(150)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(150)) + center - symbolSize / 2},
-        {left: radius * Math.cos(degToRad(50)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(50)) + center - symbolSize / 2},
-        {left: radius * Math.cos(degToRad(215)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(215)) + center - symbolSize / 2},
-        {left: radius * Math.cos(degToRad(330)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(330)) + center - symbolSize / 2},
-        {left: radius * Math.cos(degToRad(275)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(275)) + center - symbolSize / 2}
+        {left: radius * Math.cos(degToRad(60)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(60)) + center - symbolSize / 2}, 
+        {left: radius * Math.cos(degToRad(120)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(120)) + center - symbolSize / 2},
+        {left: radius * Math.cos(degToRad(180)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(180)) + center - symbolSize / 2},
+        {left: radius * Math.cos(degToRad(240)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(240)) + center - symbolSize / 2},
+        {left: radius * Math.cos(degToRad(300)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(300)) + center - symbolSize / 2},
+        {left: radius * Math.cos(degToRad(360)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(360)) + center - symbolSize / 2}
     ]
     
     const x = movingLine.interpolate({
         inputRange: [0, 1],
-        outputRange: [0, 80],
+        outputRange: [0, 60],
         });
 
-          
-    const lineStyles = [{top: 50}, {right: -25, top: 25, transform: [{rotate: "-50deg"}]}, {top: 40, left: 0, transform: [{rotate: "35deg"}]}, {transform: [{rotate: "60deg"}], right: -10, bottom: 0}, {left: -15, bottom: 0, transform: [{rotate: "-60deg"}]}, {bottom: 20, transform: [{rotate: "-10deg"}]}]
+    const y = movingLine.interpolate({
+        inputRange: [0, 1],
+        outputRange: [30, 50],
+        });
+
+ 
+    const lineStyles = [{top: 50, right: y, transform: [{rotate: "30deg"}]},  {top: 50, left: y, transform: [{rotate: "-30deg"}]},  {left: 85, transform: [{rotate: "90deg"}]},  {bottom: 50, left: y, transform: [{rotate: "30deg"}]}, {bottom: 50, right: y, transform: [{rotate: "-30deg"}]},   {right: 85, transform: [{rotate: "90deg"}]}]
 
     function renderLoops() {
         return exampleLoopsArray.map((item, index) => {
         
           return (
-            <View key={index} style={ [iconStyles[index], {justifyContent: "center", position: "absolute"}] }>
+            <View key={index} style={ [iconStyles[index], {justifyContent: "center", alignItems: "center", position: "absolute"}] }>
                   <Image
                       style={{
                           width: symbolSize,
@@ -96,7 +101,7 @@ export default function Profile() {
 
                   {renderNotification()}
 
-                  <Animated.View style={[lineStyles[index], { backgroundColor: "gray", width: 2, height: x, alignSelf: "center", position: "absolute"}]} />
+                  <Animated.View style={[lineStyles[index], { backgroundColor: "gray", width: 2, height: x, position: "absolute"}]} />
 
               </View>
           );
@@ -163,7 +168,7 @@ export default function Profile() {
 
             <View style={styles.torusContainer}>
                 <View style={styles.centerLoop}>
-                    <View style={{width: 80, height: 80, borderRadius: 80, alignSelf: "center", top: 100, zIndex: 1, justifyContent: "center", alignItems: "center"}}>
+                    <View style={{width: 80, height: 80, borderRadius: 80, alignSelf: "center", top: 80, zIndex: 1, justifyContent: "center", alignItems: "center"}}>
                         <MaterialCommunityIcons name="google-circles-communities" color={"gray"} size={60}/>
                     </View>
                     {renderLoops()}
