@@ -3,10 +3,11 @@ import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, Keyboard
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SearchBar } from "react-native-elements";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import styles from "./styles";
 
-export default function Search({ route, navigation }) {
+export default function Loops({ route, navigation }) {
     const [loops, setLoops] = useState([])
     const [search, setSearch] = useState("")
 
@@ -59,13 +60,22 @@ export default function Search({ route, navigation }) {
     return (
             <SafeAreaView style={styles.container}>
                 <Animated.View style={{height: headerHeight, opacity: headerOpacity}}>
-                    <View style={{padding: 10}}>
-                       <SearchBar 
-                        placeholder="Discover Loops & People..." 
-                        containerStyle={{backgroundColor: "rgb(22, 23, 24)", borderTopWidth: 0,  borderBottomWidth: 0, color: "rgb(22, 23, 24)"}} 
-                        onChangeText={setSearch}
-                        value={search}
-                        />
+                    <View style={{padding: 10, flexDirection: 'row', flex: 1, justifyContent: "space-between", alignItems: "center"}}>
+                        <View style={{flex: 1}}>
+                            <SearchBar 
+                                placeholder="Discover Loops & People..." 
+                                containerStyle={{backgroundColor: "rgb(22, 23, 24)", borderTopWidth: 0,  borderBottomWidth: 0, color: "rgb(22, 23, 24)"}} 
+                                onChangeText={setSearch}
+                                value={search}
+                            />
+                        </View>
+                       
+
+                        <View style={{flex: 0.1}}>
+                            <Pressable onPress={() => navigation.navigate("CreateLoop")}>
+                                <Ionicons name="add" size={24} color="white" />
+                            </Pressable>
+                        </View>
                     </View>
                 </Animated.View>
 

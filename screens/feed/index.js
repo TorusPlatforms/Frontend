@@ -2,13 +2,22 @@ import React, { useState, useRef } from 'react'
 import { StyleSheet, Text, View, TextInput, Dimensions, Pressable, FlatList, Image, Animated } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { Dropdown } from 'react-native-element-dropdown';
+import { useNavigation } from '@react-navigation/native';
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 import styles from "./styles";
-import { useNavigation } from '@react-navigation/native';
+
+
+const examplePing = {isLiked: true, attatchment: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Glazed-Donut.jpg/1200px-Glazed-Donut.jpg", author: 'GrantHough', likes: 20, comments: 30, caption: 'Funny Caption. Hilarious even. My name is Grant Hough and I love dogs!', pfp: 'https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&'}
+const data = new Array(6).fill(examplePing);
+
 
 export default function Feed({ route, navigation }) {
     const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
     const [scrollY] = useState(new Animated.Value(0));
+    const [feedType, setFeedType] = useState(null);
+    const [isFocus, setIsFocus] = useState(false);
 
     const headerHeight = scrollY.interpolate({
       inputRange: [0, 70],
@@ -25,6 +34,28 @@ export default function Feed({ route, navigation }) {
     function handleLike() {
       console.log("Liked a post!")
     }
+
+    function feedChange(type) {
+      console.log("Feed was changed to" + type)
+      setFeedType(type)
+    }
+
+    const dropdownData = [
+      { label: 'Friends', value: 'friends' },
+      { label: 'College', value: 'college' },
+    ];
+    
+    const renderLabel = () => {
+      if (value || isFocus) {
+        return (
+          <Text style={{color: "white", fontSize: 12}}>
+            Torus
+          </Text>
+        );
+      }
+      return null;
+    };
+
 
     const Ping = ({data}) => (
       <View style={{marginVertical: 10, width: "95%", flexDirection: "row"}}>
@@ -70,12 +101,12 @@ export default function Feed({ route, navigation }) {
       </View>
     );
     
-    const examplePing = {isLiked: true, attatchment: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Glazed-Donut.jpg/1200px-Glazed-Donut.jpg", author: 'GrantHough', likes: 20, comments: 30, caption: 'Funny Caption. Hilarious even. My name is Grant Hough and I love dogs!', pfp: 'https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&'}
-    const data = new Array(6).fill(examplePing);
-    
+
+
   
     return (
-        <SafeAreaView style={{flex: 1, alignItems: "center", backgroundColor: "rgb(22, 23, 24)"}}>
+      
+        <SafeAreaView style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
 
             {/* <View style={{flex: 1, borderWidth: 1, borderRadius: 10, borderColor: 'white', minHeight: 30, width: windowWidth - 50, padding: 5, justifyContent: "space-between"}}>
               <TextInput
@@ -101,13 +132,32 @@ export default function Feed({ route, navigation }) {
                 />
               </View> */}
               <View style={styles.header}>
-                <Pressable onPress={() => navigation.navigate("ForYou")}>
-                  <Text style={{color: route.params.get === "foryou" ? "white" : "gray", textDecorationLine: "underline", fontWeight: "bold", fontSize: 15}}>For You</Text>
-                </Pressable>
+                  <View style={{flex: 0.3}}>
+                    <Dropdown
+                      containerStyle={{borderRadius: 10}}
+                      selectedTextStyle={{color: 'white'}}
+                      data={dropdownData}
+                      placeholder='Torus'
+                      placeholderStyle={{color: "white"}}
+                      maxHeight={300}
+                      labelField="label"
+                      valueField="value"
+                      value={feedType}
+                      onFocus={() => setIsFocus(true)}
+                      onBlur={() => setIsFocus(false)}
+                      onChange={item => {
+                        feedChange(item.value);
+                        setIsFocus(false);
+                      }}
+                    />
+                  </View>
 
-                <Pressable onPress={() => navigation.navigate("Friends")}>
-                  <Text style={{color: route.params.get === "friends" ? "white" : "gray", textDecorationLine: "underline", fontWeight: "bold", fontSize: 15}}>Friends</Text>
-                </Pressable>
+                <View>
+                  <Pressable onPress={() => navigation.navigate("Settings")}>
+                      <Ionicons name="ios-notifications-outline" size={24} color="white" />
+                  </Pressable>
+                </View>
+
               </View>
             </Animated.View>
 

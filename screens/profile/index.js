@@ -123,8 +123,8 @@ export default function Profile() {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-                <Pressable>
-                    <Ionicons name="notifications-outline" size={24} color="white" />
+                <Pressable onPress={() => navigation.navigate("Settings")}>
+                    <Ionicons name="ios-person-outline" size={24} color="white" />
                 </Pressable>
 
                 <Pressable onPress={() => navigation.navigate("Settings")}>
