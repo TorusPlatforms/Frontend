@@ -1,0 +1,132 @@
+import React, { useState, useCallback, useEffect } from 'react';
+import { View, TouchableOpacity, Image, Text, TextInput, ScrollView, Modal, TouchableWithoutFeedback} from "react-native";
+import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import styles from "./styles";
+import { useNavigation } from "@react-navigation/native";
+import Icon from '@expo/vector-icons/Ionicons';
+
+const exampleLoopData = {
+    pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
+    displayName: "Grant's Group",
+    memberCount: 30,
+    description: "A place for Grants and Hoes to chill",
+    chatCount:9,
+    chats: ['Chat 1', 'Chat 2', 'Chat 3', 'Chat 4', 'Chat 5','Chat 6', 'Chat 7', 'Chat 8', 'Chat 9'],
+    recentAnnouncement: "Grant becomes world's first trillionaire after buying every single realfeel dumpad and selling them for billions each",
+    recentAnnouncementUser:"@stefan",
+    users: ["DrumDogLover","TanujBeatMaster","GrantPawRhythms", "DogGrooveMaster","GrantAndTanujJams","RhythmHound","DrumBeatsWithTanuj","GrantCanineGrooves","TanujDogDrummer","BarkingBeatsGrant","DrummingTanujPaws","GrantAndDogRhythms","TanujDrumTails","PuppyGroovesGrant","BeatBuddyTanuj","WoofingRhythmsGrant","DrummingPawsTanuj","GrantGroovePup","TanujAndTheBeat","DoggyDrummingGrant","RhythmTanujTail","GrantPercussionPup","TanujDoggieBeats","PawsAndSnaresGrant","DrummingDogTanuj","GrantBeatsHowl","TanujRhythmBuddy","DogBeatHarmonyGrant","DrumPawsTanujGroove","GrantAndTanujRhythmic",]
+}
+const exampleUserData = {
+
+    admin:"true"
+
+}
+
+
+const NameList = ({ name }) => (
+    <View style={{ marginBottom: 10, paddingVertical: 15,paddingHorizontal: 30}}>
+      <Text style={{ color: 'white', fontSize: 15 }}>{name}</Text>
+    </View>
+  );
+
+
+  
+
+const LoopInfo = () => {
+    const navigation = useNavigation()
+    const [notifications, setNotifications] = useState(true);
+    const [isManageVisible, setManageVisible] = useState(false);
+
+    const openManage = () => {
+        setManageVisible(true);
+      };
+    
+      const closeManage = () => {
+        setManageVisible(false);
+      };
+    
+      const handleManageItemPress = (item) => {
+        console.log(`Selected: ${item}`);
+        closeManage();
+      };
+
+    const goToLoop = () => {
+        navigation.navigate('Loop'); 
+      };
+
+      return (
+        <View style={{  paddingTop: 20, backgroundColor: "rgb(22, 23, 24)", height:"100%" }}>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <TouchableOpacity onPress={goToLoop} style={{ padding: 10, marginTop: 30 }}>
+                <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Back</Text>
+            </TouchableOpacity>
+
+           
+
+        </View>
+         
+        <Text style={{color:"white", fontSize:30,marginTop:20, alignSelf:"center"}}>{exampleLoopData.displayName}</Text>
+        <Text style={{color:"white", fontSize:15, alignSelf:"center"}}>{exampleLoopData.description}</Text>
+        <Text style={{color:"white", fontSize:25,marginTop:20, alignSelf:"center"}}> Members: {exampleLoopData.memberCount}</Text>
+        <Text style={{color:"white", fontSize:25, alignSelf:"center"}}>Chats:{exampleLoopData.chatCount}</Text>
+        <Text style={{color:"white", fontSize:25, alignSelf:"center",marginTop:70, marginBottom:20}}>Users:</Text>
+        
+        <ScrollView style={{}}>
+
+        {exampleLoopData.users.map((name, index) => (
+            <View style={{flexDirection:"row", borderTopWidth:0.2, borderColor:"white",justifyContent:"space-between"}}>
+
+                <NameList key={index} name={name}  style={{color:"white", alignSelf:"center", marginTop:10}}/>
+            
+
+                {exampleUserData.admin && (
+                
+                    <TouchableOpacity onPress={openManage}>
+                        <Icon name="settings-outline" size={20} color="#ffffff" style={{ marginTop:15, marginRight:20}} />
+                    </TouchableOpacity>
+                )}
+            
+                
+            
+            </View>
+            ))}   
+         
+           
+        </ScrollView>
+        
+
+        <Modal
+        transparent
+        animationType="slide"
+        visible={isManageVisible}
+        onRequestClose={closeManage}
+        >
+  <TouchableWithoutFeedback onPress={closeManage}>
+    <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
+      <View style={{ backgroundColor: 'rgb(22, 23, 24)', padding: 20, borderRadius: 10, width: '100%', height: '25%',justifyContent:"space-between",borderTopWidth:5,borderColor:"grey" }}>
+
+        <TouchableOpacity onPress={() => handleManageItemPress('Promote to moderator')}>
+          <Text style={{fontSize:30,alignSelf:"center", color:"white", marginTop:15, textShadowColor: 'rgba(255, 255, 255, 0.7)',textShadowRadius: 10,}}>Promote to moderator</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => handleManageItemPress('Kick member')}>
+          <Text style={{fontSize:30,alignSelf:"center", color:"red", marginVertical:15, textShadowColor: 'rgba(255, 0, 0, 0.7)',textShadowRadius: 10}}>Kick member</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={closeManage}>
+          <Text style={{fontSize:30,alignSelf:"center", color:"white",textShadowColor: 'rgba(255, 255, 255, 0.7)',textShadowRadius: 10 }}>Cancel</Text>
+        </TouchableOpacity>
+
+      </View>
+    </View>
+  </TouchableWithoutFeedback>
+</Modal>
+
+
+
+
+        </View>
+      );
+}
+
+export default LoopInfo;

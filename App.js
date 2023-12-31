@@ -22,6 +22,7 @@ import DirectMessage from "./screens/directmessage";
 import Settings from "./screens/settings";
 import LoopsPage from './screens/loop';
 import LoopChat from './screens/loopchat'
+import LoopInfo from "./screens/loopinfo"
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -107,6 +108,7 @@ function App() {
         <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>
         <Stack.Screen name="Loop" component={LoopsPage} initialParams={{get:"loop"}} options={{headerShown:false}}/>
         <Stack.Screen name="LoopChat" component={LoopChat} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
+        <Stack.Screen name="LoopInfo" component={LoopInfo}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
