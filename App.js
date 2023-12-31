@@ -23,6 +23,7 @@ import Settings from "./screens/settings";
 import LoopsPage from './screens/loop';
 import LoopChat from './screens/loopchat'
 import LoopInfo from "./screens/loopinfo"
+import CreateLoop from "./screens/createloop";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -103,6 +104,7 @@ function App() {
         <Stack.Screen name="SignUp" component={SignUpScreen}/>
         <Stack.Screen name="Home" component={Tabs}/>
         <Stack.Screen name="Create" component={CreatePing} options={{presentation: "modal"}} />
+        <Stack.Screen name="CreateLoop" component={CreateLoop} options={{pesentation: "modal"}} />
         <Stack.Screen name="DirectMessage" component={DirectMessage} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.name, })}/>
         <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>

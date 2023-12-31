@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, KeyboardAvoidingView, FlatList } from "react-native";
+import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, KeyboardAvoidingView, FlatList, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SearchBar } from "react-native-elements";
@@ -56,6 +56,12 @@ export default function Search({ route, navigation }) {
         setLoops(getLoops())
       }, []);
 
+
+      const createLoop = () => {
+        navigation.navigate('CreateLoop'); 
+      };
+
+
     return (
             <SafeAreaView style={styles.container}>
                 <Animated.View style={{height: headerHeight, opacity: headerOpacity}}>
@@ -68,6 +74,10 @@ export default function Search({ route, navigation }) {
                         />
                     </View>
                 </Animated.View>
+
+                <TouchableOpacity style={{justifyContent:"center"}} onPress={createLoop}>
+                    <Text style={{alignself:"center",color:"white",marginLeft:"38%"}}>make a lil ping</Text>
+                </TouchableOpacity>
 
                 <AnimatedFlatList
                     style={{paddingHorizontal: 20}}
