@@ -53,12 +53,12 @@ const CreatePing = () => {
       <TouchableWithoutFeedback onPress={handleTapOutside}>
         <View style={{ flex: 1, paddingTop: 20, backgroundColor: "rgb(22, 23, 24)" }}>
           <View>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 10 }}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 10,marginTop:20 }}>
               <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Cancel</Text>
             </TouchableOpacity>
   
             <View style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
-              <Text style={{ paddingTop: 0, fontWeight: "bold", fontSize: 30, color: "white" }}>Create New Loop</Text>
+              <Text style={{ paddingTop: 0, fontWeight: "bold", fontSize: 30, color: "white",marginTop:20 }}>Create New Loop</Text>
             </View>
   
             <View style={{ flexDirection: "row", alignItems: "baseline" }}>
@@ -112,8 +112,9 @@ const CreatePing = () => {
             </View>
           </View>
   
-          <View style={{ marginTop: 50 }}>
+          <View style={{ marginTop: 50, }}>
             <Text style={{ color: "white", marginLeft: "5%", fontSize: 25 }}>Chats:</Text>
+            <View style={{flexDirection:"row",}}>
                 <ScrollView style={{maxHeight:450}}>
 
                 {chats.map((chat, index) => (
@@ -140,8 +141,15 @@ const CreatePing = () => {
                   value={chat.value}
                   onChangeText={(text) => handleChatInputChange(text, index)}
                 />
-                {index === chats.length - 1 && (
-                    <View style={{flexDirection:"row"}}>
+                
+                
+              </View>
+            ))}
+
+
+                </ScrollView>
+
+                <View style={{flexDirection:"row",marginTop:8,marginRight:100}}>
                   <TouchableOpacity onPress={() => handleAddChat()}>
                     <Icon name="add-circle-outline" size={30} color="#ffffff" style={{ marginLeft: 20 }} />
                   </TouchableOpacity>
@@ -150,13 +158,7 @@ const CreatePing = () => {
                     <Icon name="remove-circle-outline" size={30} color="#ff0000" style={{ marginLeft: 20 }} />
                   </TouchableOpacity>
                   </View>
-                )}
-              </View>
-            ))}
-
-
-                </ScrollView>
-            
+                  </View> 
           </View>
         </View>
       </TouchableWithoutFeedback>
