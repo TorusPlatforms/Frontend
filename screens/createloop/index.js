@@ -24,6 +24,18 @@ const CreatePing = () => {
     const [chats, setChats] = useState([{ id: 1, value: "" }]);
     const [selectedImage, setSelectedImage] = useState(null);
     
+    const handleCreateLoop = () => {
+        const loopData = {
+          name: nameInputValue,
+          description: discInputValue,
+          chats: chats.map((chat) => chat.value),
+          chatCount:chats.length,
+          image: selectedImage ? selectedImage.assets[0].uri : null,
+        };
+    
+        // Do something with the loopData, such as sending it to a server or storing it locally
+        console.log("Loop Data:", loopData);
+      };
   
     const textInputRefs = useRef(chats.reduce((acc, _, index) => {
       acc[index] = React.createRef();
@@ -56,6 +68,10 @@ const CreatePing = () => {
         }
       };
 
+      const handleResetImage = () => {
+        setSelectedImage(null);
+      };
+
       const handleRemoveChat = () => {
         if (chats.length > 1) {
           const updatedChats = [...chats];
@@ -74,9 +90,17 @@ const CreatePing = () => {
       <TouchableWithoutFeedback onPress={handleTapOutside}>
         <View style={{ flex: 1, paddingTop: 20, backgroundColor: "rgb(22, 23, 24)" }}>
           <View>
+          <View style={{flexDirection:"row", justifyContent:"space-between"}}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 10,marginTop:20 }}>
-              <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Cancel</Text>
+                    <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Cancel</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity onPress={handleCreateLoop} style={{ padding: 10,marginTop:20 }}>
+                    <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Create</Text>
+            </TouchableOpacity>
+
+          </View>
+           
   
             <View style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
               <Text style={{ paddingTop: 0, fontWeight: "bold", fontSize: 30, color: "white",marginTop:20 }}>Create New Loop</Text>
@@ -92,8 +116,14 @@ const CreatePing = () => {
                 borderRadius: 100,
             }}
             />
+            {selectedImage && (
+                <TouchableOpacity onPress={handleResetImage} style={{ marginTop: -10,marginBottom:10, marginLeft: 155 }}>
+                <Text style={{ color: "red",textDecorationLine:"underline", fontSize: 10 }}>Remove Image</Text>
+                </TouchableOpacity>
+            )}
             <View style={{marginLeft:150}}>
                 <ImagePickerComponent style={{}} setSelectedImage={handleImageSelect}></ImagePickerComponent>
+
             </View>
             
 
