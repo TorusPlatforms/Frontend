@@ -22,7 +22,9 @@ export default function Feed({ route, navigation }) {
     const [feedType, setFeedType] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-    const [comment, onChangeComment] = React.useState('');
+    const [comment, onChangeComment] = useState('');
+    const [replyingTo, setReplyingTo] = useState(null) 
+    const ref_input = useRef();
 
     const headerHeight = scrollY.interpolate({
       inputRange: [0, 70],
@@ -55,6 +57,11 @@ export default function Feed({ route, navigation }) {
       Keyboard.dismiss()
     }
 
+    function handleReply(data) {
+      ref_input.current.focus()
+      setReplyingTo(data.author)
+      onChangeComment("@" + data.author + " ")
+    }
     const dropdownData = [
       { label: 'Friends', value: 'friends' },
       { label: 'College', value: 'college' },
@@ -127,7 +134,7 @@ export default function Feed({ route, navigation }) {
           </View>
 
           <View>
-            <Pressable>
+            <Pressable onPress={() => handleReply(data)}>
               <Text style={{fontWeight: "bold", color: "gray"}}>Reply</Text>
             </Pressable>
           </View>
@@ -197,7 +204,6 @@ export default function Feed({ route, navigation }) {
             transparent={true}
             visible={modalVisible}
             onRequestClose={() => {
-              Alert.alert('Modal has been closed.');
               setModalVisible(!modalVisible);
             }}>
             <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", marginTop: Platform.OS === 'ios' ? 30 : 100}}>
@@ -229,7 +235,14 @@ export default function Feed({ route, navigation }) {
                       source={{uri: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4  &"}}
                     />
 
-                    <TextInput placeholderTextColor="white" style={{marginLeft: 20, paddingHorizontal: 10, color: "white", borderRadius: 10, borderWidth: 1, borderColor: "gray", width: "75%"}} onChangeText={onChangeComment} value={comment} placeholder='Add a comment'/>
+                    <TextInput 
+                      placeholderTextColor="white" 
+                      style={{marginLeft: 20, paddingHorizontal: 10, color: "white", borderRadius: 10, borderWidth: 1, borderColor: "gray", width: "75%"}} 
+                      onChangeText={onChangeComment} 
+                      value={comment} 
+                      placeholder='Add a comment'
+                      ref={ref_input}  
+                    />
                   </View>
                  
                   <View style={{alignItems: 'center', backgroundColor: "rgb(0, 114, 160)", borderRadius: 30, width: 50, height: 30, justifyContent: "center" }}>
