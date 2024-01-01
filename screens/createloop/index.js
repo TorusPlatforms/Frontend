@@ -1,7 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, TouchableOpacity, Text, TextInput, TouchableWithoutFeedback, Keyboard, ScrollView } from "react-native";
+import { View, TouchableOpacity, Text, TextInput, TouchableWithoutFeedback, Keyboard, ScrollView, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
+import ImagePickerComponent from "./imagepicker";
+import defaultPic from "../../assets/user.png"
+
+const exampleLoopData = {
+    pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
+    displayName: "Grant's Group",
+    memberCount: 30,
+    notifications:false,
+    description: "A place for Grants and Hoes to chill",
+    chats: ['Chat 1', 'Chat 2', 'Chat 3', 'Chat 4', 'Chat 5','Chat 6', 'Chat 7', 'Chat 8', 'Chat 9'],
+    recentAnnouncement: "Grant becomes world's first trillionaire after buying every single realfeel dumpad and selling them for billions each",
+    recentAnnouncementUser:"@stefan",
+    users: ["DrumDogLover","TanujBeatMaster","GrantPawRhythms", "DogGrooveMaster","GrantAndTanujJams","RhythmHound","DrumBeatsWithTanuj","GrantCanineGrooves","TanujDogDrummer","BarkingBeatsGrant","DrummingTanujPaws","GrantAndDogRhythms","TanujDrumTails","PuppyGroovesGrant","BeatBuddyTanuj","WoofingRhythmsGrant","DrummingPawsTanuj","GrantGroovePup","TanujAndTheBeat","DoggyDrummingGrant","RhythmTanujTail","GrantPercussionPup","TanujDoggieBeats","PawsAndSnaresGrant","DrummingDogTanuj","GrantBeatsHowl","TanujRhythmBuddy","DogBeatHarmonyGrant","DrumPawsTanujGroove","GrantAndTanujRhythmic",]
+}
 
 const CreatePing = () => {
     const navigation = useNavigation();
@@ -60,7 +74,12 @@ const CreatePing = () => {
             <View style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
               <Text style={{ paddingTop: 0, fontWeight: "bold", fontSize: 30, color: "white",marginTop:20 }}>Create New Loop</Text>
             </View>
-  
+            <Image source={defaultPic} style={{width:100,height:100,marginLeft:140,marginVertical:30,backgroundColor:"white",borderRadius:100}}></Image>
+            <View style={{marginLeft:150}}>
+                <ImagePickerComponent style={{}}></ImagePickerComponent>
+            </View>
+            
+
             <View style={{ flexDirection: "row", alignItems: "baseline" }}>
               <Text style={{ color: "white", fontSize: 25, marginTop: 50, marginLeft: "5%" }}>Name:</Text>
               <TextInput
