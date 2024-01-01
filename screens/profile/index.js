@@ -23,7 +23,6 @@ const exampleLoopsArray = new Array(6).fill(exampleLoopsData)
 
 export default function Profile() {
     const navigation = useNavigation()
-
     const movingLine = useRef(new Animated.Value(0)).current;
 
     async function copyUsernameToClipboard() {
