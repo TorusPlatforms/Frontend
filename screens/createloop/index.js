@@ -82,7 +82,7 @@ const CreatePing = () => {
               <Text style={{ paddingTop: 0, fontWeight: "bold", fontSize: 30, color: "white",marginTop:20 }}>Create New Loop</Text>
             </View>
             <Image
-            source={selectedImage ? { uri: selectedImage.uri } : defaultPic}
+            source={selectedImage ? { uri: selectedImage.assets[0].uri } : defaultPic}
             style={{
                 width: 100,
                 height: 100,
