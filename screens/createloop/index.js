@@ -22,6 +22,7 @@ const CreatePing = () => {
     const [nameInputValue, setNameInputValue] = useState("");
     const [discInputValue, setDiscInputValue] = useState("");
     const [chats, setChats] = useState([{ id: 1, value: "" }]);
+    
   
     const textInputRefs = useRef(chats.reduce((acc, _, index) => {
       acc[index] = React.createRef();
@@ -35,7 +36,12 @@ const CreatePing = () => {
     const handleTapOutside = () => {
       Keyboard.dismiss();
     };
-  
+    
+    const handleImageSelect = (image) => {
+        setSelectedImage(image);
+        console.log("Selected Image in CreatePing:", image);
+      };
+
     const handleAddChat = () => {
         const newId = chats.length + 1;
         setChats([...chats, { id: newId, value: "" }]);
@@ -76,7 +82,7 @@ const CreatePing = () => {
             </View>
             <Image source={defaultPic} style={{width:100,height:100,marginLeft:140,marginVertical:30,backgroundColor:"white",borderRadius:100}}></Image>
             <View style={{marginLeft:150}}>
-                <ImagePickerComponent style={{}}></ImagePickerComponent>
+                <ImagePickerComponent style={{}} setSelectedImage={handleImageSelect}></ImagePickerComponent>
             </View>
             
 

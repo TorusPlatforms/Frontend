@@ -19,6 +19,8 @@ const CreatePing = () => {
   const navigation = useNavigation();
   const [textInputValue, setTextInputValue] = useState("");
   const textInputRef = useRef(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+
 
   useEffect(() => {
     textInputRef.current.focus();
