@@ -3,6 +3,7 @@ import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, Keyboard
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SearchBar } from "react-native-elements";
+import Icon from '@expo/vector-icons/Ionicons';
 
 import styles from "./styles";
 
@@ -65,7 +66,9 @@ export default function Search({ route, navigation }) {
     return (
             <SafeAreaView style={styles.container}>
                 <Animated.View style={{height: headerHeight, opacity: headerOpacity}}>
-                    <View style={{padding: 10}}>
+                <View style={{flexDirection:"row"}}>
+
+                     <View style={{padding: 10,width:"85%"}}>
                        <SearchBar 
                         placeholder="Discover Loops & People..." 
                         containerStyle={{backgroundColor: "rgb(22, 23, 24)", borderTopWidth: 0,  borderBottomWidth: 0, color: "rgb(22, 23, 24)"}} 
@@ -73,11 +76,13 @@ export default function Search({ route, navigation }) {
                         value={search}
                         />
                     </View>
+                    <TouchableOpacity style={{justifyContent:"center"}} onPress={createLoop}>
+                    <Icon name="add-circle-outline" size={30} color="#ffffff" style={{  }} />
+                    </TouchableOpacity>
+                </View>
+                   
                 </Animated.View>
 
-                <TouchableOpacity style={{justifyContent:"center"}} onPress={createLoop}>
-                    <Text style={{alignself:"center",color:"white",marginLeft:"38%"}}>make a lil ping</Text>
-                </TouchableOpacity>
 
                 <AnimatedFlatList
                     style={{paddingHorizontal: 20}}
