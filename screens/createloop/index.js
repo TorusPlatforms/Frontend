@@ -22,6 +22,7 @@ const CreatePing = () => {
     const [nameInputValue, setNameInputValue] = useState("");
     const [discInputValue, setDiscInputValue] = useState("");
     const [chats, setChats] = useState([{ id: 1, value: "" }]);
+    const [selectedImage, setSelectedImage] = useState(null);
     
   
     const textInputRefs = useRef(chats.reduce((acc, _, index) => {
@@ -39,7 +40,7 @@ const CreatePing = () => {
     
     const handleImageSelect = (image) => {
         setSelectedImage(image);
-        console.log("Selected Image in CreatePing:", image);
+        console.log("Selected Image in CreateLoop:", image);
       };
 
     const handleAddChat = () => {
@@ -80,7 +81,17 @@ const CreatePing = () => {
             <View style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
               <Text style={{ paddingTop: 0, fontWeight: "bold", fontSize: 30, color: "white",marginTop:20 }}>Create New Loop</Text>
             </View>
-            <Image source={defaultPic} style={{width:100,height:100,marginLeft:140,marginVertical:30,backgroundColor:"white",borderRadius:100}}></Image>
+            <Image
+            source={selectedImage ? { uri: selectedImage.uri } : defaultPic}
+            style={{
+                width: 100,
+                height: 100,
+                marginLeft: 140,
+                marginVertical: 30,
+                backgroundColor: "white",
+                borderRadius: 100,
+            }}
+            />
             <View style={{marginLeft:150}}>
                 <ImagePickerComponent style={{}} setSelectedImage={handleImageSelect}></ImagePickerComponent>
             </View>
