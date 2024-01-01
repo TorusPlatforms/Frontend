@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from '@react-navigation/native';
-import AntDesign from '@expo/vector-icons/AntDesign';
 
 import styles from "./styles";
 
@@ -107,30 +106,7 @@ export default function Feed({ route, navigation }) {
     return (
       
         <SafeAreaView style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
-
-            {/* <View style={{flex: 1, borderWidth: 1, borderRadius: 10, borderColor: 'white', minHeight: 30, width: windowWidth - 50, padding: 5, justifyContent: "space-between"}}>
-              <TextInput
-                  maxLength={250}
-                  multiline
-                  onChangeText={onChangeText}
-                  value={text}
-                  style={{color: "white"}}
-                  placeholder='Start pinging your community'
-                  placeholderTextColor={"white"}
-                />
-
-                <Pressable style={{alignSelf: "flex-end", padding: 5}}>
-                  <Ionicons name="send" size={20} color="white" />
-                </Pressable>
-            </View> */}
-
           <Animated.View style={{height: headerHeight, opacity: headerOpacity}}>
-              {/* <View style={{flex: 0.5, justifyContent: 'center', alignItems: "center"}}>
-                <Image
-                  style={styles.torusLogo}
-                  source={require('../../assets/torus.png')}
-                />
-              </View> */}
               <View style={styles.header}>
                   <View style={{flex: 0.3}}>
                     <Dropdown
