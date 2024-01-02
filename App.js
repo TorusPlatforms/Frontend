@@ -20,6 +20,8 @@ import Loops from "./screens/loops";
 import Messages from "./screens/messages" 
 import DirectMessage from "./screens/directmessage";
 import Settings from "./screens/settings";
+import NotificationsScreen from './screens/notifications';
+import FollowRequests from './screens/followrequests';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -103,6 +105,8 @@ function App() {
         <Stack.Screen name="DirectMessage" component={DirectMessage} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.name, })}/>
         <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>
+        <Stack.Screen name="Notifications" component={NotificationsScreen} options={{headerShown: true}}/>
+        <Stack.Screen name="FollowRequests" component={FollowRequests} options={{headerShown: true}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -174,7 +174,7 @@ export default function Feed({ route, navigation }) {
                   </View>
 
                 <View>
-                  <Pressable onPress={() => navigation.navigate("Settings")}>
+                  <Pressable onPress={() => navigation.navigate("Notifications")}>
                       <Ionicons name="ios-notifications-outline" size={24} color="white" />
                   </Pressable>
                 </View>
