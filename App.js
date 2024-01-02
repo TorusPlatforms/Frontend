@@ -20,6 +20,13 @@ import Search from "./screens/search";
 import Messages from "./screens/messages" 
 import DirectMessage from "./screens/directmessage";
 import Settings from "./screens/settings";
+import YourAccountScreen from './screens/settings/Your Account';
+import AccessibilityDisplay from './screens/settings/Accessibility, Display, and Languages';
+import NotificationsV from './screens/settings/Notifications';
+import PrivacySafety from './screens/settings/Privacy and Safety';
+import SecurityAccountAccess from './screens/settings/Security and Account Access';
+import AdditionalResources from './screens/settings/Additional Resources';
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -103,6 +110,12 @@ function App() {
         <Stack.Screen name="DirectMessage" component={DirectMessage} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.name, })}/>
         <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>
+        <Stack.Screen name="Your Account" component={YourAccountScreen} options={{headerShown: true}}/>
+        <Stack.Screen name="Accessibility" component={AccessibilityDisplay} options={{headerShown: true}}/>
+        <Stack.Screen name="Notifications" component={NotificationsV} options={{headerShown: true}}/>
+        <Stack.Screen name="Privacy and Safety" component={PrivacySafety} options={{headerShown: true}}/>
+        <Stack.Screen name="Security and Account Access" component={SecurityAccountAccess} options={{headerShown: true}}/>
+        <Stack.Screen name="AdditionalResources" component={AdditionalResources} options={{headerShown: true}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
