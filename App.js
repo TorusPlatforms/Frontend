@@ -106,7 +106,7 @@ function App() {
         <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.name, })}/>
         <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>
         <Stack.Screen name="Notifications" component={NotificationsScreen} options={{headerShown: true}}/>
-        <Stack.Screen name="FollowRequests" component={FollowRequests} options={{headerShown: true}}/>
+        <Stack.Screen name="Follow Requests" component={FollowRequests} options={{headerShown: true, headerBackTitleVisible: false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

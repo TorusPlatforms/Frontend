@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { Text, View, TextInput, Pressable, FlatList, Image, Animated, Modal, Keyboard, KeyboardAvoidingView } from 'react-native'
+import { Text, View, TextInput, Pressable, FlatList, Image, Animated, Modal, Keyboard, KeyboardAvoidingView, Share, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -62,6 +62,26 @@ export default function Feed({ route, navigation }) {
       setReplyingTo(data.author)
       onChangeComment("@" + data.author + " ")
     }
+
+    async function handleShare(postURL) {
+        try {
+          const result = await Share.share({
+            url:postURL
+          });
+
+          if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+              // shared with activity type of result.activityType
+            } else {
+              // shared
+            }
+          } else if (result.action === Share.dismissedAction) {
+            // dismissed
+          }
+        } catch (error) {
+          Alert.alert(error.message);
+        }
+    }
     const dropdownData = [
       { label: 'Friends', value: 'friends' },
       { label: 'College', value: 'college' },
@@ -99,7 +119,7 @@ export default function Feed({ route, navigation }) {
               <Ionicons style={styles.pingIcon} name="chatbubble-outline" size={20}></Ionicons>
             </Pressable>
 
-            <Pressable>
+            <Pressable onPress={() => handleShare(data.postURL)}>
               <Ionicons style={styles.pingIcon} name="share-social-outline" size={20}></Ionicons>
             </Pressable>
 
@@ -157,11 +177,11 @@ export default function Feed({ route, navigation }) {
                     <Dropdown
                       containerStyle={styles.dropdownContainer}
                       itemTextStyle={styles.text}
-                      selectedTextStyle={styles.text}
+                      selectedTextStyle={[styles.text, {fontWeight: "bold"}]}
                       activeColor='rgb(22, 23, 24)'
                       data={dropdownData}
                       placeholder='Torus'
-                      placeholderStyle={styles.text}
+                      placeholderStyle={[styles.text, {fontWeight: "bold"}]}
                       maxHeight={300}
                       labelField="label"
                       valueField="value"

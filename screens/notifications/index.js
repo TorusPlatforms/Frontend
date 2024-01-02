@@ -53,7 +53,7 @@ export default function NotificationsScreen() {
     return (
         <View style={styles.container}>
            {followRequests.length > 0 && (
-                <Pressable onPress={() => navigation.navigate("FollowRequests")} style={styles.followRequests}>
+                <Pressable onPress={() => navigation.navigate("Follow Requests")} style={styles.followRequests}>
                     <Image style={styles.pfp} source={{uri: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&"}}/>
                     <View style={styles.followRequestText}>
                         <Text style={styles.text}>Follow Requests</Text>

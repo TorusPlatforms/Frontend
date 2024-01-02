@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
     },
 
     stats: {
-        marginLeft: -20,
         color: "gray",
     },
 
@@ -108,9 +107,10 @@ const styles = StyleSheet.create({
     },
 
     dropdownContainer: {
-        borderRadius: 10, 
+        borderRadius: 10,
         backgroundColor: "rgb(22, 23, 24)", 
-        borderWidth: 1
+        borderWidth: 1,
+        borderColor: "white"
     },
 
     modalContainer: {
