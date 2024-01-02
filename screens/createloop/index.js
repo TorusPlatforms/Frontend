@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, TouchableOpacity, Text, TextInput, TouchableWithoutFeedback, Keyboard, ScrollView, Image } from "react-native";
+import { View, TouchableOpacity, Text, TextInput, TouchableWithoutFeedback, Image, Keyboard } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Icon from '@expo/vector-icons/Ionicons';
 import ImagePickerComponent from "./imagepicker";
-import defaultPic from "../../assets/user.png"
+import defaultPic from "../../assets/user.png";
 
 const exampleLoopData = {
     pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
@@ -23,6 +24,7 @@ const CreatePing = () => {
     const [discInputValue, setDiscInputValue] = useState("");
     const [chats, setChats] = useState([{ id: 1, value: "" }]);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
     
     const handleCreateLoop = () => {
         const loopData = {
@@ -33,7 +35,7 @@ const CreatePing = () => {
           image: selectedImage ? selectedImage.assets[0].uri : null,
         };
     
-        // Do something with the loopData, such as sending it to a server or storing it locally
+        // Do something with the loopData
         console.log("Loop Data:", loopData);
       };
   
@@ -42,9 +44,29 @@ const CreatePing = () => {
       return acc;
     }, {}));
   
+    const handleKeyboardDidShow = (event) => {
+        setKeyboardHeight(event.endCoordinates.height);
+      };
+    
+      const handleKeyboardDidHide = () => {
+        setKeyboardHeight(0);
+      };
+
     useEffect(() => {
-      textInputRefs.current[0].current.focus();
-    }, []);
+        const keyboardDidShowListener = Keyboard.addListener(
+          'keyboardDidShow',
+          handleKeyboardDidShow,
+        );
+        const keyboardDidHideListener = Keyboard.addListener(
+          'keyboardDidHide',
+          handleKeyboardDidHide,
+        );
+    
+        return () => {
+          keyboardDidShowListener.remove();
+          keyboardDidHideListener.remove();
+        };
+      }, []);
   
     const handleTapOutside = () => {
       Keyboard.dismiss();
@@ -87,16 +109,17 @@ const CreatePing = () => {
     };
   
     return (
+        <KeyboardAwareScrollView
+      style={{ flex: 1, backgroundColor: "rgb(22, 23, 24)" }}
+      enableOnAndroid
+      extraScrollHeight={80}
+    >
+
       <TouchableWithoutFeedback onPress={handleTapOutside}>
-        <View style={{ flex: 1, paddingTop: 20, backgroundColor: "rgb(22, 23, 24)" }}>
           <View>
-          <View style={{flexDirection:"row", justifyContent:"space-between"}}>
+          <View style={{flexDirection:"row", justifyContent:"space-between", marginTop:20}}>
             <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 10,marginTop:20 }}>
                     <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Cancel</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={handleCreateLoop} style={{ padding: 10,marginTop:20 }}>
-                    <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Create</Text>
             </TouchableOpacity>
 
           </View>
@@ -130,53 +153,32 @@ const CreatePing = () => {
             <View style={{ flexDirection: "row", alignItems: "baseline" }}>
               <Text style={{ color: "white", fontSize: 25, marginTop: 50, marginLeft: "5%" }}>Name:</Text>
               <TextInput
-                ref={textInputRefs.current[0]}
-                style={{
-                  marginLeft: 10,
-                  color: "white",
-                  fontSize: 25,
-                  backgroundColor: "black",
-                  paddingBottom: 0,
-                  paddingRight: 70,
-                  paddingLeft: 5,
-                  maxWidth: 350,
-                  minWidth: 138
-                }}
-                placeholder="Name"
+                ref ={textInputRefs.current[0]}
+                style={{ marginLeft: 20, paddingRight:20, paddingVertical: 0,marginTop:10, color: "white", fontSize: 18,minWidth:150, maxWidth:300 }}
+                placeholder="Type something..."
                 multiline
                 numberOfLines={4}
                 maxLength={40}
                 placeholderTextColor="gray"
                 value={nameInputValue}
-                onChangeText={(text) => setNameInputValue(text)}
-              />
+                onChangeText={(text) => setNAmeInputValue(text)}
+          />
             </View>
   
-            <View style={{ flexDirection: "row", alignItems: "baseline" }}>
+            <View style={{ alignItems: "baseline" }}>
               <Text style={{ color: "white", fontSize: 25, marginTop: 25, marginLeft: "5%" }}>Description:</Text>
               <TextInput
-                ref={textInputRefs.current[0]}
-                style={{
-                  marginLeft: 10,
-                  color: "white",
-                  fontSize: 10,
-                  backgroundColor: "black",
-                  paddingBottom: 0,
-                  paddingRight: 10,
-                  paddingLeft: 5,
-                  maxWidth: 220,
-                  minWidth: 135
-                }}
-                placeholder="What is your loop about?"
+                ref={textInputRefs.current[1]}
+                style={{ marginLeft: 20, paddingRight:20, paddingVertical: 0,marginTop:10, color: "white", fontSize: 18,minWidth:150, maxWidth:500 }}
+                placeholder="Type something else..."
                 multiline
                 numberOfLines={4}
-                maxLength={100}
+                maxLength={500}
                 placeholderTextColor="gray"
                 value={discInputValue}
                 onChangeText={(text) => setDiscInputValue(text)}
               />
             </View>
-          </View>
   
                 {/*
           <View style={{ marginTop: 50, }}>
@@ -185,15 +187,6 @@ const CreatePing = () => {
                 <ScrollView style={{maxHeight:450}}>
 
                 {/*
-                
-                
-                
-                
-                
-                
-                
-                
-                
                 }
                 {chats.map((chat, index) => (
               <View key={chat.id} style={{ flexDirection: "row", marginTop: "5%" }}>
@@ -223,8 +216,6 @@ const CreatePing = () => {
                 
               </View>
             ))}
-
-
                 </ScrollView>
 
                 <View style={{flexDirection:"row",marginTop:8,marginRight:100}}>
@@ -238,8 +229,16 @@ const CreatePing = () => {
                   </View>
                   </View> 
           </View> */}
+
+          <TouchableOpacity
+          style={{ backgroundColor: "rgb(247, 212, 114)", borderRadius: 40, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop:100,width:150,alignContent:"center",alignSelf:"center",height:60 }}
+          onPress={handleCreateLoop}>
+          <Text style={{ color: "black", textAlign: "center",alignSelf:"center",marginTop:6,fontSize:20 }}>Create</Text>
+        </TouchableOpacity>
+
         </View>
       </TouchableWithoutFeedback>
+      </KeyboardAwareScrollView>
     );
   };
   
