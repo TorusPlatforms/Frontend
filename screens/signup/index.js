@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, KeyboardAvoidingView, Keyboard } from "react-native";
+import { View, Text, Dimensions, Pressable, TextInput, KeyboardAvoidingView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getAuth, createUserWithEmailAndPassword  } from "firebase/auth"
@@ -33,8 +33,7 @@ export default function SignUpScreen() {
           } catch (error) {
             const errorCode = error.code;
             const errorMessage = error.message;        
-            // Display an alert with the error message
-            alert(errorMessage + errorCode);
+            alert(errorMessage);
           }
     }
 
@@ -50,7 +49,7 @@ export default function SignUpScreen() {
                         value={username}
                         placeholder="Username"
                         placeholderTextColor={"white"}
-                        style={{borderRadius: 10, borderColor: "white", borderWidth: 1, minWidth: "80%", marginVertical: 10, color: "white", padding: 20, fontSize: 16}}
+                        style={styles.input}
                     />
 
                     <TextInput 
@@ -58,7 +57,7 @@ export default function SignUpScreen() {
                         value={displayName}
                         placeholder="Display Name"
                         placeholderTextColor={"white"}
-                        style={{borderRadius: 10, borderColor: "white", borderWidth: 1, minWidth: "80%", marginVertical: 10, color: "white", padding: 20, fontSize: 16}}
+                        style={styles.input}
                     />
 
 
@@ -67,7 +66,7 @@ export default function SignUpScreen() {
                         value={email}
                         placeholder="Email"
                         placeholderTextColor={"white"}
-                        style={{borderRadius: 10, borderColor: "white", borderWidth: 1, minWidth: "80%", marginVertical: 10, color: "white", padding: 20, fontSize: 16}}
+                        style={styles.input}
                     />
                     
                     <TextInput 
@@ -76,7 +75,7 @@ export default function SignUpScreen() {
                         placeholder="Password"
                         placeholderTextColor={"white"}
                         secureTextEntry={true}
-                        style={{borderRadius: 10, borderColor: "white", borderWidth: 1, minWidth: "80%", marginVertical: 10, color: "white", padding: 20, fontSize: 16}}
+                        style={styles.input}
                     />
 
                     <TextInput 
@@ -85,19 +84,19 @@ export default function SignUpScreen() {
                         placeholder="Confirm Password"
                         placeholderTextColor={"white"}
                         secureTextEntry={true}
-                        style={{borderRadius: 10, borderColor: "white", borderWidth: 1, minWidth: "80%", marginVertical: 10, color: "white", padding: 20, fontSize: 16}}
+                        style={styles.input}
                     />
                 </View>
             </KeyboardAvoidingView>
 
 
-                <View style={{justifyContent: "center", alignItems: "center", marginTop: 50, flex: 0.2}}>
-                    <Pressable onPress={signUp} style={{borderRadius: 10, borderWidth: 1, borderColor: "white", minWidth: "80%", padding: 20, alignItems: "center", justifyContent: "center"}}>
+                <View style={styles.signUpContainer}>
+                    <Pressable onPress={signUp} style={styles.input}>
                         {({pressed}) => 
-                            <Text style={[{color: pressed ? 'gray' : 'white'}, {fontSize: 16}]}>Sign Up</Text>
+                            <Text style={[{color: pressed ? 'gray' : 'white'}, {fontSize: 16, textAlign: "center"}]}>Sign Up</Text>
                         }
                     </Pressable>
-                    <Text style={{color: "white", textAlign: "center", marginTop: 10, marginHorizontal: 10}}>By signing up, you are agreeing to our Terms, Privacy, and Cookies policies</Text>
+                    <Text style={styles.policy}>By signing up, you are agreeing to our Terms, Privacy, and Cookies policies</Text>
                 </View>
 
         </SafeAreaView>

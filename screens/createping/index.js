@@ -90,22 +90,22 @@ const CreatePing = () => {
   
   return (
     <TouchableWithoutFeedback onPress={handleBackgroundPress}>
-      <View style={{ flex: 1, paddingTop: 20, backgroundColor: "rgb(22, 23, 24)" }}>
+      <View style={styles.container}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 10 }}>
           <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Cancel</Text>
         </TouchableOpacity>
 
         <View style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
-          <Text style={{ paddingTop: 0, fontWeight: "bold", fontSize: 30, color: "white" }}>New Ping</Text>
+          <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>New Ping</Text>
         </View>
 
         <View style={{ flexDirection: "column", alignItems: "center", marginTop: 20 }}>
           <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-            <Image style={{ width: 50, height: 50, marginLeft: 20, borderRadius: 20 }} source={{ uri: exampleUserData.pfp }} />
+            <Image style={styles.pfp} source={{ uri: exampleUserData.pfp }} />
             <TextInput
               ref={textInputRef}
-              style={{ marginLeft: 20, paddingRight: 20, paddingVertical: 10, marginTop: 10, color: "white", fontSize: 18, minWidth: 150, maxWidth: 300, maxHeight: 180 }}
-              placeholder="Type something..."
+              style={{ marginLeft: 20, paddingRight: 20, paddingVertical: 10, marginTop: 10, color: "white", fontSize: 18, minWidth: 300, maxWidth: 300, maxHeight: 180 }}
+              placeholder="Ping your campus and beyond"
               multiline
               maxLength={50}
               numberOfLines={4}

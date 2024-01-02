@@ -46,6 +46,12 @@ const styles = StyleSheet.create({
         borderRadius: 50
     },
 
+    loopPfp: {
+        width: 50, 
+        height: 50, 
+        borderRadius: 25
+    },
+
     followCounts: {
         flexDirection: "row", 
         flex: 0.3, 
@@ -84,17 +90,41 @@ const styles = StyleSheet.create({
         borderRadius: 250 /2,
     },
 
+    centerLoopIcon: {
+        width: 80, 
+        height: 80, 
+        borderRadius: 40, 
+        alignSelf: "center", 
+        top: 80, 
+        zIndex: 1, 
+        justifyContent: "center", 
+        alignItems: "center"
+    },
+
     torusContainer: {
         flex: 3, 
         justifyContent: "center", 
         alignItems: "center",
     },
 
-    loopsContainer: {
+    loopContainer: {
+        marginVertical: 10, 
+        width: "100%", 
+        flexDirection: "row", 
+        paddingHorizontal: 20
+    },
+
+    loopsListContainer: {
         flex: 2, 
         height: "100%", 
         width: "100%", 
         marginTop: 20
+    },
+
+    loopText: {
+        flexDirection: 'col', 
+        marginLeft: 10, 
+        flex: 5
     }
 })
 

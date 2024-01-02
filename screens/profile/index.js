@@ -1,39 +1,67 @@
 import React, { useState, useEffect, useRef} from 'react'
-import { StyleSheet, Text, View, SafeAreaView, Image, Animated, Easing, FlatList, Pressable } from 'react-native'
+import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
-
+import { getAuth } from "firebase/auth";
 import styles from "./styles";
 
-const exampleUserData = {
-    pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
-    displayName: "Grant Hough",
-    username: "@granthough",
-    following: 128,
-    followers: 259,
-    description: "A pretty funny guy. Has a strong affinity for dogs. \n Stefan Murphy: 'The test is in'"
-}
-
-const exampleLoopsData = {name: "Dorm", pfp: "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png"}
-
-const exampleLoopsArray = new Array(6).fill(exampleLoopsData)
 
 
 export default function Profile() {
     const navigation = useNavigation()
     const movingLine = useRef(new Animated.Value(0)).current;
+    const [loops, setLoops] = useState([])
+    const [user, setUser] = useState({})
+
+    //handle getting loops
+    function getLoops() {
+        const exampleLoopsData = {name: "Dorm", pfp: "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png"}
+        return new Array(6).fill(exampleLoopsData)
+    }
+    
+
+    //handle getting user data
+    function getUser() {
+        const auth = getAuth()
+        console.log(auth.currentUser.uid)
+        const exampleUserData = {
+            pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
+            displayName: "Grant Hough",
+            username: "@granthough",
+            following: 128,
+            followers: 259,
+            description: "A pretty funny guy. Has a strong affinity for dogs. \n Stefan Murphy: 'The test is in'"
+        }
+        return exampleUserData
+    }
+   
+    //handle getting loop notification
+    function renderNotification(item, index) {
+        //figure out if loop has a notification
+        const unread = false
+
+        if (unread) {
+            return <View style={{width: 15, height: 15, borderRadius: 7.5, backgroundColor: 'red', bottom: 30, position: 'absolute', alignSelf: 'flex-end', zIndex: 1}}/>
+        }
+    };
+
+
+
+
 
     async function copyUsernameToClipboard() {
-        await Clipboard.setStringAsync(exampleUserData.username);
+        await Clipboard.setStringAsync(user.username);
       };
 
-    const Loop = ({data}) => (
-        <View style={{marginVertical: 10, width: "100%", flexDirection: "row", paddingHorizontal: 20}}>
-            <Image style={{width: 50, height: 50, borderRadius: 25, flex: 1}} source={{uri: data.pfp}}/>
 
-            <View style={{flexDirection: 'col', marginLeft: 10, flex: 5}}>
+    
+    const Loop = ({data}) => (
+        <View style={styles.loopContainer}>
+            <Image style={styles.loopPfp} source={{uri: data.pfp}}/>
+
+            <View style={styles.loopText}>
                 <Text style={{color: 'white', fontWeight: "bold"}}>Example Loop</Text>
                 <Text style={{color: 'white'}}>GrantHough said "my last message"</Text>
             </View>
@@ -45,15 +73,7 @@ export default function Profile() {
       );
     
     
-    function renderNotification(item, index) {
-        //figure out if loop has a notification
-        const unread = true
-
-        if (unread) {
-            return <View style={{width: 15, height: 15, borderRadius: 7.5, backgroundColor: 'red', bottom: 30, position: 'absolute', alignSelf: 'flex-end', zIndex: 1}}/>
-        }
-    };
-
+    //ANIMATION 
     const symbolSize = 50;
     const radius = 125 
     const center = 125
@@ -85,7 +105,7 @@ export default function Profile() {
     const lineStyles = [{top: 50, right: y, transform: [{rotate: "30deg"}]},  {top: 50, left: y, transform: [{rotate: "-30deg"}]},  {left: 85, transform: [{rotate: "90deg"}]},  {bottom: 50, left: y, transform: [{rotate: "30deg"}]}, {bottom: 50, right: y, transform: [{rotate: "-30deg"}]},   {right: 85, transform: [{rotate: "90deg"}]}]
 
     function renderLoops() {
-        return exampleLoopsArray.map((item, index) => {
+        return loops.map((item, index) => {
         
           return (
             <View key={index} style={ [iconStyles[index], {justifyContent: "center", alignItems: "center", position: "absolute"}] }>
@@ -106,8 +126,16 @@ export default function Profile() {
           );
         });
       }
+     
+    
+
+
+
 
     useEffect(() => {
+        setLoops(getLoops())
+        setUser(getUser())
+
         Animated.sequence([
         Animated.delay(300),
         Animated.timing(movingLine, {
@@ -133,32 +161,32 @@ export default function Profile() {
 
             <View style={styles.userInfoContainer}>
                 <View style={styles.pfpContainer}>
-                    <Image style={styles.pfp} source={{uri: exampleUserData.pfp}}/>
-                    <Text style={styles.displayName}>{exampleUserData.displayName}</Text>
+                    <Image style={styles.pfp} source={{uri: user.pfp}}/>
+                    <Text style={styles.displayName}>{user.displayName}</Text>
                     <Pressable onPress={copyUsernameToClipboard}>
                         {({pressed}) => (
-                            <Text style={{color: pressed ? "gray": "white"}}>{exampleUserData.username}</Text>
+                            <Text style={{color: pressed ? "gray": "white"}}>{user.username}</Text>
                         )}
                     </Pressable>
                 </View>
 
                 <View style={styles.userRelationsContainer}>
                     <View style={styles.followCounts}>
-                        <Pressable onPress={() => navigation.navigate("MutualUserLists", {name: exampleUserData.username})}>
-                            <Text style={{color: "white", fontWeight: "bold", textAlign: "center"}}>{exampleUserData.followers}</Text>
-                            <Text style={{color: "white", textAlign: "center"}}>Followers</Text>
+                        <Pressable onPress={() => navigation.navigate("MutualUserLists", {name: user.username})}>
+                            <Text style={[styles.text, {fontWeight: "bold"}]}>{user.followers}</Text>
+                            <Text style={styles.text}>Followers</Text>
                         </Pressable>
 
-                        <Pressable onPress={() => navigation.navigate("MutualUserLists", {name: exampleUserData.username})}>
-                            <Text style={{color: "white", fontWeight: "bold", textAlign: "center"}}>{exampleUserData.following}</Text>
-                            <Text style={{color: "white", textAlign: "center"}}>Following</Text>
+                        <Pressable onPress={() => navigation.navigate("MutualUserLists", {name: user.username})}>
+                            <Text style={[styles.text, {fontWeight: "bold"}]}>{user.following}</Text>
+                            <Text style={styles.text}>Following</Text>
                         </Pressable>
                     </View>
 
                     <View style={styles.item_seperator}/>
 
                     <View style={styles.userDescription}>
-                        <Text style={{color: "white", textAlign: "center"}}>{exampleUserData.description}</Text>
+                        <Text style={styles.text}>{user.description}</Text>
                     </View>
                 </View>
             
@@ -167,17 +195,17 @@ export default function Profile() {
 
             <View style={styles.torusContainer}>
                 <View style={styles.centerLoop}>
-                    <View style={{width: 80, height: 80, borderRadius: 80, alignSelf: "center", top: 80, zIndex: 1, justifyContent: "center", alignItems: "center"}}>
+                    <View style={styles.centerLoopIcon}>
                         <MaterialCommunityIcons name="google-circles-communities" color={"gray"} size={60}/>
                     </View>
                     {renderLoops()}
                 </View>
             </View>
 
-            <View style={styles.loopsContainer}>
+            <View style={styles.loopsListContainer}>
                 <View style={styles.item_seperator} />
                 <FlatList
-                        data={exampleLoopsArray}
+                        data={loops}
                         renderItem={({item}) => <Loop data={item} />}
                         ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
                     />

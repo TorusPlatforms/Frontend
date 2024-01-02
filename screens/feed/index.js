@@ -9,7 +9,7 @@ import GestureRecognizer from 'react-native-swipe-gestures';
 import styles from "./styles";
 
 
-const examplePing = {isLiked: true, attatchment: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Glazed-Donut.jpg/1200px-Glazed-Donut.jpg", author: 'GrantHough', likes: 20, comments: 30, caption: 'Funny Caption. Hilarious even. My name is Grant Hough and I love dogs!', pfp: 'https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&'}
+const examplePing = {postURL: "posturl", isLiked: true, attatchment: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Glazed-Donut.jpg/1200px-Glazed-Donut.jpg", author: 'GrantHough', likes: 20, comments: 30, caption: 'Funny Caption. Hilarious even. My name is Grant Hough and I love dogs!', pfp: 'https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&'}
 const exampleComment = {isLiked: true, timeAgo: "3h", author: 'GrantHough', content: "Funny ass comment", likes: 20, pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&"}
 const data = new Array(6).fill(examplePing);
 const commentData = new Array(20).fill(exampleComment);
@@ -115,7 +115,7 @@ export default function Feed({ route, navigation }) {
     
 
     const Comment = ({data}) => (
-      <View style={{marginVertical: 10, width: "95%", flexDirection: "row", justifyContent: "flex-start", paddingHorizontal: 10, height: 60, flex: 1}}>
+      <View style={styles.commentContainer}>
         <View style={{flex: 0.3}}>
           <Image
               style={styles.tinyLogo}
@@ -123,24 +123,24 @@ export default function Feed({ route, navigation }) {
             />
         </View>
 
-        <View style={{flexDirection: "column", marginLeft: 10, justifyContent: "space-around", flex: 1}}>
+        <View style={styles.commentTextContainer}>
           <View style={{flexDirection: "row"}}>
-            <Text style={{color: "white", fontSize: 12}}>{data.author}</Text>
-            <Text style={{marginLeft: 7, color: "gray", fontSize: 12}}>3h</Text>
+            <Text style={styles.commentContent}>{data.author}</Text>
+            <Text style={styles.commentTime}>3h</Text>
           </View>
 
           <View>
-            <Text style={{color: "white"}}>{data.content}</Text>
+            <Text style={styles.text}>{data.content}</Text>
           </View>
 
           <View>
             <Pressable onPress={() => handleReply(data)}>
-              <Text style={{fontWeight: "bold", color: "gray"}}>Reply</Text>
+              <Text style={styles.reply}>Reply</Text>
             </Pressable>
           </View>
         </View>
 
-        <View style={{flex: 1, alignItems: "flex-end", justifyContent: "center"}}>
+        <View style={styles.likeContainer}>
             <Pressable onPress={() => handleCommentLike(data)}>
               <Ionicons style={[styles.pingIcon, {color: data.isLiked ? "red" : "white"}]} name={data.isLiked ? "heart" : "heart-outline"} size={20}></Ionicons>
             </Pressable>
@@ -150,16 +150,18 @@ export default function Feed({ route, navigation }) {
   
     return (
       
-        <SafeAreaView style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
+        <SafeAreaView style={styles.container}>
           <Animated.View style={{height: headerHeight, opacity: headerOpacity}}>
               <View style={styles.header}>
                   <View style={{flex: 0.3}}>
                     <Dropdown
-                      containerStyle={{borderRadius: 10}}
-                      selectedTextStyle={{color: 'white'}}
+                      containerStyle={styles.dropdownContainer}
+                      itemTextStyle={styles.text}
+                      selectedTextStyle={styles.text}
+                      activeColor='rgb(22, 23, 24)'
                       data={dropdownData}
                       placeholder='Torus'
-                      placeholderStyle={{color: "white"}}
+                      placeholderStyle={styles.text}
                       maxHeight={300}
                       labelField="label"
                       valueField="value"
@@ -206,15 +208,16 @@ export default function Feed({ route, navigation }) {
             onRequestClose={() => {
               setModalVisible(!modalVisible);
             }}>
-            <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", marginTop: Platform.OS === 'ios' ? 30 : 100}}>
-              <Pressable onPress={() => setModalVisible(false)} style={{alignItems: "center", flex: 0.2, justifyContent: 'space-evenly'}}>
-                <View style={{backgroundColor: "gray", height: 3, width: "10%", borderRadius: 10, marginTop: 20}} />
+
+            <View style={styles.modalContainer}>
+              <Pressable onPress={() => setModalVisible(false)} style={styles.modalHeader}>
+                <View style={styles.modalDismissBar} />
 
                 <View style={{marginVertical: 10}}>
                   <Text style={{color: "white"}}>Comments</Text>
                 </View>
 
-                <View style={{backgroundColor: "gray", height: 1, width: "100%"}} />
+                <View style={styles.item_seperator} />
 
               </Pressable>
              
@@ -226,9 +229,9 @@ export default function Feed({ route, navigation }) {
               </View>
 
               <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={80}  style={{flex: 0.1, marginBottom: 30}}>
-                <View style={{backgroundColor: "gray", height: 1, width: "100%"}} />
+                <View style={styles.item_seperator} />
 
-                <View style={{alignItems: "center", marginTop: 20, flexDirection: "row", paddingHorizontal: 10, paddingRight: 30}}>
+                <View style={styles.addCommentContainer}>
                   <View style={{flexDirection: "row", flex: 2}}>
                     <Image
                       style={styles.tinyLogo}
@@ -237,7 +240,7 @@ export default function Feed({ route, navigation }) {
 
                     <TextInput 
                       placeholderTextColor="white" 
-                      style={{marginLeft: 20, paddingHorizontal: 10, color: "white", borderRadius: 10, borderWidth: 1, borderColor: "gray", width: "75%"}} 
+                      style={styles.addCommentInput} 
                       onChangeText={onChangeComment} 
                       value={comment} 
                       placeholder='Add a comment'
@@ -245,9 +248,9 @@ export default function Feed({ route, navigation }) {
                     />
                   </View>
                  
-                  <View style={{alignItems: 'center', backgroundColor: "rgb(0, 114, 160)", borderRadius: 30, width: 50, height: 30, justifyContent: "center" }}>
+                  <View style={styles.addCommentButton}>
                     <Pressable onPress={postComment}>
-                      <Ionicons style={{color: "white"}} name="arrow-up" size={20}></Ionicons>
+                      <Ionicons style={styles.text} name="arrow-up" size={20}></Ionicons>
                     </Pressable>
                   </View>
                 </View>
