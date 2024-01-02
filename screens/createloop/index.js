@@ -178,11 +178,23 @@ const CreatePing = () => {
             </View>
           </View>
   
+                {/*
           <View style={{ marginTop: 50, }}>
             <Text style={{ color: "white", marginLeft: "5%", fontSize: 25 }}>Chats:</Text>
             <View style={{flexDirection:"row",}}>
                 <ScrollView style={{maxHeight:450}}>
 
+                {/*
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                }
                 {chats.map((chat, index) => (
               <View key={chat.id} style={{ flexDirection: "row", marginTop: "5%" }}>
                 <TextInput
@@ -225,7 +237,7 @@ const CreatePing = () => {
                   </TouchableOpacity>
                   </View>
                   </View> 
-          </View>
+          </View> */}
         </View>
       </TouchableWithoutFeedback>
     );

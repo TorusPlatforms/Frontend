@@ -91,13 +91,21 @@ const LoopsPage = () => {
             
             </View>
             
+            <View style={{marginTop:10, alignSelf:"center",alignContent:"center",maxHeight:300,borderBottomWidth:0,borderTopWidth:0,borderColor:'white', minWidth:"100%",}}>
+                <ChatButton name={"Chat"} navigation={navigation}/>
+            </View>
 
+            {/* 
             <ScrollView style={{marginTop:10, alignSelf:"center",alignContent:"center",maxHeight:300,borderBottomWidth:0,borderTopWidth:0,borderColor:'white', minWidth:"100%",}}>
             {exampleLoopData.chats.map((name, index) => (
             <ChatButton key={index} name={name} navigation={navigation} />
-            ))}
+            ))
+            MULTIPLE CHATS GO HERE
+            }
+
             
             </ScrollView>
+            */}
         </View>
       );
 }

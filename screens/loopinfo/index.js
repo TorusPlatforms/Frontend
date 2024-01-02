@@ -10,7 +10,7 @@ const exampleLoopData = {
     displayName: "Grant's Group",
     memberCount: 30,
     description: "A place for Grants and Hoes to chill",
-    chatCount:9,
+    chatCount:1,
     chats: ['Chat 1', 'Chat 2', 'Chat 3', 'Chat 4', 'Chat 5','Chat 6', 'Chat 7', 'Chat 8', 'Chat 9'],
     recentAnnouncement: "Grant becomes world's first trillionaire after buying every single realfeel dumpad and selling them for billions each",
     recentAnnouncementUser:"@stefan",
