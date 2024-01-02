@@ -32,8 +32,8 @@ const LoopsPage = () => {
     const navigation = useNavigation()
     const [notifications, setNotifications] = useState(exampleLoopData.notifications);
 
-    const goToLoop = () => {
-        navigation.navigate('Profile'); 
+    const leaveLoop = () => {
+        navigation.goBack();
       };
 
       const goToInfo = () => {
@@ -49,7 +49,7 @@ const LoopsPage = () => {
       return (
         <View style={{  paddingTop: 20, backgroundColor: "rgb(22, 23, 24)",height:"100%" }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <TouchableOpacity onPress={goToLoop} style={{ padding: 10, marginTop: 30 }}>
+            <TouchableOpacity onPress={leaveLoop} style={{ padding: 10, marginTop: 30 }}>
                 <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Back</Text>
             </TouchableOpacity>
 

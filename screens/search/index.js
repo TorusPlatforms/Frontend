@@ -42,14 +42,17 @@ export default function Search({ route, navigation }) {
 
 
     const Loop = ({data}) => (
-        <View style={{marginVertical: 20, width: "100%", flexDirection: "row", paddingHorizontal: 20}}>
+        <TouchableOpacity onPress={goToLoop}>
+           <View style={{marginVertical: 20, width: "100%", flexDirection: "row", paddingHorizontal: 20}}>
             <Image style={{width: 100, height: 100, borderRadius: 50}} source={{uri: data.pfp}}/>
             <View style={{flex: 3, left: 20}}>
                 <Text style={{color: "white", fontWeight: "bold"}}>{data.displayName}</Text>
                 <Text style={{color: "white"}}>{data.members} Members</Text>
                 <Text style={{color: "white"}}>{data.interests.join(", ")}</Text>
             </View>
-        </View>
+        </View> 
+        </TouchableOpacity>
+        
       );
         
 
@@ -60,6 +63,10 @@ export default function Search({ route, navigation }) {
 
       const createLoop = () => {
         navigation.navigate('CreateLoop'); 
+      };
+
+      const goToLoop = () => {
+        navigation.navigate('Loop'); 
       };
 
 
