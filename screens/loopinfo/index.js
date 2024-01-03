@@ -4,6 +4,7 @@ import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
+import ImagePickerComponent from './imagepicker';
 
 const exampleLoopData = {
     pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
@@ -18,7 +19,7 @@ const exampleLoopData = {
 }
 const exampleUserData = {
 
-    admin:"true"
+    admin:true
 
 }
 
@@ -36,6 +37,18 @@ const LoopInfo = () => {
     const navigation = useNavigation()
     const [notifications, setNotifications] = useState(true);
     const [isManageVisible, setManageVisible] = useState(false);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [loopData, setLoopData] = useState({ 
+        pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
+        displayName: "Grant's Group",
+        memberCount: 30,
+        description: "A place for Grants and Hoes to chill",
+        chatCount:1,
+        chats: ['Chat 1', 'Chat 2', 'Chat 3', 'Chat 4', 'Chat 5','Chat 6', 'Chat 7', 'Chat 8', 'Chat 9'],
+        recentAnnouncement: "Grant becomes world's first trillionaire after buying every single realfeel dumpad and selling them for billions each",
+        recentAnnouncementUser:"@stefan",
+        users: ["DrumDogLover","TanujBeatMaster","GrantPawRhythms", "DogGrooveMaster","GrantAndTanujJams","RhythmHound","DrumBeatsWithTanuj","GrantCanineGrooves","TanujDogDrummer","BarkingBeatsGrant","DrummingTanujPaws","GrantAndDogRhythms","TanujDrumTails","PuppyGroovesGrant","BeatBuddyTanuj","WoofingRhythmsGrant","DrummingPawsTanuj","GrantGroovePup","TanujAndTheBeat","DoggyDrummingGrant","RhythmTanujTail","GrantPercussionPup","TanujDoggieBeats","PawsAndSnaresGrant","DrummingDogTanuj","GrantBeatsHowl","TanujRhythmBuddy","DogBeatHarmonyGrant","DrumPawsTanujGroove","GrantAndTanujRhythmic",]
+    });
 
     const openManage = () => {
         setManageVisible(true);
@@ -54,6 +67,30 @@ const LoopInfo = () => {
         navigation.navigate('Loop'); 
       };
 
+      const handleImageSelect = (image) => {
+        setSelectedImage(image);
+        console.log("Selected Image in CreateLoop:", image);
+      };
+
+      const handleResetImage = () => {
+        setSelectedImage(null);
+      };
+
+      const updateLoopImage = () => {
+            // Process the new image
+            console.log("NEW IMAGE: " + selectedImage.assets[0].uri);
+
+            // Update loop data state, changing the pfp property
+            // PROBABLY NEEDS TO BE CHANGED FOR BACKEND STUFF TO CHANGE IMAGE
+            setLoopData(prevData => ({
+                ...prevData,
+                pfp: selectedImage.assets[0].uri,
+            }));
+
+            // Reset selectedImage to null to remove the current image
+            setSelectedImage(null);
+        
+    };
       return (
         <View style={{  paddingTop: 20, backgroundColor: "rgb(22, 23, 24)", height:"100%" }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -64,8 +101,35 @@ const LoopInfo = () => {
            
 
         </View>
-         
-        <Text style={{color:"white", fontSize:30,marginTop:20, alignSelf:"center"}}>{exampleLoopData.displayName}</Text>
+
+        <Image
+            source={selectedImage ? { uri: selectedImage.assets[0].uri } : { uri: loopData.pfp }}
+            style={{
+                width: 100,
+                height: 100,
+                marginLeft: 140,
+                marginTop: 20,
+                backgroundColor: "white",
+                borderRadius: 100,
+            }}
+            />
+            {exampleUserData.admin && (
+        <View style={{marginTop:10,marginLeft:150}}>
+                <ImagePickerComponent style={{}} setSelectedImage={handleImageSelect}></ImagePickerComponent>
+            </View>
+            )}
+            {selectedImage && (
+                <>
+                    <TouchableOpacity onPress={handleResetImage} style={{ marginTop: 10, marginBottom: 0, marginLeft: 140 }}>
+                        <Text style={{ color: "red", textDecorationLine: "underline", fontSize: 15 }}>Remove Image</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={updateLoopImage} style={{ marginTop: 10, marginBottom: 10, marginLeft: 140 }}>
+                        <Text style={{ color: "rgb(23, 154, 235)", textDecorationLine: "underline", fontSize: 15 }}>Set New Image</Text>
+                    </TouchableOpacity>
+                </>
+            )}
+        <Text style={{color:"white", fontSize:30,marginTop:30, alignSelf:"center"}}>{exampleLoopData.displayName}</Text>
         <Text style={{color:"white", fontSize:15, alignSelf:"center"}}>{exampleLoopData.description}</Text>
         <Text style={{color:"white", fontSize:25,marginTop:20, alignSelf:"center"}}> Members: {exampleLoopData.memberCount}</Text>
         <Text style={{color:"white", fontSize:25, alignSelf:"center"}}>Chats:{exampleLoopData.chatCount}</Text>
