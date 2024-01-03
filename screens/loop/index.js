@@ -80,11 +80,11 @@ const LoopsPage = () => {
 
             <TouchableOpacity 
             onPress={() => navigation.navigate("DirectMessage", {username: "Announcements"})}
-            style={{alignSelf: 'center',marginTop:10, backgroundColor: 'rgb(50,50,50)', paddingVertical: 10,paddingHorizontal: 50, borderRadius: 40,zIndex:0}}>
-            <Text style={{ color: 'white', fontSize: 20,textDecorationLine:"underline" }}>Announcements{'>'}</Text>
+            style={{alignSelf: 'center',marginTop:10, backgroundColor: 'rgb(50,50,50)', paddingVertical: 10,paddingHorizontal: 50, borderRadius: 40,zIndex:0,}}>
+            <Text style={{ color: 'white', fontSize: 20,textDecorationLine:"underline" }}>Announcements</Text>
             </TouchableOpacity>
             
-            <View style={{paddingHorizontal:25, marginBottom:10}}>
+            <View style={{paddingHorizontal:25, marginBottom:40}}>
              <Text style={{color:"white"}}>{exampleLoopData.recentAnnouncementUser}</Text>
              <Text style={{color:"white"}}>{exampleLoopData.recentAnnouncement}</Text>
             </View>
