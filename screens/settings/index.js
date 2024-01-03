@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, Modal, FlatList, Button } from "react-native";
+import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, Modal, FlatList, Button,ScrollView } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from 'expo-image-picker';
@@ -31,10 +31,10 @@ export default function Settings() {
     };
   
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
        
         <Pressable onPress={() => handlePress('Your Account')}>
-        <Text style={{ fontSize: 25, padding: 20, color: "white", paddingTop: 60, marginBottom: -15 }}>Your Account </Text>
+        <Text style={{ fontSize: 25, padding: 20, color: "white", paddingTop: 20, marginBottom: -15 }}>Your Account </Text>
         
         <Text style={{ fontSize: 15, color: "lightgrey", paddingLeft: 20, paddingRight: 20, marginBottom: 10 }}>See information about your account, download an archive of your data, or learn about your account deactivation options.</Text>
         </Pressable>
@@ -58,7 +58,7 @@ export default function Settings() {
         <Text style={{ fontSize: 25, padding: 20, color: "white", marginBottom: -15 }}>Additional Resources </Text>
         </Pressable>
         <Text style={{ fontSize: 15, color: "white", paddingLeft: 20, paddingRight: 20, marginBottom: 10 }}>Check out other places for helpful information to learn more about Torus products and services.</Text>
-      </View>
+      </ScrollView>
     );
 }
 
