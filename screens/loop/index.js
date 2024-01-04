@@ -26,7 +26,7 @@ const exampleUserData ={
 
 const ChatButton = ({ name, navigation }) => (
     <TouchableOpacity 
-      onPress={() => navigation.navigate("DirectMessage", {username: name})}
+      onPress={() => navigation.navigate("LoopChat", {username: "Chat"})}
       style={{alignSelf: 'center', marginVertical: 10, backgroundColor: 'rgb(50,50,50)', paddingVertical: 15,paddingHorizontal: 50, borderRadius: 40,zIndex:0}}>
       <Text style={{ color: 'white', fontSize: 20 }}>{name}</Text>
     </TouchableOpacity>
@@ -104,7 +104,7 @@ const LoopsPage = () => {
 {/* Conditionally render announcements */}
 {isMember && (
     <TouchableOpacity
-        onPress={() => navigation.navigate("DirectMessage", { username: "Announcements" })}
+        onPress={() => navigation.navigate("LoopAnnouncements", { username: "Announcements" })}
         style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'rgb(50,50,50)', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 40, zIndex: 0, }}>
         <Text style={{ color: 'white', fontSize: 20, textDecorationLine: "underline" }}>Announcements</Text>
     </TouchableOpacity>

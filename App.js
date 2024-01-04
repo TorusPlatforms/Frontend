@@ -24,6 +24,7 @@ import LoopsPage from './screens/loop';
 import LoopChat from './screens/loopchat'
 import LoopInfo from "./screens/loopinfo"
 import CreateLoop from "./screens/createloop";
+import LoopAnnouncements from "./screens/loopannouncements";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -110,6 +111,7 @@ function App() {
         <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>
         <Stack.Screen name="Loop" component={LoopsPage} initialParams={{get:"loop"}} options={{headerShown:false}}/>
         <Stack.Screen name="LoopChat" component={LoopChat} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
+        <Stack.Screen name="LoopAnnouncements" component={LoopAnnouncements} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="LoopInfo" component={LoopInfo}/>
       </Stack.Navigator>
     </NavigationContainer>

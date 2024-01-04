@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { GiftedChat, Bubble, InputToolbar, Avatar } from 'react-native-gifted-chat';
 import styles from "./styles";
 
-export default function LoopChat() {
+export default function DirectMessage() {
   const [messages, setMessages] = useState([])
 
   useEffect(() => {
