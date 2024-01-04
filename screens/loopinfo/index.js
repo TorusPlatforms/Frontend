@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, TouchableOpacity, Image, Text, TextInput, ScrollView, Modal, TouchableWithoutFeedback} from "react-native";
+import { View, TouchableOpacity, Image, Text, TextInput, ScrollView, Modal, TouchableWithoutFeedback, Alert } from "react-native";
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
 import { useNavigation } from "@react-navigation/native";
@@ -64,7 +64,7 @@ const LoopInfo = () => {
       };
 
     const goToLoop = () => {
-        navigation.navigate('Loop'); 
+        navigation.goBack();
       };
 
       const handleImageSelect = (image) => {
@@ -91,11 +91,39 @@ const LoopInfo = () => {
             setSelectedImage(null);
         
     };
+
+    const leaveLoop = () => {
+        // Display an alert to confirm the user's decision
+        Alert.alert(
+          'Leave Loop',
+          'Are you sure you want to leave the loop?',
+          [
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            },
+            {
+              text: 'Confirm',
+              onPress: () => {
+                // HERE IS WHEN USER CONFIRMS THEY WANT TO LEAVE
+                console.log('leave loop');
+              },
+            },
+          ],
+          { cancelable: false }
+        );
+      };
+
+
       return (
         <View style={{  paddingTop: 20, backgroundColor: "rgb(22, 23, 24)", height:"100%" }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
             <TouchableOpacity onPress={goToLoop} style={{ padding: 10, marginTop: 30 }}>
                 <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Back</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={leaveLoop} style={{ padding: 10, marginTop: 30 }}>
+            <Text style={{ fontSize: 16, color: "red", paddingLeft: 10 }}>Leave</Text>
             </TouchableOpacity>
 
            
@@ -170,15 +198,15 @@ const LoopInfo = () => {
       <View style={{ backgroundColor: 'rgb(22, 23, 24)', padding: 20, borderRadius: 10, width: '100%', height: '25%',justifyContent:"space-between",borderTopWidth:5,borderColor:"grey" }}>
 
         <TouchableOpacity onPress={() => handleManageItemPress('Promote to moderator')}>
-          <Text style={{fontSize:30,alignSelf:"center", color:"white", marginTop:15, textShadowColor: 'rgba(255, 255, 255, 0.7)',textShadowRadius: 10,}}>Promote to moderator</Text>
+          <Text style={{fontSize:30,alignSelf:"center", color:"rgb(247, 212, 114)", marginTop:15, }}>Promote to moderator</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => handleManageItemPress('Kick member')}>
-          <Text style={{fontSize:30,alignSelf:"center", color:"red", marginVertical:15, textShadowColor: 'rgba(255, 0, 0, 0.7)',textShadowRadius: 10}}>Kick member</Text>
+          <Text style={{fontSize:30,alignSelf:"center", color:"red", marginVertical:15, }}>Kick member</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={closeManage}>
-          <Text style={{fontSize:30,alignSelf:"center", color:"white",textShadowColor: 'rgba(255, 255, 255, 0.7)',textShadowRadius: 10 }}>Cancel</Text>
+          <Text style={{fontSize:30,alignSelf:"center", color:"white",}}>Cancel</Text>
         </TouchableOpacity>
 
       </View>
