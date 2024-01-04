@@ -1,21 +1,66 @@
 // YourAccountScreen.js
-import React from 'react';
+import React, { useState } from 'react';
 //import { View, Text, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styles1 from './styles1';
-import { ScrollView, Text, View, Pressable } from 'react-native';
+import { ScrollView, Text, View, Pressable,} from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 
 
 export default function PrivacySafety() {
   const navigation = useNavigation();
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(null);
+  const [items, setItems] = useState([
+    {label: 'Friends', value: 3},
+    {label: 'Followers', value: 2},
+    {label: 'Anyone', value: 1},
+    {label:'No one', value: 0}
+  ]);
+
   const handlePress1 = (screenName) => {
     navigation.navigate(screenName);
   };
 
+  
+  
 
 
-return (
+  return (
+
+    <ScrollView style={{height:"100%", backgroundColor:"rgb(22,23,24)"}}>
+    <View style={{backgroundColor:"rgb(22,23,24)", height:"100%"}}>
+    <Text style={{ fontSize: 25, padding: 20, color: "white", paddingTop: 50, textAlign: 'center', marginBottom: -35 }}>Privacy and Safety</Text>
+    <Text style={{ fontSize: 12, padding: 20, color: "white", textAlign:'center', marginBottom: -25 }}>Manage what information you allow other people on Torus to see.</Text>
+    <Text style={{ fontSize: 15, color: "white", textAlign:'center', marginBottom: 25 }}>______________________________________________________</Text>
+
+    <View style={{ paddingHorizontal: 40 }}>
+  <Text style={{ fontSize: 15, color: "white" }}>Who can message me?</Text>
+  <DropDownPicker
+      open={open}
+      value={value}
+      items={items}
+      setOpen={setOpen}
+      setValue={setValue}
+      setItems={setItems}
+    />
+</View>
+
+
+  
+    
+    </View>
+    </ScrollView>
+    
+  )
+
+
+}
+
+// vvvv  OLD PRIVACY PAGE SAVE FOR LATER vvvv
+
+/* return (
   <ScrollView>
   <View style={styles1.container}>
   <Text style={{ fontSize: 25, padding: 20, color: "white", paddingTop: 50, textAlign: 'center', marginBottom: -35 }}>Privacy and Safety</Text>
@@ -113,7 +158,4 @@ return (
 
   </View>
   </ScrollView>
-)
-
-}
-
+)*/
