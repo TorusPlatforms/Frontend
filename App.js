@@ -26,6 +26,7 @@ import NotificationsV from './screens/settings/Notifications';
 import PrivacySafety from './screens/settings/Privacy and Safety';
 import SecurityAccountAccess from './screens/settings/Security and Account Access';
 import AdditionalResources from './screens/settings/Additional Resources';
+import ComingSoon from './screens/settings/Coming Soon';
 
 
 const firebaseConfig = {
@@ -116,6 +117,7 @@ function App() {
         <Stack.Screen name="Privacy and Safety" component={PrivacySafety} options={{headerShown: true}}/>
         <Stack.Screen name="Security and Account Access" component={SecurityAccountAccess} options={{headerShown: true}}/>
         <Stack.Screen name="AdditionalResources" component={AdditionalResources} options={{headerShown: true}}/>
+        <Stack.Screen name="Coming Soon" component={ComingSoon} options={{headerShown: true}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

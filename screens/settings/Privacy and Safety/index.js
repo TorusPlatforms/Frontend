@@ -3,12 +3,19 @@ import React, { useState } from 'react';
 //import { View, Text, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styles1 from './styles1';
-import { ScrollView, Text, View, Pressable,} from 'react-native';
+import { ScrollView, Text, View, Pressable, Switch} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 
+const exampleUserData ={
+
+  privacy:true,
+  
+
+}
 
 export default function PrivacySafety() {
+  const [privacyEnabled, setPrivacyEnabled] = useState(exampleUserData.privacy);
   const navigation = useNavigation();
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(null);
@@ -22,6 +29,15 @@ export default function PrivacySafety() {
   const handlePress1 = (screenName) => {
     navigation.navigate(screenName);
   };
+
+  const togglePrivacy = () => {
+    setPrivacyEnabled((previousState) => !previousState);
+  };
+  const turnOffSwitch = () => {
+    setPrivacyEnabled(false);
+   
+  };
+
 
   
   
@@ -45,6 +61,19 @@ export default function PrivacySafety() {
       setValue={setValue}
       setItems={setItems}
     />
+
+<Text style={{ fontSize: 20, color: "white", marginTop:40, marginBottom: 10, textAlign: 'center'}}>Account Privacy</Text>
+<Text style={{ fontSize: 10, color: "light grey", marginTop:0, marginBottom: 20, textAlign: 'center'}}>When your account is public, your profile and posts can be seen by anyone, on or off Torus. When your account is private, only followers can see what you share</Text>
+
+  <Text style={{ fontSize: 15, color: "white", marginBottom: 10,}}>Private Account:</Text>
+<Switch
+        
+        trackColor={{ false: '#767577', true: 'rgb(247, 212, 114)' }}
+        thumbColor={privacyEnabled ? 'grey' : 'white'}
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={togglePrivacy}
+        value={privacyEnabled}
+      />
 </View>
 
 
