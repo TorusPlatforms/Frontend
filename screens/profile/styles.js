@@ -13,7 +13,11 @@ const styles = StyleSheet.create({
 
     text: {
         color: "white",
-        textAlign: "center"
+    },
+
+    author: {
+        color: "white",
+        fontWeight: "bold",
     },
 
     userInfoContainer: {
@@ -78,6 +82,9 @@ const styles = StyleSheet.create({
         flex: 0.3, 
         paddingHorizontal: 30,
         ...Platform.select({
+            ios: {
+                marginTop: 20
+            },
             android: {
                 marginTop: 50
             }
@@ -95,7 +102,7 @@ const styles = StyleSheet.create({
         height: 80, 
         borderRadius: 40, 
         alignSelf: "center", 
-        top: 80, 
+        top: 85, 
         zIndex: 1, 
         justifyContent: "center", 
         alignItems: "center"
@@ -125,7 +132,41 @@ const styles = StyleSheet.create({
         flexDirection: 'col', 
         marginLeft: 10, 
         flex: 5
-    }
+    },
+
+    attatchment: {
+        aspectRatio: 1,
+        maxWidth: 100,
+        maxHeight: 100,
+        marginVertical: 10,
+        borderRadius: 20
+    },
+
+    tinyLogo: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        overflow: "hidden",
+      },
+    
+    verticalLine: {
+        width: 1,
+        backgroundColor: "gray",
+        marginTop: 8,
+        marginLeft: 18
+    },
+    
+    stats: {
+        color: "gray",
+    },
+
+    pingIcon: {
+        color: "white",
+        marginRight: 10,
+    },
+
+
+
 })
 
 export default styles;

@@ -1,26 +1,94 @@
 import React, { useState, useEffect, useRef} from 'react'
-import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable } from 'react-native'
+import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable, Alert, Share } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 import { getAuth } from "firebase/auth";
+
+import { Ping, CommentModal } from "../feed/index"
 import styles from "./styles";
 
-
+const exampleComment = {isLiked: true, timeAgo: "3h", author: 'GrantHough', content: "Funny ass comment", likes: 20, pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&"}
+const commentData = new Array(20).fill(exampleComment);
 
 export default function Profile() {
     const navigation = useNavigation()
     const movingLine = useRef(new Animated.Value(0)).current;
     const [loops, setLoops] = useState([])
+    const [pings, setPings] = useState([])
     const [user, setUser] = useState({})
+    const [isFocus, setIsFocus] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [comment, onChangeComment] = useState('');
+    const [replyingTo, setReplyingTo] = useState(null) 
+    const ref_input = useRef();
 
-    //handle getting loops
+    function handleLike(data) {
+        console.log("Liked a post!", data)
+      }
+  
+      function handleCommentLike(data) {
+        console.log("Liked a comment!", data)
+      }
+  
+      function feedChange(type) {
+        console.log("Feed was changed to" + type)
+        setFeedType(type)
+      }
+  
+      function postComment() {
+        console.log("Posting comment", comment)
+        onChangeComment("")
+        Keyboard.dismiss()
+      }
+  
+      function handleReply(data) {
+        ref_input.current.focus()
+        setReplyingTo(data.author)
+        onChangeComment("@" + data.author + " ")
+      }
+  
+      async function handleShare(postURL) {
+          try {
+            const result = await Share.share({
+              url:postURL
+            });
+  
+            if (result.action === Share.sharedAction) {
+              if (result.activityType) {
+                // shared with activity type of result.activityType
+              } else {
+                // shared
+              }
+            } else if (result.action === Share.dismissedAction) {
+              // dismissed
+            }
+          } catch (error) {
+            Alert.alert(error.message);
+          }
+      }
+
+
+
     function getLoops() {
         const exampleLoopsData = {name: "Dorm", pfp: "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png"}
         return new Array(6).fill(exampleLoopsData)
     }
     
+    function getPings() {
+        const examplePingData = {
+            postURL: "posturl",
+            isLiked: true, 
+            attatchment: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Glazed-Donut.jpg/1200px-Glazed-Donut.jpg", 
+            author: 'GrantHough', 
+            likes: 20, 
+            comments: 30, 
+            caption: 'Funny Caption. Hilarious even. My name is Grant Hough and I love dogs!', 
+            pfp: 'https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&'
+        }
+        return new Array(6).fill(examplePingData)
+    }
 
     //handle getting user data
     function getUser() {
@@ -49,28 +117,10 @@ export default function Profile() {
 
 
 
-
-
     async function copyUsernameToClipboard() {
         await Clipboard.setStringAsync(user.username);
       };
 
-
-    
-    const Loop = ({data}) => (
-        <View style={styles.loopContainer}>
-            <Image style={styles.loopPfp} source={{uri: data.pfp}}/>
-
-            <View style={styles.loopText}>
-                <Text style={{color: 'white', fontWeight: "bold"}}>Example Loop</Text>
-                <Text style={{color: 'white'}}>GrantHough said "my last message"</Text>
-            </View>
-            
-            <View style={{flex: 1}}>
-                <Text style={{color: 'gray', alignSelf: "flex-end"}}>12h</Text>
-            </View>
-        </View>
-      );
     
     
     //ANIMATION 
@@ -111,10 +161,10 @@ export default function Profile() {
             <View key={index} style={ [iconStyles[index], {justifyContent: "center", alignItems: "center", position: "absolute"}] }>
                   <Image
                       style={{
-                          width: symbolSize,
-                          height: symbolSize,
-                          borderRadius: symbolSize / 2,
-                          zIndex: 1
+                            width: symbolSize,
+                            height: symbolSize,
+                            borderRadius: symbolSize / 2,
+                            zIndex: 1
                       }}
                       source={{ uri: 'https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png' }} />
 
@@ -134,6 +184,7 @@ export default function Profile() {
 
     useEffect(() => {
         setLoops(getLoops())
+        setPings(getPings())
         setUser(getUser())
 
         Animated.sequence([
@@ -173,12 +224,12 @@ export default function Profile() {
                 <View style={styles.userRelationsContainer}>
                     <View style={styles.followCounts}>
                         <Pressable onPress={() => navigation.navigate("MutualUserLists", {name: user.username})}>
-                            <Text style={[styles.text, {fontWeight: "bold"}]}>{user.followers}</Text>
+                            <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.followers}</Text>
                             <Text style={styles.text}>Followers</Text>
                         </Pressable>
 
                         <Pressable onPress={() => navigation.navigate("MutualUserLists", {name: user.username})}>
-                            <Text style={[styles.text, {fontWeight: "bold"}]}>{user.following}</Text>
+                            <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.following}</Text>
                             <Text style={styles.text}>Following</Text>
                         </Pressable>
                     </View>
@@ -186,7 +237,7 @@ export default function Profile() {
                     <View style={styles.item_seperator}/>
 
                     <View style={styles.userDescription}>
-                        <Text style={styles.text}>{user.description}</Text>
+                        <Text style={[styles.text, {textAlign: "center"}]}>{user.description}</Text>
                     </View>
                 </View>
             
@@ -205,11 +256,23 @@ export default function Profile() {
             <View style={styles.loopsListContainer}>
                 <View style={styles.item_seperator} />
                 <FlatList
-                        data={loops}
-                        renderItem={({item}) => <Loop data={item} />}
+                        data={pings}
+                        renderItem={({item}) => <Ping data={item} setModalVisible={setModalVisible} handleLike={handleLike} handleShare={handleShare} />}
                         ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
                     />
-            </View>        
+            </View>       
+
+            <CommentModal
+              modalVisible={modalVisible}
+              setModalVisible={setModalVisible}
+              commentData={commentData}
+              onChangeComment={onChangeComment}
+              comment={comment}
+              postComment={postComment}
+              ref_input={ref_input}
+              handleCommentLike={handleCommentLike}
+              handleReply={handleReply}
+            /> 
     </SafeAreaView>
     )
 }
