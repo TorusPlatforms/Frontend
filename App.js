@@ -10,6 +10,9 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
+
 import AuthScreen from "./screens/auth";
 import SignUpScreen from "./screens/signup"
 import Feed from "./screens/feed"
@@ -96,19 +99,21 @@ const FollowTabs = () => {
 
 function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{headerShown: false, headerTitleStyle: {color: "white"}, headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}}}>
-        <Stack.Screen name="Auth" component={AuthScreen}/>
-        <Stack.Screen name="SignUp" component={SignUpScreen}/>
-        <Stack.Screen name="Home" component={Tabs}/>
-        <Stack.Screen name="Create" component={CreatePing} options={{presentation: "modal"}} />
-        <Stack.Screen name="DirectMessage" component={DirectMessage} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
-        <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.name, })}/>
-        <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>
-        <Stack.Screen name="Notifications" component={NotificationsScreen} options={{headerShown: true}}/>
-        <Stack.Screen name="Follow Requests" component={FollowRequests} options={{headerShown: true, headerBackTitleVisible: false}}/>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{headerShown: false, headerTitleStyle: {color: "white"}, headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}}}>
+          <Stack.Screen name="Auth" component={AuthScreen}/>
+          <Stack.Screen name="SignUp" component={SignUpScreen}/>
+          <Stack.Screen name="Home" component={Tabs}/>
+          <Stack.Screen name="Create" component={CreatePing} options={{presentation: "modal"}} />
+          <Stack.Screen name="DirectMessage" component={DirectMessage} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
+          <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.name, })}/>
+          <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>
+          <Stack.Screen name="Notifications" component={NotificationsScreen} options={{headerShown: true}}/>
+          <Stack.Screen name="Follow Requests" component={FollowRequests} options={{headerShown: true, headerBackTitleVisible: false}}/>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
 

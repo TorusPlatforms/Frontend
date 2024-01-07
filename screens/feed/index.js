@@ -1,10 +1,12 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Text, View, TextInput, Pressable, FlatList, Image, Animated, Modal, Keyboard, KeyboardAvoidingView, Share, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from '@react-navigation/native';
 import GestureRecognizer from 'react-native-swipe-gestures';
+import { useSelector, useDispatch } from 'react-redux';
+import { getPosts } from '../../redux/actions';
 
 import styles from "./styles";
 
@@ -25,7 +27,14 @@ export default function Feed({ route, navigation }) {
     const [comment, onChangeComment] = useState('');
     const [replyingTo, setReplyingTo] = useState(null) 
     const ref_input = useRef();
-
+    const { posts } = useSelector(state => state.postsReducer);
+    const dispatch = useDispatch();
+    const fetchPosts = () => dispatch(getPosts("calpoly"));
+    useEffect(() => {
+      fetchPosts();
+      console.log(posts)
+    }, []);
+    
     const headerHeight = scrollY.interpolate({
       inputRange: [0, 70],
       outputRange: [70, 0],

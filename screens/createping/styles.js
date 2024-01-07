@@ -13,7 +13,6 @@ const styles = StyleSheet.create({
             }
         })
     },
-
     pfp: { 
         width: 50, 
         height: 50, 

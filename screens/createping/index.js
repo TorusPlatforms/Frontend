@@ -100,7 +100,7 @@ const CreatePing = () => {
         </View>
 
         <View style={{ flexDirection: "column", alignItems: "center", marginTop: 20 }}>
-          <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Image style={styles.pfp} source={{ uri: exampleUserData.pfp }} />
             <TextInput
               ref={textInputRef}
