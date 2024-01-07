@@ -52,7 +52,7 @@ export const Ping = ({data, setModalVisible, handleLike, handleShare }) => (
         </Pressable>
       </View>
 
-      <Text style={styles.stats}>{data.likes} Likes • {data.comments} Replies</Text>
+      <Text style={styles.stats}>{data.likes} Likes • {data.comments} Comments</Text>
     </View>
   </View>
 );
