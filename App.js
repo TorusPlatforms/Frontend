@@ -27,6 +27,8 @@ import PrivacySafety from './screens/settings/Privacy and Safety';
 import SecurityAccountAccess from './screens/settings/Security and Account Access';
 import AdditionalResources from './screens/settings/Additional Resources';
 import ComingSoon from './screens/settings/Coming Soon';
+import ForgotPassword from './screens/auth/Forgot your password';
+import ResetPassword from './screens/settings/Your Account/Reset Password';
 
 
 const firebaseConfig = {
@@ -118,6 +120,8 @@ function App() {
         <Stack.Screen name="Security and Account Access" component={SecurityAccountAccess} options={{headerShown: true}}/>
         <Stack.Screen name="AdditionalResources" component={AdditionalResources} options={{headerShown: true}}/>
         <Stack.Screen name="Coming Soon" component={ComingSoon} options={{headerShown: true}}/>
+        <Stack.Screen name="Forgot Password" component={ForgotPassword} options={{headerShown: true}}/>
+        <Stack.Screen name="Reset Password" component={ResetPassword} options={{headerShown: true}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

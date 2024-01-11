@@ -54,7 +54,7 @@ export default function Settings() {
         <Text style={{ fontSize: 25, padding: 20, color: "white", marginBottom: -15 }}>Accessibility, Display, and Languages </Text>
         </Pressable>
         <Text style={{ fontSize: 15, color: "white", paddingLeft: 20, paddingRight: 20, marginBottom: 10 }}>Manage how Torus content is displayed to you.</Text>
-        <Pressable onPress={() => handlePress('AdditionalResources')}>
+        <Pressable onPress={() => handlePress('Coming Soon')}>
         <Text style={{ fontSize: 25, padding: 20, color: "white", marginBottom: -15 }}>Additional Resources </Text>
         </Pressable>
         <Text style={{ fontSize: 15, color: "white", paddingLeft: 20, paddingRight: 20, marginBottom: 10 }}>Check out other places for helpful information to learn more about Torus products and services.</Text>

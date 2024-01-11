@@ -25,7 +25,7 @@ return (
   <Text style={{ fontSize: 15, color: "lightgrey", paddingLeft: 20, paddingRight: 20 }}>See your account information like your phone number and email address.</Text>
   </Pressable>
 
-  <Pressable onPress={() => handlePress1('Coming Soon')}>
+  <Pressable onPress={() => handlePress1('Reset Password')}>
   <Text style={{ fontSize: 20, padding: 20, color: "white", paddingTop: 50, marginBottom: -15  }}>Change your Password</Text>
   
   <Text style={{ fontSize: 15, color: "lightgrey", paddingLeft: 20, paddingRight: 20 }}>Change your password at any time.</Text>
