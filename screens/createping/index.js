@@ -23,7 +23,6 @@ const CreatePing = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageUri, setImageUri] = useState(null);
   const textInputRef = useRef(null);
-  const [selectedImage, setSelectedImage] = useState(null);
 
 
   useEffect(() => {

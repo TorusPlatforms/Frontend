@@ -3,11 +3,8 @@ import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, Keyboard
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SearchBar } from "react-native-elements";
-<<<<<<< HEAD:screens/search/index.js
-import Icon from '@expo/vector-icons/Ionicons';
-=======
 import Ionicons from '@expo/vector-icons/Ionicons';
->>>>>>> main:screens/loops/index.js
+import Icon from '@expo/vector-icons/Ionicons';
 
 import styles from "./styles";
 
@@ -77,17 +74,6 @@ export default function Loops({ route, navigation }) {
     return (
             <SafeAreaView style={styles.container}>
                 <Animated.View style={{height: headerHeight, opacity: headerOpacity}}>
-<<<<<<< HEAD:screens/search/index.js
-                <View style={{flexDirection:"row"}}>
-
-                     <View style={{padding: 10,width:"85%"}}>
-                       <SearchBar 
-                        placeholder="Discover Loops & People..." 
-                        containerStyle={{backgroundColor: "rgb(22, 23, 24)", borderTopWidth: 0,  borderBottomWidth: 0, color: "rgb(22, 23, 24)"}} 
-                        onChangeText={setSearch}
-                        value={search}
-                        />
-=======
                     <View style={{padding: 10, flexDirection: 'row', flex: 1, justifyContent: "space-between", alignItems: "center"}}>
                         <View style={{flex: 1}}>
                             <SearchBar 
@@ -104,12 +90,11 @@ export default function Loops({ route, navigation }) {
                                 <Ionicons name="add" size={24} color="white" />
                             </Pressable>
                         </View>
->>>>>>> main:screens/loops/index.js
                     </View>
-                    <TouchableOpacity style={{justifyContent:"center"}} onPress={createLoop}>
-                    <Icon name="add-circle-outline" size={30} color="#ffffff" style={{  }} />
-                    </TouchableOpacity>
-                </View>
+
+                    {/* <TouchableOpacity style={{justifyContent:"center"}} onPress={createLoop}>
+                      <Icon name="add-circle-outline" size={30} color="#ffffff" style={{  }} />
+                    </TouchableOpacity> */}
                    
                 </Animated.View>
 

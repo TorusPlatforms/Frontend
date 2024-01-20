@@ -20,16 +20,11 @@ import Loops from "./screens/loops";
 import Messages from "./screens/messages" 
 import DirectMessage from "./screens/directmessage";
 import Settings from "./screens/settings";
-<<<<<<< HEAD
 import LoopsPage from './screens/loop';
 import LoopChat from './screens/loopchat'
 import LoopInfo from "./screens/loopinfo"
 import CreateLoop from "./screens/createloop";
 import LoopAnnouncements from "./screens/loopannouncements";
-=======
-import NotificationsScreen from './screens/notifications';
-import FollowRequests from './screens/followrequests';
->>>>>>> main
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",

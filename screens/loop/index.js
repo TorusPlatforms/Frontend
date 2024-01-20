@@ -19,7 +19,7 @@ const exampleLoopData = {
 
 const exampleUserData ={
 
-    member:false
+    member: true
 
 }
 
