@@ -13,7 +13,11 @@ const styles = StyleSheet.create({
 
     text: {
         color: "white",
-        textAlign: "center"
+    },
+
+    author: {
+        color: "white",
+        fontWeight: "bold",
     },
 
     userInfoContainer: {
@@ -46,6 +50,12 @@ const styles = StyleSheet.create({
         borderRadius: 50
     },
 
+    loopPfp: {
+        width: 50, 
+        height: 50, 
+        borderRadius: 25
+    },
+
     followCounts: {
         flexDirection: "row", 
         flex: 0.3, 
@@ -72,6 +82,9 @@ const styles = StyleSheet.create({
         flex: 0.3, 
         paddingHorizontal: 30,
         ...Platform.select({
+            ios: {
+                marginTop: 20
+            },
             android: {
                 marginTop: 50
             }
@@ -84,18 +97,76 @@ const styles = StyleSheet.create({
         borderRadius: 250 /2,
     },
 
+    centerLoopIcon: {
+        width: 80, 
+        height: 80, 
+        borderRadius: 40, 
+        alignSelf: "center", 
+        top: 85, 
+        zIndex: 1, 
+        justifyContent: "center", 
+        alignItems: "center"
+    },
+
     torusContainer: {
         flex: 3, 
         justifyContent: "center", 
         alignItems: "center",
     },
 
-    loopsContainer: {
+    loopContainer: {
+        marginVertical: 10, 
+        width: "100%", 
+        flexDirection: "row", 
+        paddingHorizontal: 20
+    },
+
+    loopsListContainer: {
         flex: 2, 
         height: "100%", 
         width: "100%", 
         marginTop: 20
-    }
+    },
+
+    loopText: {
+        flexDirection: 'col', 
+        marginLeft: 10, 
+        flex: 5
+    },
+
+    attatchment: {
+        aspectRatio: 1,
+        maxWidth: 100,
+        maxHeight: 100,
+        marginVertical: 10,
+        borderRadius: 20
+    },
+
+    tinyLogo: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        overflow: "hidden",
+      },
+    
+    verticalLine: {
+        width: 1,
+        backgroundColor: "gray",
+        marginTop: 8,
+        marginLeft: 18
+    },
+    
+    stats: {
+        color: "gray",
+    },
+
+    pingIcon: {
+        color: "white",
+        marginRight: 10,
+    },
+
+
+
 })
 
 export default styles;

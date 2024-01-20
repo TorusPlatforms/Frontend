@@ -1,5 +1,9 @@
 import React, { useState, useCallback, useEffect } from 'react';
+<<<<<<< HEAD
 import { View } from "react-native";
+=======
+import { View, KeyboardAvoidingView } from "react-native";
+>>>>>>> main
 import { GiftedChat, Bubble, InputToolbar, Avatar } from 'react-native-gifted-chat';
 import styles from "./styles";
 
@@ -35,7 +39,10 @@ export default function DirectMessage() {
           backgroundColor: 'transparent', 
           borderTopWidth: 0, 
           paddingHorizontal: 10, 
+<<<<<<< HEAD
           marginBottom: 25
+=======
+>>>>>>> main
         }}
       />
     );
@@ -70,7 +77,7 @@ export default function DirectMessage() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {paddingVertical: 30}]}>
       <GiftedChat
         textInputStyle={{
           backgroundColor: "rgb(50,50,50)",

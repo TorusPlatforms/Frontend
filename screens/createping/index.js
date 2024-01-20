@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, TouchableOpacity, Image, Text, TextInput } from "react-native";
+import { View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from '@expo/vector-icons/Ionicons';
+
+import ImagePickerComponent from "./imagepicker.js";
 
 import styles from "./styles";
 
@@ -18,66 +20,131 @@ const exampleUserData = {
 const CreatePing = () => {
   const navigation = useNavigation();
   const [textInputValue, setTextInputValue] = useState("");
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imageUri, setImageUri] = useState(null);
   const textInputRef = useRef(null);
   const [selectedImage, setSelectedImage] = useState(null);
 
 
   useEffect(() => {
-    textInputRef.current.focus();
-  }, []);
+    // run this whenever the selected image changes
+    if (selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri) {
+      console.log('Image is available:', selectedImage.assets[0].uri);
+      
+    } else {
+      console.log('No image available');
+    }
+  }, [selectedImage]); 
 
-  const Post = () => {
-   // THIS IS WHERE THE MAGIC WILL HAPPEN WHEN YOU CLICK POST
-    console.log(textInputValue);
+  const closeKeyboard = () => {
+    Keyboard.dismiss();
   };
 
+  const handleBackgroundPress = () => {
+    closeKeyboard();
+  };
+
+  const handleImageSelect = (image) => {
+    setSelectedImage(image);
+    console.log("Selected Image in CreatePing:", image);
+  };
+
+  const handlePictureTaken = (uri) => {
+    setSelectedImage({ assets: [{ uri }] });
+  };
+
+  const removeImage = () => {
+
+    setSelectedImage(null); // set image to null (delete image)
+  };
+
+
+
+  const Post = () => { // when you click post
+    var string = textInputValue;
+
+    const newStr = string.replace(/\n{2,}/g, '\n\n');
+    var imageValid = (selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri)
+
+    if(newStr.trim() != "" || (imageValid) ){
+        var postData; // object for post data
+
+            if (imageValid) {
+                postData = {
+                    "text": newStr,
+                    "image": selectedImage.assets[0].uri // if theres an image use it in the post
+                };
+            } else {
+                postData = {
+                    "text": newStr,
+                    "image": null // if there isnt an image dont include one
+                };
+            }
+            
+            console.log(postData); // log the ping data, eventually make this a server upload shenanigan
+
+    }
+
+
+    
+
+  };
+  
   return (
-    <View style={{ flex: 1, paddingTop: 20, backgroundColor: "rgb(22, 23, 24)" }}>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 10 }}>
-        <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Cancel</Text>
-      </TouchableOpacity>
-
-      <View style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
-        <Text style={{ paddingTop: 0, fontWeight: "bold", fontSize: 30, color: "white" }}>New Ping</Text>
-      </View>
-
-      <View style={{ flexDirection: "column", alignItems: "center", marginTop: 20 }}>
-        <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
-          <Image style={{ width: 50, height: 50, marginLeft:20, borderRadius: 20, }} source={{ uri: exampleUserData.pfp }} />
-          <TextInput
-            ref={textInputRef}
-            style={{ marginLeft: 20, paddingRight:20, paddingVertical: 10,marginTop:10, color: "white", fontSize: 18,minWidth:150, maxWidth:300 }}
-            placeholder="Type something..."
-            multiline
-            numberOfLines={4}
-            maxLength={40}
-            placeholderTextColor="gray"
-            value={textInputValue}
-            onChangeText={(text) => setTextInputValue(text)}
-          />
-        </View>
-
-
-        <View style={{flexDirection: "row", marginTop: 20}}>
-           
-        <TouchableOpacity onPress={Post} style={{marginRight:7}}>
-            <Icon name="camera-outline" size={30} color="#ff0000" />
+    <TouchableWithoutFeedback onPress={handleBackgroundPress}>
+      <View style={styles.container}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 10 }}>
+          <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Cancel</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={Post} style={{marginLeft:7}}>
-            <Icon name="images-outline" size={30} color="#ff0000" />
-        </TouchableOpacity> 
+        <View style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
+          <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>New Ping</Text>
         </View>
-        
-        
 
-        <TouchableOpacity
-          style={{ backgroundColor: "rgb(247, 212, 114)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop: 20 }}
-          onPress={Post}>
-          <Text style={{ color: "black", textAlign: "center" }}>Post</Text>
-        </TouchableOpacity>
+        <View style={{ flexDirection: "column", alignItems: "center", marginTop: 20 }}>
+          <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+            <Image style={styles.pfp} source={{ uri: exampleUserData.pfp }} />
+            <TextInput
+              ref={textInputRef}
+              style={{ marginLeft: 20, paddingRight: 20, paddingVertical: 10, marginTop: 10, color: "white", fontSize: 18, minWidth: 300, maxWidth: 300, maxHeight: 180 }}
+              placeholder="Ping your campus and beyond"
+              multiline
+              maxLength={50}
+              numberOfLines={4}
+              placeholderTextColor="gray"
+              value={textInputValue}
+              onChangeText={(text) => setTextInputValue(text)}
+            />
+          </View>
+
+          <View style={{ flexDirection: "row", marginTop: 20 }}>
+
+            {/* Render the ImagePickercomponeent and pass the callback function, image picker contrains both the camera and camera roll buttons */}
+            <ImagePickerComponent setSelectedImage={handleImageSelect} /> 
+          </View>
+
+          {selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri && (
+            <View>
+            <Image source={{ uri: selectedImage.assets[0].uri }} style={{ width: 200, height: 200, borderWidth: 2, borderColor: "white", marginTop: 15 }} />
+            <TouchableOpacity onPress={removeImage}>
+                <Text style={{alignSelf:"center", marginTop:10, color:"red", textDecorationLine:"underline"}}>Remove Image</Text>
+            </TouchableOpacity>
+             </View>
+            
+            
+          )}
+
+            
+
+          <TouchableOpacity
+            style={{ backgroundColor: "rgb(247, 212, 114)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop: 20 }}
+            onPress={Post}
+          >
+            <Text style={{ color: "black", textAlign: "center" }}>Post</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

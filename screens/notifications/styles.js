@@ -11,14 +11,17 @@ const styles = StyleSheet.create({
         height: 1,
         width: "100%",
       },
+    
+    text: {
+        color: "white",
+        fontWeight: "bold"
+    },
 
-    userContainer: {
-        marginVertical: 10, 
+    notificationContainer: {
+        marginVertical: 15, 
         width: "100%", 
         flexDirection: "row", 
-        paddingHorizontal: 20, 
-        flex: 1, 
-        alignItems: "center"
+        paddingHorizontal: 20
     },
 
     pfp: {
@@ -26,17 +29,18 @@ const styles = StyleSheet.create({
         height: 50, 
         borderRadius: 25
     },
-    
-    text: {
-        color: "white"
+
+    followRequests: {
+        flexDirection: "row", 
+        paddingHorizontal: 20, 
+        marginVertical: 10, 
+        alignItems: 'center'
     },
 
-    button: {
-        borderRadius: 20, 
-        flex: 1, 
-        justifyContent: "center", 
-        alignItems: "center", 
-        padding: 5
+    followRequestText: {
+        marginLeft: 20, 
+        maxWidth: "80%", 
+        flex: 2
     }
 
 })

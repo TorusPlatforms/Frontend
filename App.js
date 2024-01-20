@@ -16,15 +16,20 @@ import Feed from "./screens/feed"
 import Profile from "./screens/profile"
 import MutualsScreen from './screens/mutualuserlists';
 import CreatePing from './screens/createping';
-import Search from "./screens/search";
+import Loops from "./screens/loops";
 import Messages from "./screens/messages" 
 import DirectMessage from "./screens/directmessage";
 import Settings from "./screens/settings";
+<<<<<<< HEAD
 import LoopsPage from './screens/loop';
 import LoopChat from './screens/loopchat'
 import LoopInfo from "./screens/loopinfo"
 import CreateLoop from "./screens/createloop";
 import LoopAnnouncements from "./screens/loopannouncements";
+=======
+import NotificationsScreen from './screens/notifications';
+import FollowRequests from './screens/followrequests';
+>>>>>>> main
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -70,7 +75,7 @@ const Tabs = () => {
   return (
     <Tab.Navigator screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)'}, headerShown: false, tabBarShowLabel: false, headerStyle: { backgroundColor: 'rgb(22, 23, 24)'}, headerTitleStyle: { "color": "white" }}}>
       <Tab.Screen name="Feed" component={FeedScreens} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "home" : "home-outline"} color={"white"} size={size}/>)}}/>
-      <Tab.Screen name="Search" component={Search} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "search" : "search-outline"} color={"white"} size={size}/>)}}/>
+      <Tab.Screen name="Loops" component={Loops} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "people" : "people-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="CreateContainer" listeners={({ navigation }) => ({tabPress: (e) => {e.preventDefault(); navigation.navigate("Create")}})} component={CreatePing} options={{ presentation: "modal", tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "add-circle" : "add-circle-outline"} color={"white"} size={size}/>)}} />
       <Tab.Screen name="Messages" component={Messages} options={{headerShown: true, title: username, tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "chatbox" : "chatbox-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="Profile" component={Profile} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "person" : "person-outline"} color={"white"} size={size}/>)}}/>

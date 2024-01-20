@@ -15,9 +15,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This feature requires access to your camera",
+        "NSMicrophoneUsageDescription": "This feature requires access to your microphone",
+        "NSPhotoLibraryUsageDescription": "This feature requires access to your camera roll"
+      }
     },
     "android": {
+    "permissions": ["CAMERA", "AUDIO_RECORDING","READ_EXTERNAL_STORAGE"],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"

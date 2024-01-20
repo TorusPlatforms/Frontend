@@ -12,13 +12,13 @@ const styles = StyleSheet.create({
         width: "100%",
       },
 
-    userContainer: {
-        marginVertical: 10, 
+    requestContainer: {
+        marginVertical: 20, 
         width: "100%", 
         flexDirection: "row", 
         paddingHorizontal: 20, 
-        flex: 1, 
-        alignItems: "center"
+        alignItems: "center", 
+        justifyContent: "space-between"
     },
 
     pfp: {
@@ -26,19 +26,25 @@ const styles = StyleSheet.create({
         height: 50, 
         borderRadius: 25
     },
+
+    username: {
+        color: "white", 
+        fontWeight: "bold", 
+        marginLeft: 10
+    },
     
-    text: {
-        color: "white"
+    deleteButton: {
+        backgroundColor: "gray",
+        padding: 5, 
+        borderRadius: 10, 
+        width: 75
     },
 
-    button: {
-        borderRadius: 20, 
-        flex: 1, 
-        justifyContent: "center", 
-        alignItems: "center", 
-        padding: 5
+    //plus the delete button style
+    confirmButton: {
+        backgroundColor: "rgb(0, 114, 160)", 
+        marginRight: 5, 
     }
-
 })
 
 export default styles;
