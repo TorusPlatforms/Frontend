@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { View, Text, Dimensions, Pressable, TextInput, KeyboardAvoidingView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getAuth, createUserWithEmailAndPassword  } from "firebase/auth"
+import { getAuth, createUserWithEmailAndPassword, deleteUser } from "firebase/auth"
 import styles from "./styles";
 
 export default function SignUpScreen() {
@@ -20,21 +20,53 @@ export default function SignUpScreen() {
     //must check that pass and confirm pass are equal before sending
     //check that username doesnt exist
 
-
+    async function registerUserBackend(username, uid, email) {
+        const url = 'https://backend-26ufgpn3sq-uc.a.run.app/api/user/register';
+    
+        const data = {
+            username: username,
+            token: uid,
+            college_email: email
+        };
+        
+        console.log(JSON.stringify(data))
+        const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+        });
+    
+        const responseData = await response.json();
+        console.log('Response:', responseData);
+      }
+      
     async function signUp() {
         const auth = getAuth()
         console.log("AUTH", auth)
         console.log(email, password)
 
         try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            console.log("Successfully created user");
-            navigation.navigate("Home");
+            const user = await createUserWithEmailAndPassword(auth, email, password);
+            console.log("Successfully created user in Firebase");
+            console.log(user.user.uid)
+
+            try {
+                await registerUserBackend(username, user.user.uid, user.user.email)
+                console.log("Successfully created user in Backend");
+                navigation.navigate("Home");
+            } catch (error) {
+                alert("Backend: Username in use")
+                deleteUser(auth.currentUser)
+                console.log('DEleted user')
+            }
           } catch (error) {
             const errorCode = error.code;
             const errorMessage = error.message;        
             alert(errorMessage);
           }
+
     }
 
     return (

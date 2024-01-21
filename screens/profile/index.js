@@ -6,7 +6,8 @@ import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 import { getAuth } from "firebase/auth";
 
-import { Ping, CommentModal } from "../feed/index"
+import { CommentModal } from '../../components/comments';
+import { Ping } from "../../components/pings";
 import styles from "./styles";
 
 const exampleComment = {isLiked: true, timeAgo: "3h", author: 'GrantHough', content: "Funny ass comment", likes: 20, pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&"}
