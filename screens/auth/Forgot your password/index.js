@@ -2,11 +2,11 @@ import React, { useState, useRef, useEffect } from "react";
 import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, KeyboardAvoidingView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
 
 import styles from "./styles";
 
-export default function AuthScreen() {
+export default function ResetPassword() {
     const navigation = useNavigation()
 
     const windowWidth = Dimensions.get('window').width;
@@ -16,7 +16,6 @@ export default function AuthScreen() {
     const fadeAnim = useRef(new Animated.Value(0)).current 
 
     const [email, onChangeEmail] = useState("tanujsiripurapu@gmail.com")
-    const [password, onChangePassword] = useState("abc123")
     const handlePress = (screenName) => {
     navigation.navigate(screenName);
   };
@@ -38,11 +37,12 @@ export default function AuthScreen() {
       }, [moveLogoAnim, fadeAnim]);
     
     
-    async function login() {
-        const auth = getAuth();
-        await signInWithEmailAndPassword(auth, email, password)
-        console.log("Logged in with user UID:", auth.currentUser.uid)
+    async function verification() {
+       
+        await sendEmailVerification(email)
+        console.log("Sent Verification")
         navigation.navigate("Home")
+
     }
 
     
@@ -60,7 +60,8 @@ export default function AuthScreen() {
             }}>
 
                 <View style={styles.loginContainer}>
-                    <Text style={styles.text}>Login to Torus</Text>
+                    <Text style={styles.text}>Forgot your Password?</Text>
+                    <Text style={{ textAlign:'center',fontSize: 15, padding: 20, color: "white", marginTop: -25, marginBottom: 15 }}>Please enter the email address you would like a confirmation email to be sent to:</Text>
 
                     <TextInput 
                         onChangeText={onChangeEmail} 
@@ -70,23 +71,10 @@ export default function AuthScreen() {
                         style={[{width: windowWidth - 50}, styles.submissionBox]}
                     />
                 
-                     <TextInput 
-                        onChangeText={onChangePassword} 
-                        value={password}
-                        placeholder="Password"
-                        placeholderTextColor={"white"}
-                        style={[{width: windowWidth - 50}, styles.submissionBox]}
-                    />
-                
-                    
-                    
-                    <Pressable onPress={() => handlePress('Forgot Password')}>
                  
-                        {({pressed}) => 
-                            <Text style={{color: pressed ? 'gray' : 'white', marginLeft: -185}}>Forgot your password?</Text>
-                            
-                        }
-                    </Pressable>
+                    
+                    
+                
 
 
                 </View>
@@ -95,20 +83,13 @@ export default function AuthScreen() {
 
             
                 <View style={styles.welcomeBackContainer}>
-                    <Pressable onPress={login} style={[styles.submissionBox, styles.welcomeBack, {width: windowWidth - 50}]}>
+                    <Pressable onPress={verification} style={[styles.submissionBox, styles.welcomeBack, {width: windowWidth - 50}]}>
                         {({pressed}) => 
-                            <Text style={[{color: pressed ? 'gray' : 'white'}, {fontSize: 16}]}>Welcome Back</Text>
+                            <Text style={[{color: pressed ? 'gray' : 'white'}, {fontSize: 16}]}>Send Verification</Text>
                         }
                     </Pressable>
 
-                    <View style={styles.signUpButton}>
-                        <Text style={{color: "white"}}>Don't have an account?   </Text>
-                        <Pressable onPress={() => navigation.navigate("SignUp")}>
-                            {({pressed}) => 
-                                <Text style={{color: pressed ? 'gray' : 'white'}}>Sign Up</Text>
-                            }
-                        </Pressable>
-                    </View>
+                
                 </View>
             </Animated.View>
 
