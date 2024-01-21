@@ -21,34 +21,31 @@ const styles = StyleSheet.create({
     },
 
     userInfoContainer: {
-        flex: 1.75, 
-        justifyContent: "center", 
+        flex: 1, 
         flexDirection: 'row',
-        alignItems: 'center'
     }, 
 
     displayName: {
         color: "white",
-        fontSize: 25,
+        fontSize: 20,
         fontWeight: "bold"
     },
 
     pfpContainer: {
         flex: 1, 
         alignItems: "center", 
-        justifyContent: 'center'
     },
 
     userRelationsContainer: {
         flex: 1, 
-        right: 20, 
-        justifyContent: 'center'
+        right: 20,
+        justifyContent: 'space-evenly' 
     },
     
     pfp: {
-        width: 100, 
-        height: 100, 
-        borderRadius: 50
+        width: 80, 
+        height: 80, 
+        borderRadius: 40
     },
 
     loopPfp: {
@@ -59,13 +56,12 @@ const styles = StyleSheet.create({
 
     followCounts: {
         flexDirection: "row", 
-        flex: 0.3, 
+        flex: 0.2, 
         justifyContent: "space-around"
     },
 
     userDescription: {
-        justifyContent: "center",
-        flex: 0.5
+        flex: 0.4
     },
 
     item_seperator: {
@@ -77,7 +73,7 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: "row", 
         justifyContent: "space-between", 
-        flex: 0.3, 
+        flex: 0.25, 
         paddingHorizontal: 30,
         ...Platform.select({
             ios: {
@@ -107,7 +103,7 @@ const styles = StyleSheet.create({
     },
 
     torusContainer: {
-        flex: 3, 
+        flex: 2, 
         justifyContent: "center", 
         alignItems: "center",
     },

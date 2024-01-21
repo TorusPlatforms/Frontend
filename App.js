@@ -31,6 +31,8 @@ import ComingSoon from './screens/settings/Coming Soon';
 import ForgotPassword from './screens/auth/Forgot your password';
 import ResetPassword from './screens/settings/Your Account/Reset Password';
 import EditProfile from "./screens/editprofile";
+import EditField from "./screens/editfield";
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -71,6 +73,7 @@ function DirectMessageHeader(props) {
     <Text style={{color: "white", fontWeight: "bold", fontSize: 18, marginBottom: 5}}>{props.params.username}</Text>
   );
 }
+
 
 const Tabs = () => {
   return (
@@ -124,7 +127,8 @@ function App() {
         <Stack.Screen name="Coming Soon" component={ComingSoon} options={{headerShown: true}}/>
         <Stack.Screen name="Forgot Password" component={ForgotPassword} options={{headerShown: true}}/>
         <Stack.Screen name="Reset Password" component={ResetPassword} options={{headerShown: true}}/>
-        <Stack.Screen name="EditProfile" component={EditProfile} options={{headerShown: false}}/>
+        <Stack.Screen name="Edit Profile" component={EditProfile} options={{headerShown: true}}/>
+        <Stack.Screen name="EditField" component={EditField}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from '@expo/vector-icons/Ionicons';
 
-import { ImagePickerComponent } from "../../components/imagepicker";
+import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } from "../../components/imagepicker";
 
 import styles from "./styles";
 
@@ -26,12 +26,16 @@ const CreatePing = () => {
 
   useEffect(() => {
     // run this whenever the selected image changes
+    requestCameraPerms()
+    requestPhotoLibraryPerms()
+    
     if (selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri) {
       console.log('Image is available:', selectedImage.assets[0].uri);
       
     } else {
       console.log('No image available');
     }
+
   }, [selectedImage]); 
 
   const closeKeyboard = () => {
@@ -120,7 +124,15 @@ const CreatePing = () => {
           <View style={{ flexDirection: "row", marginTop: 20 }}>
 
             {/* Render the ImagePickercomponeent and pass the callback function, image picker contrains both the camera and camera roll buttons */}
-            <ImagePickerComponent setSelectedImage={handleImageSelect} /> 
+            <View style={{flexDirection:"row"}}>
+              <TouchableOpacity style={{ marginRight: 10 }} onPress={pickImage}>
+                <Icon name="image-outline" size={30} color="#FFFFFF" />
+              </TouchableOpacity>
+
+              <TouchableOpacity style={{ marginLeft: 10 }} onPress={openCamera}>
+                <Icon name="camera-outline" size={30} color="#FFFFFF" />
+              </TouchableOpacity>
+            </View> 
           </View>
 
           {selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri && (
