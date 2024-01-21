@@ -1,10 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, TouchableOpacity, Image, Text, TextInput, ScrollView, Modal, TouchableWithoutFeedback, Alert } from "react-native";
+import { View, TouchableOpacity, Image, Text, TextInput, ScrollView, Modal, TouchableWithoutFeedback } from "react-native";
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
-import ImagePickerComponent from './imagepicker';
+
+import { requestCameraPerms, requestPhotoLibraryPerms, pickImage, openCamera } from '../../components/imagepicker';
 
 const exampleLoopData = {
     pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
@@ -94,7 +95,7 @@ const LoopInfo = () => {
 
     const leaveLoop = () => {
         // Display an alert to confirm the user's decision
-        Alert.alert(
+        alert(
           'Leave Loop',
           'Are you sure you want to leave the loop?',
           [
@@ -114,7 +115,21 @@ const LoopInfo = () => {
         );
       };
 
+      useEffect(() => {
+        // run this whenever the selected image changes
+        requestCameraPerms()
+        requestPhotoLibraryPerms()
+        
+        if (selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri) {
+          console.log('Image is available:', selectedImage.assets[0].uri);
+          
+        } else {
+          console.log('No image available');
+        }
+    
+      }, [selectedImage]); 
 
+      
       return (
         <View style={{  paddingTop: 20, backgroundColor: "rgb(22, 23, 24)", height:"100%" }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -142,9 +157,17 @@ const LoopInfo = () => {
             }}
             />
             {exampleUserData.admin && (
-        <View style={{marginTop:10,marginLeft:150}}>
-                <ImagePickerComponent style={{}} setSelectedImage={handleImageSelect}></ImagePickerComponent>
-            </View>
+                <View style={{marginTop:10,marginLeft:150}}>
+                  <View style={{flexDirection:"row"}}>
+                    <TouchableOpacity style={{ marginRight: 10 }} onPress={() => pickImage(handleImageSelect)}>
+                      <Icon name="image-outline" size={30} color="#FFFFFF" />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => openCamera(handleImageSelect)}>
+                      <Icon name="camera-outline" size={30} color="#FFFFFF" />
+                    </TouchableOpacity>
+                  </View>     
+                </View>
             )}
             {selectedImage && (
                 <>

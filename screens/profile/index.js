@@ -262,9 +262,9 @@ export default function Profile() {
 
             <View style={styles.torusContainer}>
                 <View style={styles.centerLoop}>
-                    <View style={styles.centerLoopIcon}>
+                    <Pressable onPress={() => navigation.navigate("MyLoops")} style={styles.centerLoopIcon}>
                         <MaterialCommunityIcons name="google-circles-communities" color={"gray"} size={60}/>
-                    </View>
+                    </Pressable>
                     {renderLoops()}
                 </View>
             </View>

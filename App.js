@@ -16,8 +16,12 @@ import Feed from "./screens/feed"
 import Profile from "./screens/profile"
 import MutualsScreen from './screens/mutualuserlists';
 import CreatePing from './screens/createping';
-import CreateLoop from "./screens/createloop"
-import Loops from "./screens/loops";
+import Search from "./screens/search";
+import LoopsPage from './screens/loop';
+import LoopChat from './screens/loopchat'
+import LoopInfo from "./screens/loopinfo"
+import CreateLoop from "./screens/createloop";
+import LoopAnnouncements from "./screens/loopannouncements";
 import Messages from "./screens/messages" 
 import DirectMessage from "./screens/directmessage";
 import Settings from "./screens/settings";
@@ -32,7 +36,7 @@ import ForgotPassword from './screens/auth/Forgot your password';
 import ResetPassword from './screens/settings/Your Account/Reset Password';
 import EditProfile from "./screens/editprofile";
 import EditField from "./screens/editfield";
-
+import MyLoops from "./screens/myloops";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -79,7 +83,7 @@ const Tabs = () => {
   return (
     <Tab.Navigator screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)'}, headerShown: false, tabBarShowLabel: false, headerStyle: { backgroundColor: 'rgb(22, 23, 24)'}, headerTitleStyle: { "color": "white" }}}>
       <Tab.Screen name="Feed" component={FeedScreens} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "home" : "home-outline"} color={"white"} size={size}/>)}}/>
-      <Tab.Screen name="Loops" component={Loops} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "people" : "people-outline"} color={"white"} size={size}/>)}}/>
+      <Tab.Screen name="Search" component={Search} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "search" : "search-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="CreateContainer" listeners={({ navigation }) => ({tabPress: (e) => {e.preventDefault(); navigation.navigate("Create")}})} component={CreatePing} options={{ presentation: "modal", tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "add-circle" : "add-circle-outline"} color={"white"} size={size}/>)}} />
       <Tab.Screen name="Messages" component={Messages} options={{headerShown: true, title: username, tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "chatbox" : "chatbox-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="Profile" component={Profile} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "person" : "person-outline"} color={"white"} size={size}/>)}}/>
@@ -113,8 +117,13 @@ function App() {
         <Stack.Screen name="Auth" component={AuthScreen}/>
         <Stack.Screen name="SignUp" component={SignUpScreen}/>
         <Stack.Screen name="Home" component={Tabs}/>
+        <Stack.Screen name="MyLoops" component={MyLoops} options={{headerShown: true}}/>
         <Stack.Screen name="Create" component={CreatePing} options={{presentation: "modal"}} />
         <Stack.Screen name="CreateLoop" component={CreateLoop} options={{pesentation: "modal"}} />
+        <Stack.Screen name="Loop" component={LoopsPage} initialParams={{get:"loop"}} options={{headerShown:false}}/>
+        <Stack.Screen name="LoopChat" component={LoopChat} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
+        <Stack.Screen name="LoopAnnouncements" component={LoopAnnouncements} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
+        <Stack.Screen name="LoopInfo" component={LoopInfo}/>
         <Stack.Screen name="DirectMessage" component={DirectMessage} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.name, })}/>
         <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>

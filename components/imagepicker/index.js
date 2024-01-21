@@ -30,7 +30,7 @@ export async function pickImage(handleImage) {
       quality: 1,
     });
 
-    if (!result.cancelled) {
+    if (!result.canceled) {
       console.log("Selected Image in ImagePicker:", result);
       handleImage(result);
     }
