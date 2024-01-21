@@ -1,91 +1,105 @@
-// YourAccountScreen.js
 import React, { useState } from 'react';
-//import { View, Text, Pressable } from 'react-native';
+import { ScrollView, Text, View, Pressable, Switch } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styles1 from './styles1';
-import { ScrollView, Text, View, Pressable, Switch} from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
 
+const exampleUserData = {
+  privacy: true,
+  messagePrivacy: 'everyone', // Assuming this is part of your user data
+};
 
-const exampleUserData ={
-
-  privacy:true,
-  
-
-}
+const messageOptions = [
+  { label: 'Anyone', value: 'everyone' },
+  { label: 'Followers', value: 'followers' },
+  { label: 'People I Follow', value: 'following' },
+  { label: 'No one', value: 'none' },
+];
 
 export default function PrivacySafety() {
   const [privacyEnabled, setPrivacyEnabled] = useState(exampleUserData.privacy);
+  const [messagePrivacy, setMessagePrivacy] = useState(exampleUserData.messagePrivacy);
   const navigation = useNavigation();
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(null);
-  const [items, setItems] = useState([
-    {label: 'Friends', value: 3},
-    {label: 'Followers', value: 2},
-    {label: 'Anyone', value: 1},
-    {label:'No one', value: 0}
-  ]);
-
-  const handlePress1 = (screenName) => {
-    navigation.navigate(screenName);
-  };
 
   const togglePrivacy = () => {
     setPrivacyEnabled((previousState) => !previousState);
   };
-  const turnOffSwitch = () => {
-    setPrivacyEnabled(false);
-   
+
+  // ...
+
+  const selectMessagePrivacy = (value) => {
+    setMessagePrivacy(value);
   };
 
-
-  
-  
-
+  // Render options dynamically
+  const renderMessageOptions = () => {
+    return messageOptions.map((option) => (
+      <Pressable
+        key={option.value}
+        onPress={() => selectMessagePrivacy(option.value)}
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingVertical: 5,
+        }}
+      >
+        <Text style={{ fontSize: 15, color: "white" }}>{option.label}</Text>
+        <View
+          style={{
+            height: 24,
+            width: 24,
+            borderRadius: 12,
+            borderWidth: messagePrivacy === option.value ? 2 : 1,
+            borderColor: messagePrivacy === option.value ? 'rgb(247, 212, 114)' : 'white',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {messagePrivacy === option.value && (
+            <View
+              style={{
+                height: 12,
+                width: 12,
+                borderRadius: 6,
+                backgroundColor: 'rgb(247, 212, 114)',
+              }}
+            />
+          )}
+        </View>
+      </Pressable>
+    ));
+  };
 
   return (
+    <ScrollView style={{ height: "100%", backgroundColor: "rgb(22,23,24)" }}>
+      
 
-    <ScrollView style={{height:"100%", backgroundColor:"rgb(22,23,24)"}}>
-    <View style={{backgroundColor:"rgb(22,23,24)", height:"100%"}}>
-    <Text style={{ fontSize: 25, padding: 20, color: "white", paddingTop: 50, textAlign: 'center', marginBottom: -35 }}>Privacy and Safety</Text>
-    <Text style={{ fontSize: 12, padding: 20, color: "white", textAlign:'center', marginBottom: -25 }}>Manage what information you allow other people on Torus to see.</Text>
-    <Text style={{ fontSize: 15, color: "white", textAlign:'center', marginBottom: 25 }}>______________________________________________________</Text>
+        <View style={{ paddingHorizontal: 40 }}>
+          <Text style={{ fontSize: 25, color: "white",marginTop: 20, marginBottom: 15 }}>Who can message me?</Text>
+          {renderMessageOptions()}
 
-    <View style={{ paddingHorizontal: 40 }}>
-  <Text style={{ fontSize: 15, color: "white" }}>Who can message me?</Text>
-  <DropDownPicker
-      open={open}
-      value={value}
-      items={items}
-      setOpen={setOpen}
-      setValue={setValue}
-      setItems={setItems}
-    />
-
-<Text style={{ fontSize: 20, color: "white", marginTop:40, marginBottom: 10, textAlign: 'center'}}>Account Privacy</Text>
-<Text style={{ fontSize: 10, color: "light grey", marginTop:0, marginBottom: 20, textAlign: 'center'}}>When your account is public, your profile and posts can be seen by anyone, on or off Torus. When your account is private, only followers can see what you share</Text>
-
-  <Text style={{ fontSize: 15, color: "white", marginBottom: 10,}}>Private Account:</Text>
-<Switch
         
+      </View>
+
+<Text style={{ fontSize: 25, color: "white", marginTop:40, marginBottom: 10, textAlign: 'center'}}>Account Privacy</Text>
+<Text style={{ fontSize: 15, color: "white", marginTop:0, marginBottom: 20, paddingHorizontal: 15, textAlign: 'center'}}>When your account is public, your profile and posts can be seen by anyone, on or off Torus. When your account is private, only followers can see what you share</Text>
+
+  <Text style={{ fontSize: 15, color: "white", textAlign: 'center', marginBottom: 10}}>Private Account:</Text>
+  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+<Switch
+       
         trackColor={{ false: '#767577', true: 'rgb(247, 212, 114)' }}
         thumbColor={privacyEnabled ? 'grey' : 'white'}
         ios_backgroundColor="#3e3e3e"
         onValueChange={togglePrivacy}
         value={privacyEnabled}
       />
+
 </View>
-
-
-  
-    
-    </View>
     </ScrollView>
-    
-  )
-
-
+  );
 }
+
 
 // vvvv  OLD PRIVACY PAGE SAVE FOR LATER vvvv
 
@@ -187,4 +201,8 @@ export default function PrivacySafety() {
 
   </View>
   </ScrollView>
-)*/
+
+)
+
+
+*/

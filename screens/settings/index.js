@@ -34,7 +34,7 @@ export default function Settings() {
     return (
       <ScrollView style={styles.container}>
        
-        <Pressable style={{flexDirection: "row", alignItems: "center", marginLeft: 10}} onPress={() => handlePress('Your Account')}>
+        <Pressable style={{flexDirection: "row", alignItems: "center", marginLeft: 10, marginTop: 20, marginRight: 20}} onPress={() => handlePress('Your Account')}>
           <Ionicons name="people" size={24} color={"white"}/>
           <View style={{flexDirection: "col", marginLeft: 10, padding: 5}}>
             <Text style={{ fontSize: 18, color: "white"}}>Your Account </Text>
@@ -43,26 +43,52 @@ export default function Settings() {
          
         </Pressable>
 
-        <Pressable onPress={() => handlePress('Security and Account Access')}>
-        <Text style={{ fontSize: 18, padding: 20, color: "white", marginBottom: -15 }}>Security and Account Access </Text>
+        <Pressable style={{flexDirection: "row", alignItems: "center", marginLeft: 10, marginTop: 20, marginRight: 20}} onPress={() => handlePress('Security and Account Access')}>
+          <Ionicons name="people" size={24} color={"white"}/>
+          <View style={{flexDirection: "col", marginLeft: 10, padding: 5}}>
+            <Text style={{ fontSize: 18, color: "white"}}>Security and Account Access </Text>
+            <Text style={{ fontSize: 13, color: "lightgrey" }}>Manage your accounts security and keep track of your accounts usage including apps that you have connected to your account.</Text>
+          </View>
+         
         </Pressable>
-        <Text style={{ fontSize: 13, color: "white", paddingLeft: 20, paddingRight: 20, marginBottom: 10 }}>Manage your account’s security and keep track of your account’s usage including apps that you have connected to your account.</Text>
-        <Pressable onPress={() => handlePress('Privacy and Safety')}>
-        <Text style={{ fontSize: 18, padding: 20, color: "white", marginBottom: -15 }}>Privacy and Safety </Text>
-        </Pressable>
-        <Text style={{ fontSize: 13, color: "white" , paddingLeft: 20, paddingRight: 20, marginBottom: 10}}>Manage what information you see and share on Torus.</Text>
-        <Pressable onPress={() => handlePress('Notifications')}>
-        <Text style={{ fontSize: 18, padding: 20, color: "white", marginBottom: -15 }}>Notifications </Text>
-        </Pressable>
-        <Text style={{ fontSize: 13, color: "white", paddingLeft: 20, paddingRight: 20, marginBottom: 10 }}>Select the kinds of notifications you get about your activities, interests, loops, and recommendations.</Text>
-        <Pressable onPress={() => handlePress('Accessibility')}>
-        <Text style={{ fontSize: 18, padding: 20, color: "white", marginBottom: -15 }}>Accessibility, Display, and Languages </Text>
-        </Pressable>
-        <Text style={{ fontSize: 13, color: "white", paddingLeft: 20, paddingRight: 20, marginBottom: 10 }}>Manage how Torus content is displayed to you.</Text>
-        <Pressable onPress={() => handlePress('Coming Soon')}>
-        <Text style={{ fontSize: 18, padding: 20, color: "white", marginBottom: -15 }}>Additional Resources </Text>
-        </Pressable>
-        <Text style={{ fontSize: 13, color: "white", paddingLeft: 20, paddingRight: 20, marginBottom: 10 }}>Check out other places for helpful information to learn more about Torus products and services.</Text>
+
+        <Pressable style={{flexDirection: "row", alignItems: "center", marginLeft: 10, marginTop: 20, marginRight: 20}} onPress={() => handlePress('Privacy and Safety')}>
+          <Ionicons name="people" size={24} color={"white"}/>
+          <View style={{flexDirection: "col", marginLeft: 10, padding: 5}}>
+            <Text style={{ fontSize: 18, color: "white"}}>Privacy and Safety </Text>
+            <Text style={{ fontSize: 13, color: "lightgrey" }}>Manage what information you see and share on Torus.</Text>
+          </View>
+         
+        </Pressable>  
+       
+        <Pressable style={{flexDirection: "row", alignItems: "center", marginLeft: 10, marginTop: 20, marginRight: 20}} onPress={() => handlePress('Notifications')}>
+          <Ionicons name="people" size={24} color={"white"}/>
+          <View style={{flexDirection: "col", marginLeft: 10, padding: 5}}>
+            <Text style={{ fontSize: 18, color: "white"}}>Notifications </Text>
+            <Text style={{ fontSize: 13, color: "lightgrey" }}>Select the kinds of notifications you get about your activities, interests, loops, and recommendations.</Text>
+          </View>
+         
+        </Pressable>  
+
+        <Pressable style={{flexDirection: "row", alignItems: "center", marginLeft: 10, marginTop: 20, marginRight: 20}} onPress={() => handlePress('Accessibility')}>
+          <Ionicons name="people" size={24} color={"white"}/>
+          <View style={{flexDirection: "col", marginLeft: 10, padding: 5}}>
+            <Text style={{ fontSize: 18, color: "white"}}>Accessibility, Display, and Languages </Text>
+            <Text style={{ fontSize: 13, color: "lightgrey" }}>Manage how Torus content is displayed to you.</Text>
+          </View>
+         
+        </Pressable>  
+
+        <Pressable style={{flexDirection: "row", alignItems: "center", marginLeft: 10, marginTop: 20, marginRight: 20}} onPress={() => handlePress('Coming Soon')}>
+          <Ionicons name="people" size={24} color={"white"}/>
+          <View style={{flexDirection: "col", marginLeft: 10, padding: 5}}>
+            <Text style={{ fontSize: 18, color: "white"}}>Additional Resources </Text>
+            <Text style={{ fontSize: 13, color: "lightgrey" }}>Check out other places for helpful information to learn more about Torus products and services.</Text>
+          </View>
+         
+        </Pressable>  
+
+       
       </ScrollView>
     );
 }
