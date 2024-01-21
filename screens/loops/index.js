@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, KeyboardAvoidingView, FlatList, TouchableOpacity } from "react-native";
+import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SearchBar } from "react-native-elements";
@@ -11,6 +12,8 @@ import styles from "./styles";
 export default function Loops({ route, navigation }) {
     const [loops, setLoops] = useState([])
     const [search, setSearch] = useState("")
+    const [feedType, setFeedType] = useState(null);
+    const [isFocus, setIsFocus] = useState(false);
 
     function getLoops() {
         //handle getting discover/main feed
@@ -22,8 +25,16 @@ export default function Loops({ route, navigation }) {
             interests: ["Golfing", "Frolicking", "Hijinks"]
         }        
 
+        
+
         return new Array(20).fill(exampleLoopData)
     }
+
+    const dropdownData = [
+        { label: 'Popular', value: 'popular' },
+        { label: 'Public', value: 'public' },
+        { label: 'Private', value: 'private' },
+      ];
 
     
     const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
@@ -40,6 +51,11 @@ export default function Loops({ route, navigation }) {
       outputRange: [1, 0],
       extrapolate: 'clamp',
     });
+
+    function feedChange(type) {
+        console.log("Feed was changed to" + type)
+        setFeedType(type)
+      }
 
 
     const Loop = ({data}) => (
@@ -74,23 +90,47 @@ export default function Loops({ route, navigation }) {
     return (
             <SafeAreaView style={styles.container}>
                 <Animated.View style={{height: headerHeight, opacity: headerOpacity}}>
-                    <View style={{padding: 10, flexDirection: 'row', flex: 1, justifyContent: "space-between", alignItems: "center"}}>
-                        <View style={{flex: 1}}>
-                            <SearchBar 
-                                placeholder="Discover Loops & People..." 
-                                containerStyle={{backgroundColor: "rgb(22, 23, 24)", borderTopWidth: 0,  borderBottomWidth: 0, color: "rgb(22, 23, 24)"}} 
-                                onChangeText={setSearch}
-                                value={search}
-                            />
-                        </View>
-                       
+                <View style={{padding: 10, flexDirection: 'row', flex: 1, justifyContent: "space-between", alignItems: "center"}}>
+                <View style={{flex: 1}}>
+                    <SearchBar 
+                        placeholder="Discover Loops & People..." 
+                        containerStyle={{backgroundColor: "rgb(22, 23, 24)", borderTopWidth: 0, borderBottomWidth: 0, color: "rgb(22, 23, 24)"}} 
+                        onChangeText={setSearch}
+                        value={search}
+                    />
+                </View>
 
-                        <View style={{flex: 0.1}}>
-                            <Pressable onPress={() => navigation.navigate("CreateLoop")}>
-                                <Ionicons name="add" size={24} color="white" />
-                            </Pressable>
-                        </View>
-                    </View>
+                {/*<Pressable onPress={() => navigation.navigate("CreateLoop")}>
+                    <Ionicons name="add" size={24} color="white" />
+                </Pressable> */}
+
+                <Dropdown
+                    containerStyle={{
+                        borderRadius: 10,
+                        backgroundColor: "rgb(22, 23, 24)",
+                        borderWidth: 1,
+                        borderColor: "white",
+                        width:100,
+                        marginLeft:-80 // Adjust the left position to make it stick out to the left
+                    }}
+                    itemTextStyle={styles.text}
+                    selectedTextStyle={[styles.text, {fontWeight: "bold"}]}
+                    activeColor='rgb(22, 23, 24)'
+                    data={dropdownData}
+                    placeholder='Torus'
+                    placeholderStyle={[styles.text, {fontWeight: "bold"}]}
+                    maxHeight={300}
+                    labelField="label"
+                    valueField="value"
+                    value={feedType}
+                    onFocus={() => setIsFocus(true)}
+                    onBlur={() => setIsFocus(false)}
+                    onChange={item => {
+                        feedChange(item.value);
+                        setIsFocus(false);
+                    }}
+                />
+            </View>
 
                     {/* <TouchableOpacity style={{justifyContent:"center"}} onPress={createLoop}>
                       <Icon name="add-circle-outline" size={30} color="#ffffff" style={{  }} />
