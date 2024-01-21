@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef} from 'react'
-import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable, Alert, Share } from 'react-native'
+import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable, Alert, Share, ActivityIndicator } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
@@ -18,7 +18,7 @@ export default function Profile() {
     const movingLine = useRef(new Animated.Value(0)).current;
     const [loops, setLoops] = useState([])
     const [pings, setPings] = useState([])
-    const [user, setUser] = useState({})
+    const [user, setUser] = useState(null)
     const [isFocus, setIsFocus] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [comment, onChangeComment] = useState('');
@@ -90,18 +90,32 @@ export default function Profile() {
     }
 
     //handle getting user data
-    function getUser() {
-        const auth = getAuth()
-        console.log(auth.currentUser.uid)
+    async function getUser() {
         const exampleUserData = {
             pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
-            displayName: "Grant Hough",
+            display_name: "Grant Hough",
             username: "@granthough",
-            following: 128,
-            followers: 259,
-            description: "A pretty funny guy. Has a strong affinity for dogs. \n Stefan Murphy: 'The test is in'"
+            following_count: 128,
+            follower_count: 259,
+            bio: "A pretty funny guy. Has a strong affinity for dogs. \n Stefan Murphy: 'The test is in'"
         }
-        return exampleUserData
+
+
+        const auth = getAuth()
+        console.log(auth.currentUser.uid)
+        const url = `https://backend-26ufgpn3sq-uc.a.run.app/api/user/id/${auth.currentUser.uid}`;
+        console.log(url)
+        const response = await fetch(url);
+    
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+    
+        const userData = await response.json();
+        console.log('User Data:', userData);
+
+     
+        setUser(userData)
     }
    
     //handle getting loop notification
@@ -184,7 +198,7 @@ export default function Profile() {
     useEffect(() => {
         setLoops(getLoops())
         setPings(getPings())
-        setUser(getUser())
+        getUser()
 
         Animated.sequence([
         Animated.delay(300),
@@ -196,7 +210,12 @@ export default function Profile() {
         ]).start();
     
       }, [movingLine]);
+    
+    if (!user) {
+        return <ActivityIndicator/>
+    }
 
+    console.log("UWSERSERSR", user)
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -215,7 +234,7 @@ export default function Profile() {
                     <Text style={styles.displayName}>{user.displayName}</Text>
                     <Pressable onPress={copyUsernameToClipboard}>
                         {({pressed}) => (
-                            <Text style={{color: pressed ? "gray": "white"}}>{user.username}</Text>
+                            <Text style={{color: pressed ? "gray": "white"}}>@{user.username}</Text>
                         )}
                     </Pressable>
                 </View>
@@ -223,12 +242,12 @@ export default function Profile() {
                 <View style={styles.userRelationsContainer}>
                     <View style={styles.followCounts}>
                         <Pressable onPress={() => navigation.navigate("MutualUserLists", {name: user.username})}>
-                            <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.followers}</Text>
+                            <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.follower_count}</Text>
                             <Text style={styles.text}>Followers</Text>
                         </Pressable>
 
                         <Pressable onPress={() => navigation.navigate("MutualUserLists", {name: user.username})}>
-                            <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.following}</Text>
+                            <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.following_count}</Text>
                             <Text style={styles.text}>Following</Text>
                         </Pressable>
                     </View>
@@ -236,7 +255,7 @@ export default function Profile() {
                     <View style={styles.item_seperator}/>
 
                     <View style={styles.userDescription}>
-                        <Text style={[styles.text, {textAlign: "center"}]}>{user.description}</Text>
+                        <Text style={[styles.text, {textAlign: "center"}]}>{user.bio}</Text>
                     </View>
                 </View>
             
