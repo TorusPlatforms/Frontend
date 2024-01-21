@@ -71,32 +71,28 @@ export default function PrivacySafety() {
   };
 
   return (
-    <ScrollView style={{ height: "100%", backgroundColor: "rgb(22,23,24)" }}>
+    <View style={{ height: "100%", backgroundColor: "rgb(22,23,24)" }}>
       
 
         <View style={{ paddingHorizontal: 40 }}>
           <Text style={{ fontSize: 25, color: "white",marginTop: 20, marginBottom: 15 }}>Who can message me?</Text>
           {renderMessageOptions()}
+        </View>
 
-        
-      </View>
+        {/* <Text style={{ fontSize: 25, color: "white", marginTop:40, marginBottom: 10, textAlign: 'center'}}>Account Privacy</Text>
+        <Text style={{ fontSize: 15, color: "white", marginTop:0, marginBottom: 20, paddingHorizontal: 15, textAlign: 'center'}}>When your account is public, your profile and posts can be seen by anyone, on or off Torus. When your account is private, only followers can see what you share</Text>
 
-<Text style={{ fontSize: 25, color: "white", marginTop:40, marginBottom: 10, textAlign: 'center'}}>Account Privacy</Text>
-<Text style={{ fontSize: 15, color: "white", marginTop:0, marginBottom: 20, paddingHorizontal: 15, textAlign: 'center'}}>When your account is public, your profile and posts can be seen by anyone, on or off Torus. When your account is private, only followers can see what you share</Text>
-
-  <Text style={{ fontSize: 15, color: "white", textAlign: 'center', marginBottom: 10}}>Private Account:</Text>
-  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-<Switch
-       
-        trackColor={{ false: '#767577', true: 'rgb(247, 212, 114)' }}
-        thumbColor={privacyEnabled ? 'grey' : 'white'}
-        ios_backgroundColor="#3e3e3e"
-        onValueChange={togglePrivacy}
-        value={privacyEnabled}
-      />
-
-</View>
-    </ScrollView>
+        <Text style={{ fontSize: 15, color: "white", textAlign: 'center', marginBottom: 10}}>Private Account:</Text>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <Switch 
+              trackColor={{ false: '#767577', true: 'rgb(247, 212, 114)' }}
+              thumbColor={privacyEnabled ? 'grey' : 'white'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={togglePrivacy}
+              value={privacyEnabled}
+          />
+        </View> */}
+    </View>
   );
 }
 

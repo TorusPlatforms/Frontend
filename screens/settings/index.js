@@ -32,9 +32,9 @@ export default function Settings() {
     };
   
     return (
-      <ScrollView style={styles.container}>
+      <View style={styles.container}>
        
-        <Pressable style={{flexDirection: "row", alignItems: "center", marginLeft: 10, marginTop: 20, marginRight: 20}} onPress={() => handlePress('Your Account')}>
+        <Pressable style={{flexDirection: "row", alignItems: "center", marginLeft: 10, marginTop: 20, paddingRight: 50}} onPress={() => handlePress('Your Account')}>
           <Ionicons name="people" size={24} color={"white"}/>
           <View style={{flexDirection: "col", marginLeft: 10, padding: 5}}>
             <Text style={{ fontSize: 18, color: "white"}}>Your Account </Text>
@@ -43,7 +43,7 @@ export default function Settings() {
          
         </Pressable>
 
-        <Pressable style={{flexDirection: "row", alignItems: "center", marginLeft: 10}} onPress={() => handlePress('Security and Account Access')}>
+        <Pressable style={{flexDirection: "row", alignItems: "center", marginLeft: 10, marginTop: 20, paddingRight: 50}} onPress={() => handlePress('Security and Account Access')}>
           <Ionicons name="lock-closed" size={24} color={"white"}/> 
           <View style={{flexDirection: "col", marginLeft: 10, padding: 5}}>
             <Text style={{ fontSize: 18, color: "white",  }}>Security and Account Access</Text>
@@ -51,7 +51,7 @@ export default function Settings() {
           </View>
         </Pressable>
 
-        <Pressable style={{flexDirection: "row", alignItems: "center", marginLeft: 10}} onPress={() => handlePress('Privacy and Safety')}>
+        <Pressable style={{flexDirection: "row", alignItems: "center", marginLeft: 10, marginTop: 20, paddingRight: 50}} onPress={() => handlePress('Privacy and Safety')}>
           <Ionicons name="shield" size={24} color={"white"}/> 
           <View style={{flexDirection: "col", marginLeft: 10, padding: 5}}>
             <Text style={{ fontSize: 18, color: "white" }}>Privacy and Safety </Text>
@@ -59,7 +59,7 @@ export default function Settings() {
           </View>
         </Pressable>
 
-        <Pressable style={{flexDirection: "row", alignItems: "center", marginLeft: 10}} onPress={() => handlePress('Notifications')}>
+        <Pressable style={{flexDirection: "row", alignItems: "center", marginLeft: 10, marginTop: 20, paddingRight: 50}} onPress={() => handlePress('Notifications')}>
           <Ionicons name="notifications" size={24} color={"white"}/> 
           <View style={{flexDirection: "col", marginLeft: 10, padding: 5}}>
             <Text style={{ fontSize: 18, color: "white" }}>Notifications</Text>
@@ -67,7 +67,7 @@ export default function Settings() {
           </View>
         </Pressable>
 
-        <Pressable style={{flexDirection: "row", alignItems: "center", marginLeft: 10}} onPress={() => handlePress('Accessibility')}>
+        <Pressable style={{flexDirection: "row", alignItems: "center", marginLeft: 10, marginTop: 20, paddingRight: 50}} onPress={() => handlePress('Accessibility')}>
           <Ionicons name="notifications" size={24} color={"white"}/> 
           <View style={{flexDirection: "col", marginLeft: 10, padding: 5}}>
             <Text style={{ fontSize: 18, color: "white", }}>Accessibility, Display, and Languages </Text>
@@ -78,7 +78,7 @@ export default function Settings() {
         <Text style={{ fontSize: 18, padding: 20, color: "white", marginBottom: -15 }}>Additional Resources </Text>
         </Pressable>
         <Text style={{ fontSize: 13, color: "white", paddingLeft: 20, paddingRight: 20, marginBottom: 10 }}>Check out other places for helpful information to learn more about Torus products and services.</Text> */}
-      </ScrollView>
+      </View>
     );
 }
 
