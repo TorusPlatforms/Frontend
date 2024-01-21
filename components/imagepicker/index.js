@@ -4,7 +4,7 @@ import Icon from '@expo/vector-icons/Ionicons';
 import { View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { launchCamera } from 'react-native-image-picker';
 
-export const ImagePickerComponent = ({ setSelectedImage }) => {
+export const ImagePickerComponent = ({ handleImage }) => {
   const [selectedImageLocal, setSelectedImageLocal] = useState(null); // Fix: Added an initial value
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export const ImagePickerComponent = ({ setSelectedImage }) => {
 
       if (!result.cancelled) {
         console.log("Selected Image in ImagePicker:", result);
-        setSelectedImage(result);
+        handleImage(result);
       }
     } catch (error) {
       console.error("Error picking an image", error);
@@ -56,7 +56,7 @@ export const ImagePickerComponent = ({ setSelectedImage }) => {
 
       if (!result.cancelled) {
         console.log('Selected Image from Camera:', result);
-        setSelectedImage(result);
+        handleImage(result);
       }
     } catch (error) {
       console.error('Error opening the camera', error);
@@ -77,7 +77,7 @@ export const ImagePickerComponent = ({ setSelectedImage }) => {
             type: response.type,
             name: response.fileName,
           };
-          setSelectedImage(selectedImage);
+          handleImage(selectedImage);
         }
       });
     };

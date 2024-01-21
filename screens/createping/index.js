@@ -43,7 +43,9 @@ const CreatePing = () => {
   };
 
   const handleImageSelect = (image) => {
-    setSelectedImage(image);
+    if (!image.canceled) {
+      setSelectedImage(image);
+    }
     console.log("Selected Image in CreatePing:", image);
   };
 

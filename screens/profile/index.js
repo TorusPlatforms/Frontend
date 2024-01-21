@@ -229,7 +229,7 @@ export default function Profile() {
 
             <View style={styles.userInfoContainer}>
                 <View style={styles.pfpContainer}>
-                    <Image style={styles.pfp} source={{uri: user.pfp}}/>
+                    <Image style={styles.pfp} source={{uri: user.profile_picture}}/>
                     <Text style={styles.displayName}>{user.displayName}</Text>
                     <Pressable onPress={copyUsernameToClipboard}>
                         {({pressed}) => (

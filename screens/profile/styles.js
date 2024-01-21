@@ -23,7 +23,8 @@ const styles = StyleSheet.create({
     userInfoContainer: {
         flex: 1.75, 
         justifyContent: "center", 
-        flexDirection: 'row'
+        flexDirection: 'row',
+        alignItems: 'center'
     }, 
 
     displayName: {
