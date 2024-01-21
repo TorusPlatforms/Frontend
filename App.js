@@ -30,7 +30,7 @@ import AdditionalResources from './screens/settings/Additional Resources';
 import ComingSoon from './screens/settings/Coming Soon';
 import ForgotPassword from './screens/auth/Forgot your password';
 import ResetPassword from './screens/settings/Your Account/Reset Password';
-
+import EditProfile from "./screens/editprofile";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -124,6 +124,7 @@ function App() {
         <Stack.Screen name="Coming Soon" component={ComingSoon} options={{headerShown: true}}/>
         <Stack.Screen name="Forgot Password" component={ForgotPassword} options={{headerShown: true}}/>
         <Stack.Screen name="Reset Password" component={ResetPassword} options={{headerShown: true}}/>
+        <Stack.Screen name="EditProfile" component={EditProfile} options={{headerShown: false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

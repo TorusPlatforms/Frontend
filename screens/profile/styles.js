@@ -63,11 +63,8 @@ const styles = StyleSheet.create({
     },
 
     userDescription: {
-        justifyContent: "flex-end",
-        ...Platform.select({
-            ios: {flex: 0.5},
-            android: {flex: 0.4} 
-        })
+        justifyContent: "center",
+        flex: 0.5
     },
 
     item_seperator: {
@@ -86,7 +83,7 @@ const styles = StyleSheet.create({
                 marginTop: 20
             },
             android: {
-                marginTop: 50
+                marginTop: 60
             }
         })
     },

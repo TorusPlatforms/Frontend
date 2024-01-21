@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from '@expo/vector-icons/Ionicons';
 
-import ImagePickerComponent from "./imagepicker.js";
+import { ImagePickerComponent } from "../../components/imagepicker";
 
 import styles from "./styles";
 
@@ -23,7 +23,6 @@ const CreatePing = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageUri, setImageUri] = useState(null);
   const textInputRef = useRef(null);
-
 
   useEffect(() => {
     // run this whenever the selected image changes

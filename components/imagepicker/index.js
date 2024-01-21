@@ -4,7 +4,7 @@ import Icon from '@expo/vector-icons/Ionicons';
 import { View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { launchCamera } from 'react-native-image-picker';
 
-const ImagePickerComponent = ({ setSelectedImage }) => {
+export const ImagePickerComponent = ({ setSelectedImage }) => {
   const [selectedImageLocal, setSelectedImageLocal] = useState(null); // Fix: Added an initial value
 
   useEffect(() => {
@@ -100,4 +100,3 @@ const ImagePickerComponent = ({ setSelectedImage }) => {
   );
 };
 
-export default ImagePickerComponent;
