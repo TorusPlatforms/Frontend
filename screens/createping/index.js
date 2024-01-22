@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from '@expo/vector-icons/Ionicons';
 
 import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } from "../../components/imagepicker";
-
+import { getUser, uploadToCDN, createPost } from "../../components/utils";
 import styles from "./styles";
 
 const exampleUserData = {
@@ -19,6 +19,7 @@ const exampleUserData = {
 
 const CreatePing = () => {
   const navigation = useNavigation();
+  const [user, setUser] = useState(null)
   const [textInputValue, setTextInputValue] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageUri, setImageUri] = useState(null);
@@ -26,6 +27,13 @@ const CreatePing = () => {
 
   useEffect(() => {
     // run this whenever the selected image changes
+    async function fetchUser() {
+      const user = await getUser()
+      setUser(user)
+    }
+
+    fetchUser()
+
     requestCameraPerms()
     requestPhotoLibraryPerms()
     
@@ -106,7 +114,7 @@ const CreatePing = () => {
         </View>
 
         <View style={{ flexDirection: "column", alignItems: "center", marginTop: 20 }}>
-          <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Image style={styles.pfp} source={{ uri: exampleUserData.pfp }} />
             <TextInput
               ref={textInputRef}
@@ -125,11 +133,11 @@ const CreatePing = () => {
 
             {/* Render the ImagePickercomponeent and pass the callback function, image picker contrains both the camera and camera roll buttons */}
             <View style={{flexDirection:"row"}}>
-              <TouchableOpacity style={{ marginRight: 10 }} onPress={pickImage}>
+              <TouchableOpacity style={{ marginRight: 10 }} onPress={() => pickImage(handleImageSelect)}>
                 <Icon name="image-outline" size={30} color="#FFFFFF" />
               </TouchableOpacity>
 
-              <TouchableOpacity style={{ marginLeft: 10 }} onPress={openCamera}>
+              <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => openCamera(handleImageSelect)}>
                 <Icon name="camera-outline" size={30} color="#FFFFFF" />
               </TouchableOpacity>
             </View> 
@@ -150,7 +158,7 @@ const CreatePing = () => {
 
           <TouchableOpacity
             style={{ backgroundColor: "rgb(247, 212, 114)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop: 20 }}
-            onPress={Post}
+            onPress={() => {createPost(user, textInputValue, selectedImage); closeKeyboard()}}
           >
             <Text style={{ color: "black", textAlign: "center" }}>Post</Text>
           </TouchableOpacity>

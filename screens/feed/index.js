@@ -6,6 +6,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from '@react-navigation/native';
 import GestureRecognizer from 'react-native-swipe-gestures';
 
+import { getUser, getPings, handleLike } from "../../components/utils";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
@@ -23,7 +24,9 @@ export default function Feed({ route, navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
     const [comment, onChangeComment] = useState('');
     const [replyingTo, setReplyingTo] = useState(null) 
-    const [pings, setPings] = useState([])
+    const [user, setUser] = useState(null)
+    const [pings, setPings] = useState(null)
+    const [dropdownData, setDropdownData] = useState([])
     const ref_input = useRef();
 
     const headerHeight = scrollY.interpolate({
@@ -38,26 +41,26 @@ export default function Feed({ route, navigation }) {
       extrapolate: 'clamp',
     });
 
-
-    function getPings() {
-      const examplePingData = {
-          postURL: "posturl",
-          isLiked: true, 
-          attatchment: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Glazed-Donut.jpg/1200px-Glazed-Donut.jpg", 
-          author: 'GrantHough', 
-          likes: 20, 
-          comments: 30, 
-          caption: 'Funny Caption. Hilarious even. My name is Grant Hough and I love dogs!', 
-          pfp: 'https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&'
-      }
-      return new Array(6).fill(examplePingData)
+    function abbreviate(inputString) {
+      const phrases = inputString.split(', ');
+    
+      const abbreviation = phrases
+        .map(phrase => {
+          const words = phrase.split(' ');
+          const abbreviatedWords = words
+            .map(word => {
+              const capitalizedWord = word.replace(/[^A-Z]/g, ''); // Keep only capital letters
+              return capitalizedWord;
+            })
+            .join('');
+          return abbreviatedWords;
+        })
+        .join('-');
+    
+      return abbreviation.toUpperCase();
     }
 
-
-    function handleLike(data) {
-      console.log("Liked a post!", data)
-    }
-
+  
     function handleCommentLike(data) {
       console.log("Liked a comment!", data)
     }
@@ -101,17 +104,23 @@ export default function Feed({ route, navigation }) {
 
 
 
-    const dropdownData = [
-      { label: 'Friends', value: 'friends' },
-      { label: 'College', value: 'college' },
-    ];
-
-
     useEffect(() => {
-      setPings(getPings())
+      async function fetchPings() {
+        const user = await getUser()
+        const pings = await getPings(user)
+        setPings(pings)
+
+        setDropdownData([
+          { label: 'Friends', value: 'friends' },
+          { label: abbreviate(user.college), value: 'college' },
+        ]);
+    
+      }
+
+      fetchPings()
     }, []);
     
-  
+ 
     return (
       
         <SafeAreaView style={styles.container}>

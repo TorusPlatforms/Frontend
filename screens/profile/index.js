@@ -4,8 +4,8 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
-import { getAuth } from "firebase/auth";
 
+import { getUser } from "../../components/utils";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
@@ -90,33 +90,7 @@ export default function Profile() {
     }
 
     //handle getting user data
-    async function getUser() {
-        const exampleUserData = {
-            profile_picture: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
-            display_name: "Grant Hough",
-            username: "@granthough",
-            following_count: 128,
-            follower_count: 259,
-            bio: "A pretty funny guy. Has a strong affinity for dogs. \n Stefan Murphy: 'The test is in'"
-        }
 
-
-        const auth = getAuth()
-        console.log(auth.currentUser.uid)
-        const url = `https://backend-26ufgpn3sq-uc.a.run.app/api/user/id/${auth.currentUser.uid}`;
-        console.log(url)
-        const response = await fetch(url);
-    
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-    
-        const userData = await response.json();
-        console.log('User Data:', userData);
-     
-        setUser(userData)
-    }
-   
     //handle getting loop notification
     function renderNotification(item, index) {
         //figure out if loop has a notification
@@ -197,8 +171,14 @@ export default function Profile() {
     useEffect(() => {
         setLoops(getLoops())
         setPings(getPings())
-        getUser()
 
+        async function fetchUser() {
+          const user = await getUser()
+          setUser(user)
+        }
+        
+        fetchUser()
+        
         Animated.sequence([
         Animated.delay(300),
         Animated.timing(movingLine, {

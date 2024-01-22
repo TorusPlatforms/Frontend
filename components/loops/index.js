@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { View, Image, Text, Animated, Dimensions, Pressable, FlatList, SafeAreaView } from "react-native";
 import { SearchBar } from "react-native-elements";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { useNavigation } from "@react-navigation/native";
 
 import styles from "./styles"
 
@@ -19,10 +20,9 @@ const Loop = ({data, goToLoop}) => (
     </Pressable>
   );
 
-export const LoopsComponent = ({navigation, loops, searchBarPlaceholder, paddingTop}) => {
-    console.log("HERE", loops)
+export const LoopsComponent = ({loops, searchBarPlaceholder, paddingTop}) => {
     const [search, setSearch] = useState("")
-
+    const navigation = useNavigation()
     const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
     const [scrollY] = useState(new Animated.Value(0));
 
@@ -74,7 +74,7 @@ export const LoopsComponent = ({navigation, loops, searchBarPlaceholder, padding
         <AnimatedFlatList
             style={{paddingHorizontal: 20}}
             data={loops}
-            renderItem={({item}) => <Loop data={item} />}
+            renderItem={({item}) => <Loop data={item} goToLoop={goToLoop}/>}
             ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
             onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY } } }],

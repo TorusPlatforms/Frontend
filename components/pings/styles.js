@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
 
     text: {
         color: "white",
+        marginVertical: 10,
     },
     
     author: {

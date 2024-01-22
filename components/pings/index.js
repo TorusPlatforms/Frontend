@@ -8,7 +8,7 @@ export const Ping = ({data, setModalVisible, handleLike, handleShare }) => (
       <View style={{flexDirection: "col"}}>
         <Image
           style={styles.tinyLogo}
-          source={{uri: data.pfp}}
+          source={{uri: data.pfp_url}}
         />
   
         <View style={styles.verticalLine} />
@@ -16,11 +16,11 @@ export const Ping = ({data, setModalVisible, handleLike, handleShare }) => (
   
       <View style={{marginLeft: 10}}>
         <Text style={styles.author}>{data.author}</Text>
-        <Text style={styles.text}>{data.caption}</Text>
+        <Text style={styles.text}>{data.content}</Text>
   
         <Image
-          style={[styles.attatchment, {display: data.attatchment ? "flex" : "none"}]}
-          source={{uri: data.attatchment}}
+          style={[styles.attatchment, {display: data.image_url ? "flex" : "none"}]}
+          source={{uri: data.image_url}}
           resizeMode='contain'
         />
   
@@ -42,7 +42,7 @@ export const Ping = ({data, setModalVisible, handleLike, handleShare }) => (
           </Pressable>
         </View>
   
-        <Text style={styles.stats}>{data.likes} Likes • {data.comments} Comments</Text>
+        <Text style={styles.stats}>{data.numberof_likes} Likes • {data.numberof_comments} Comments</Text>
       </View>
     </View>
   );

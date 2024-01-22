@@ -58,7 +58,7 @@ try {
 }
 
 
-launchCamera(options, (response) => {
+launchCamera((response) => {
     console.log('Camera response:', response);
     if (response.didCancel) {
       console.log('User cancelled image picker');

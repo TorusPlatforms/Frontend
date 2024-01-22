@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     },
 
     userInfoContainer: {
-        flex: 1, 
+        flex: 1.5, 
         flexDirection: 'row',
     }, 
 
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 30,
         ...Platform.select({
             ios: {
-                marginTop: 20
+                marginVertical: 10
             },
             android: {
                 marginTop: 60
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
         flex: 2, 
         height: "100%", 
         width: "100%", 
-        marginTop: 20
+        marginTop: 50
     },
 
     loopText: {

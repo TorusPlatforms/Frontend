@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
       
     text: {
         color: "white",
+        minWidth: 120,
     },
 
     torusLogo: {
@@ -36,7 +37,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         backgroundColor: "rgb(22, 23, 24)", 
         borderWidth: 1,
-        borderColor: "white"
+        borderColor: "white",
+        width: 125
     },
 
 
