@@ -20,26 +20,30 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
 
+  
+    displayName: {
+        color: "white",
+        fontSize: 20,
+        fontWeight: "bold",
+    },
+
+
     userInfoContainer: {
         flex: 1.5, 
         flexDirection: 'row',
     }, 
 
-    displayName: {
-        color: "white",
-        fontSize: 20,
-        fontWeight: "bold"
-    },
-
     pfpContainer: {
         flex: 1, 
         alignItems: "center", 
+        justifyContent: "space-evenly",
+        paddingBottom: 30
     },
 
     userRelationsContainer: {
         flex: 1, 
         right: 20,
-        justifyContent: 'space-evenly' 
+        justifyContent: 'space-evenly',
     },
     
     pfp: {
@@ -61,7 +65,8 @@ const styles = StyleSheet.create({
     },
 
     userDescription: {
-        flex: 0.4
+        flex: 0.4,
+        paddingTop: 10
     },
 
     item_seperator: {

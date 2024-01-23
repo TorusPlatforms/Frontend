@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef} from 'react'
-import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable, Alert, Share, ActivityIndicator } from 'react-native'
+import React, { useState, useEffect, useRef, useCallback} from 'react'
+import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable, RefreshControl, ActivityIndicator, ScrollView } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 
-import { getUser } from "../../components/utils";
+import { getUser, handleShare } from "../../components/utils";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
@@ -23,8 +23,15 @@ export default function Profile() {
     const [modalVisible, setModalVisible] = useState(false);
     const [comment, onChangeComment] = useState('');
     const [replyingTo, setReplyingTo] = useState(null) 
+    const [refreshing, setRefreshing] = useState(false)
     const ref_input = useRef();
 
+    
+    async function fetchUser() {
+      const user = await getUser()
+      setUser(user)
+    }
+    
     function handleLike(data) {
         console.log("Liked a post!", data)
       }
@@ -50,25 +57,6 @@ export default function Profile() {
         onChangeComment("@" + data.author + " ")
       }
   
-      async function handleShare(postURL) {
-          try {
-            const result = await Share.share({
-              url:postURL
-            });
-  
-            if (result.action === Share.sharedAction) {
-              if (result.activityType) {
-                // shared with activity type of result.activityType
-              } else {
-                // shared
-              }
-            } else if (result.action === Share.dismissedAction) {
-              // dismissed
-            }
-          } catch (error) {
-            Alert.alert(error.message);
-          }
-      }
 
     function getLoops() {
         const exampleLoopsData = {name: "Dorm", pfp: "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png"}
@@ -92,16 +80,7 @@ export default function Profile() {
     //handle getting user data
 
     //handle getting loop notification
-    function renderNotification(item, index) {
-        //figure out if loop has a notification
-        const unread = false
-
-        if (unread) {
-            return <View style={{width: 15, height: 15, borderRadius: 7.5, backgroundColor: 'red', bottom: 30, position: 'absolute', alignSelf: 'flex-end', zIndex: 1}}/>
-        }
-    };
-
-
+  
 
     async function copyUsernameToClipboard() {
         await Clipboard.setStringAsync(user.username);
@@ -164,19 +143,26 @@ export default function Profile() {
       }
      
     
+    function renderNotification(item, index) {
+        //figure out if loop has a notification
+        const unread = false
+
+        if (unread) {
+            return <View style={{width: 15, height: 15, borderRadius: 7.5, backgroundColor: 'red', bottom: 30, position: 'absolute', alignSelf: 'flex-end', zIndex: 1}}/>
+        }
+    };
 
 
-
+    const onRefresh = useCallback(async() => {
+      setRefreshing(true);
+      await fetchUser()
+      setRefreshing(false)
+    }, []);
 
     useEffect(() => {
         setLoops(getLoops())
         setPings(getPings())
 
-        async function fetchUser() {
-          const user = await getUser()
-          setUser(user)
-        }
-        
         fetchUser()
         
         Animated.sequence([
@@ -196,7 +182,8 @@ export default function Profile() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
+          <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+          <View style={styles.header}>
                 <Pressable onPress={() => navigation.navigate("Edit Profile")}>
                     <Ionicons name="ios-person-outline" size={24} color="white" />
                 </Pressable>
@@ -252,10 +239,11 @@ export default function Profile() {
             <View style={styles.loopsListContainer}>
                 <View style={styles.item_seperator} />
                 <FlatList
-                        data={pings}
-                        renderItem={({item}) => <Ping data={item} setModalVisible={setModalVisible} handleLike={handleLike} handleShare={handleShare} />}
-                        ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
-                    />
+                    nestedScrollEnabled 
+                    data={pings}
+                    renderItem={({item}) => <Ping data={item} setModalVisible={setModalVisible} handleLike={handleLike} handleShare={handleShare} />}
+                    ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+                />
             </View>       
 
             <CommentModal
@@ -269,6 +257,7 @@ export default function Profile() {
               handleCommentLike={handleCommentLike}
               handleReply={handleReply}
             /> 
-    </SafeAreaView>
+          </ScrollView>
+        </SafeAreaView>
     )
 }

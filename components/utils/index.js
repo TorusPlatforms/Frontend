@@ -1,4 +1,5 @@
 import { getAuth } from "firebase/auth";
+import { Share, Alert } from 'react-native'
 
 export async function getUser() {
     const exampleUserData = {
@@ -141,11 +142,11 @@ export async function uploadToCDN(image) {
   return responseData
 }
 
-export async function handleLike(post) {
+export async function handleLike(post, updateLike) {
   try {
     let serverUrl = ''
     if (post.isLiked) {
-      serverUrl = 'https://backend-26ufgpn3sq-uc.a.run.app/api/posts/unlike'; 
+      serverUrl = 'https://backend-26ufgpn3sq-uc.a.run.app/api/posts/unlike';
     } else {
       serverUrl = 'https://backend-26ufgpn3sq-uc.a.run.app/api/posts/like';
     }
@@ -171,7 +172,53 @@ export async function handleLike(post) {
 
     const responseData = await response.json();
     console.log('Post liked successfully. Server response:', responseData);
+
+    updateLike(post)
+    console.log("Updated")
+
+
   } catch (error) {
     console.error('Error liking post:', error.message);
+  }
+}
+
+export async function handleShare(postURL) {
+  try {
+    const result = await Share.share({
+      url: postURL
+    });
+    return result
+  } catch (error) {
+    Alert.alert(error.message);
+  }
+}
+
+export async function handleUpdate(endpoint, varName, content) {
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/user/update/${endpoint}`;
+  
+  const requestBody = {};
+  requestBody[varName] = content
+
+  const auth = getAuth()
+  const token = await auth.currentUser.getIdToken()
+  console.log("TOKEN", token)
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to update. Status: ${response.status}`);
+    }
+
+    console.log('Update successful.');
+  } catch (error) {
+    console.error('Error updating:', error.message);
   }
 }

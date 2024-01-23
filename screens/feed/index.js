@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { Text, View, TextInput, Pressable, FlatList, Image, Animated, Modal, Keyboard, KeyboardAvoidingView, Share, Alert } from 'react-native'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
+import { Text, View, TextInput, Pressable, FlatList, Image, Animated, Modal, Keyboard, RefreshControl, Share, Alert } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from '@react-navigation/native';
 import GestureRecognizer from 'react-native-swipe-gestures';
 
-import { getUser, getPings, handleLike } from "../../components/utils";
+import { getUser, getPings, handleLike, handleShare } from "../../components/utils";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
@@ -27,6 +27,7 @@ export default function Feed({ route, navigation }) {
     const [user, setUser] = useState(null)
     const [pings, setPings] = useState(null)
     const [dropdownData, setDropdownData] = useState([])
+    const [refreshing, setRefreshing] = useState(false);
     const ref_input = useRef();
 
     const headerHeight = scrollY.interpolate({
@@ -60,6 +61,29 @@ export default function Feed({ route, navigation }) {
       return abbreviation.toUpperCase();
     }
 
+ 
+    const updateLike = useCallback((post) => {
+      setPings(prevPings =>
+        prevPings.map(ping =>
+          ping.post_id === post.post_id ? 
+            { ...ping, 
+              isLiked: !ping.isLiked, 
+              numberof_likes: ping.isLiked ? Math.max(ping.numberof_likes - 1, 0) : ping.numberof_likes + 1,
+          } : ping
+        )
+      );
+    }, []);
+
+    async function fetchPings() {
+      const user = await getUser();
+      const fetchedPings = await getPings(user);
+      setPings(fetchedPings);
+  
+      setDropdownData([
+        { label: 'Friends', value: 'friends' },
+        { label: abbreviate(user.college), value: 'college' },
+      ]);
+    }
   
     function handleCommentLike(data) {
       console.log("Liked a comment!", data)
@@ -82,44 +106,17 @@ export default function Feed({ route, navigation }) {
       onChangeComment("@" + data.author + " ")
     }
 
-    async function handleShare(postURL) {
-        try {
-          const result = await Share.share({
-            url:postURL
-          });
-
-          if (result.action === Share.sharedAction) {
-            if (result.activityType) {
-              // shared with activity type of result.activityType
-            } else {
-              // shared
-            }
-          } else if (result.action === Share.dismissedAction) {
-            // dismissed
-          }
-        } catch (error) {
-          Alert.alert(error.message);
-        }
-    }
-
+    const onRefresh = useCallback(async() => {
+      setRefreshing(true);
+      await fetchPings()
+      setRefreshing(false)
+    }, []);
 
 
     useEffect(() => {
-      async function fetchPings() {
-        const user = await getUser()
-        const pings = await getPings(user)
-        setPings(pings)
+      fetchPings();
+    }, []); 
 
-        setDropdownData([
-          { label: 'Friends', value: 'friends' },
-          { label: abbreviate(user.college), value: 'college' },
-        ]);
-    
-      }
-
-      fetchPings()
-    }, []);
-    
  
     return (
       
@@ -160,9 +157,10 @@ export default function Feed({ route, navigation }) {
 
 
             <AnimatedFlatList
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                   style={{paddingHorizontal: 20}}
                   data={pings}
-                  renderItem={({item}) => <Ping data={item} setModalVisible={setModalVisible} handleLike={handleLike} handleShare={handleShare} />}
+                  renderItem={({item}) => <Ping data={item} setModalVisible={setModalVisible} handleLike={() => handleLike(item, updateLike)} handleShare={handleShare}/>}
                   ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
                   onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset: { y: scrollY } } }],
