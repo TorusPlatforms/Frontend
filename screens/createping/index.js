@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from '@expo/vector-icons/Ionicons';
 
 import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } from "../../components/imagepicker";
-import { getUser, uploadToCDN, createPost } from "../../components/utils";
+import { getUser, uploadToCDN, createPost } from "../../components/handlers";
 import styles from "./styles";
 
 const exampleUserData = {

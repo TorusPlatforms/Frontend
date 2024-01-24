@@ -3,7 +3,7 @@ import { View, Text, Image, ActivityIndicator, Pressable, TextInput} from 'react
 import { getAuth } from "firebase/auth";
 import { Ionicons } from '@expo/vector-icons';
 
-import { handleUpdate } from "../../components/utils";
+import { handleUpdate } from "../../components/handlers";
 import { pickImage } from '../../components/imagepicker';
 import styles from './styles'
 

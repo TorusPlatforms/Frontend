@@ -1,25 +1,28 @@
-import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable, Alert, Share, Modal, KeyboardAvoidingView, TextInput } from 'react-native'
+import React, { useEffect, useState } from 'react';
+import { Text, View, SafeAreaView, Image, Keyboard, FlatList, Pressable, Alert, Share, Modal, KeyboardAvoidingView, TextInput } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
+
+import { handleComment } from '../handlers';
+import { findTimeAgo } from '../utils';
 import styles from "./styles";
 
 
-const Comment = ({data, handleReply, handleCommentLike}) => (
+const Comment = ({data, handleReply}) => (
     <View style={styles.commentContainer}>
-      <View style={{flex: 0.3}}>
+      <View style={{flex: 0.15, justifyContent: 'center', alignItems: 'center'}}>
         <Image
             style={styles.tinyLogo}
-            source={{uri: data.pfp}}
+            source={{uri: data.pfp_url}}
           />
       </View>
   
       <View style={styles.commentTextContainer}>
-        <View style={{flexDirection: "row"}}>
-          <Text style={styles.commentContent}>{data.author}</Text>
-          <Text style={styles.commentTime}>3h</Text>
-        </View>
+        <Text style={styles.commentContent}>{data.author}</Text>
   
-        <View>
+        <View style={{flexDirection: "row", justifyContent: "space-between"}}>
           <Text style={styles.text}>{data.content}</Text>
+
+          <Text style={styles.commentTime}>{findTimeAgo(data.created_at)}</Text>
         </View>
   
         <View>
@@ -29,26 +32,54 @@ const Comment = ({data, handleReply, handleCommentLike}) => (
         </View>
       </View>
   
-      <View style={styles.likeContainer}>
+      {/* <View style={styles.likeContainer}>
           <Pressable onPress={() => handleCommentLike(data)}>
             <Ionicons style={[styles.pingIcon, {color: data.isLiked ? "red" : "white"}]} name={data.isLiked ? "heart" : "heart-outline"} size={20}></Ionicons>
           </Pressable>
-      </View>
+      </View> */}
     </View>
   )
   
   
-  export const CommentModal = ({ modalVisible, setModalVisible, commentData, onChangeComment, comment, postComment, ref_input, handleCommentLike, handleReply }) => (
-      <Modal
+  export const CommentModal = ({ modalVisible, setModalVisible, onChangeComment, commentText, postComment, ref_input, handleReply, commentPing, setCommentPing }) => {
+    const [comments, setComments] = useState(null)
+
+    async function fetchComments() {
+      console.log("FETCHED", commentPing)
+      if (commentPing) {
+        const fetchedComments = await handleComment(commentPing)
+        setComments(fetchedComments)
+        setModalVisible(true)
+      }
+    }
+
+    useEffect(() => {
+      fetchComments();
+    }, [commentPing]); 
+
+    function handleModalClose() {
+      console.log("closed");
+      setCommentPing(null);
+      setModalVisible(!modalVisible);
+    }
+
+    async function handlePostClick() {
+      await postComment(commentPing, commentText)
+      Keyboard.dismiss()
+      onChangeComment("")
+      await fetchComments()
+    }
+
+
+    return (
+    <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}>
+    >
   
         <View style={styles.modalContainer}>
-          <Pressable onPress={() => setModalVisible(false)} style={styles.modalHeader}>
+          <Pressable onPress={handleModalClose} style={styles.modalHeader}>
             <View style={styles.modalDismissBar} />
   
             <View style={{marginVertical: 10}}>
@@ -61,8 +92,8 @@ const Comment = ({data, handleReply, handleCommentLike}) => (
         
           <View style={{flex: 1}}>
             <FlatList
-              data={commentData}
-              renderItem={({item}) => <Comment data={item} handleReply={handleReply} handleCommentLike={handleCommentLike} />}
+              data={comments}
+              renderItem={({item}) => <Comment data={item} handleReply={handleReply}/>}
             />
           </View>
   
@@ -80,20 +111,19 @@ const Comment = ({data, handleReply, handleCommentLike}) => (
                   placeholderTextColor="white" 
                   style={styles.addCommentInput} 
                   onChangeText={onChangeComment} 
-                  value={comment} 
+                  value={commentText} 
                   placeholder='Add a comment'
                   ref={ref_input}  
                 />
               </View>
             
-              <View style={styles.addCommentButton}>
-                <Pressable onPress={postComment}>
-                  <Ionicons style={styles.text} name="arrow-up" size={20}></Ionicons>
-                </Pressable>
-              </View>
+              <Pressable onPress={handlePostClick} style={styles.addCommentButton}>
+                <Ionicons style={styles.text} name="arrow-up" size={20}></Ionicons>
+              </Pressable>
             </View>
           </KeyboardAvoidingView>
         </View>
-      </Modal>
-  )
+    </Modal>
+    )
+  }
   

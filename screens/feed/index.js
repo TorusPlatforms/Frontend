@@ -6,14 +6,14 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from '@react-navigation/native';
 import GestureRecognizer from 'react-native-swipe-gestures';
 
-import { getUser, getPings, handleLike, handleShare } from "../../components/utils";
+import { getUser, getPings, handleLike, handleComment, handleShare, postComment } from "../../components/handlers";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
 
 
-const exampleComment = {isLiked: true, timeAgo: "3h", author: 'GrantHough', content: "Funny ass comment", likes: 20, pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&"}
-const commentData = new Array(20).fill(exampleComment);
+// const exampleComment = {isLiked: true, timeAgo: "3h", author: 'GrantHough', content: "Funny ass comment", likes: 20, pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&"}
+// const commentData = new Array(20).fill(exampleComment);
 
 
 export default function Feed({ route, navigation }) {
@@ -22,12 +22,13 @@ export default function Feed({ route, navigation }) {
     const [feedType, setFeedType] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
-    const [comment, onChangeComment] = useState('');
+    const [commentText, onChangeComment] = useState('');
     const [replyingTo, setReplyingTo] = useState(null) 
     const [user, setUser] = useState(null)
     const [pings, setPings] = useState(null)
     const [dropdownData, setDropdownData] = useState([])
     const [refreshing, setRefreshing] = useState(false);
+    const [commentPing, setCommentPing] = useState(null)
     const ref_input = useRef();
 
     const headerHeight = scrollY.interpolate({
@@ -62,16 +63,8 @@ export default function Feed({ route, navigation }) {
     }
 
  
-    const updateLike = useCallback((post) => {
-      setPings(prevPings =>
-        prevPings.map(ping =>
-          ping.post_id === post.post_id ? 
-            { ...ping, 
-              isLiked: !ping.isLiked, 
-              numberof_likes: ping.isLiked ? Math.max(ping.numberof_likes - 1, 0) : ping.numberof_likes + 1,
-          } : ping
-        )
-      );
+    const updateLike = useCallback(() => {
+      fetchPings()
     }, []);
 
     async function fetchPings() {
@@ -85,19 +78,9 @@ export default function Feed({ route, navigation }) {
       ]);
     }
   
-    function handleCommentLike(data) {
-      console.log("Liked a comment!", data)
-    }
-
     function feedChange(type) {
       console.log("Feed was changed to" + type)
       setFeedType(type)
-    }
-
-    function postComment() {
-      console.log("Posting comment", comment)
-      onChangeComment("")
-      Keyboard.dismiss()
     }
 
     function handleReply(data) {
@@ -116,7 +99,6 @@ export default function Feed({ route, navigation }) {
     useEffect(() => {
       fetchPings();
     }, []); 
-
  
     return (
       
@@ -160,7 +142,7 @@ export default function Feed({ route, navigation }) {
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                   style={{paddingHorizontal: 20}}
                   data={pings}
-                  renderItem={({item}) => <Ping data={item} setModalVisible={setModalVisible} handleLike={() => handleLike(item, updateLike)} handleShare={handleShare}/>}
+                  renderItem={({item}) => <Ping data={item} setModalVisible={setModalVisible} handleLike={() => handleLike(item, updateLike)} handleComment={() => setCommentPing(item)} handleShare={handleShare}/>}
                   ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
                   onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset: { y: scrollY } } }],
@@ -175,13 +157,13 @@ export default function Feed({ route, navigation }) {
             <CommentModal
               modalVisible={modalVisible}
               setModalVisible={setModalVisible}
-              commentData={commentData}
               onChangeComment={onChangeComment}
-              comment={comment}
+              commentText={commentText}
               postComment={postComment}
               ref_input={ref_input}
-              handleCommentLike={handleCommentLike}
               handleReply={handleReply}
+              commentPing={commentPing}
+              setCommentPing={setCommentPing}
             />
 
           {/* </GestureRecognizer> */}

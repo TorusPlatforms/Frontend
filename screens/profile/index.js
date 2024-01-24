@@ -5,7 +5,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 
-import { getUser, handleShare } from "../../components/utils";
+import { getUser, handleShare } from "../../components/handlers";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
@@ -195,7 +195,7 @@ export default function Profile() {
 
             <View style={styles.userInfoContainer}>
                 <View style={styles.pfpContainer}>
-                    <Image style={styles.pfp} source={{uri: user.profile_picture}}/>
+                    <Image style={styles.pfp} source={{uri: user.pfp_url}}/>
                     <Text style={styles.displayName}>{user.display_name}</Text>
                     <Pressable onPress={copyUsernameToClipboard}>
                         {({pressed}) => (
@@ -238,12 +238,20 @@ export default function Profile() {
 
             <View style={styles.loopsListContainer}>
                 <View style={styles.item_seperator} />
-                <FlatList
-                    nestedScrollEnabled 
-                    data={pings}
-                    renderItem={({item}) => <Ping data={item} setModalVisible={setModalVisible} handleLike={handleLike} handleShare={handleShare} />}
-                    ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
-                />
+                    {pings.map((item) => {
+                        return (
+                            <View>
+                                <Ping
+                                key={item.post_id}
+                                data={item}
+                                setModalVisible={setModalVisible}
+                                handleLike={handleLike}
+                                handleShare={handleShare}
+                                />
+                                <View style={styles.item_seperator} />
+                            </View>
+                        )
+                    })}
             </View>       
 
             <CommentModal

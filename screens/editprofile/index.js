@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Image, ActivityIndicator, Pressable} from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, Image, ActivityIndicator, Pressable, ScrollView} from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { pickImage } from '../../components/imagepicker';
-import { getUser, uploadToCDN } from "../../components/utils";
+import { getUser, uploadToCDN } from "../../components/handlers";
 import styles from './styles'
 
 export default function EditProfile() {
     const [user, setUser] = useState(null)
-    const [displayName, setDisplayName] = useState(null)
-    const [bio, setBio] = useState(null)
     const navigation = useNavigation()
  
    
@@ -18,7 +16,7 @@ export default function EditProfile() {
       
         const requestBody = {
           token: auth.currentUser.uid,
-          profile_picture: profilePictureURL,
+          pfp_url: profilePictureURL,
         };
       
         
@@ -52,15 +50,19 @@ export default function EditProfile() {
         
       };
 
+    const onRefresh = useCallback(async() => {
+        setRefreshing(true);
+        await fetchUser()
+        setRefreshing(false)
+      }, []);
     
-    useEffect(() => {
-      async function fetchUser() {
+    async function fetchUser() {
         const user = await getUser()
         setUser(user)
-      }
-      
-      fetchUser()
+    }
 
+    useEffect(() => {
+      fetchUser()
     }, []);
 
     
@@ -68,10 +70,11 @@ export default function EditProfile() {
       return <ActivityIndicator />
     }
 
+
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={{alignItems: "center", justifyContent: "space-around", flex: 0.2}}>
-            <Image style={styles.pfp} source={{uri: user.profile_picture}}/>
+            <Image style={styles.pfp} source={{uri: user.pfp_url}}/>
             <Pressable onPress={() => pickImage(handleImageSelect)}>
               <Text style={{fontWeight: "bold", color: "white"}}>Edit Profile Picture</Text>
             </Pressable>
@@ -93,7 +96,7 @@ export default function EditProfile() {
               <Text style={{color: "white", flex: 1}}>{user.bio}</Text>
             </Pressable>
           </View>
-        </View>
+        </ScrollView>
     )
 }
 
