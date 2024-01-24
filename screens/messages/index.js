@@ -1,41 +1,37 @@
 import React, { useState, useRef, useEffect } from "react";
 import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, Modal, FlatList, Button } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
+import { getThreads } from "../../components/handlers";
+import { findTimeAgo } from "../../components/utils";
 import styles from "./styles";
 
 export default function Messages() {
     const navigation = useNavigation()
     const [DMs, setDMs] = useState([])
-    function getDMs() {
-        //handle getting DMs
-
-        const exampleDMData = {
-            pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
-            displayName: "StefanMurphy",
-            lastMesssage: "you know grant? i hate him",
-            messageSent: "30m"
-        }        
-
-        return new Array(20).fill(exampleDMData)
-    }
 
     const DirectMessage = ({data}) => (
-        <Pressable onPress={() => navigation.navigate("DirectMessage", {username: "@StefanMurphy"})} style={{marginVertical: 20, width: "100%", flexDirection: "row", paddingHorizontal: 20}}>
-            <Image style={{width: 50, height: 50, borderRadius: 50,}} source={{uri: data.pfp}}/>
-            <View style={{marginLeft: 20, justifyContent: "space-around"}}>
-                <Text style={{color: "white", fontWeight: "bold"}}>{data.displayName}</Text>
-                <View style={{flexDirection: "row",}}>
-                    <Text style={{color: "lightgrey"}}>{data.lastMesssage}</Text>
-                    <Text style={{color: "lightgrey", marginLeft: 10}}>•    {data.messageSent} Ago</Text>
-                </View>
+        <Pressable onPress={() => navigation.navigate("DirectMessage", {username: data.username})} style={{marginVertical: 20, flex: 1, width: "100%", flexDirection: "row", paddingHorizontal: 20, alignItems: "center", justifyContent: 'space-between'}}>
+            <View style={{flex: 0.4, justifyContent: "center", alignItems: "center"}}>
+                <Image style={{width: 50, height: 50, borderRadius: 50}} source={{uri: data.receiver_pfp_url}}/>
+            </View>
+            <View style={{marginLeft: 10, flexDirection: 'col', alignItems: "flex-start", flex: 1}}>
+                <Text style={{color: "white", fontWeight: "bold"}}>{data.username}</Text>
+                <Text style={{color: "lightgrey"}}>{data.lastMessage}</Text>
+            </View>
+            <View style={{flex: 1, alignItems: "flex-end"}}>
+                <Text style={{color: "lightgrey", marginLeft: 10}}>{findTimeAgo(data.created_at)}</Text>
             </View>
         </Pressable>
       );
-        
+
+    async function fetchThreads() {
+        const threads = await getThreads()
+        setDMs(threads)
+    }
+
     useEffect(() => {
-        setDMs(getDMs())
+        fetchThreads()
       }, []);
 
     return (

@@ -3,7 +3,7 @@ import { View, Text, Image, ActivityIndicator, Pressable, TextInput} from 'react
 import { getAuth } from "firebase/auth";
 import { Ionicons } from '@expo/vector-icons';
 
-import { handleUpdate } from "../../components/handlers";
+import { updateUser } from "../../components/handlers";
 import { pickImage } from '../../components/imagepicker';
 import styles from './styles'
 
@@ -24,7 +24,7 @@ export default function EditField({ route, navigation }) {
 
                 <Text style={{color: "white"}}>{route.params.field}</Text>
 
-                <Pressable onPress={async() => { await handleUpdate(route.params.endpoint, route.params.varName, text); navigation.goBack()}}>
+                <Pressable onPress={async() => { await updateUser(route.params.endpoint, route.params.varName, text); navigation.goBack()}}>
                     <Text style={{ color: text ? 'blue' : 'grey' }}>Done</Text>
                 </Pressable>
             </View>

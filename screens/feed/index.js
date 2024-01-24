@@ -6,7 +6,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from '@react-navigation/native';
 import GestureRecognizer from 'react-native-swipe-gestures';
 
-import { getUser, getPings, handleLike, handleComment, handleShare, postComment } from "../../components/handlers";
+import { getUser, getPings, handleLike, handleShare, postComment } from "../../components/handlers";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";

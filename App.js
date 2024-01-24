@@ -69,7 +69,7 @@ Notifications.setNotificationHandler({
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const TopTab = createMaterialTopTabNavigator();
-const username = "@GrantHough"
+const username = "Direct Messages"
 
 function DirectMessageHeader(props) {
   console.log(props)

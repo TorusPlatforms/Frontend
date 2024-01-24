@@ -1,40 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, Image, ActivityIndicator, Pressable, ScrollView} from 'react-native';
+import { View, Text, Image, ActivityIndicator, Pressable, ScrollView, RefreshControl } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
+
 import { pickImage } from '../../components/imagepicker';
-import { getUser, uploadToCDN } from "../../components/handlers";
+import { getUser, uploadToCDN, updateUserProfilePicture } from "../../components/handlers";
 import styles from './styles'
 
 export default function EditProfile() {
     const [user, setUser] = useState(null)
+    const [refreshing, setRefreshing] = useState(false)
     const navigation = useNavigation()
- 
-   
 
-    async function updateUserProfilePicture(profilePictureURL) {
-        const serverUrl = 'https://backend-26ufgpn3sq-uc.a.run.app/api/user/update/profilepicture';
-      
-        const requestBody = {
-          token: auth.currentUser.uid,
-          pfp_url: profilePictureURL,
-        };
-      
-        
-        const response = await fetch(serverUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-        });
-    
-        if (!response.ok) {
-        throw new Error(`Failed to update profile picture. Status: ${response.status}`);
-        }
-    
-        console.log('Profile picture update successful');
-      }
-    
 
     async function handleImageSelect(image) {
         console.log("Selected Image in CreatePing:", image);
@@ -73,14 +49,14 @@ export default function EditProfile() {
 
     return (
         <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-          <View style={{alignItems: "center", justifyContent: "space-around", flex: 0.2}}>
+          <View style={{alignItems: "center", justifyContent: "center", flex: 0.2}}>
             <Image style={styles.pfp} source={{uri: user.pfp_url}}/>
-            <Pressable onPress={() => pickImage(handleImageSelect)}>
+            <Pressable style={{marginTop: 5}} onPress={() => pickImage(handleImageSelect)}>
               <Text style={{fontWeight: "bold", color: "white"}}>Edit Profile Picture</Text>
             </Pressable>
           </View>
             
-          <View style={{alignContent: "flex-start", flex: 1, marginTop: 50}}>
+          <View style={{alignContent: "flex-start", flex: 1, marginTop: 20}}>
             <View style={[styles.updateField, {borderTopWidth: 1}]}>
               <Text style={{color: "white", flex: 0.5}}>Username</Text>
               <Text style={{color: "white", flex: 1}}>@{user.username}</Text>

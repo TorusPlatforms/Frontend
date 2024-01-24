@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Text, View, SafeAreaView, Image, Keyboard, FlatList, Pressable, Alert, Share, Modal, KeyboardAvoidingView, TextInput } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import { handleComment } from '../handlers';
+import { getComments } from '../handlers';
 import { findTimeAgo } from '../utils';
 import styles from "./styles";
 
@@ -47,7 +47,7 @@ const Comment = ({data, handleReply}) => (
     async function fetchComments() {
       console.log("FETCHED", commentPing)
       if (commentPing) {
-        const fetchedComments = await handleComment(commentPing)
+        const fetchedComments = await getComments(commentPing)
         setComments(fetchedComments)
         setModalVisible(true)
       }

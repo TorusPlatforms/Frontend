@@ -173,7 +173,7 @@ export async function handleLike(post, updateLike) {
   }
 }
 
-export async function handleComment(post) {
+export async function getComments(post) {
   const token = await getToken()
 
   console.log("post", post.post_id)
@@ -213,7 +213,7 @@ export async function handleShare(postURL) {
   }
 }
 
-export async function handleUpdate(endpoint, varName, content) {
+export async function updateUser(endpoint, varName, content) {
   const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/user/update/${endpoint}`;
   
   const token = await getToken()
@@ -244,9 +244,7 @@ export async function handleUpdate(endpoint, varName, content) {
 }
 
 export async function postComment(post, content) {
-  const auth = getAuth()
-  const token = await auth.currentUser.getIdToken()
-  console.log("TOKEN", token)
+  const token = await getToken()
   
   const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/comments/add`;
 
@@ -273,5 +271,118 @@ export async function postComment(post, content) {
 
   } catch (error) {
     console.error('Error posting comment:', error.message);
+  }
+}
+
+export async function updateUserProfilePicture(profilePictureURL) {
+  const serverUrl = 'https://backend-26ufgpn3sq-uc.a.run.app/api/user/update/profilepicture';
+
+  const requestBody = {
+    token: auth.currentUser.uid,
+    pfp_url: profilePictureURL,
+  };
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+      });
+    
+      if (!response.ok) {
+        throw new Error(`Failed to update profile picture. Status: ${response.status}`);
+      }
+    
+      console.log('Profile picture update successful');
+  } catch (error) {
+    console.error("Error uploading", error.message)
+  }
+ 
+}
+
+
+export async function getThreads() {
+  const token = await getToken()
+
+  const serverUrl = 'https://backend-26ufgpn3sq-uc.a.run.app/api/messages/threads';
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error getting threads! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('Response Data:', responseData);
+    return responseData
+  } catch (error) {
+    console.error("Error getting threads", error.message)
+  }
+}
+
+export async function getDM(username) {
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/messages/get/${username}`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error getting DM! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('Response Data:', responseData);
+    return responseData
+
+  } catch (error) {
+    console.error("Error getting DM", error.message)
+  }
+}
+
+export async function sendMessage(username, content) {
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/messages/add`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        receiver_username: username, 
+        content: content
+      })
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error getting DM! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('Response Data:', responseData);
+    return responseData
+
+  } catch(error) {
+    console.error("Error sending DM", error.message)
   }
 }
