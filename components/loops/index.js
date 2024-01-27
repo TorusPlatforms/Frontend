@@ -10,11 +10,11 @@ import styles from "./styles"
 const Loop = ({data, goToLoop}) => (
     <Pressable onPress={() => goToLoop()}>
        <View style={{marginVertical: 20, width: "100%", flexDirection: "row", paddingHorizontal: 20}}>
-        <Image style={{width: 100, height: 100, borderRadius: 50}} source={{uri: data.pfp}}/>
+        <Image style={{width: 100, height: 100, borderRadius: 50}} source={{uri: data.profile_picture}}/>
         <View style={{flex: 3, left: 20}}>
-            <Text style={{color: "white", fontWeight: "bold"}}>{data.displayName}</Text>
+            <Text style={{color: "white", fontWeight: "bold"}}>{data.name}</Text>
             <Text style={{color: "white"}}>{data.members} Members</Text>
-            <Text style={{color: "white"}}>{data.interests.join(", ")}</Text>
+            <Text style={{color: "white"}}>{data.description}</Text>
         </View>
     </View> 
     </Pressable>
