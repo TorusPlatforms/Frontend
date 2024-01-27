@@ -14,8 +14,9 @@ const exampleLoopData = {
     chats: ['Chat 1', 'Chat 2', 'Chat 3', 'Chat 4', 'Chat 5','Chat 6', 'Chat 7', 'Chat 8', 'Chat 9'],
     recentAnnouncement: "Grant becomes world's first trillionaire after buying every single realfeel dumpad and selling them for billions each",
     recentAnnouncementUser:"@stefan",
-    recentChat: "Did anyone do the GA homework?",
+    recentChat: "Did anyone do the GA homework? I really need it and i dont want to ask for more points back again",
     recentChatUser:"@grant",
+    status:"public",
     users: ["DrumDogLover","TanujBeatMaster","GrantPawRhythms", "DogGrooveMaster","GrantAndTanujJams","RhythmHound","DrumBeatsWithTanuj","GrantCanineGrooves","TanujDogDrummer","BarkingBeatsGrant","DrummingTanujPaws","GrantAndDogRhythms","TanujDrumTails","PuppyGroovesGrant","BeatBuddyTanuj","WoofingRhythmsGrant","DrummingPawsTanuj","GrantGroovePup","TanujAndTheBeat","DoggyDrummingGrant","RhythmTanujTail","GrantPercussionPup","TanujDoggieBeats","PawsAndSnaresGrant","DrummingDogTanuj","GrantBeatsHowl","TanujRhythmBuddy","DogBeatHarmonyGrant","DrumPawsTanujGroove","GrantAndTanujRhythmic",]
 }
 
@@ -101,45 +102,57 @@ const LoopsPage = () => {
                 </TouchableOpacity>
             )}
 
-          <View style={{ backgroundColor: 'rgb(50,50,50)', alignSelf: "center", marginTop: 20, width: "85%", borderRadius: 20, marginVertical: 0 }}>
 
-{/* Conditionally render announcements */}
-{isMember && (
+
+            {isMember && (
+                <View>
+            <TouchableOpacity
+                onPress={() => navigation.navigate("LoopAnnouncements", { username: "Chat" })}>
+                <View style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'transparent', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 0, zIndex: 0, }} >
+                 <Text style={{ color: 'white', fontSize: 20, textDecorationLine: "underline" }}>Announcements</Text>   
+                </View>
+                
+            
+
+          <View style={{ backgroundColor: 'rgb(50,50,50)', alignSelf: "center", marginTop: -5, width: "85%", borderRadius: 20, marginBottom: 10 }}>
+
     <View>
 
-    <TouchableOpacity
-        onPress={() => navigation.navigate("LoopAnnouncements", { username: "Chat" })}
-        style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'rgb(50,50,50)', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 40, zIndex: 0, }}>
-        <Text style={{ color: 'white', fontSize: 20, textDecorationLine: "underline" }}>Announcements</Text>
-    </TouchableOpacity>
 
-    <View style={{ paddingHorizontal: 25, marginBottom: 40 }}>
+    <View style={{ paddingHorizontal: 25, marginBottom:30,marginTop:20 }}>
         <Text style={{ color: "white" }}>{exampleLoopData.recentAnnouncementUser}</Text>
         <Text style={{ color: "white" }}>{exampleLoopData.recentAnnouncement}</Text>
     </View>
     </View>
-)}
 
 </View>
+</TouchableOpacity>
 
- <View style={{ backgroundColor: 'rgb(50,50,50)', alignSelf: "center", marginTop: 20, width: "85%", borderRadius: 20, marginVertical: 0 }}>
-{isMember && (
+
+<TouchableOpacity
+        onPress={() => navigation.navigate("LoopChat", { username: "Announcements" })}>
+        <View style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'transparent', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 40, zIndex: 0, }}>
+            <Text style={{ color: 'white', fontSize: 20, textDecorationLine: "underline" }}>Chat</Text>
+        </View>
+        
+    
+
+ <View style={{ backgroundColor: 'rgb(50,50,50)', alignSelf: "center", marginTop: -5, width: "85%", borderRadius: 20, marginVertical: 0 }}>
+
     <View>
 
-    <TouchableOpacity
-        onPress={() => navigation.navigate("LoopChat", { username: "Announcements" })}
-        style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'rgb(50,50,50)', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 40, zIndex: 0, }}>
-        <Text style={{ color: 'white', fontSize: 20, textDecorationLine: "underline" }}>Chat</Text>
-    </TouchableOpacity>
 
-    <View style={{ paddingHorizontal: 25, marginBottom: 40 }}>
+    <View style={{ paddingHorizontal: 25, marginBottom:30,marginTop:20 }}>
         <Text style={{ color: "white" }}>{exampleLoopData.recentChatUser}</Text>
         <Text style={{ color: "white" }}>{exampleLoopData.recentChat}</Text>
     </View>
     </View>
-)}
+
+</View>
+</TouchableOpacity>
 </View>
 
+)}
 
 </View>
 );
