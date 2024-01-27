@@ -386,3 +386,31 @@ export async function sendMessage(username, content) {
     console.error("Error sending DM", error.message)
   }
 }
+
+
+export async function getLoops(user) {
+    const token = await getToken()
+
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/posts/college/${user.college}`;
+
+    try {  
+      const response = await fetch(serverUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Getting Pings! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+      return (responseData)
+  
+    } catch (error) {
+      console.error('Error Getting Pings:', error.message);
+    }
+  }
