@@ -395,7 +395,7 @@ export async function getLoops(user) {
 
     try {  
       const response = await fetch(serverUrl, {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -411,6 +411,6 @@ export async function getLoops(user) {
       return (responseData)
   
     } catch (error) {
-      console.error('Error Getting Pings:', error.message);
+      console.error('Error Getting Loops:', error.message);
     }
   }
