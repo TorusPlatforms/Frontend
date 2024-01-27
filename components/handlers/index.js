@@ -391,7 +391,7 @@ export async function sendMessage(username, content) {
 export async function getLoops(user) {
     const token = await getToken()
 
-    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/posts/college/${user.college}`;
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/Location/${user.location}`;
 
     try {  
       const response = await fetch(serverUrl, {
