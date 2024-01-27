@@ -391,7 +391,7 @@ export async function sendMessage(username, content) {
 export async function getLoops(user) {
     const token = await getToken()
 
-    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/Location/${user.location}`;
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/Location/${user.college}`;
 
     try {  
       const response = await fetch(serverUrl, {
@@ -403,7 +403,7 @@ export async function getLoops(user) {
       });
   
       if (!response.ok) {
-        throw new Error(`Error Getting Pings! Status: ${response.status}`);
+        throw new Error(`Error Getting Loops! Status: ${response.status}`);
       }
   
       const responseData = await response.json();
