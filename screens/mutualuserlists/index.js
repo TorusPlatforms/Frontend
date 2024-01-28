@@ -1,12 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Image, Text, Pressable, SafeAreaView, FlatList } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { View, Image, Text, SafeAreaView, FlatList, ActivityIndicator } from "react-native";
 
 import { getFollowings } from "../../components/handlers";
 import styles from "./styles";
 
 export default function MutualsScreen({ route, navigation }) {
-    console.log(route.params, "boo")
     const [users, setUsers] = useState([])
 
 
@@ -31,22 +29,25 @@ export default function MutualsScreen({ route, navigation }) {
         setUsers(users)
     }
 
+
     useEffect(() => {
         fetchUsers()
     }, [route.params.get]);
 
 
-    if (users) {
+    if (!users) {
+        return <ActivityIndicator />
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <FlatList 
-                data={users}
-                renderItem={({item}) => <User data={item} />}
-                ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
-            />
-        </SafeAreaView>
-    )
+    } else {
+
+        return (
+            <SafeAreaView style={styles.container}>
+                <FlatList 
+                    data={users}
+                    renderItem={({item}) => <User data={item} />}
+                    ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+                />
+            </SafeAreaView>
+        )
     }
-
 }

@@ -22,9 +22,12 @@ export default function UserProfile({ route }) {
     const [refreshing, setRefreshing] = useState(false)
     const ref_input = useRef();
 
+
+
     const updateLike = useCallback(() => {
         fetchUser()
       }, []);
+
 
     async function fetchUser() {
         const user = await getUserByUsername(route.params.username)
@@ -35,12 +38,11 @@ export default function UserProfile({ route }) {
     }
 
   
-      function handleReply(data) {
+    function handleReply(data) {
         ref_input.current.focus()
         setReplyingTo(data.author)
         onChangeComment("@" + data.author + " ")
-      }
-  
+    }
 
 
     async function copyUsernameToClipboard() {
@@ -48,13 +50,10 @@ export default function UserProfile({ route }) {
       };
 
     
-    
-   
-
     const onRefresh = useCallback(async() => {
-      setRefreshing(true);
-      await fetchUser()
-      setRefreshing(false)
+        setRefreshing(true);
+        await fetchUser()
+        setRefreshing(false)
     }, []);
 
     useEffect(() => {
@@ -63,9 +62,9 @@ export default function UserProfile({ route }) {
     
     if (!user || !pings) {
         return <ActivityIndicator/>
-    }
 
-    if (user) {
+    } else {
+        
         return (
             <SafeAreaView style={styles.container}>
               <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>

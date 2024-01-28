@@ -13,17 +13,21 @@ import styles from "./styles";
 
 export default function Profile() {
     const navigation = useNavigation()
+
     const movingLine = useRef(new Animated.Value(0)).current;
+
     const [loops, setLoops] = useState([])
     const [pings, setPings] = useState([])
     const [user, setUser] = useState(null)
-    const [isFocus, setIsFocus] = useState(false);
+
     const [modalVisible, setModalVisible] = useState(false);
     const [commentText, onChangeComment] = useState('');
     const [commentPing, setCommentPing] = useState(null)
     const [replyingTo, setReplyingTo] = useState(null) 
-    const [refreshing, setRefreshing] = useState(false)
     const ref_input = useRef();
+
+    const [loading, setLoading] = useState(true)
+    const [refreshing, setRefreshing] = useState(false)
 
     const updateLike = useCallback(() => {
         fetchUser()
@@ -35,6 +39,8 @@ export default function Profile() {
 
         const pings = await getUserPings(user.username)
         setPings(pings)
+
+        setLoading(false)
     }
 
   
@@ -111,7 +117,21 @@ export default function Profile() {
         });
       }
      
-    
+    function renderPings() {
+        return pings.map((item) =>
+            <View key={item.post_id}>
+                <Ping 
+                    data={item} 
+                    setModalVisible={setModalVisible} 
+                    handleLike={() => handleLike(item, updateLike)} 
+                    handleComment={() => setCommentPing(item)} handleShare={handleShare}
+                    navigation={navigation}
+                />
+                <View style={styles.item_seperator} />
+            </View>
+        )
+    }
+
     function renderNotification(item, index) {
         //figure out if loop has a notification
         const unread = false
@@ -128,27 +148,38 @@ export default function Profile() {
       setRefreshing(false)
     }, []);
 
+
     useEffect(() => {
+        setLoading(true)
         setLoops(getLoops())
-
         fetchUser()
-
-        Animated.sequence([
-        Animated.delay(300),
-        Animated.timing(movingLine, {
-            toValue: 1, // 1 represents the final angle
-            duration: 1000,
-            useNativeDriver: false
-          })
-        ]).start();
+      }, []);
     
-      }, [movingLine]);
-    
-    if (!user || !pings) {
-        return <ActivityIndicator/>
-    }
 
-    if (user) {
+    useEffect(() => {
+        if (!loading) {
+            Animated.sequence([
+                Animated.delay(300),
+                Animated.timing(movingLine, {
+                    toValue: 1,
+                    duration: 1000,
+                    useNativeDriver: false
+                  })
+                ]).start();
+        }
+ 
+    }, [movingLine, loading])
+
+
+    if (loading) {
+        return (
+            <View style={[styles.container, {justifyContent: "center", alignItems: "center"}]}>
+                <ActivityIndicator/>
+            </View>
+        )
+
+    } else {
+
         return (
             <SafeAreaView style={styles.container}>
               <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
@@ -207,19 +238,7 @@ export default function Profile() {
     
                 <View style={styles.loopsListContainer}>
                     <View style={styles.item_seperator} />
-                        {pings.map((item) =>
-                                <View key={item.post_id}>
-                                    <Ping 
-                                        data={item} 
-                                        setModalVisible={setModalVisible} 
-                                        handleLike={() => handleLike(item, updateLike)} 
-                                        handleComment={() => setCommentPing(item)} handleShare={handleShare}
-                                        navigation={navigation}
-                                    />
-                                    <View style={styles.item_seperator} />
-                                </View>
-                            )
-                        }
+                        {renderPings()}
                 </View>       
     
                 <CommentModal
