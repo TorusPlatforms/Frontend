@@ -1,37 +1,40 @@
-import React, { useState, useRef, useEffect } from "react";
-import { View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, RefreshControl} from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
-import { getLoops,getUser } from "../../components/handlers";
+import { getLoops, getUser } from "../../components/handlers";
 import { LoopsComponent } from "../../components/loops";
 
-
-
-
-
 export default function Search({ route, navigation }) {
-    const [loops, setLoops] = useState([]);
+  const [loops, setLoops] = useState([]);
 
-    const fetchLoops = async () => {
-        try {
-          const user = await getUser();
-          const fetchedLoopsString = await getLoops(user);
-          const fetchedLoops = JSON.parse(fetchedLoopsString);
-          console.log("Fetched Loops:", fetchedLoops);
-          setLoops(fetchedLoops);
-        } catch (error) {
-          console.error("Error fetching loops:", error);
-        }
-      };
+  const fetchLoops = async () => {
+    try {
+      const user = await getUser();
+      const fetchedLoopsString = await getLoops(user);
+      const fetchedLoops = JSON.parse(fetchedLoopsString);
+      console.log("Fetched Loops:", fetchedLoops);
+      setLoops(fetchedLoops);
+    } catch (error) {
+      console.error("Error fetching loops:", error);
+    }
+  };
 
   useEffect(() => {
     fetchLoops();
   }, []);
 
-    return (
-        <LoopsComponent paddingTop={50} loops={loops} searchBarPlaceholder={"Discover Loops & People"}/>
-    )
-  
+  const onRefresh = async () => {
+    await fetchLoops();
+  };
+
+  return (
+    <LoopsComponent
+      paddingTop={50}
+      loops={loops}
+      searchBarPlaceholder={"Discover Loops & People"}
+      onRefresh={onRefresh}
+    />
+  );
 }
 
 

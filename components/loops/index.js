@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { View, Image, Text, Animated, Dimensions, Pressable, FlatList, SafeAreaView } from "react-native";
+import { View, Image, Text, Animated, Dimensions, Pressable, FlatList, SafeAreaView, RefreshControl } from "react-native";
 import { SearchBar } from "react-native-elements";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from "@react-navigation/native";
@@ -22,18 +22,18 @@ const Loop = ({ data, goToLoop }) => {
     );
     }
 
-export const LoopsComponent = ({loops, searchBarPlaceholder, paddingTop}) => {
+export const LoopsComponent = ({ loops, searchBarPlaceholder, paddingTop, onRefresh }) => {
     const [search, setSearch] = useState("")
-    const navigation = useNavigation()
     const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
     const [scrollY] = useState(new Animated.Value(0));
-
+    const [refreshing, setRefreshing] = useState(false);
+  
     const headerHeight = scrollY.interpolate({
       inputRange: [0, 70],
       outputRange: [70, 0],
       extrapolate: 'clamp',
-    })
-
+    });
+  
     const headerOpacity = scrollY.interpolate({
       inputRange: [0, 70],
       outputRange: [1, 0],
@@ -49,41 +49,48 @@ export const LoopsComponent = ({loops, searchBarPlaceholder, paddingTop}) => {
     };
 
     return (
-        <SafeAreaView style={[styles.container, {paddingTop: paddingTop}]}>
-        <Animated.View style={{height: headerHeight, opacity: headerOpacity}}>
-            <View style={{padding: 10, flexDirection: 'row', flex: 1, justifyContent: "space-between", alignItems: "center"}}>
-                <View style={{flex: 1}}>
-                    <SearchBar 
-                        placeholder={searchBarPlaceholder} 
-                        containerStyle={{backgroundColor: "rgb(22, 23, 24)", borderTopWidth: 0,  borderBottomWidth: 0, color: "rgb(22, 23, 24)"}} 
-                        onChangeText={setSearch}
-                        value={search}
-                    />
-                </View>
-            
-
-                <View style={{flex: 0.1}}>
-                    <Pressable onPress={() => navigation.navigate("CreateLoop")}>
-                        <Ionicons name="add" size={24} color="white" />
-                    </Pressable>
-                </View>
+        <SafeAreaView style={[styles.container, { paddingTop: paddingTop }]}>
+          <Animated.View style={{ height: headerHeight, opacity: headerOpacity }}>
+            <View style={{ padding: 10, flexDirection: 'row', flex: 1, justifyContent: "space-between", alignItems: "center" }}>
+              <View style={{ flex: 1 }}>
+                <SearchBar
+                  placeholder={searchBarPlaceholder}
+                  containerStyle={{ backgroundColor: "rgb(22, 23, 24)", borderTopWidth: 0, borderBottomWidth: 0, color: "rgb(22, 23, 24)" }}
+                  onChangeText={setSearch}
+                  value={search}
+                />
+              </View>
+    
+              <View style={{ flex: 0.1 }}>
+                <Pressable onPress={() => navigation.navigate("CreateLoop")}>
+                  <Ionicons name="add" size={24} color="white" />
+                </Pressable>
+              </View>
             </View>
-
-        
-        </Animated.View>
-
-
-        <AnimatedFlatList
-            style={{paddingHorizontal: 20}}
+          </Animated.View>
+    
+          <AnimatedFlatList
+            style={{ paddingHorizontal: 20 }}
             data={loops}
-            renderItem={({item}) => <Loop data={item} goToLoop={goToLoop}/>}
-            ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+            renderItem={({ item }) => <Loop data={item} goToLoop={goToLoop} />}
+            ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
             onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-            { useNativeDriver: false }
+              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+              { useNativeDriver: false }
             )}
             scrollEventThrottle={16}
-        />
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={async () => {
+                  setRefreshing(true);
+                  await onRefresh();
+                  setRefreshing(false);
+                }}
+                tintColor="white"
+              />
+            }
+          />
         </SafeAreaView>
-    )
-}
+      );
+    };
