@@ -12,12 +12,17 @@ import { LoopsComponent } from "../../components/loops";
 export default function Search({ route, navigation }) {
     const [loops, setLoops] = useState([]);
 
-  async function fetchLoops() {
-    const user = await getUser();
-    const fetchedLoops = await getLoops(user);
-    setLoops(fetchedLoops);
-    console.log("Loops updated:", fetchedLoops);
-  }
+    const fetchLoops = async () => {
+        try {
+          const user = await getUser();
+          const fetchedLoopsString = await getLoops(user);
+          const fetchedLoops = JSON.parse(fetchedLoopsString);
+          console.log("Fetched Loops:", fetchedLoops);
+          setLoops(fetchedLoops);
+        } catch (error) {
+          console.error("Error fetching loops:", error);
+        }
+      };
 
   useEffect(() => {
     fetchLoops();
