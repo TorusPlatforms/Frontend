@@ -18,20 +18,26 @@ import styles from "./styles";
 
 export default function Feed() {
     const navigation = useNavigation()
+
     const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
     const [scrollY] = useState(new Animated.Value(0));
+    
+    const [dropdownData, setDropdownData] = useState([])
     const [feedType, setFeedType] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [commentText, onChangeComment] = useState('');
+    const ref_input = useRef();
     const [replyingTo, setReplyingTo] = useState(null) 
-    const [user, setUser] = useState(null)
-    const [pings, setPings] = useState(null)
-    const [dropdownData, setDropdownData] = useState([])
-    const [refreshing, setRefreshing] = useState(false);
     const [commentPing, setCommentPing] = useState(null)
 
-    const ref_input = useRef();
+    const [refreshing, setRefreshing] = useState(false);
+    const scrollRef = useRef()
+
+    const [user, setUser] = useState(null)
+    const [pings, setPings] = useState(null)
+
+
 
     const headerHeight = scrollY.interpolate({
       inputRange: [0, 70],
@@ -71,6 +77,8 @@ export default function Feed() {
 
     async function fetchPings() {
       const user = await getUser();
+      setUser(user)
+
       const fetchedPings = await getPings(user);
       setPings(fetchedPings);
   
@@ -97,6 +105,16 @@ export default function Feed() {
       setRefreshing(false)
     }, []);
 
+    function onScroll() {
+      Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        { useNativeDriver: false }
+      ) 
+      }
+
+    function onContentSizeChange() {
+      scrollRef.current?.scrollToOffset({ offset: scrollY.__getValue(), animated: false });
+    };
 
     useEffect(() => {
       fetchPings();
@@ -141,8 +159,9 @@ export default function Feed() {
 
 
             <AnimatedFlatList
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                   style={{paddingHorizontal: 20}}
+                  refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                  ref={scrollRef}
                   data={pings}
                   renderItem={({item}) => 
                     <Ping 
@@ -154,10 +173,8 @@ export default function Feed() {
                     />
                   }
                   ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
-                  onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                    { useNativeDriver: false }
-                  )}
+                  onScroll={onScroll}
+                  onContentSizeChange={onContentSizeChange}
                   scrollEventThrottle={16}
               />
           {/* <GestureRecognizer
