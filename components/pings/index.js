@@ -3,9 +3,9 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import styles from "./styles";
 
 
-export const Ping = ({data, handleLike, handleComment, handleShare }) => (
+export const Ping = ({navigation, data, handleLike, handleComment, handleShare }) => (
     <View style={{marginVertical: 10, width: "95%", flexDirection: "row", padding: 10}}>
-      <View style={{flexDirection: "col"}}>
+      <View style={{flexDirection: "col", flex: 1}}>
         <Image
           style={styles.tinyLogo}
           source={{uri: data.pfp_url}}
@@ -14,17 +14,26 @@ export const Ping = ({data, handleLike, handleComment, handleShare }) => (
         <View style={styles.verticalLine} />
       </View>
   
-      <View style={{marginLeft: 10}}>
-        <Text style={styles.author}>{data.author}</Text>
-        <Text style={styles.text}>{data.content}</Text>
+      <View style={{marginLeft: 10, flex: 6}}>
+        <View style={{flex: 1}}>
+          <Pressable onPress={() => navigation.navigate("UserProfile", {username: data.author})}>
+            {({pressed}) => (
+              <Text style={[styles.author, {color: pressed ? "grey": "white"}]}>{data.author}</Text>
+            )}
+          </Pressable>
+          <Text style={styles.text}>{data.content}</Text>
+        </View>
+       
+        <View style={{flex: 2}}>
+          <Image
+            style={[styles.attatchment, {display: data.image_url ? "flex" : "none"}]}
+            source={{uri: data.image_url}}
+            resizeMode='contain'
+          />
+        </View>
+      
   
-        <Image
-          style={[styles.attatchment, {display: data.image_url ? "flex" : "none"}]}
-          source={{uri: data.image_url}}
-          resizeMode='contain'
-        />
-  
-        <View style={{flexDirection: "row", marginVertical: 5}}>
+        <View style={{flexDirection: "row", flex: 1}}>
           <Pressable onPress={handleLike}>
             <Ionicons style={[styles.pingIcon, {color: data.isLiked ? "red" : "white"}]} name={data.isLiked ? "heart" : "heart-outline"} size={20}></Ionicons>
           </Pressable>
@@ -41,8 +50,10 @@ export const Ping = ({data, handleLike, handleComment, handleShare }) => (
             <Ionicons style={styles.pingIcon} name="paper-plane-outline" size={20}></Ionicons>
           </Pressable>
         </View>
-  
-        <Text style={styles.stats}>{data.numberof_likes} Likes • {data.numberof_comments} Comments</Text>
+
+        <View style={{flex: 1, marginTop: 5}}>
+          <Text style={styles.stats}>{data.numberof_likes} Likes • {data.numberof_comments} Comments</Text>
+        </View>
       </View>
     </View>
   );

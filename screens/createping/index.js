@@ -158,7 +158,7 @@ const CreatePing = () => {
 
           <TouchableOpacity
             style={{ backgroundColor: "rgb(247, 212, 114)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop: 20 }}
-            onPress={() => {createPost(user, textInputValue, selectedImage); closeKeyboard()}}
+            onPress={async() => {await createPost(user, textInputValue, selectedImage); navigation.goBack()}}
           >
             <Text style={{ color: "black", textAlign: "center" }}>Post</Text>
           </TouchableOpacity>

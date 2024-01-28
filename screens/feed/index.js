@@ -16,7 +16,8 @@ import styles from "./styles";
 // const commentData = new Array(20).fill(exampleComment);
 
 
-export default function Feed({ route, navigation }) {
+export default function Feed() {
+    const navigation = useNavigation()
     const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
     const [scrollY] = useState(new Animated.Value(0));
     const [feedType, setFeedType] = useState(null);
@@ -29,6 +30,7 @@ export default function Feed({ route, navigation }) {
     const [dropdownData, setDropdownData] = useState([])
     const [refreshing, setRefreshing] = useState(false);
     const [commentPing, setCommentPing] = useState(null)
+
     const ref_input = useRef();
 
     const headerHeight = scrollY.interpolate({
@@ -142,7 +144,15 @@ export default function Feed({ route, navigation }) {
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                   style={{paddingHorizontal: 20}}
                   data={pings}
-                  renderItem={({item}) => <Ping data={item} setModalVisible={setModalVisible} handleLike={() => handleLike(item, updateLike)} handleComment={() => setCommentPing(item)} handleShare={handleShare}/>}
+                  renderItem={({item}) => 
+                    <Ping 
+                      data={item} 
+                      setModalVisible={setModalVisible} 
+                      handleLike={() => handleLike(item, updateLike)} 
+                      handleComment={() => setCommentPing(item)} handleShare={handleShare}
+                      navigation={navigation}
+                    />
+                  }
                   ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
                   onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset: { y: scrollY } } }],

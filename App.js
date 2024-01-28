@@ -37,6 +37,8 @@ import ResetPassword from './screens/settings/Your Account/Reset Password';
 import EditProfile from "./screens/editprofile";
 import EditField from "./screens/editfield";
 import MyLoops from "./screens/myloops";
+import UserProfile from './screens/userprofile';
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -100,11 +102,11 @@ const FeedScreens = () => {
   )
 }
 
-const FollowTabs = () => {
+const FollowTabs = ({ route }) => {
   return (
     <TopTab.Navigator screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)'}, tabBarLabelStyle: { "color": "white" }}}>
-      <TopTab.Screen name="Following" component={MutualsScreen} initialParams={{get: "following"}} options={{headerShown: false}} />
-      <TopTab.Screen name="Followers" component={MutualsScreen} initialParams={{get: "followers"}} options={{headerShown: false}} />
+      <TopTab.Screen name="Following" component={MutualsScreen} initialParams={{get: "following", username: route.params.username}} options={{headerShown: false}} />
+      <TopTab.Screen name="Followers" component={MutualsScreen} initialParams={{get: "followers", username: route.params.username}} options={{headerShown: false}} />
     </TopTab.Navigator>
   )
 };
@@ -125,7 +127,7 @@ function App() {
         <Stack.Screen name="LoopAnnouncements" component={LoopAnnouncements} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="LoopInfo" component={LoopInfo}/>
         <Stack.Screen name="DirectMessage" component={DirectMessage} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
-        <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.name, })}/>
+        <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.username })}/>
         <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>
         <Stack.Screen name="Your Account" component={YourAccountScreen} options={{headerShown: true}}/>
         <Stack.Screen name="Accessibility" component={AccessibilityDisplay} options={{headerShown: true}}/>
@@ -138,6 +140,7 @@ function App() {
         <Stack.Screen name="Reset Password" component={ResetPassword} options={{headerShown: true}}/>
         <Stack.Screen name="Edit Profile" component={EditProfile} options={{headerShown: true}}/>
         <Stack.Screen name="EditField" component={EditField}/>
+        <Stack.Screen name="UserProfile" component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

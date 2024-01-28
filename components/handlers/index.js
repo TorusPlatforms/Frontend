@@ -4,9 +4,9 @@ import { Share, Alert } from 'react-native'
 async function getToken() {
   const auth = getAuth()
   const token = await auth.currentUser.getIdToken()
-  console.log("TOKEN", token)
   return token
 }
+
 export async function getUser() {
     const token = await getToken()
 
@@ -35,8 +35,37 @@ export async function getUser() {
    
 }
 
+export async function getUserByUsername(username) {
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/user/${username}`;
+  console.log(serverUrl)
+  try {
+      const response = await fetch(serverUrl, {
+          method: "GET",
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+          },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Getting User! Status: ${response.status}`);
+      }
+  
+      const userData = await response.json();
+      console.log('User Data:', userData);
+   
+      return (userData)
+  } catch (error) {
+      console.error("Error Getting User:", error.message)
+  }
+ 
+}
+
 export async function getPings(user) {
     const token = await getToken()
+    console.log(token)
 
     const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/posts/college/${user.college}`;
 
@@ -54,7 +83,7 @@ export async function getPings(user) {
       }
   
       const responseData = await response.json();
-      console.log('Response Data:', responseData);
+      console.log('Pings:', responseData);
       return (responseData)
   
     } catch (error) {
@@ -95,7 +124,7 @@ export async function createPost(user, content, image = null ) {
       }
   
       const responseData = await response.json();
-      console.log('Response Data:', responseData);
+      console.log('Created Post:', responseData);
       return (responseData)
   
     } catch (error) {
@@ -244,6 +273,7 @@ export async function updateUser(endpoint, varName, content) {
 }
 
 export async function postComment(post, content) {
+  console.log("HERE", post, content)
   const token = await getToken()
   
   const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/comments/add`;
@@ -266,7 +296,7 @@ export async function postComment(post, content) {
     }
 
     const responseData = await response.json();
-    console.log('Response Data:', responseData);
+    console.log('Posted Comment:', responseData);
     return responseData
 
   } catch (error) {
@@ -322,7 +352,7 @@ export async function getThreads() {
     }
 
     const responseData = await response.json();
-    console.log('Response Data:', responseData);
+    console.log('Threads:', responseData);
     return responseData
   } catch (error) {
     console.error("Error getting threads", error.message)
@@ -348,7 +378,7 @@ export async function getDM(username) {
     }
 
     const responseData = await response.json();
-    console.log('Response Data:', responseData);
+    console.log('DMs:', responseData);
     return responseData
 
   } catch (error) {
@@ -379,10 +409,68 @@ export async function sendMessage(username, content) {
     }
 
     const responseData = await response.json();
-    console.log('Response Data:', responseData);
+    console.log('Sent Message:', responseData);
     return responseData
 
   } catch(error) {
     console.error("Error sending DM", error.message)
+  }
+}
+
+export async function getUserPings(username) {
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/posts/user/${username}`;
+
+  console.log("HEREEEE", serverUrl)
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error getting user pings! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('User Pings:', responseData);
+    return responseData
+
+  } catch(error) {
+    console.error("Error getting user pings", error.message)
+  }
+}
+
+export async function getFollowings(username, type) {
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/followings/${type}/${username}`;
+
+  console.log("HEREEEE", serverUrl)
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error getting ${type}! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log(type, responseData);
+    return responseData
+
+  } catch(error) {
+    console.error("Error getting followings", error.message)
   }
 }

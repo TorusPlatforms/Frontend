@@ -5,19 +5,16 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 
-import { getUser, getUserPings, handleShare, handleLike, postComment } from "../../components/handlers";
+import { getUserByUsername, getUserPings, handleShare, handleLike, postComment } from "../../components/handlers";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
 
 
-export default function Profile() {
+export default function UserProfile({ route }) {
     const navigation = useNavigation()
-    const movingLine = useRef(new Animated.Value(0)).current;
-    const [loops, setLoops] = useState([])
     const [pings, setPings] = useState([])
     const [user, setUser] = useState(null)
-    const [isFocus, setIsFocus] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [commentText, onChangeComment] = useState('');
     const [commentPing, setCommentPing] = useState(null)
@@ -30,7 +27,7 @@ export default function Profile() {
       }, []);
 
     async function fetchUser() {
-        const user = await getUser()
+        const user = await getUserByUsername(route.params.username)
         setUser(user)
 
         const pings = await getUserPings(user.username)
@@ -45,11 +42,6 @@ export default function Profile() {
       }
   
 
-    function getLoops() {
-        const exampleLoopsData = {name: "Dorm", pfp: "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png"}
-        return new Array(6).fill(exampleLoopsData)
-    }
-    
 
     async function copyUsernameToClipboard() {
         await Clipboard.setStringAsync(user.username);
@@ -57,70 +49,7 @@ export default function Profile() {
 
     
     
-    //ANIMATION 
-    const symbolSize = 50;
-    const radius = 125 
-    const center = 125
-
-    function degToRad(deg) {
-        return deg * Math.PI / 180
-    }
-
-    const iconStyles = [
-        {left: radius * Math.cos(degToRad(60)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(60)) + center - symbolSize / 2}, 
-        {left: radius * Math.cos(degToRad(120)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(120)) + center - symbolSize / 2},
-        {left: radius * Math.cos(degToRad(180)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(180)) + center - symbolSize / 2},
-        {left: radius * Math.cos(degToRad(240)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(240)) + center - symbolSize / 2},
-        {left: radius * Math.cos(degToRad(300)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(300)) + center - symbolSize / 2},
-        {left: radius * Math.cos(degToRad(360)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(360)) + center - symbolSize / 2}
-    ]
-    
-    const x = movingLine.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0, 60],
-        });
-
-    const y = movingLine.interpolate({
-        inputRange: [0, 1],
-        outputRange: [30, 50],
-        });
-
- 
-    const lineStyles = [{top: 50, right: y, transform: [{rotate: "30deg"}]},  {top: 50, left: y, transform: [{rotate: "-30deg"}]},  {left: 85, transform: [{rotate: "90deg"}]},  {bottom: 50, left: y, transform: [{rotate: "30deg"}]}, {bottom: 50, right: y, transform: [{rotate: "-30deg"}]},   {right: 85, transform: [{rotate: "90deg"}]}]
-
-    function renderLoops() {
-        return loops.map((item, index) => {
-        
-          return (
-            <View key={index} style={ [iconStyles[index], {justifyContent: "center", alignItems: "center", position: "absolute"}] }>
-                  <Image
-                      style={{
-                            width: symbolSize,
-                            height: symbolSize,
-                            borderRadius: symbolSize / 2,
-                            zIndex: 1
-                      }}
-                      source={{ uri: 'https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png' }} />
-
-                  {renderNotification()}
-
-                  <Animated.View style={[lineStyles[index], { backgroundColor: "gray", width: 2, height: x, position: "absolute"}]} />
-
-              </View>
-          );
-        });
-      }
-     
-    
-    function renderNotification(item, index) {
-        //figure out if loop has a notification
-        const unread = false
-
-        if (unread) {
-            return <View style={{width: 15, height: 15, borderRadius: 7.5, backgroundColor: 'red', bottom: 30, position: 'absolute', alignSelf: 'flex-end', zIndex: 1}}/>
-        }
-    };
-
+   
 
     const onRefresh = useCallback(async() => {
       setRefreshing(true);
@@ -129,20 +58,8 @@ export default function Profile() {
     }, []);
 
     useEffect(() => {
-        setLoops(getLoops())
-
         fetchUser()
-
-        Animated.sequence([
-        Animated.delay(300),
-        Animated.timing(movingLine, {
-            toValue: 1, // 1 represents the final angle
-            duration: 1000,
-            useNativeDriver: false
-          })
-        ]).start();
-    
-      }, [movingLine]);
+      }, []);
     
     if (!user || !pings) {
         return <ActivityIndicator/>
@@ -152,16 +69,6 @@ export default function Profile() {
         return (
             <SafeAreaView style={styles.container}>
               <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-              <View style={styles.header}>
-                    <Pressable onPress={() => navigation.navigate("Edit Profile")}>
-                        <Ionicons name="ios-person-outline" size={24} color="white" />
-                    </Pressable>
-    
-                    <Pressable onPress={() => navigation.navigate("Settings")}>
-                        <Ionicons name="ios-settings-outline" size={24} color="white" />
-                    </Pressable>
-                </View>
-    
                 <View style={styles.userInfoContainer}>
                     <View style={styles.pfpContainer}>
                         <Image style={styles.pfp} source={{uri: user.pfp_url}}/>
@@ -195,15 +102,6 @@ export default function Profile() {
                 
                 </View>
                 
-    
-                <View style={styles.torusContainer}>
-                    <View style={styles.centerLoop}>
-                        <Pressable onPress={() => navigation.navigate("MyLoops")} style={styles.centerLoopIcon}>
-                            <MaterialCommunityIcons name="google-circles-communities" color={"gray"} size={60}/>
-                        </Pressable>
-                        {renderLoops()}
-                    </View>
-                </View>
     
                 <View style={styles.loopsListContainer}>
                     <View style={styles.item_seperator} />

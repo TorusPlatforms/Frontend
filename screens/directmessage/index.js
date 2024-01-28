@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { View, ActivityIndicator } from "react-native";
 import { GiftedChat, Bubble, InputToolbar, Avatar } from 'react-native-gifted-chat';
 
@@ -28,10 +28,6 @@ export default function DirectMessage({ route }) {
     console.log(route.params.username)
     const dm = await getDM(route.params.username)
     setMessages(dm.messages)
-    // setMessages([
-    //   {"created_at": 1706077107961, "text": "gabooble", "_id": 1, "user": {"_id": 1, "avatar": "https://cdn.torusplatforms.com/e2d4deba-849e-4265-88f8-73b83c9fe9b6.JPG", "name": "tanujks"}}, 
-    //   {"created_at": 1706077111023, "text": "boo", "_id": 2, "user": {"_id": 2, "avatar": "https://cdn.torusplatforms.com/e2d4deba-849e-4265-88f8-73b83c9fe9b6.JPG", "name": "tanujks"}}, 
-    //   {"created_at": 1706077112547, "text": "boo", "_id": 3, "user": {"avatar": "https://cdn.torusplatforms.com/e2d4deba-849e-4265-88f8-73b83c9fe9b6.JPG", "name": "tanujks"}}])
   }
 
 
