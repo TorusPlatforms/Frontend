@@ -474,3 +474,25 @@ export async function getFollowings(username, type) {
     console.error("Error getting followings", error.message)
   }
 }
+
+export async function searchUsers(query) {
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/user/search/${query}`;
+  console.log(serverUrl)
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error searching! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log("Searched Users", responseData);
+    return responseData
+
+  } catch(error) {
+    console.error("Error searching", error.message)
+  }
+}
