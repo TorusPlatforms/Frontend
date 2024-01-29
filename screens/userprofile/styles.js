@@ -31,6 +31,11 @@ const styles = StyleSheet.create({
     userInfoContainer: {
         flex: 1.5, 
         flexDirection: 'row',
+        ...Platform.select({
+            ios: {
+              marginTop: 30,
+            },
+        })
     }, 
 
     pfpContainer: {
