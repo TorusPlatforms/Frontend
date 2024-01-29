@@ -42,6 +42,7 @@ const LoopsPage = () => {
     const navigation = useNavigation()
     const [notifications, setNotifications] = useState(exampleLoopData.notifications);
     const [isMember, setIsMember] = useState(exampleUserData.member);
+    const [activeButton, setActiveButton] = useState("news");
 
     const leaveLoop = () => {
         navigation.goBack();
@@ -60,6 +61,8 @@ const LoopsPage = () => {
         setNotifications((prevNotifications) => !prevNotifications);
         //TURN ON OR OFF NOTIFICATIONS FOR THIS LOOP
       };
+
+      
 
 
       return (
@@ -106,6 +109,22 @@ const LoopsPage = () => {
 
             {isMember && (
                 <View>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 35, paddingBottom: 10, borderBottomWidth: 1, borderColor: "white" }}>
+
+            <TouchableOpacity onPress={() => setActiveButton("news")}>
+              <Text style={{ color: activeButton === "news" ? "rgb(247, 212, 114)" : "white", paddingHorizontal: 20 }}>News</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => setActiveButton("chat")}>
+              <Text style={{ color: activeButton === "chat" ? "rgb(247, 212, 114)" : "white", paddingHorizontal: 20, alignSelf: "center" }}>Chat</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => setActiveButton("about")}>
+              <Text style={{ color: activeButton === "about" ? "rgb(247, 212, 114)" : "white", paddingHorizontal: 20 }}>About</Text>
+            </TouchableOpacity>
+
+          </View>
+          {activeButton === "news" && (
             <TouchableOpacity
                 onPress={() => navigation.navigate("LoopAnnouncements", { username: "Chat" })}>
                 <View style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'transparent', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 0, zIndex: 0, }} >
@@ -128,7 +147,9 @@ const LoopsPage = () => {
 </View>
 </TouchableOpacity>
 
+)}
 
+{activeButton === "chat" && (
 <TouchableOpacity
         onPress={() => navigation.navigate("LoopChat", { username: "Announcements" })}>
         <View style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'transparent', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 40, zIndex: 0, }}>
@@ -150,6 +171,7 @@ const LoopsPage = () => {
 
 </View>
 </TouchableOpacity>
+)}
 </View>
 
 )}
