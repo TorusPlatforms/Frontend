@@ -17,6 +17,7 @@ const exampleLoopData = {
     recentChat: "Did anyone do the GA homework? I really need it and i dont want to ask for more points back again",
     recentChatUser:"@grant",
     status:"public",
+    owner:"@grant",
     users: ["DrumDogLover","TanujBeatMaster","GrantPawRhythms", "DogGrooveMaster","GrantAndTanujJams","RhythmHound","DrumBeatsWithTanuj","GrantCanineGrooves","TanujDogDrummer","BarkingBeatsGrant","DrummingTanujPaws","GrantAndDogRhythms","TanujDrumTails","PuppyGroovesGrant","BeatBuddyTanuj","WoofingRhythmsGrant","DrummingPawsTanuj","GrantGroovePup","TanujAndTheBeat","DoggyDrummingGrant","RhythmTanujTail","GrantPercussionPup","TanujDoggieBeats","PawsAndSnaresGrant","DrummingDogTanuj","GrantBeatsHowl","TanujRhythmBuddy","DogBeatHarmonyGrant","DrumPawsTanujGroove","GrantAndTanujRhythmic",]
 }
 
@@ -75,9 +76,9 @@ const LoopsPage = () => {
             {isMember && (
             <View style={{ flexDirection: "row"}}>
 
-            <TouchableOpacity style={{padding:10,marginTop:30}} onPress={goToInfo}>
+            {/*<TouchableOpacity style={{padding:10,marginTop:30}} onPress={goToInfo}>
             <Icon name="information-circle-outline" size={30} color="#ffffff"/>
-            </TouchableOpacity>
+            </TouchableOpacity>*/}
 
             <TouchableOpacity onPress={toggleNotifications} style={{ padding: 10, marginTop: 30 }}>
             {notifications ? (
@@ -139,6 +140,7 @@ const LoopsPage = () => {
 
 
     <View style={{ paddingHorizontal: 25, marginBottom:30,marginTop:20 }}>
+        <Text style={{ color: "white" }}>{exampleLoopData.recentAnnouncement}</Text>
         <Text style={{ color: "white" }}>{exampleLoopData.recentAnnouncementUser}</Text>
         <Text style={{ color: "white" }}>{exampleLoopData.recentAnnouncement}</Text>
     </View>
@@ -151,7 +153,7 @@ const LoopsPage = () => {
 
 {activeButton === "chat" && (
 <TouchableOpacity
-        onPress={() => navigation.navigate("LoopChat", { username: "Announcements" })}>
+        onPress={() => navigation.navigate("LoopChat", { username: "Chat" })}>
         <View style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'transparent', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 40, zIndex: 0, }}>
             <Text style={{ color: 'white', fontSize: 20, textDecorationLine: "underline" }}>Chat</Text>
         </View>
@@ -164,6 +166,7 @@ const LoopsPage = () => {
 
 
     <View style={{ paddingHorizontal: 25, marginBottom:30,marginTop:20 }}>
+    <Text style={{ color: "white" }}>{exampleLoopData.recentChatUser}</Text>
         <Text style={{ color: "white" }}>{exampleLoopData.recentChatUser}</Text>
         <Text style={{ color: "white" }}>{exampleLoopData.recentChat}</Text>
     </View>
@@ -172,6 +175,16 @@ const LoopsPage = () => {
 </View>
 </TouchableOpacity>
 )}
+{activeButton === "about" && (
+            <View style ={{ alignContent:"center", marginVertical:20, flexDirection:"column"}}>
+            <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Owner: {exampleLoopData.owner}</Text>
+              <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Members : {exampleLoopData.memberCount}</Text>
+              <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Created : 1/1/11</Text>
+              <TouchableOpacity style = {{ }} onPress={goToInfo}>
+              <Text style = {{color:"white", alignSelf:"center",fontSize:25, textDecorationLine:"underline",marginTop:150}}>More Info</Text>
+              </TouchableOpacity>
+            </View>
+          )}
 </View>
 
 )}
