@@ -414,3 +414,63 @@ export async function getLoops(user) {
       console.error('Error Getting Loops:', error.message);
     }
   }
+
+
+  export async function getLoopInfo(loopId) {
+    const token = await getToken()
+
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/` + loopId;
+
+    try {  
+      const response = await fetch(serverUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Getting Loop info! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+      return (responseData)
+  
+    } catch (error) {
+      console.error('Error Getting Loops:', error.message);
+    }
+  }
+
+
+
+  export async function createLoop(loopInfo) {
+    const token = await getToken()
+
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/add`;
+
+    try {  
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loopInfo)
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Creating Loop! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+      return (responseData)
+  
+    } catch (error) {
+      console.error('Error Creating Loop:', error.message);
+    }
+  }
+
+  
