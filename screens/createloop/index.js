@@ -5,6 +5,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Icon from '@expo/vector-icons/Ionicons';
 import ImagePickerComponent from "./imagepicker";
 import defaultPic from "../../assets/user.png";
+import { createLoop, getUser } from "../../components/handlers";
 
 const exampleLoopData = {
     pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
@@ -26,17 +27,21 @@ const CreatePing = () => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [keyboardHeight, setKeyboardHeight] = useState(0);
     
-    const handleCreateLoop = () => {
+    const handleCreateLoop = async () => {
+        const user = await getUser();
         const loopData = {
           name: nameInputValue,
           description: discInputValue,
-          chats: chats.map((chat) => chat.value),
-          chatCount:chats.length,
-          image: selectedImage ? selectedImage.assets[0].uri : null,
+          creator_id:user.id,
+          rules: "",
+          status:"public",
+          location:user.location,
+          profile_picture: selectedImage ? selectedImage.assets[0].uri : null,
         };
     
-        // Do something with the loopData
-        console.log("Loop Data:", loopData);
+        const createdLoop = await createLoop(loopData);
+        const createdLoopLog = JSON.parse(createdLoop);
+        console.log("Created loop:", createdLoopLog);
       };
   
     const textInputRefs = useRef(chats.reduce((acc, _, index) => {

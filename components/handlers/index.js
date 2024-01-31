@@ -419,7 +419,7 @@ export async function getLoops(user) {
   export async function getLoopInfo(loopId) {
     const token = await getToken()
 
-    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/` + loopId;
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}`;
 
     try {  
       const response = await fetch(serverUrl, {
