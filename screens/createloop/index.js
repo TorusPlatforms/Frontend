@@ -19,21 +19,22 @@ const exampleLoopData = {
     users: ["DrumDogLover","TanujBeatMaster","GrantPawRhythms", "DogGrooveMaster","GrantAndTanujJams","RhythmHound","DrumBeatsWithTanuj","GrantCanineGrooves","TanujDogDrummer","BarkingBeatsGrant","DrummingTanujPaws","GrantAndDogRhythms","TanujDrumTails","PuppyGroovesGrant","BeatBuddyTanuj","WoofingRhythmsGrant","DrummingPawsTanuj","GrantGroovePup","TanujAndTheBeat","DoggyDrummingGrant","RhythmTanujTail","GrantPercussionPup","TanujDoggieBeats","PawsAndSnaresGrant","DrummingDogTanuj","GrantBeatsHowl","TanujRhythmBuddy","DogBeatHarmonyGrant","DrumPawsTanujGroove","GrantAndTanujRhythmic",]
 }
 
-const CreatePing = () => {
+const CreateLoop = () => {
     const navigation = useNavigation();
     const [nameInputValue, setNameInputValue] = useState("");
     const [discInputValue, setDiscInputValue] = useState("");
     const [chats, setChats] = useState([{ id: 1, value: "" }]);
     const [selectedImage, setSelectedImage] = useState(null);
     const [keyboardHeight, setKeyboardHeight] = useState(0);
+    const [rulesInputValue, setRulesInputValue] = useState("");
     
     const handleCreateLoop = async () => {
         const user = await getUser();
         const loopData = {
           name: nameInputValue,
           description: discInputValue,
-          creator_id:user.id,
-          rules: "",
+          creator_id:user.username,
+          rules: rulesInputValue,
           status:"public",
           location:user.location,
           profile_picture: selectedImage ? selectedImage.assets[0].uri : null,
@@ -166,7 +167,7 @@ const CreatePing = () => {
                 maxLength={40}
                 placeholderTextColor="gray"
                 value={nameInputValue}
-                onChangeText={(text) => setNAmeInputValue(text)}
+                onChangeText={(text) => setNameInputValue(text)}
           />
             </View>
   
@@ -184,6 +185,31 @@ const CreatePing = () => {
                 onChangeText={(text) => setDiscInputValue(text)}
               />
             </View>
+
+
+            <View style={{ alignItems: "baseline" }}>
+        <Text style={{ color: "white", fontSize: 25, marginTop: 25, marginLeft: "5%" }}>Rules:</Text>
+        <TextInput
+            ref={textInputRefs.current[2]} // Use the next available index
+            style={{
+                marginLeft: 20,
+                paddingRight: 20,
+                paddingVertical: 0,
+                marginTop: 10,
+                color: "white",
+                fontSize: 18,
+                minWidth: 150,
+                maxWidth: 500,
+            }}
+            placeholder="Type rules here..."
+            multiline
+            numberOfLines={4}
+            maxLength={500}
+            placeholderTextColor="gray"
+            value={rulesInputValue}
+            onChangeText={(text) => setRulesInputValue(text)}
+        />
+    </View>
   
                 {/*
           <View style={{ marginTop: 50, }}>
@@ -236,7 +262,7 @@ const CreatePing = () => {
           </View> */}
 
           <TouchableOpacity
-          style={{ backgroundColor: "rgb(247, 212, 114)", borderRadius: 40, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop:100,width:150,alignContent:"center",alignSelf:"center",height:60 }}
+          style={{ backgroundColor: "rgb(247, 212, 114)", borderRadius: 40, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop:70,width:150,alignContent:"center",alignSelf:"center",height:60 }}
           onPress={handleCreateLoop}>
           <Text style={{ color: "black", textAlign: "center",alignSelf:"center",marginTop:6,fontSize:20 }}>Create</Text>
         </TouchableOpacity>
@@ -247,4 +273,4 @@ const CreatePing = () => {
     );
   };
   
-  export default CreatePing;
+  export default CreateLoop;
