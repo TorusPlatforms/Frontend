@@ -36,7 +36,7 @@ const CreateLoop = () => {
           creator_id:user.username,
           rules: rulesInputValue,
           status:"public",
-          location:user.location,
+          location:user.college,
           profile_picture: selectedImage ? selectedImage.assets[0].uri : null,
         };
     
