@@ -213,6 +213,8 @@ const LoopsPage = ({route}) => {
 
 export default LoopsPage;
 
+
+
 /* 
             <ScrollView style={{marginTop:10, alignSelf:"center",alignContent:"center",maxHeight:300,borderBottomWidth:0,borderTopWidth:0,borderColor:'white', minWidth:"100%",}}>
             {exampleLoopData.chats.map((name, index) => (

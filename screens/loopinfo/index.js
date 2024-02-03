@@ -36,19 +36,18 @@ const NameList = ({ name }) => (
   
 
 const LoopInfo = ({route}) => {
-    const [loopData, setLoopData] = useState(null);
-    setLoopData(route.params)
-    const navigation = useNavigation()
+    const loopData = route.params.loopData;
+    const navigation = useNavigation();
     const [notifications, setNotifications] = useState(true);
     const [isManageVisible, setManageVisible] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [editedData, setEditedData] = useState({
-        name: loopData ? loopData.name : '', 
-        description: loopData ? loopData.description : '',
-        rules: loopData ? loopData.rules : '', 
-        profile_picture: loopData ? loopData.profile_picture : ''
+        name: loopData.name, 
+        description:loopData.description,
+        rules:loopData.rules, 
+        profile_picture: loopData.profile_picture
     });
 
   const toggleEditMode = async () => {
@@ -176,22 +175,7 @@ const LoopInfo = ({route}) => {
           console.log('No image available');
         }
       
-        // Fetch loop data only when isEditMode is false
-        if (!isEditMode) {
-            const fetchLoopData = async () => {
-                try {
-                  const user = await getUser();
-                  // Assuming you have some way to get the loopId
-                  const loopId = loopData.loop_id;
-                  const fetchedLoopData = await getLoopInfo(loopId);
-                  setLoopData(fetchedLoopData);
-                } catch (error) {
-                  console.error('Error fetching loop data:', error);
-                }
-              };
-          
-              fetchLoopData();
-        }
+       
       }, [selectedImage]);
 
       
