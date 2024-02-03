@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { View, TouchableOpacity, Image, Text, TextInput, ScrollView } from "react-native";
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect  } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
 import { getLoopInfo, getUser } from "../../components/handlers";
 
@@ -62,6 +62,13 @@ const LoopsPage = ({route}) => {
       useEffect(() => {
         fetchLoopData();
       }, []);
+
+      useFocusEffect(
+        useCallback(() => {
+          console.log("loop focused");
+          fetchLoopData(); 
+        }, [])
+      );
 
     const leaveLoop = () => {
         navigation.goBack();

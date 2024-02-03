@@ -36,7 +36,7 @@ const NameList = ({ name }) => (
   
 
 const LoopInfo = ({route}) => {
-    const loopData = route.params.loopData;
+    const [loopData,setLoopData] = useState(route.params.loopData);
     const navigation = useNavigation();
     const [notifications, setNotifications] = useState(true);
     const [isManageVisible, setManageVisible] = useState(false);
@@ -68,6 +68,7 @@ const LoopInfo = ({route}) => {
             const user = await getUser();
             await console.log(user.username)
             await editLoop(user.username, loopData.loop_id, newData);
+            setLoopData(newData);
           } catch (error) {
   
             console.error('Error editing loop: ON PAGE', error);

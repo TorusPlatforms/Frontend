@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { View, RefreshControl} from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { View, RefreshControl } from "react-native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { getLoops, getUser } from "../../components/handlers";
 import { LoopsComponent } from "../../components/loops";
 
@@ -23,9 +23,17 @@ export default function Search({ route, navigation }) {
     fetchLoops();
   }, []);
 
+
   const onRefresh = async () => {
     await fetchLoops();
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log("search focused");
+      fetchLoops(); 
+    }, [])
+  );
 
   return (
     <LoopsComponent
