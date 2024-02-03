@@ -41,8 +41,18 @@ const CreateLoop = () => {
         };
     
         const createdLoop = await createLoop(loopData);
-        const createdLoopLog = JSON.parse(createdLoop);
-        console.log("Created loop:", createdLoopLog);
+        //const createdLoopLog = await JSON.parse(createdLoop);
+        console.log("Created loop:", createdLoop);
+        const newLoopId = await createdLoop.LOOPID
+        console.log("LOOOOOOOOOOOOP IDDDDDDDDDDDDDD", newLoopId);
+        goToLoop(newLoopId)
+
+      };
+
+      const goToLoop = (loopId) => {
+        console.log("||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||")
+        console.log(loopId)
+        navigation.navigate('Loop', { loopId });
       };
   
     const textInputRefs = useRef(chats.reduce((acc, _, index) => {

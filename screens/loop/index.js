@@ -71,7 +71,7 @@ const LoopsPage = ({route}) => {
       );
 
     const leaveLoop = () => {
-        navigation.goBack();
+        navigation.navigate("Home");
       };
 
       const goToInfo = (loopData) => {

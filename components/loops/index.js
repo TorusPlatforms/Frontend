@@ -22,6 +22,7 @@ const Loop = ({ data, goToLoop }) => {
 
 export const LoopsComponent = ({ loops, searchBarPlaceholder, paddingTop, onRefresh }) => {
   const [search, setSearch] = useState("");
+  const [filteredLoops, setFilteredLoops] = useState([]);
   const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
   const [scrollY] = useState(new Animated.Value(0));
   const [refreshing, setRefreshing] = useState(false);
@@ -44,8 +45,16 @@ export const LoopsComponent = ({ loops, searchBarPlaceholder, paddingTop, onRefr
   };
 
   const goToLoop = (loopId) => {
+    console.log("||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||")
+    console.log(loopId)
     navigation.navigate('Loop', { loopId });
   };
+
+  useEffect(() => {
+    // Filter loops based on the search term
+    const filtered = loops.filter((loop) => loop.name.toLowerCase().includes(search.toLowerCase()));
+    setFilteredLoops(filtered);
+  }, [search, loops]);
 
   return (
     <SafeAreaView style={[styles.container, { paddingTop: paddingTop }]}>
@@ -70,7 +79,7 @@ export const LoopsComponent = ({ loops, searchBarPlaceholder, paddingTop, onRefr
 
       <AnimatedFlatList
         style={{ paddingHorizontal: 20 }}
-        data={loops}
+        data={filteredLoops}
         renderItem={({ item }) => <Loop data={item} goToLoop={goToLoop} />}
         ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
         onScroll={Animated.event(

@@ -54,7 +54,7 @@ const LoopInfo = ({route}) => {
     setSelectedImage(null)
     if(isEditMode){
         const newData = {
-            "name": editedData.name,
+        "name": editedData.name,
         "description": editedData.description,
         "creator_id": loopData.creator_id,
         "rules": editedData.rules,
