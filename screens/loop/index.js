@@ -47,6 +47,7 @@ const LoopsPage = ({route}) => {
     const [isMember, setIsMember] = useState(exampleUserData.member);
     const [activeButton, setActiveButton] = useState("news");
     const [loopData, setLoopData] = useState([]);
+    const [ownerName, setOwnerName] = useState([]);
 
     const fetchLoopData = async () => {
         try {
@@ -66,8 +67,8 @@ const LoopsPage = ({route}) => {
         navigation.goBack();
       };
 
-      const goToInfo = () => {
-        navigation.navigate('LoopInfo'); 
+      const goToInfo = (loopData) => {
+        navigation.navigate('LoopInfo', { loopData });
       };
 
       const join = () => {
@@ -197,9 +198,9 @@ const LoopsPage = ({route}) => {
             <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Owner: {exampleLoopData.owner}</Text>
               <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Members : {exampleLoopData.memberCount}</Text>
               <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Created : 1/1/11</Text>
-              <TouchableOpacity style = {{ }} onPress={goToInfo}>
-              <Text style = {{color:"white", alignSelf:"center",fontSize:25, textDecorationLine:"underline",marginTop:150}}>More Info</Text>
-              </TouchableOpacity>
+              <TouchableOpacity style={{}} onPress={() => goToInfo(loopData)}>
+                <Text style={{color: "white", alignSelf: "center", fontSize: 25, textDecorationLine: "underline", marginTop: 150}}>More Info</Text>
+                </TouchableOpacity>
             </View>
           )}
 </View>
