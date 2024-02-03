@@ -4,6 +4,7 @@ import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
+import { getLoopInfo, getUser } from "../../components/handlers";
 
 const exampleLoopData = {
     pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
@@ -39,11 +40,27 @@ const ChatButton = ({ name, navigation }) => (
 
   
 
-const LoopsPage = () => {
+const LoopsPage = ({route}) => {
+    const {loopId} = route.params;
     const navigation = useNavigation()
     const [notifications, setNotifications] = useState(exampleLoopData.notifications);
     const [isMember, setIsMember] = useState(exampleUserData.member);
     const [activeButton, setActiveButton] = useState("news");
+    const [loopData, setLoopData] = useState([]);
+
+    const fetchLoopData = async () => {
+        try {
+          const fetchedLoopsString = await getLoopInfo(loopId);
+          console.log("FETCHED:", fetchedLoopsString);
+          setLoopData(fetchedLoopsString);
+        } catch (error) {
+          console.error("Error fetching loop:", error);
+        }
+      };
+
+      useEffect(() => {
+        fetchLoopData();
+      }, []);
 
     const leaveLoop = () => {
         navigation.goBack();
@@ -55,7 +72,7 @@ const LoopsPage = () => {
 
       const join = () => {
         setIsMember(true);
-        // JOIN THIS LOOP
+        console.log(loopId);
     };
 
     const toggleNotifications = () => {
@@ -63,7 +80,7 @@ const LoopsPage = () => {
         //TURN ON OR OFF NOTIFICATIONS FOR THIS LOOP
       };
 
-      
+
 
 
       return (
@@ -94,9 +111,9 @@ const LoopsPage = () => {
 
         </View>
          
-          <Image style={{height:150, width:150, alignSelf:'center', borderRadius:200}}source={{uri: exampleLoopData.pfp}}/>
-          <Text style={{color:"white", fontSize:30,marginTop:20, alignSelf:"center"}}>{exampleLoopData.displayName}</Text>
-          <Text style={{color:"white", fontSize:20, alignSelf:"center",marginTop:10, marginBottom:30}}>{exampleLoopData.description}</Text>
+          <Image style={{height:150, width:150, alignSelf:'center', borderRadius:200}}source={{uri: loopData.profile_picture}}/>
+          <Text style={{color:"white", fontSize:30,marginTop:20, alignSelf:"center"}}>{loopData.name}</Text>
+          <Text style={{color:"white", fontSize:20, alignSelf:"center",marginTop:10, marginBottom:30}}>{loopData.description}</Text>
 
           {!isMember && (
                 <TouchableOpacity
