@@ -474,3 +474,30 @@ export async function getLoops(user) {
   }
 
   
+  export async function editLoop(userId, loopId, content) {
+    const token = await getToken();
+  
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/edit/${userId}/${loopId}`;
+  
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(content),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Editing Loop! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Loop Edited:', responseData);
+      return responseData;
+  
+    } catch (error) {
+      console.error('Error Editing Loop:', error.message);
+    }
+  }

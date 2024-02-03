@@ -4,6 +4,7 @@ import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
+import { getLoopInfo, getUser,editLoop } from "../../components/handlers";
 
 import { requestCameraPerms, requestPhotoLibraryPerms, pickImage, openCamera } from '../../components/imagepicker';
 
@@ -34,12 +35,53 @@ const NameList = ({ name }) => (
 
   
 
-const LoopInfo = () => {
+const LoopInfo = ({route}) => {
+    const { loopData } = route.params;
     const navigation = useNavigation()
     const [notifications, setNotifications] = useState(true);
     const [isManageVisible, setManageVisible] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
-    const [loopData, setLoopData] = useState({ 
+
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [editedData, setEditedData] = useState({
+      name: loopData.name,
+      description: loopData.description,
+      rules: loopData.rules, 
+      profile_picture: loopData.profilePicture
+    });
+
+  const toggleEditMode = async () => {
+    setSelectedImage(null)
+    if(isEditMode){
+        const newData = {
+            "name": editedData.name,
+        "description": editedData.description,
+        "creator_id": loopData.creator_id,
+        "rules": editedData.rules,
+        "status": loopData.useState,
+        "location": loopData.location,
+        "profile_picture": editedData.profile_picture
+        }
+        try {
+            const user = await getUser();
+            await editLoop(user.id, loopData.id, newData);
+          } catch (error) {
+  
+            console.error('Error editing loop: ON PAGE', error);
+          }
+    }
+    
+    await setIsEditMode(!isEditMode)
+    await console.log(isEditMode)
+  };
+
+  const handleTextChange = (key, value) => {
+    setEditedData((prevData) => ({
+      ...prevData,
+      [key]: value,
+    }));
+  };
+    /*const [loopData, setLoopData] = useState({ 
         pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
         displayName: "Grant's Group",
         memberCount: 30,
@@ -49,7 +91,7 @@ const LoopInfo = () => {
         recentAnnouncement: "Grant becomes world's first trillionaire after buying every single realfeel dumpad and selling them for billions each",
         recentAnnouncementUser:"@stefan",
         users: ["DrumDogLover","TanujBeatMaster","GrantPawRhythms", "DogGrooveMaster","GrantAndTanujJams","RhythmHound","DrumBeatsWithTanuj","GrantCanineGrooves","TanujDogDrummer","BarkingBeatsGrant","DrummingTanujPaws","GrantAndDogRhythms","TanujDrumTails","PuppyGroovesGrant","BeatBuddyTanuj","WoofingRhythmsGrant","DrummingPawsTanuj","GrantGroovePup","TanujAndTheBeat","DoggyDrummingGrant","RhythmTanujTail","GrantPercussionPup","TanujDoggieBeats","PawsAndSnaresGrant","DrummingDogTanuj","GrantBeatsHowl","TanujRhythmBuddy","DogBeatHarmonyGrant","DrumPawsTanujGroove","GrantAndTanujRhythmic",]
-    });
+    });*/
 
     const openManage = () => {
         setManageVisible(true);
@@ -70,6 +112,10 @@ const LoopInfo = () => {
 
       const handleImageSelect = (image) => {
         setSelectedImage(image);
+        setEditedData((prevData) => ({
+            ...prevData,
+            profile_picture: image.assets[0].uri,
+          }));
         console.log("Selected Image in CreateLoop:", image);
       };
 
@@ -77,7 +123,7 @@ const LoopInfo = () => {
         setSelectedImage(null);
       };
 
-      const updateLoopImage = () => {
+      /*const updateLoopImage = () => {
             // Process the new image
             console.log("NEW IMAGE: " + selectedImage.assets[0].uri);
 
@@ -91,10 +137,10 @@ const LoopInfo = () => {
             // Reset selectedImage to null to remove the current image
             setSelectedImage(null);
         
-    };
+    };*/
 
     const leaveLoop = () => {
-        // Display an alert to confirm the user's decision
+        // Display an alert to confirm decision
         alert(
           'Leave Loop',
           'Are you sure you want to leave the loop?',
@@ -131,22 +177,33 @@ const LoopInfo = () => {
 
       
       return (
-        <View style={{  paddingTop: 20, backgroundColor: "rgb(22, 23, 24)", height:"100%" }}>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <TouchableOpacity onPress={goToLoop} style={{ padding: 10, marginTop: 30 }}>
+        <View style={{ paddingTop: 20, backgroundColor: "rgb(22, 23, 24)", height: "100%" }}>
+          <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+
+          <TouchableOpacity onPress={goToLoop} style={{ padding: 10, marginTop: 30 }}>
                 <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Back</Text>
             </TouchableOpacity>
+
+
+            <TouchableOpacity onPress={toggleEditMode} style={{ padding: 10, marginTop: 30 }}>
+              <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>
+                {isEditMode ? "Save" : "Edit"}
+              </Text>
+            </TouchableOpacity>
+
 
             <TouchableOpacity onPress={leaveLoop} style={{ padding: 10, marginTop: 30 }}>
             <Text style={{ fontSize: 16, color: "red", paddingLeft: 10 }}>Leave</Text>
             </TouchableOpacity>
 
-           
 
-        </View>
+            
+
+
+          </View>
 
         <Image
-            source={selectedImage ? { uri: selectedImage.assets[0].uri } : { uri: loopData.pfp }}
+            source={selectedImage ? { uri: selectedImage.assets[0].uri } : { uri: loopData.profile_picture }}
             style={{
                 width: 100,
                 height: 100,
@@ -156,7 +213,7 @@ const LoopInfo = () => {
                 borderRadius: 100,
             }}
             />
-            {exampleUserData.admin && (
+            {isEditMode && (
                 <View style={{marginTop:10,marginLeft:150}}>
                   <View style={{flexDirection:"row"}}>
                     <TouchableOpacity style={{ marginRight: 10 }} onPress={() => pickImage(handleImageSelect)}>
@@ -175,14 +232,65 @@ const LoopInfo = () => {
                         <Text style={{ color: "red", textDecorationLine: "underline", fontSize: 15 }}>Remove Image</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={updateLoopImage} style={{ marginTop: 10, marginBottom: 10, marginLeft: 140 }}>
+                    {/*<TouchableOpacity onPress={updateLoopImage} style={{ marginTop: 10, marginBottom: 10, marginLeft: 140 }}>
                         <Text style={{ color: "rgb(23, 154, 235)", textDecorationLine: "underline", fontSize: 15 }}>Set New Image</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity>*/}
                 </>
             )}
-        <Text style={{color:"white", fontSize:30,marginTop:30, alignSelf:"center"}}>{exampleLoopData.displayName}</Text>
-        <Text style={{color:"white", fontSize:15, alignSelf:"center"}}>{exampleLoopData.description}</Text>
-        <Text style={{color:"white", fontSize:25,marginTop:20, alignSelf:"center"}}> Members: {exampleLoopData.memberCount}</Text>
+
+            <View>
+            <View>
+
+        {isEditMode ? (
+            <TextInput
+            style={{ color: "white", fontSize: 25, alignSelf: "center", borderWidth: 1, borderColor: 'white', marginTop:20 }}
+            placeholder="Enter Name"
+            placeholderTextColor="gray"
+            value={editedData.name}
+            onChangeText={(text) => handleTextChange("name", text)}
+            />
+        ) : (
+            <Text style={{ color: "white", fontSize: 25, alignSelf: "center",marginTop:20 }}>
+            {loopData.name}
+            </Text>
+        )}
+        </View>
+
+        <View>
+
+        {isEditMode ? (
+            <TextInput
+            style={{ color: "white", fontSize: 20, alignSelf: "center", borderWidth: 1, borderColor: 'white' }}
+            placeholder="Enter Description"
+            placeholderTextColor="gray"
+            value={editedData.description}
+            onChangeText={(text) => handleTextChange("description", text)}
+            />
+        ) : (
+            <Text style={{ color: "white", fontSize: 20, alignSelf: "center" }}>
+            {loopData.description}
+            </Text>
+        )}
+        </View>
+
+  <View>
+
+  {isEditMode ? (
+    <TextInput
+      style={{ color: "white", fontSize: 20, alignSelf: "center", borderWidth: 1, borderColor: 'white',marginVertical:20 }}
+      placeholder="Enter Rules"
+      placeholderTextColor="gray"
+      value={editedData.rules}
+      onChangeText={(text) => handleTextChange("rules", text)}
+    />
+  ) : (
+    <Text style={{ color: "white", fontSize: 20, alignSelf: "center",marginVertical:20 }}>
+      {loopData.rules}
+    </Text>
+  )}
+</View>
+</View>
+
         <Text style={{color:"white", fontSize:25, alignSelf:"center"}}>Chats:{exampleLoopData.chatCount}</Text>
         <Text style={{color:"white", fontSize:25, alignSelf:"center",marginTop:70, marginBottom:20}}>Users:</Text>
         
