@@ -36,7 +36,8 @@ const NameList = ({ name }) => (
   
 
 const LoopInfo = ({route}) => {
-    const { loopData } = route.params;
+    const [loopData, setLoopData] = useState(null);
+    setLoopData(route.params)
     const navigation = useNavigation()
     const [notifications, setNotifications] = useState(true);
     const [isManageVisible, setManageVisible] = useState(false);
@@ -44,10 +45,10 @@ const LoopInfo = ({route}) => {
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [editedData, setEditedData] = useState({
-      name: loopData.name,
-      description: loopData.description,
-      rules: loopData.rules, 
-      profile_picture: loopData.profilePicture
+        name: loopData ? loopData.name : '', 
+        description: loopData ? loopData.description : '',
+        rules: loopData ? loopData.rules : '', 
+        profile_picture: loopData ? loopData.profile_picture : ''
     });
 
   const toggleEditMode = async () => {
@@ -63,8 +64,11 @@ const LoopInfo = ({route}) => {
         "profile_picture": editedData.profile_picture
         }
         try {
+            console.log(newData, "\n")
+            console.log(loopData.loop_id)
             const user = await getUser();
-            await editLoop(user.id, loopData.id, newData);
+            await console.log(user.username)
+            await editLoop(user.username, loopData.loop_id, newData);
           } catch (error) {
   
             console.error('Error editing loop: ON PAGE', error);
@@ -163,17 +167,32 @@ const LoopInfo = ({route}) => {
 
       useEffect(() => {
         // run this whenever the selected image changes
-        requestCameraPerms()
-        requestPhotoLibraryPerms()
-        
+        requestCameraPerms();
+        requestPhotoLibraryPerms();
+      
         if (selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri) {
           console.log('Image is available:', selectedImage.assets[0].uri);
-          
         } else {
           console.log('No image available');
         }
-    
-      }, [selectedImage]); 
+      
+        // Fetch loop data only when isEditMode is false
+        if (!isEditMode) {
+            const fetchLoopData = async () => {
+                try {
+                  const user = await getUser();
+                  // Assuming you have some way to get the loopId
+                  const loopId = loopData.loop_id;
+                  const fetchedLoopData = await getLoopInfo(loopId);
+                  setLoopData(fetchedLoopData);
+                } catch (error) {
+                  console.error('Error fetching loop data:', error);
+                }
+              };
+          
+              fetchLoopData();
+        }
+      }, [selectedImage]);
 
       
       return (
