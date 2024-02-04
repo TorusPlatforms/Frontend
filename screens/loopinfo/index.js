@@ -183,6 +183,7 @@ const LoopInfo = ({route}) => {
                         const user = await getUser();
                         await console.log(user.username)
                         await removeLoop(user.username, loopData.loop_id);
+                        await navigation.navigate("Home");
                       } catch (error) {
               
                         console.error('Error deleting loop: ON PAGE', error);
