@@ -530,3 +530,30 @@ export async function getLoops(user) {
       console.error('Error Removing Loop:', error.message);
     }
   }
+
+  export async function isOwner(userId, loopId) {
+    const token = await getToken();
+  
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/owner/${userId}/${loopId}`;
+  
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Verifying Ownership Status 1: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('response:', responseData);
+      return (responseData);
+  
+    } catch (error) {
+      console.error('Error Verifying Ownership Status 2:', error.message);
+    }
+  }

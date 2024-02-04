@@ -4,7 +4,7 @@ import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
-import { getLoopInfo, getUser,editLoop, removeLoop } from "../../components/handlers";
+import { getLoopInfo, getUser,editLoop, removeLoop, isOwner } from "../../components/handlers";
 
 import { requestCameraPerms, requestPhotoLibraryPerms, pickImage, openCamera } from '../../components/imagepicker';
 
@@ -41,6 +41,7 @@ const LoopInfo = ({route}) => {
     const [notifications, setNotifications] = useState(true);
     const [isManageVisible, setManageVisible] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [isLoopOwner, setIsLoopOwner] = useState(false);
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [editedData, setEditedData] = useState({
@@ -205,10 +206,22 @@ const LoopInfo = ({route}) => {
           console.log('Image is available:', selectedImage.assets[0].uri);
         } else {
           console.log('No image available');
+          
         }
       
-       
-      }, [selectedImage]);
+        const fetchLoopInfo = async () => {
+            try {
+              const user = await getUser();
+              const ownerResult = await isOwner(user.username, loopData.loop_id);
+              await setIsLoopOwner(ownerResult.isOwner); 
+              await console.log(isLoopOwner)
+            } catch (error) {
+              console.error('Error checking ownership:', error);
+            }
+          };
+
+          fetchLoopInfo();
+      }, [selectedImage], [loopData.loop_id]);
 
       
       return (
@@ -220,11 +233,13 @@ const LoopInfo = ({route}) => {
             </TouchableOpacity>
 
 
+            {isLoopOwner && (
             <TouchableOpacity onPress={toggleEditMode} style={{ padding: 10, marginTop: 30 }}>
-              <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>
+            <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>
                 {isEditMode ? "Save" : "Edit"}
-              </Text>
+            </Text>
             </TouchableOpacity>
+            )}
 
 
             <TouchableOpacity onPress={isEditMode ? deleteLoop : leaveLoop} style={{ padding: 10, marginTop: 30 }}>
