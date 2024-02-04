@@ -501,3 +501,32 @@ export async function getLoops(user) {
       console.error('Error Editing Loop:', error.message);
     }
   }
+
+
+  
+  export async function removeLoop(userId, loopId) {
+    const token = await getToken();
+  
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/delete/${userId}/${loopId}`;
+  
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Removing Loop! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Loop Removed:', responseData);
+      return (responseData);
+  
+    } catch (error) {
+      console.error('Error Removing Loop:', error.message);
+    }
+  }

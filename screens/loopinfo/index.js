@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, TouchableOpacity, Image, Text, TextInput, ScrollView, Modal, TouchableWithoutFeedback } from "react-native";
+import { View, TouchableOpacity, Image, Text, TextInput, ScrollView, Modal, TouchableWithoutFeedback, Alert } from "react-native";
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
-import { getLoopInfo, getUser,editLoop } from "../../components/handlers";
+import { getLoopInfo, getUser,editLoop, removeLoop } from "../../components/handlers";
 
 import { requestCameraPerms, requestPhotoLibraryPerms, pickImage, openCamera } from '../../components/imagepicker';
 
@@ -143,27 +143,57 @@ const LoopInfo = ({route}) => {
         
     };*/
 
-    const leaveLoop = () => {
-        // Display an alert to confirm decision
-        alert(
-          'Leave Loop',
-          'Are you sure you want to leave the loop?',
-          [
+
+        const leaveLoop = () => {
+        Alert.alert(
+            'Leave Loop?',
+            'Are you sure you want to leave this loop?',
+            [
             {
-              text: 'Cancel',
-              style: 'cancel',
+                text: 'Cancel',
+                style: 'cancel',
             },
             {
-              text: 'Confirm',
-              onPress: () => {
-                // HERE IS WHEN USER CONFIRMS THEY WANT TO LEAVE
+                text: 'Confirm',
+                onPress: () => {
+                // Handle 
                 console.log('leave loop');
-              },
+                },
             },
-          ],
-          { cancelable: false }
+            ],
+            { cancelable: false }
         );
-      };
+        };
+
+
+        const deleteLoop = async () => {
+        Alert.alert(
+            'Delete Loop?',
+            'Are you sure you want to delete this loop?',
+            [
+            {
+                text: 'Cancel',
+                style: 'cancel',
+            },
+            {
+                text: 'Confirm',
+                onPress: async () => {
+                    try {
+                        console.log(loopData.loop_id)
+                        const user = await getUser();
+                        await console.log(user.username)
+                        await removeLoop(user.username, loopData.loop_id);
+                      } catch (error) {
+              
+                        console.error('Error deleting loop: ON PAGE', error);
+                      }
+                console.log('delete loop');
+                },
+            },
+            ],
+            { cancelable: false }
+        );
+        };
 
       useEffect(() => {
         // run this whenever the selected image changes
@@ -196,8 +226,10 @@ const LoopInfo = ({route}) => {
             </TouchableOpacity>
 
 
-            <TouchableOpacity onPress={leaveLoop} style={{ padding: 10, marginTop: 30 }}>
-            <Text style={{ fontSize: 16, color: "red", paddingLeft: 10 }}>Leave</Text>
+            <TouchableOpacity onPress={isEditMode ? deleteLoop : leaveLoop} style={{ padding: 10, marginTop: 30 }}>
+            <Text style={{ fontSize: 16, color: "red", paddingLeft: 10 }}>
+                {isEditMode ? "Delete" : "Leave"}
+            </Text>
             </TouchableOpacity>
 
 
