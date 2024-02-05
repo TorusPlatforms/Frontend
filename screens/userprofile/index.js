@@ -22,7 +22,12 @@ export default function UserProfile({ route }) {
     const [refreshing, setRefreshing] = useState(false)
     const ref_input = useRef();
 
+    const [isFollowing, setIsFollowing] = useState(false); 
 
+    const toggleFollow = () => {
+        setIsFollowing(current => !current); 
+        //backend stuff here
+    };
 
     const updateLike = useCallback(() => {
         fetchUser()
@@ -77,6 +82,7 @@ export default function UserProfile({ route }) {
                                 <Text style={{color: pressed ? "gray": "white"}}>@{user.username}</Text>
                             )}
                         </Pressable>
+                       
                     </View>
     
                     <View style={styles.userRelationsContainer}>
@@ -85,11 +91,15 @@ export default function UserProfile({ route }) {
                                 <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.follower_count}</Text>
                                 <Text style={styles.text}>Followers</Text>
                             </Pressable>
+                            
     
-                            <Pressable onPress={() => navigation.navigate("MutualUserLists", {username: user.username})}>
+                                <Pressable onPress={() => navigation.navigate("MutualUserLists", {username: user.username})}>
                                 <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.following_count}</Text>
                                 <Text style={styles.text}>Following</Text>
                             </Pressable>
+
+                            
+
                         </View>
     
                         <View style={styles.item_seperator}/>
@@ -97,10 +107,27 @@ export default function UserProfile({ route }) {
                         <View style={styles.userDescription}>
                             <Text style={[styles.text, {textAlign: "center"}]}>{user.bio}</Text>
                         </View>
+                        
                     </View>
-                
+                   
                 </View>
-                
+                <Pressable
+                                onPress={toggleFollow}
+                                style={({ pressed }) => [
+                                {
+                                backgroundColor: pressed ? 'darkblue' : 'blue',
+                                },
+                                styles.followButton,
+                                
+                                 ]}
+                                 >
+                               
+                                <Text style={styles.followButtonText}>
+                               {isFollowing ? 'Following' : 'Follow'}
+
+                                </Text>
+                                
+                        </Pressable>
     
                 <View style={styles.loopsListContainer}>
                     <View style={styles.item_seperator} />
