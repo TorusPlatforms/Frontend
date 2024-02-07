@@ -7,6 +7,31 @@ async function getToken() {
   return token
 }
 
+export async function registerUserBackend(username, email, display_name) {
+  const token = await getToken();
+  const serverUrl = 'https://backend-26ufgpn3sq-uc.a.run.app/api/user/register';
+
+  const data = {
+      username: username,
+      college_email: email,
+      display_name: display_name
+  };
+  
+  console.log(JSON.stringify(data))
+  const response = await fetch(serverUrl, {
+  method: 'POST',
+  headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+  },
+  body: JSON.stringify(data),
+  });
+
+  const responseData = await response.json();
+  console.log('Response:', responseData);
+  return responseData
+}
+
 export async function getUser() {
     const token = await getToken()
 

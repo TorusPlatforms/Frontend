@@ -1,12 +1,14 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { View, ActivityIndicator } from "react-native";
 import { GiftedChat, Bubble, InputToolbar, Avatar } from 'react-native-gifted-chat';
+import { getAuth } from "firebase/auth";
 
 import { getDM, sendMessage } from '../../components/handlers';
 import styles from "./styles";
 
 export default function DirectMessage({ route }) {
   const [messages, setMessages] = useState(null)
+  const auth = getAuth()
 
   useEffect(() => {
     fetchDM()
@@ -103,7 +105,7 @@ export default function DirectMessage({ route }) {
         messages={messages}
         onSend={messages => onSend(messages)}
         user={{
-          _id: 1,
+          _id: auth.currentUser.uid,
         }}
         renderBubble={renderBubble}
         renderInputToolbar={props => <CustomInputToolbar {...props} />}
