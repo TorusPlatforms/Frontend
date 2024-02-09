@@ -382,7 +382,7 @@ export async function getDM(username) {
     return responseData
 
   } catch (error) {
-    console.error("Error getting DM", error.message)
+    console.error("Error getting DM", error.message);
   }
 }
 

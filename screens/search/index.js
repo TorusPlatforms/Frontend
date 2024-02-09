@@ -96,7 +96,7 @@ export default function Search() {
                     <View style={{flex: 1}}>
                         <SearchBar 
                             placeholder={"Discover Loops & People"} 
-                            containerStyle={{backgroundColor: "rgb(22, 23, 24)", borderTopWidth: 0,  borderBottomWidth: 0, color: "rgb(22, 23, 24)"}} 
+                            containerStyle={{backgroundColor: "rgb(22, 23, 24)", borderTopWidth: 0, borderBottomWidth: 0, color: "rgb(22, 23, 24)"}} 
                             onChangeText={setSearch}
                             value={search}
                         />
