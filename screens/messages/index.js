@@ -14,29 +14,30 @@ export default function Messages() {
     const DirectMessage = ({data}) => (
         <Pressable onPress={() => navigation.navigate("DirectMessage", {username: data.username})} style={{marginVertical: 20, flex: 1, width: "100%", flexDirection: "row", paddingHorizontal: 20, alignItems: "center", justifyContent: 'space-between'}}>
             <View style={{flex: 0.4, justifyContent: "center", alignItems: "center"}}>
-                <Image style={{width: 50, height: 50, borderRadius: 50}} source={{uri: data.receiver_pfp_url}}/>
+                <Image style={{width: 50, height: 50, borderRadius: 50}} source={{uri: data.lastMessageObj.receiver_pfp_url}}/>
             </View>
             <View style={{marginLeft: 10, flexDirection: 'col', alignItems: "flex-start", flex: 1}}>
                 <Text style={{color: "white", fontWeight: "bold"}}>{data.username}</Text>
-                <Text style={{color: "lightgrey"}}>{data.lastMessage}</Text>
+                <Text style={{color: "lightgrey"}}>{data.lastMessageObj.lastMessage}</Text>
             </View>
             <View style={{flex: 1, alignItems: "flex-end"}}>
-                <Text style={{color: "lightgrey", marginLeft: 10}}>{findTimeAgo(data.created_at)}</Text>
+                <Text style={{color: "lightgrey", marginLeft: 10}}>{findTimeAgo(data.lastMessageObj.created_at)}</Text>
             </View>
         </Pressable>
       );
 
 
     async function fetchThreads() {
-        const threads = await getThreads()
-        setDMs(threads)
+        const threads = await getThreads();
+        console.log("THREADS");
+        console.log(threads);
+        setDMs(threads);
     }
 
     useEffect(() => {
         fetchThreads()
       }, []);
-
-    
+      
     if (!DMs) {
         return (
             <View style={[styles.container, {justifyContent: "center", alignItems: "center"}]}>

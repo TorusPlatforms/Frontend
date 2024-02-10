@@ -404,10 +404,10 @@ export async function getDM(username) {
 
     const responseData = await response.json();
     console.log('DMs:', responseData);
-    return responseData
+    return responseData;
 
   } catch (error) {
-    console.error("Error getting DM", error.message)
+    console.error("Error getting DM", error.message);
   }
 }
 
