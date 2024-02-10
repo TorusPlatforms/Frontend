@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { Text, View, TextInput, Pressable, FlatList, Image, Animated, Modal, Keyboard, RefreshControl, Share, Alert } from 'react-native'
+import { Text, View, TextInput, Pressable, FlatList, Image, Animated, Modal, Keyboard, RefreshControl, Share, Alert, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -7,29 +7,35 @@ import { useNavigation } from '@react-navigation/native';
 import GestureRecognizer from 'react-native-swipe-gestures';
 
 import { getUser, getPings, handleLike, handleShare, postComment } from "../../components/handlers";
+import { abbreviate } from '../../components/utils';
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
 
 
-// const exampleComment = {isLiked: true, timeAgo: "3h", author: 'GrantHough', content: "Funny ass comment", likes: 20, pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&"}
-// const commentData = new Array(20).fill(exampleComment);
 
+export default function Feed() {
+    const navigation = useNavigation()
 
-export default function Feed({ route, navigation }) {
     const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
     const [scrollY] = useState(new Animated.Value(0));
+    
+    const [dropdownData, setDropdownData] = useState([])
     const [feedType, setFeedType] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [commentText, onChangeComment] = useState('');
+    const ref_input = useRef();
     const [replyingTo, setReplyingTo] = useState(null) 
+    const [commentPing, setCommentPing] = useState(null)
+
+    const [refreshing, setRefreshing] = useState(false);
+    const scrollRef = useRef()
+
     const [user, setUser] = useState(null)
     const [pings, setPings] = useState(null)
-    const [dropdownData, setDropdownData] = useState([])
-    const [refreshing, setRefreshing] = useState(false);
-    const [commentPing, setCommentPing] = useState(null)
-    const ref_input = useRef();
+
+
 
     const headerHeight = scrollY.interpolate({
       inputRange: [0, 70],
@@ -43,24 +49,14 @@ export default function Feed({ route, navigation }) {
       extrapolate: 'clamp',
     });
 
-    function abbreviate(inputString) {
-      const phrases = inputString.split(', ');
-    
-      const abbreviation = phrases
-        .map(phrase => {
-          const words = phrase.split(' ');
-          const abbreviatedWords = words
-            .map(word => {
-              const capitalizedWord = word.replace(/[^A-Z]/g, ''); // Keep only capital letters
-              return capitalizedWord;
-            })
-            .join('');
-          return abbreviatedWords;
-        })
-        .join('-');
-    
-      return abbreviation.toUpperCase();
-    }
+
+    function onScroll() {
+      Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        { useNativeDriver: false }
+      ) 
+      }
+
 
  
     const updateLike = useCallback(() => {
@@ -69,6 +65,8 @@ export default function Feed({ route, navigation }) {
 
     async function fetchPings() {
       const user = await getUser();
+      setUser(user)
+
       const fetchedPings = await getPings(user);
       setPings(fetchedPings);
   
@@ -96,77 +94,99 @@ export default function Feed({ route, navigation }) {
     }, []);
 
 
+    function onContentSizeChange() {
+      scrollRef.current?.scrollToOffset({ offset: scrollY.__getValue(), animated: false });
+    };
+
+
     useEffect(() => {
       fetchPings();
     }, []); 
  
-    return (
-      
-        <SafeAreaView style={styles.container}>
-          <Animated.View style={{height: headerHeight, opacity: headerOpacity}}>
-              <View style={styles.header}>
-                  <View style={{flex: 0.3}}>
-                    <Dropdown
-                      containerStyle={styles.dropdownContainer}
-                      itemTextStyle={styles.text}
-                      selectedTextStyle={[styles.text, {fontWeight: "bold"}]}
-                      activeColor='rgb(22, 23, 24)'
-                      data={dropdownData}
-                      placeholder='Torus'
-                      placeholderStyle={[styles.text, {fontWeight: "bold"}]}
-                      maxHeight={300}
-                      labelField="label"
-                      valueField="value"
-                      value={feedType}
-                      onFocus={() => setIsFocus(true)}
-                      onBlur={() => setIsFocus(false)}
-                      onChange={item => {
-                        feedChange(item.value);
-                        setIsFocus(false);
-                      }}
-                    />
+
+    if (!user || !pings) {
+      return (
+        <View style={[styles.container, {justifyContent: "center", alignItems: "center"}]}>
+            <ActivityIndicator />
+        </View>
+      )
+
+    } else {
+      return (
+        
+          <SafeAreaView style={styles.container}>
+            <Animated.View style={{height: headerHeight, opacity: headerOpacity}}>
+                <View style={styles.header}>
+                    <View style={{flex: 0.3}}>
+                      <Dropdown
+                        containerStyle={styles.dropdownContainer}
+                        itemTextStyle={styles.text}
+                        selectedTextStyle={[styles.text, {fontWeight: "bold"}]}
+                        activeColor='rgb(22, 23, 24)'
+                        data={dropdownData}
+                        placeholder='Torus'
+                        placeholderStyle={[styles.text, {fontWeight: "bold"}]}
+                        maxHeight={300}
+                        labelField="label"
+                        valueField="value"
+                        value={feedType}
+                        onFocus={() => setIsFocus(true)}
+                        onBlur={() => setIsFocus(false)}
+                        onChange={item => {
+                          feedChange(item.value);
+                          setIsFocus(false);
+                        }}
+                      />
+                    </View>
+
+                  <View>
+                    <Pressable onPress={() => navigation.navigate("Notifications")}>
+                        <Ionicons name="ios-notifications-outline" size={24} color="white" />
+                    </Pressable>
                   </View>
 
-                <View>
-                  <Pressable onPress={() => navigation.navigate("Notifications")}>
-                      <Ionicons name="ios-notifications-outline" size={24} color="white" />
-                  </Pressable>
                 </View>
-
-              </View>
-            </Animated.View>
-          
+              </Animated.View>
+            
 
 
-            <AnimatedFlatList
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                  style={{paddingHorizontal: 20}}
-                  data={pings}
-                  renderItem={({item}) => <Ping data={item} setModalVisible={setModalVisible} handleLike={() => handleLike(item, updateLike)} handleComment={() => setCommentPing(item)} handleShare={handleShare}/>}
-                  ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
-                  onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-                    { useNativeDriver: false }
-                  )}
-                  scrollEventThrottle={16}
+              <AnimatedFlatList
+                    style={{paddingHorizontal: 20}}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                    ref={scrollRef}
+                    data={pings}
+                    renderItem={({item}) => 
+                      <Ping 
+                        data={item} 
+                        setModalVisible={setModalVisible} 
+                        handleLike={() => handleLike(item, updateLike)} 
+                        handleComment={() => setCommentPing(item)} handleShare={handleShare}
+                        navigation={navigation}
+                      />
+                    }
+                    ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+                    onScroll={onScroll}
+                    onContentSizeChange={onContentSizeChange}
+                    scrollEventThrottle={16}
+                />
+            {/* <GestureRecognizer
+              style={{flex: 1}}
+              onSwipeDown={ () => setModalVisible(false) }
+            > */}
+              <CommentModal
+                modalVisible={modalVisible}
+                setModalVisible={setModalVisible}
+                onChangeComment={onChangeComment}
+                commentText={commentText}
+                postComment={postComment}
+                ref_input={ref_input}
+                handleReply={handleReply}
+                commentPing={commentPing}
+                setCommentPing={setCommentPing}
               />
-          {/* <GestureRecognizer
-            style={{flex: 1}}
-            onSwipeDown={ () => setModalVisible(false) }
-          > */}
-            <CommentModal
-              modalVisible={modalVisible}
-              setModalVisible={setModalVisible}
-              onChangeComment={onChangeComment}
-              commentText={commentText}
-              postComment={postComment}
-              ref_input={ref_input}
-              handleReply={handleReply}
-              commentPing={commentPing}
-              setCommentPing={setCommentPing}
-            />
 
-          {/* </GestureRecognizer> */}
-        </SafeAreaView>
-    )
+            {/* </GestureRecognizer> */}
+          </SafeAreaView>
+        )
+    }
 }

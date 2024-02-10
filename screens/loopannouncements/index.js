@@ -38,6 +38,15 @@ export default function LoopAnnouncements() {
         ])
     }, [])
 
+    async function fetchAnnouncement() {
+        console.log(route.params.username);
+        const dm = await getDM(route.params.username);
+        console.log("FETCH DM DM: ")
+        console.log(dm);
+        console.log("dm messsages" + dm[0].messages);
+        setMessages(dm[0].messages);
+      }
+
     const onSend = useCallback((messages = []) => {
         if (exampleUserData.admin) {
             setMessages(previousMessages =>
@@ -120,3 +129,31 @@ export default function LoopAnnouncements() {
         </View>
     );
 }
+
+
+export async function getAnnouncements() {
+  
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/getAnnouncements/${loopId}`;
+  
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+  
+      if (!response.ok) {
+        throw new Error(`Error getting DM! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('DMs:', responseData);
+      return responseData;
+  
+    } catch (error) {
+      console.error("Error getting DM", error.message);
+    }
+  }
+  

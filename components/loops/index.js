@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { View, Image, Text, Animated, Pressable, FlatList, SafeAreaView, RefreshControl } from "react-native";
 import { SearchBar } from "react-native-elements";
@@ -14,11 +15,13 @@ const Loop = ({ data, goToLoop }) => {
         <View style={{ flex: 3, left: 20 }}>
           <Text style={{ color: "white", fontWeight: "bold" }}>{data.name || data?.name}</Text>
           <Text style={{ color: "white" }}>{data.description || data?.description}</Text>
+
         </View>
       </View>
     </Pressable>
   );
 }
+
 
 export const LoopsComponent = ({ loops, searchBarPlaceholder, paddingTop, onRefresh }) => {
   const [search, setSearch] = useState("");

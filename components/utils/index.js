@@ -17,3 +17,22 @@ export function findTimeAgo(timestamp) {
 
     return agoMessage
 }
+
+export function abbreviate(inputString) {
+    const phrases = inputString.split(', ');
+  
+    const abbreviation = phrases
+      .map(phrase => {
+        const words = phrase.split(' ');
+        const abbreviatedWords = words
+          .map(word => {
+            const capitalizedWord = word.replace(/[^A-Z]/g, ''); // Keep only capital letters
+            return capitalizedWord;
+          })
+          .join('');
+        return abbreviatedWords;
+      })
+      .join('-');
+  
+    return abbreviation.toUpperCase();
+  }

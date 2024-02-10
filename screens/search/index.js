@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { View, RefreshControl } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -54,4 +55,3 @@ export default function Search({ route, navigation }) {
             interests: ["Golfing", "Frolicking", "Hijinks"]
         }   */     
 
-        //setLoops(Array(20).fill(exampleLoopData))

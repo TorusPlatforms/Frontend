@@ -1,15 +1,17 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { View, ActivityIndicator } from "react-native";
 import { GiftedChat, Bubble, InputToolbar, Avatar } from 'react-native-gifted-chat';
+import { getAuth } from "firebase/auth";
 
 import { getDM, sendMessage } from '../../components/handlers';
 import styles from "./styles";
 
 export default function DirectMessage({ route }) {
   const [messages, setMessages] = useState(null)
+  const auth = getAuth()
 
   useEffect(() => {
-    fetchDM()
+    fetchDM();
     // setMessages([
     //   {
     //     _id: 1,
@@ -25,17 +27,16 @@ export default function DirectMessage({ route }) {
   }, [])
 
   async function fetchDM() {
-    console.log(route.params.username)
-    const dm = await getDM(route.params.username)
-    setMessages(dm.messages)
-    // setMessages([
-    //   {"created_at": 1706077107961, "text": "gabooble", "_id": 1, "user": {"_id": 1, "avatar": "https://cdn.torusplatforms.com/e2d4deba-849e-4265-88f8-73b83c9fe9b6.JPG", "name": "tanujks"}}, 
-    //   {"created_at": 1706077111023, "text": "boo", "_id": 2, "user": {"_id": 2, "avatar": "https://cdn.torusplatforms.com/e2d4deba-849e-4265-88f8-73b83c9fe9b6.JPG", "name": "tanujks"}}, 
-    //   {"created_at": 1706077112547, "text": "boo", "_id": 3, "user": {"avatar": "https://cdn.torusplatforms.com/e2d4deba-849e-4265-88f8-73b83c9fe9b6.JPG", "name": "tanujks"}}])
+    console.log(route.params.username);
+    const dm = await getDM(route.params.username);
+    console.log("FETCH DM DM: ")
+    console.log(dm);
+    console.log("dm messsages" + dm[0].messages);
+    setMessages(dm[0].messages);
   }
+ 
 
-
-  const onSend = useCallback(async (messages = []) => {
+  const onSend = useCallback(async (messages = []) => { //
     console.log("MESSAGSE", messages)
     if (messages) {
       await sendMessage(route.params.username, messages[0].text)
@@ -107,7 +108,7 @@ export default function DirectMessage({ route }) {
         messages={messages}
         onSend={messages => onSend(messages)}
         user={{
-          _id: 1,
+          _id: auth.currentUser.uid,
         }}
         renderBubble={renderBubble}
         renderInputToolbar={props => <CustomInputToolbar {...props} />}

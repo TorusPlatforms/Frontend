@@ -45,7 +45,7 @@ const Comment = ({data, handleReply}) => (
     const [comments, setComments] = useState(null)
 
     async function fetchComments() {
-      console.log("FETCHED", commentPing)
+      console.log("Fetching Comments of Post", commentPing)
       if (commentPing) {
         const fetchedComments = await getComments(commentPing)
         setComments(fetchedComments)
@@ -58,13 +58,14 @@ const Comment = ({data, handleReply}) => (
     }, [commentPing]); 
 
     function handleModalClose() {
-      console.log("closed");
       setCommentPing(null);
       setModalVisible(!modalVisible);
     }
 
     async function handlePostClick() {
+      console.log("posting")
       await postComment(commentPing, commentText)
+      console.log("posted")
       Keyboard.dismiss()
       onChangeComment("")
       await fetchComments()
@@ -72,12 +73,7 @@ const Comment = ({data, handleReply}) => (
 
 
     return (
-    <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-    >
-  
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.modalContainer}>
           <Pressable onPress={handleModalClose} style={styles.modalHeader}>
             <View style={styles.modalDismissBar} />

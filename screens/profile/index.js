@@ -5,51 +5,44 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 
-import { getUser, handleShare } from "../../components/handlers";
+import { getUser, getUserPings, handleShare, handleLike, postComment } from "../../components/handlers";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
 
-const exampleComment = {isLiked: true, timeAgo: "3h", author: 'GrantHough', content: "Funny ass comment", likes: 20, pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&"}
-const commentData = new Array(20).fill(exampleComment);
 
 export default function Profile() {
     const navigation = useNavigation()
+
     const movingLine = useRef(new Animated.Value(0)).current;
+
     const [loops, setLoops] = useState([])
     const [pings, setPings] = useState([])
     const [user, setUser] = useState(null)
-    const [isFocus, setIsFocus] = useState(false);
+
     const [modalVisible, setModalVisible] = useState(false);
-    const [comment, onChangeComment] = useState('');
+    const [commentText, onChangeComment] = useState('');
+    const [commentPing, setCommentPing] = useState(null)
     const [replyingTo, setReplyingTo] = useState(null) 
-    const [refreshing, setRefreshing] = useState(false)
     const ref_input = useRef();
 
-    
+    const [loading, setLoading] = useState(true)
+    const [refreshing, setRefreshing] = useState(false)
+
+    const updateLike = useCallback(() => {
+        fetchUser()
+      }, []);
+
     async function fetchUser() {
-      const user = await getUser()
-      setUser(user)
+        const user = await getUser()
+        setUser(user)
+
+        const pings = await getUserPings(user.username)
+        setPings(pings)
+
+        setLoading(false)
     }
-    
-    function handleLike(data) {
-        console.log("Liked a post!", data)
-      }
-  
-      function handleCommentLike(data) {
-        console.log("Liked a comment!", data)
-      }
-  
-      function feedChange(type) {
-        console.log("Feed was changed to" + type)
-        setFeedType(type)
-      }
-  
-      function postComment() {
-        console.log("Posting comment", comment)
-        onChangeComment("")
-        Keyboard.dismiss()
-      }
+
   
       function handleReply(data) {
         ref_input.current.focus()
@@ -63,24 +56,6 @@ export default function Profile() {
         return new Array(6).fill(exampleLoopsData)
     }
     
-    function getPings() {
-        const examplePingData = {
-            postURL: "posturl",
-            isLiked: true, 
-            attatchment: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Glazed-Donut.jpg/1200px-Glazed-Donut.jpg", 
-            author: 'GrantHough', 
-            likes: 20, 
-            comments: 30, 
-            caption: 'Funny Caption. Hilarious even. My name is Grant Hough and I love dogs!', 
-            pfp: 'https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&'
-        }
-        return new Array(6).fill(examplePingData)
-    }
-
-    //handle getting user data
-
-    //handle getting loop notification
-  
 
     async function copyUsernameToClipboard() {
         await Clipboard.setStringAsync(user.username);
@@ -142,7 +117,21 @@ export default function Profile() {
         });
       }
      
-    
+    function renderPings() {
+        return pings.map((item) =>
+            <View key={item.post_id}>
+                <Ping 
+                    data={item} 
+                    setModalVisible={setModalVisible} 
+                    handleLike={() => handleLike(item, updateLike)} 
+                    handleComment={() => setCommentPing(item)} handleShare={handleShare}
+                    navigation={navigation}
+                />
+                <View style={styles.item_seperator} />
+            </View>
+        )
+    }
+
     function renderNotification(item, index) {
         //figure out if loop has a notification
         const unread = false
@@ -159,113 +148,114 @@ export default function Profile() {
       setRefreshing(false)
     }, []);
 
+
     useEffect(() => {
+        setLoading(true)
         setLoops(getLoops())
-        setPings(getPings())
-
         fetchUser()
-        
-        Animated.sequence([
-        Animated.delay(300),
-        Animated.timing(movingLine, {
-            toValue: 1, // 1 represents the final angle
-            duration: 1000,
-            useNativeDriver: false
-          })
-        ]).start();
+      }, []);
     
-      }, [movingLine]);
+
+    useEffect(() => {
+        if (!loading) {
+            Animated.sequence([
+                Animated.delay(300),
+                Animated.timing(movingLine, {
+                    toValue: 1,
+                    duration: 1000,
+                    useNativeDriver: false
+                  })
+                ]).start();
+        }
+ 
+    }, [movingLine, loading])
+
+
+    if (loading) {
+        return (
+            <View style={[styles.container, {justifyContent: "center", alignItems: "center"}]}>
+                <ActivityIndicator/>
+            </View>
+        )
+
+    } else {
+
+        return (
+            <SafeAreaView style={styles.container}>
+              <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+              <View style={styles.header}>
+                    <Pressable onPress={() => navigation.navigate("Edit Profile")}>
+                        <Ionicons name="ios-person-outline" size={24} color="white" />
+                    </Pressable>
     
-    if (!user) {
-        return <ActivityIndicator/>
+                    <Pressable onPress={() => navigation.navigate("Settings")}>
+                        <Ionicons name="ios-settings-outline" size={24} color="white" />
+                    </Pressable>
+                </View>
+    
+                <View style={styles.userInfoContainer}>
+                    <View style={styles.pfpContainer}>
+                        <Image style={styles.pfp} source={{uri: user.pfp_url}}/>
+                        <Text style={styles.displayName}>{user.display_name}</Text>
+                        <Pressable onPress={copyUsernameToClipboard}>
+                            {({pressed}) => (
+                                <Text style={{color: pressed ? "gray": "white"}}>@{user.username}</Text>
+                            )}
+                        </Pressable>
+                    </View>
+    
+                    <View style={styles.userRelationsContainer}>
+                        <View style={styles.followCounts}>
+                            <Pressable onPress={() => navigation.navigate("MutualUserLists", {username: user.username})}>
+                                <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.follower_count}</Text>
+                                <Text style={styles.text}>Followers</Text>
+                            </Pressable>
+    
+                            <Pressable onPress={() => navigation.navigate("MutualUserLists", {username: user.username})}>
+                                <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.following_count}</Text>
+                                <Text style={styles.text}>Following</Text>
+                            </Pressable>
+                        </View>
+    
+                        <View style={styles.item_seperator}/>
+    
+                        <View style={styles.userDescription}>
+                            <Text style={[styles.text, {textAlign: "center"}]}>{user.bio}</Text>
+                        </View>
+                    </View>
+                
+                </View>
+                
+    
+                <View style={styles.torusContainer}>
+                    <View style={styles.centerLoop}>
+                        <Pressable onPress={() => navigation.navigate("MyLoops")} style={styles.centerLoopIcon}>
+                            <MaterialCommunityIcons name="google-circles-communities" color={"gray"} size={60}/>
+                        </Pressable>
+                        {renderLoops()}
+                    </View>
+                </View>
+    
+                <View style={styles.loopsListContainer}>
+                    <View style={styles.item_seperator} />
+                        {renderPings()}
+                </View>       
+    
+                <CommentModal
+                  modalVisible={modalVisible}
+                  setModalVisible={setModalVisible}
+                  onChangeComment={onChangeComment}
+                  commentText={commentText}
+                  postComment={postComment}
+                  ref_input={ref_input}
+                  handleReply={handleReply}
+                  commentPing={commentPing}
+                  setCommentPing={setCommentPing}
+                />
+    
+              </ScrollView>
+            </SafeAreaView>
+        )
     }
-
-    return (
-        <SafeAreaView style={styles.container}>
-          <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-          <View style={styles.header}>
-                <Pressable onPress={() => navigation.navigate("Edit Profile")}>
-                    <Ionicons name="ios-person-outline" size={24} color="white" />
-                </Pressable>
-
-                <Pressable onPress={() => navigation.navigate("Settings")}>
-                    <Ionicons name="ios-settings-outline" size={24} color="white" />
-                </Pressable>
-            </View>
-
-            <View style={styles.userInfoContainer}>
-                <View style={styles.pfpContainer}>
-                    <Image style={styles.pfp} source={{uri: user.pfp_url}}/>
-                    <Text style={styles.displayName}>{user.display_name}</Text>
-                    <Pressable onPress={copyUsernameToClipboard}>
-                        {({pressed}) => (
-                            <Text style={{color: pressed ? "gray": "white"}}>@{user.username}</Text>
-                        )}
-                    </Pressable>
-                </View>
-
-                <View style={styles.userRelationsContainer}>
-                    <View style={styles.followCounts}>
-                        <Pressable onPress={() => navigation.navigate("MutualUserLists", {name: user.username})}>
-                            <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.follower_count}</Text>
-                            <Text style={styles.text}>Followers</Text>
-                        </Pressable>
-
-                        <Pressable onPress={() => navigation.navigate("MutualUserLists", {name: user.username})}>
-                            <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.following_count}</Text>
-                            <Text style={styles.text}>Following</Text>
-                        </Pressable>
-                    </View>
-
-                    <View style={styles.item_seperator}/>
-
-                    <View style={styles.userDescription}>
-                        <Text style={[styles.text, {textAlign: "center"}]}>{user.bio}</Text>
-                    </View>
-                </View>
-            
-            </View>
-            
-
-            <View style={styles.torusContainer}>
-                <View style={styles.centerLoop}>
-                    <Pressable onPress={() => navigation.navigate("MyLoops")} style={styles.centerLoopIcon}>
-                        <MaterialCommunityIcons name="google-circles-communities" color={"gray"} size={60}/>
-                    </Pressable>
-                    {renderLoops()}
-                </View>
-            </View>
-
-            <View style={styles.loopsListContainer}>
-                <View style={styles.item_seperator} />
-                    {pings.map((item) => {
-                        return (
-                            <View>
-                                <Ping
-                                key={item.post_id}
-                                data={item}
-                                setModalVisible={setModalVisible}
-                                handleLike={handleLike}
-                                handleShare={handleShare}
-                                />
-                                <View style={styles.item_seperator} />
-                            </View>
-                        )
-                    })}
-            </View>       
-
-            <CommentModal
-              modalVisible={modalVisible}
-              setModalVisible={setModalVisible}
-              commentData={commentData}
-              onChangeComment={onChangeComment}
-              comment={comment}
-              postComment={postComment}
-              ref_input={ref_input}
-              handleCommentLike={handleCommentLike}
-              handleReply={handleReply}
-            /> 
-          </ScrollView>
-        </SafeAreaView>
-    )
+    
 }
