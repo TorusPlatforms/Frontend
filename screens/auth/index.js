@@ -67,12 +67,14 @@ export default function AuthScreen() {
                         value={email}
                         placeholder="Email"
                         placeholderTextColor={"white"}
+                        autoCapitalize="none"
                         style={[{width: windowWidth - 50}, styles.submissionBox]}
                     />
                 
                      <TextInput 
                         onChangeText={onChangePassword} 
                         value={password}
+                        secureTextEntry={true}
                         placeholder="Password"
                         placeholderTextColor={"white"}
                         style={[{width: windowWidth - 50}, styles.submissionBox]}

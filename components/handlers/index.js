@@ -442,6 +442,178 @@ export async function sendMessage(username, content) {
   }
 }
 
+
+
+export async function getLoops(user) {
+    const token = await getToken()
+
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/Location/${user.college}`;
+
+    try {  
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Getting Loops! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+      return (responseData)
+  
+    } catch (error) {
+      console.error('Error Getting Loops:', error.message);
+    }
+  }
+
+
+  export async function getLoopInfo(loopId) {
+    const token = await getToken()
+
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}`;
+
+    try {  
+      const response = await fetch(serverUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Getting Loop info! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+      return (responseData)
+  
+    } catch (error) {
+      console.error('Error Getting Loops:', error.message);
+    }
+  }
+
+
+
+  export async function createLoop(loopInfo) {
+    const token = await getToken()
+
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/add`;
+
+    try {  
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loopInfo)
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Creating Loop! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+      return (responseData)
+  
+    } catch (error) {
+      console.error('Error Creating Loop:', error.message);
+    }
+  }
+
+  
+  export async function editLoop(userId, loopId, content) {
+    const token = await getToken();
+  
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/edit/${userId}/${loopId}`;
+  
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(content),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Editing Loop! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Loop Edited:', responseData);
+      return responseData;
+  
+    } catch (error) {
+      console.error('Error Editing Loop:', error.message);
+    }
+  }
+
+
+  
+  export async function removeLoop(userId, loopId) {
+    const token = await getToken();
+  
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/delete/${userId}/${loopId}`;
+  
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Removing Loop! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Loop Removed:', responseData);
+      return (responseData);
+  
+    } catch (error) {
+      console.error('Error Removing Loop:', error.message);
+    }
+  }
+
+  export async function isOwner(userId, loopId) {
+    const token = await getToken();
+  
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/owner/${userId}/${loopId}`;
+  
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Verifying Ownership Status 1: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('response:', responseData);
+      return (responseData);
+  
+    } catch (error) {
+      console.error('Error Verifying Ownership Status 2:', error.message);
+    }
+  }
+
 export async function getUserPings(username) {
   const token = await getToken()
 
@@ -521,3 +693,4 @@ export async function searchUsers(query) {
     console.error("Error searching", error.message)
   }
 }
+
