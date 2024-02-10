@@ -5,7 +5,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 
-import { getUserByUsername, getUserPings, handleShare, handleLike, postComment } from "../../components/handlers";
+import { getUserByUsername, getUserPings, handleShare, handleLike, postComment, follow } from "../../components/handlers";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
@@ -24,8 +24,10 @@ export default function UserProfile({ route }) {
 
     const [isFollowing, setIsFollowing] = useState(false); 
 
-    const toggleFollow = () => {
+    const toggleFollow = async () => {
         setIsFollowing(current => !current); 
+
+        const following = await follow(route.params.username)
         //backend stuff here
     };
 

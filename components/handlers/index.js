@@ -496,3 +496,32 @@ export async function searchUsers(query) {
     console.error("Error searching", error.message)
   }
 }
+
+
+
+export async function follow(username) {
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/followings/follow/${username}`;
+    const token = await getToken()
+    console.log(serverUrl)
+  
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+      })
+  
+      if (!response.ok) {
+        throw new Error(`Error following! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log("Following: ", responseData);
+      return responseData
+  
+    } catch(error) {
+      console.error("Error following", error.message)
+    }
+  }
