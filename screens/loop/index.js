@@ -152,7 +152,7 @@ const LoopsPage = ({route}) => {
           </View>
           {activeButton === "news" && (
             <TouchableOpacity
-                onPress={() => navigation.navigate("LoopAnnouncements", { username: "Chat" })}>
+                onPress={async () => navigation.navigate("LoopAnnouncements", { username: "Announcements", loopId: loopId})}>
                 <View style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'transparent', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 0, zIndex: 0, }} >
                  <Text style={{ color: 'white', fontSize: 20, textDecorationLine: "underline" }}>Announcements</Text>   
                 </View>
@@ -178,7 +178,7 @@ const LoopsPage = ({route}) => {
 
 {activeButton === "chat" && (
 <TouchableOpacity
-        onPress={() => navigation.navigate("LoopChat", { username: "Chat" })}>
+        onPress={() => navigation.navigate("LoopChat", { username: "Chat", loopId: loopId })}>
         <View style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'transparent', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 40, zIndex: 0, }}>
             <Text style={{ color: 'white', fontSize: 20, textDecorationLine: "underline" }}>Chat</Text>
         </View>
