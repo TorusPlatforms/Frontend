@@ -814,3 +814,33 @@ export async function sendChat(loopId, content) {
     console.error("Error sending chat", error.message)
   }
 }
+
+
+export async function getRecentMsgs(loopId) {
+  
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/getRecentMsgs/${loopId}`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error getting msgs! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('recentmsgs:', responseData);
+    return responseData;
+
+  } catch (error) {
+    console.error("Error getting msgs", error.message);
+  }
+}
+

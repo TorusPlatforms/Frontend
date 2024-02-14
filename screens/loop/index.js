@@ -4,7 +4,7 @@ import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
 import { useNavigation, useFocusEffect  } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
-import { getLoopInfo, getUser } from "../../components/handlers";
+import { getLoopInfo, getUser, getRecentMsgs } from "../../components/handlers";
 
 const exampleLoopData = {
     pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
