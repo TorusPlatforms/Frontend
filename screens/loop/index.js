@@ -204,7 +204,7 @@ const LoopsPage = ({route}) => {
             <View style ={{ alignContent:"center", marginVertical:20, flexDirection:"column"}}>
             <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Owner: {exampleLoopData.owner}</Text>
               <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Rules: </Text>
-              <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>loopData.rules</Text>
+              <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>{loopData.rules}</Text>
               <TouchableOpacity style={{}} onPress={() => goToInfo(loopData)}>
                 <Text style={{color: "white", alignSelf: "center", fontSize: 25, textDecorationLine: "underline", marginTop: 150}}>More Info</Text>
                 </TouchableOpacity>
