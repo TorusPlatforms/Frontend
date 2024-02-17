@@ -4,7 +4,7 @@ import { Share, Alert } from 'react-native'
 async function getToken() {
   const auth = getAuth()
   const token = await auth.currentUser.getIdToken()
-  return token
+  return token;
 }
 
 export async function registerUserBackend(username, email, display_name) {
@@ -587,10 +587,10 @@ export async function getLoops(user) {
     }
   }
 
-  export async function isOwner(userId, loopId) {
+  export async function isOwner(username, loopId) {
     const token = await getToken();
   
-    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/owner/${userId}/${loopId}`;
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/owner/${username}/${loopId}`;
   
     try {
       const response = await fetch(serverUrl, {
@@ -691,6 +691,156 @@ export async function searchUsers(query) {
 
   } catch(error) {
     console.error("Error searching", error.message)
+  }
+}
+
+export async function getAnnouncements(loopId) {
+  
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/getAnnouncements/${loopId}`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error getting DM! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('annoucnements:', responseData);
+    return responseData;
+
+  } catch (error) {
+    console.error("Error getting announcement", error.message);
+  }
+}
+
+
+export async function sendAnnouncement(loopId, content) {
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/createAnnouncement`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        loop_id: loopId, 
+        content: content
+      })
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error cereating cannoucnemtn! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('Sent announcement:', responseData);
+    return responseData
+
+  } catch(error) {
+    console.error("Error sending announcement", error.message)
+  }
+}
+
+
+export async function getChats(loopId) {
+  
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/getMessages/${loopId}`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error getting chat! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('chats:', responseData);
+    return responseData;
+
+  } catch (error) {
+    console.error("Error getting chat", error.message);
+  }
+}
+
+
+export async function sendChat(loopId, content) {
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/createMessage`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        loop_id: loopId, 
+        content: content
+      })
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error cereating chat! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('Sent chat:', responseData);
+    return responseData
+
+  } catch(error) {
+    console.error("Error sending chat", error.message)
+  }
+}
+
+
+export async function getRecentMsgs(loopId) {
+  
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/getRecentMsgs/${loopId}`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error getting msgs! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('recentmsgs:', responseData);
+    return responseData;
+
+  } catch (error) {
+    console.error("Error getting msgs", error.message);
   }
 }
 
