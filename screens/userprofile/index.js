@@ -26,7 +26,9 @@ export default function UserProfile({ route }) {
 
     const toggleFollow = async () => {
         setIsFollowing(current => !current); 
-
+        console.log("||||||||||||||")
+        await console.log(route.params.username)
+        console.log(route.params.username)
         const following = await follow(route.params.username)
         //backend stuff here
     };
