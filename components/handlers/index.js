@@ -748,3 +748,60 @@ export async function getLoopOwner(loopId) {
       console.error('Error Getting Member status:', error.message);
     }
   }
+
+
+  export async function joinLoop(loopId) {
+    const token = await getToken()
+
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/join`;
+
+    try {  
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error joining loop! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+      return (responseData)
+  
+    } catch (error) {
+      console.error('Error joining loop:', error.message);
+    }
+  }
+
+
+  export async function leaveLoop(loopId) {
+    const token = await getToken()
+    await console.log(token)
+
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/leave`;
+
+    try {  
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error leaving loop! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+      return (responseData)
+  
+    } catch (error) {
+      console.error('Error leaving loop:', error.message);
+    }
+  }

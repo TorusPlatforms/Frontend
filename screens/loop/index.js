@@ -4,7 +4,7 @@ import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
 import { useNavigation, useFocusEffect  } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
-import { getLoopInfo, getUser, getLoopOwner, getMemberStatus } from "../../components/handlers";
+import { getLoopInfo, getUser, getLoopOwner, getMemberStatus,joinLoop,leaveLoop } from "../../components/handlers";
 
 const exampleLoopData = {
     pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
@@ -77,7 +77,7 @@ const LoopsPage = ({route}) => {
         }, [])
       );
 
-    const leaveLoop = () => {
+    const exitLoop = () => { //THIS IS NAVIGATION NOT ACTUALLY LEAVING A LOOP
         navigation.navigate("Home");
       };
 
@@ -86,8 +86,9 @@ const LoopsPage = ({route}) => {
       };
 
       const join = () => {
-        setIsMember(true);
+        joinLoop(loopId)
         console.log(loopId);
+        fetchLoopData()
     };
 
     const toggleNotifications = () => {
@@ -101,7 +102,7 @@ const LoopsPage = ({route}) => {
       return (
         <View style={{  paddingTop: 20, backgroundColor: "rgb(22, 23, 24)",height:"100%" }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <TouchableOpacity onPress={leaveLoop} style={{ padding: 10, marginTop: 30 }}>
+            <TouchableOpacity onPress={exitLoop} style={{ padding: 10, marginTop: 30 }}>
                 <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Back</Text>
             </TouchableOpacity>
 

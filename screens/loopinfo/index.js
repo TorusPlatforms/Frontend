@@ -4,7 +4,7 @@ import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
-import { getLoopInfo, getUser,editLoop, removeLoop, isOwner } from "../../components/handlers";
+import { getLoopInfo, getUser,editLoop, removeLoop, isOwner,leaveLoop } from "../../components/handlers";
 
 import { requestCameraPerms, requestPhotoLibraryPerms, pickImage, openCamera } from '../../components/imagepicker';
 
@@ -145,7 +145,7 @@ const LoopInfo = ({route}) => {
     };*/
 
 
-        const leaveLoop = () => {
+        const leave = async () => {
         Alert.alert(
             'Leave Loop?',
             'Are you sure you want to leave this loop?',
@@ -156,8 +156,10 @@ const LoopInfo = ({route}) => {
             },
             {
                 text: 'Confirm',
-                onPress: () => {
-                // Handle 
+                onPress: async () => {
+                await leaveLoop(loopData.loop_id)
+                await navigation.navigate("Home");
+                await console.log("LOOPID:", loopData.loop_id)
                 console.log('leave loop');
                 },
             },
@@ -242,7 +244,7 @@ const LoopInfo = ({route}) => {
             )}
 
 
-            <TouchableOpacity onPress={isEditMode ? deleteLoop : leaveLoop} style={{ padding: 10, marginTop: 30 }}>
+            <TouchableOpacity onPress={isEditMode ? deleteLoop : leave} style={{ padding: 10, marginTop: 30 }}>
             <Text style={{ fontSize: 16, color: "red", paddingLeft: 10 }}>
                 {isEditMode ? "Delete" : "Leave"}
             </Text>
