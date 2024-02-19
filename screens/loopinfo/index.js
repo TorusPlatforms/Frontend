@@ -357,7 +357,7 @@ const LoopInfo = ({route}) => {
         
         <ScrollView style={{}}>
 
-        {exampleLoopData.users.map((name, index) => (
+        {loopMembers.map((name, index) => (
             <View style={{flexDirection:"row", borderTopWidth:0.2, borderColor:"white",justifyContent:"space-between"}}>
 
                 <NameList key={index} name={name}  style={{color:"white", alignSelf:"center", marginTop:10}}/>
