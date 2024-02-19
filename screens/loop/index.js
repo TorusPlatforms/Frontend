@@ -4,7 +4,7 @@ import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
 import { useNavigation, useFocusEffect  } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
-import { getLoopInfo, getUser } from "../../components/handlers";
+import { getLoopInfo, getUser, getLoopOwner, getMemberStatus } from "../../components/handlers";
 
 const exampleLoopData = {
     pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
@@ -51,9 +51,16 @@ const LoopsPage = ({route}) => {
 
     const fetchLoopData = async () => {
         try {
+        const user = await getUser();
           const fetchedLoopsString = await getLoopInfo(loopId);
+          const fetchedLoopOwner = await getLoopOwner(loopId);
+          const membership = await getMemberStatus(loopId, user.username)
           console.log("FETCHED:", fetchedLoopsString);
+          console.log("OWNEROWNEROWNEROWNER:", fetchedLoopOwner.username)
+          console.log("MEMBER STATUS:", membership)
+          setOwnerName(fetchedLoopOwner.username);
           setLoopData(fetchedLoopsString);
+          setIsMember(membership)
         } catch (error) {
           console.error("Error fetching loop:", error);
         }
@@ -202,7 +209,7 @@ const LoopsPage = ({route}) => {
 )}
 {activeButton === "about" && (
             <View style ={{ alignContent:"center", marginVertical:20, flexDirection:"column"}}>
-            <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Owner: {exampleLoopData.owner}</Text>
+            <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Owner: {ownerName}</Text>
               <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Rules: </Text>
               <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>{loopData.rules}</Text>
               <TouchableOpacity style={{}} onPress={() => goToInfo(loopData)}>

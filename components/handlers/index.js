@@ -694,3 +694,57 @@ export async function searchUsers(query) {
   }
 }
 
+
+export async function getLoopOwner(loopId) {
+    const token = await getToken()
+
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/getOwner/${loopId}`;
+
+    try {  
+      const response = await fetch(serverUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error Getting Owner info! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+      return (responseData)
+  
+    } catch (error) {
+      console.error('Error Getting Owner:', error.message);
+    }
+  }
+
+  export async function getMemberStatus(loopId,userId) {
+    const token = await getToken()
+
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/isMember/${loopId}/${userId}`;
+
+    try {  
+      const response = await fetch(serverUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error Getting member info! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+      return (responseData)
+  
+    } catch (error) {
+      console.error('Error Getting Member status:', error.message);
+    }
+  }
