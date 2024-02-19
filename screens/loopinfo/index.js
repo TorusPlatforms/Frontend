@@ -42,7 +42,7 @@ const LoopInfo = ({route}) => {
     const [isManageVisible, setManageVisible] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
     const [isLoopOwner, setIsLoopOwner] = useState(false);
-    const [loopMembers, setLoopMembers] = useState()
+    const [loopMembers, setLoopMembers] = useState([])
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [editedData, setEditedData] = useState({
@@ -220,6 +220,7 @@ const LoopInfo = ({route}) => {
               const members = await getLoopMembers(loopData.loop_id);
               await console.log("||||||||||")
               await console.log(members)
+              await console.log(typeof(members))
               await setLoopMembers(members)
               const ownerResult = await isOwner(user.username, loopData.loop_id);
               await setIsLoopOwner(ownerResult.isOwner); 
