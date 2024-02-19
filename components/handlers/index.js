@@ -805,3 +805,32 @@ export async function getLoopOwner(loopId) {
       console.error('Error leaving loop:', error.message);
     }
   }
+
+
+  export async function getLoopMembers(loopId) {
+    const token = await getToken()
+    await console.log(token)
+
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/members/${loopId}`;
+
+    try {  
+      const response = await fetch(serverUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error getting members! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+      return (responseData)
+  
+    } catch (error) {
+      console.error('Error getting loop members:', error.message);
+    }
+  }
