@@ -5,7 +5,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 
-import { getUser, getUserPings, handleShare, handleLike, postComment } from "../../components/handlers";
+import { getUser, getUserPings, handleShare, handleLike, postComment, getRecentLoops } from "../../components/handlers";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
@@ -34,15 +34,14 @@ export default function Profile() {
       }, []);
 
     async function fetchUser() {
-        const user = await getUser()
+        const user = await getUser();
         setUser(user)
 
         const pings = await getUserPings(user.username)
         setPings(pings)
 
         setLoading(false)
-    }
-
+    }   
   
       function handleReply(data) {
         ref_input.current.focus()
@@ -51,18 +50,22 @@ export default function Profile() {
       }
   
 
-    function getLoops() {
+    async function getLoops() {
+
+        const user = await getUser();
+        const username = await user.username;
+
+        const loopData = getRecentLoops(await username, 6);
+        console.log(loopData);
         const exampleLoopsData = {name: "Dorm", pfp: "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png"}
-        return new Array(6).fill(exampleLoopsData)
-    }
+        return new Array(6).fill(loopData);
+    } 
     
 
     async function copyUsernameToClipboard() {
         await Clipboard.setStringAsync(user.username);
       };
 
-    
-    
     //ANIMATION 
     const symbolSize = 50;
     const radius = 125 
@@ -106,7 +109,7 @@ export default function Profile() {
                             borderRadius: symbolSize / 2,
                             zIndex: 1
                       }}
-                      source={{ uri: 'https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png' }} />
+                      source={{ url: item.profile_picture }} />
 
                   {renderNotification()}
 
@@ -151,7 +154,8 @@ export default function Profile() {
 
     useEffect(() => {
         setLoading(true)
-        setLoops(getLoops())
+        console.log(getLoops());
+        setLoops(getLoops());
         fetchUser()
       }, []);
     
