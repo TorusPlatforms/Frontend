@@ -5,7 +5,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 
-import { getUserByUsername, getUserPings, handleShare, handleLike, postComment, follow } from "../../components/handlers";
+import { getUserByUsername, getUserPings, handleShare, handleLike, postComment, follow, unfollow, followCheck } from "../../components/handlers";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
@@ -25,11 +25,17 @@ export default function UserProfile({ route }) {
     const [isFollowing, setIsFollowing] = useState(false); 
 
     const toggleFollow = async () => {
-        setIsFollowing(current => !current); 
-        console.log("||||||||||||||")
+        console.log("FOLLOWSTUFFFOLLOWSTUFF")
+        if(isFollowing){
+            await unfollow(route.params.username)
+        }
+        else{
+           await follow(route.params.username) 
+        }
         await console.log(route.params.username)
         console.log(route.params.username)
-        const following = await follow(route.params.username)
+        await setIsFollowing(current => !current)
+
         //backend stuff here
     };
 
@@ -43,6 +49,9 @@ export default function UserProfile({ route }) {
         setUser(user)
 
         const pings = await getUserPings(user.username)
+        const following = await followCheck(user.username)
+        console.log("FOLLOWING STATUS YYOYOYOYOYOYOYOYOY  ",following )
+        setIsFollowing(following)
         setPings(pings)
     }
 
