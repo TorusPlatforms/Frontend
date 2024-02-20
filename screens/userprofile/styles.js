@@ -155,7 +155,24 @@ const styles = StyleSheet.create({
         color: "white",
         marginRight: 10,
     },
+    followButton: {
+        marginTop: 20, 
+        marginBottom: -30,
+        marginLeft: 20,
+        marginRight: 20,
+        alignItems: "center",
+        paddingVertical: 10, 
+        paddingHorizontal: 0, 
+        borderRadius: 25, 
 
+       
+      },
+      followButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center', 
+        
+      }
 
 
 })

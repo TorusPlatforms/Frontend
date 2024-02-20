@@ -5,7 +5,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 
-import { getUserByUsername, getUserPings, handleShare, handleLike, postComment } from "../../components/handlers";
+import { getUserByUsername, getUserPings, handleShare, handleLike, postComment, follow, unfollow, followCheck } from "../../components/handlers";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
@@ -22,7 +22,22 @@ export default function UserProfile({ route }) {
     const [refreshing, setRefreshing] = useState(false)
     const ref_input = useRef();
 
+    const [isFollowing, setIsFollowing] = useState(false); 
 
+    const toggleFollow = async () => {
+        console.log("FOLLOWSTUFFFOLLOWSTUFF")
+        if(isFollowing){
+            await unfollow(route.params.username)
+        }
+        else{
+           await follow(route.params.username) 
+        }
+        await console.log(route.params.username)
+        console.log(route.params.username)
+        await setIsFollowing(current => !current)
+
+        //backend stuff here
+    };
 
     const updateLike = useCallback(() => {
         fetchUser()
@@ -34,6 +49,9 @@ export default function UserProfile({ route }) {
         setUser(user)
 
         const pings = await getUserPings(user.username)
+        const following = await followCheck(user.username)
+        console.log("FOLLOWING STATUS YYOYOYOYOYOYOYOYOY  ",following )
+        setIsFollowing(following)
         setPings(pings)
     }
 
@@ -77,6 +95,7 @@ export default function UserProfile({ route }) {
                                 <Text style={{color: pressed ? "gray": "white"}}>@{user.username}</Text>
                             )}
                         </Pressable>
+                       
                     </View>
     
                     <View style={styles.userRelationsContainer}>
@@ -85,11 +104,15 @@ export default function UserProfile({ route }) {
                                 <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.follower_count}</Text>
                                 <Text style={styles.text}>Followers</Text>
                             </Pressable>
+                            
     
-                            <Pressable onPress={() => navigation.navigate("MutualUserLists", {username: user.username})}>
+                                <Pressable onPress={() => navigation.navigate("MutualUserLists", {username: user.username})}>
                                 <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.following_count}</Text>
                                 <Text style={styles.text}>Following</Text>
                             </Pressable>
+
+                            
+
                         </View>
     
                         <View style={styles.item_seperator}/>
@@ -97,10 +120,27 @@ export default function UserProfile({ route }) {
                         <View style={styles.userDescription}>
                             <Text style={[styles.text, {textAlign: "center"}]}>{user.bio}</Text>
                         </View>
+                        
                     </View>
-                
+                   
                 </View>
-                
+                <Pressable
+                                onPress={toggleFollow}
+                                style={({ pressed }) => [
+                                {
+                                backgroundColor: pressed ? 'darkblue' : 'blue',
+                                },
+                                styles.followButton,
+                                
+                                 ]}
+                                 >
+                               
+                                <Text style={styles.followButtonText}>
+                               {isFollowing ? 'Following' : 'Follow'}
+
+                                </Text>
+                                
+                        </Pressable>
     
                 <View style={styles.loopsListContainer}>
                     <View style={styles.item_seperator} />

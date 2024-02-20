@@ -4,7 +4,9 @@ import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
 import { useNavigation, useFocusEffect  } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
-import { getLoopInfo, getUser, getLoopOwner, getMemberStatus,joinLoop,leaveLoop } from "../../components/handlers";
+
+import { getLoopInfo, getUser, getLoopOwner, getMemberStatus,joinLoop,leaveLoop, getRecentMsgs } from "../../components/handlers";
+
 
 const exampleLoopData = {
     pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
@@ -160,7 +162,7 @@ const LoopsPage = ({route}) => {
           </View>
           {activeButton === "news" && (
             <TouchableOpacity
-                onPress={() => navigation.navigate("LoopAnnouncements", { username: "Chat" })}>
+                onPress={async () => navigation.navigate("LoopAnnouncements", { username: "Announcements", loopId: loopId})}>
                 <View style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'transparent', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 0, zIndex: 0, }} >
                  <Text style={{ color: 'white', fontSize: 20, textDecorationLine: "underline" }}>Announcements</Text>   
                 </View>
@@ -186,7 +188,7 @@ const LoopsPage = ({route}) => {
 
 {activeButton === "chat" && (
 <TouchableOpacity
-        onPress={() => navigation.navigate("LoopChat", { username: "Chat" })}>
+        onPress={() => navigation.navigate("LoopChat", { username: "Chat", loopId: loopId })}>
         <View style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'transparent', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 40, zIndex: 0, }}>
             <Text style={{ color: 'white', fontSize: 20, textDecorationLine: "underline" }}>Chat</Text>
         </View>
