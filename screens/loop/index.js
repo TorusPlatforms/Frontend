@@ -4,7 +4,9 @@ import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
 import { useNavigation, useFocusEffect  } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
-import { getLoopInfo, getUser, getRecentMsgs } from "../../components/handlers";
+
+import { getLoopInfo, getUser, getLoopOwner, getMemberStatus,joinLoop,leaveLoop, getRecentMsgs } from "../../components/handlers";
+
 
 const exampleLoopData = {
     pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
@@ -51,9 +53,16 @@ const LoopsPage = ({route}) => {
 
     const fetchLoopData = async () => {
         try {
+        const user = await getUser();
           const fetchedLoopsString = await getLoopInfo(loopId);
+          const fetchedLoopOwner = await getLoopOwner(loopId);
+          const membership = await getMemberStatus(loopId, user.username)
           console.log("FETCHED:", fetchedLoopsString);
+          console.log("OWNEROWNEROWNEROWNER:", fetchedLoopOwner.username)
+          console.log("MEMBER STATUS:", membership)
+          setOwnerName(fetchedLoopOwner.username);
           setLoopData(fetchedLoopsString);
+          setIsMember(membership)
         } catch (error) {
           console.error("Error fetching loop:", error);
         }
@@ -70,7 +79,7 @@ const LoopsPage = ({route}) => {
         }, [])
       );
 
-    const leaveLoop = () => {
+    const exitLoop = () => { //THIS IS NAVIGATION NOT ACTUALLY LEAVING A LOOP
         navigation.navigate("Home");
       };
 
@@ -79,8 +88,9 @@ const LoopsPage = ({route}) => {
       };
 
       const join = () => {
-        setIsMember(true);
+        joinLoop(loopId)
         console.log(loopId);
+        fetchLoopData()
     };
 
     const toggleNotifications = () => {
@@ -94,7 +104,7 @@ const LoopsPage = ({route}) => {
       return (
         <View style={{  paddingTop: 20, backgroundColor: "rgb(22, 23, 24)",height:"100%" }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <TouchableOpacity onPress={leaveLoop} style={{ padding: 10, marginTop: 30 }}>
+            <TouchableOpacity onPress={exitLoop} style={{ padding: 10, marginTop: 30 }}>
                 <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Back</Text>
             </TouchableOpacity>
 
@@ -202,9 +212,9 @@ const LoopsPage = ({route}) => {
 )}
 {activeButton === "about" && (
             <View style ={{ alignContent:"center", marginVertical:20, flexDirection:"column"}}>
-            <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Owner: {exampleLoopData.owner}</Text>
+            <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Owner: {ownerName}</Text>
               <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Rules: </Text>
-              <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>loopData.rules</Text>
+              <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>{loopData.rules}</Text>
               <TouchableOpacity style={{}} onPress={() => goToInfo(loopData)}>
                 <Text style={{color: "white", alignSelf: "center", fontSize: 25, textDecorationLine: "underline", marginTop: 150}}>More Info</Text>
                 </TouchableOpacity>

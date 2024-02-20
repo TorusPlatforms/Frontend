@@ -4,7 +4,7 @@ import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
-import { getLoopInfo, getUser,editLoop, removeLoop, isOwner } from "../../components/handlers";
+import { getLoopInfo, getUser,editLoop, removeLoop, isOwner,leaveLoop, getLoopMembers } from "../../components/handlers";
 
 import { requestCameraPerms, requestPhotoLibraryPerms, pickImage, openCamera } from '../../components/imagepicker';
 
@@ -42,6 +42,7 @@ const LoopInfo = ({route}) => {
     const [isManageVisible, setManageVisible] = useState(false);
     const [selectedImage, setSelectedImage] = useState(null);
     const [isLoopOwner, setIsLoopOwner] = useState(false);
+    const [loopMembers, setLoopMembers] = useState([])
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [editedData, setEditedData] = useState({
@@ -145,7 +146,7 @@ const LoopInfo = ({route}) => {
     };*/
 
 
-        const leaveLoop = () => {
+        const leave = async () => {
         Alert.alert(
             'Leave Loop?',
             'Are you sure you want to leave this loop?',
@@ -156,8 +157,10 @@ const LoopInfo = ({route}) => {
             },
             {
                 text: 'Confirm',
-                onPress: () => {
-                // Handle 
+                onPress: async () => {
+                await leaveLoop(loopData.loop_id)
+                await navigation.navigate("Home");
+                await console.log("LOOPID:", loopData.loop_id)
                 console.log('leave loop');
                 },
             },
@@ -212,6 +215,13 @@ const LoopInfo = ({route}) => {
         const fetchLoopInfo = async () => {
             try {
               const user = await getUser();
+              await console.log("POPOPOPOPOPOPOPOPOPOPOP")
+              await console.log(loopData.loop_id)
+              const members = await getLoopMembers(loopData.loop_id);
+              await console.log("||||||||||")
+              await console.log(members)
+              await console.log(typeof(members))
+              await setLoopMembers(members)
               const ownerResult = await isOwner(user.username, loopData.loop_id);
               await setIsLoopOwner(ownerResult.isOwner); 
               await console.log(isLoopOwner)
@@ -242,7 +252,7 @@ const LoopInfo = ({route}) => {
             )}
 
 
-            <TouchableOpacity onPress={isEditMode ? deleteLoop : leaveLoop} style={{ padding: 10, marginTop: 30 }}>
+            <TouchableOpacity onPress={isEditMode ? deleteLoop : leave} style={{ padding: 10, marginTop: 30 }}>
             <Text style={{ fontSize: 16, color: "red", paddingLeft: 10 }}>
                 {isEditMode ? "Delete" : "Leave"}
             </Text>
@@ -348,7 +358,7 @@ const LoopInfo = ({route}) => {
         
         <ScrollView style={{}}>
 
-        {exampleLoopData.users.map((name, index) => (
+        {loopMembers.map((name, index) => (
             <View style={{flexDirection:"row", borderTopWidth:0.2, borderColor:"white",justifyContent:"space-between"}}>
 
                 <NameList key={index} name={name}  style={{color:"white", alignSelf:"center", marginTop:10}}/>
