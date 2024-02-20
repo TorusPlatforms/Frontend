@@ -834,7 +834,7 @@ export async function getLoopOwner(loopId) {
       console.error('Error getting loop members:', error.message);
     }
   }
-=======
+
 export async function follow(username) {
     const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/followings/follow/${username}`;
     const token = await getToken()
@@ -917,7 +917,7 @@ export async function follow(username) {
       console.error("Error followcheck", error.message)
     }
   }
-=======
+
 export async function getAnnouncements(loopId) {
   
   const token = await getToken()
