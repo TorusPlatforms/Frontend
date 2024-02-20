@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { View } from "react-native";
 import { GiftedChat, Bubble, InputToolbar, Avatar } from 'react-native-gifted-chat';
 import styles from "./styles";
-
+import { getAnnouncements, sendAnnouncement, isOwner, getUser} from '../../components/handlers';
 
 const exampleLoopData = {
     pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
@@ -20,33 +20,52 @@ const exampleUserData = {
     admin: true,
 }
 
-export default function LoopAnnouncements() {
+export default function LoopAnnouncements({route}) {
     const [messages, setMessages] = useState([])
 
+    const {loopId} = route.params;
+   
     useEffect(() => {
-        setMessages([
-            {
-                _id: 1,
-                text: exampleLoopData.recentAnnouncement,
-                createdAt: new Date(),
-                user: {
-                    __id: 2,
-                    name: 'React Native',
-                    avatar: 'https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&',
-                },
-            },
-        ])
+        fetchAnnouncements();
+        // setMessages([
+        //     {
+        //         _id: 1,
+        //         text: exampleLoopData.recentAnnouncement,
+        //         createdAt: new Date(),
+        //         user: {
+        //             __id: 2,
+        //             name: 'React Native',
+        //             avatar: 'https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&',
+        //         },
+        //     },
+        // ])
     }, [])
 
-    const onSend = useCallback((messages = []) => {
-        if (exampleUserData.admin) {
-            setMessages(previousMessages =>
-                GiftedChat.append(previousMessages, messages),
-            );
-        } else {
-            // Handle the case where the user is not an admin
-            console.log("You do not have permission to send messages.");
+    async function fetchAnnouncements() {
+        const announcement = await getAnnouncements(loopId);
+        console.log("FETCH Announcement: ")
+        console.log(announcement);
+        console.log("announcement messsages" + announcement.messages);
+        if (announcement.messages != undefined && announcement.messages != null) {
+            setMessages(announcement.messages);
         }
+        
+      }
+
+    const onSend = useCallback(async (messages = []) => {
+        getUser().then(async user => {
+            isOwner(user.username, loopId).then(async response => {
+                if (response.isOwner) {
+                    await sendAnnouncement(loopId, messages[0].text);
+                    setMessages(previousMessages =>
+                        GiftedChat.append(previousMessages, messages),
+                    );
+                } else {
+                    // Handle the case where the user is not an admin
+                    console.log("You do not have permission to send messages.");
+                }
+            })
+        })
     }, [])
 
     const CustomInputToolbar = props => {

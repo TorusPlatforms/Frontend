@@ -4,7 +4,32 @@ import { Share, Alert } from 'react-native'
 async function getToken() {
   const auth = getAuth()
   const token = await auth.currentUser.getIdToken()
-  return token
+  return token;
+}
+
+export async function registerUserBackend(username, email, display_name) {
+  const token = await getToken();
+  const serverUrl = 'https://backend-26ufgpn3sq-uc.a.run.app/api/user/register';
+
+  const data = {
+      username: username,
+      college_email: email,
+      display_name: display_name
+  };
+  
+  console.log(JSON.stringify(data))
+  const response = await fetch(serverUrl, {
+  method: 'POST',
+  headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+  },
+  body: JSON.stringify(data),
+  });
+
+  const responseData = await response.json();
+  console.log('Response:', responseData);
+  return responseData
 }
 
 export async function getUser() {
@@ -379,10 +404,10 @@ export async function getDM(username) {
 
     const responseData = await response.json();
     console.log('DMs:', responseData);
-    return responseData
+    return responseData;
 
   } catch (error) {
-    console.error("Error getting DM", error.message)
+    console.error("Error getting DM", error.message);
   }
 }
 
@@ -416,6 +441,178 @@ export async function sendMessage(username, content) {
     console.error("Error sending DM", error.message)
   }
 }
+
+
+
+export async function getLoops(user) {
+    const token = await getToken()
+
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/Location/${user.college}`;
+
+    try {  
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Getting Loops! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+      return (responseData)
+  
+    } catch (error) {
+      console.error('Error Getting Loops:', error.message);
+    }
+  }
+
+
+  export async function getLoopInfo(loopId) {
+    const token = await getToken()
+
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}`;
+
+    try {  
+      const response = await fetch(serverUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Getting Loop info! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+      return (responseData)
+  
+    } catch (error) {
+      console.error('Error Getting Loops:', error.message);
+    }
+  }
+
+
+
+  export async function createLoop(loopInfo) {
+    const token = await getToken()
+
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/add`;
+
+    try {  
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loopInfo)
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Creating Loop! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+      return (responseData)
+  
+    } catch (error) {
+      console.error('Error Creating Loop:', error.message);
+    }
+  }
+
+  
+  export async function editLoop(userId, loopId, content) {
+    const token = await getToken();
+  
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/edit/${userId}/${loopId}`;
+  
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(content),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Editing Loop! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Loop Edited:', responseData);
+      return responseData;
+  
+    } catch (error) {
+      console.error('Error Editing Loop:', error.message);
+    }
+  }
+
+
+  
+  export async function removeLoop(userId, loopId) {
+    const token = await getToken();
+  
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/delete/${userId}/${loopId}`;
+  
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Removing Loop! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('Loop Removed:', responseData);
+      return (responseData);
+  
+    } catch (error) {
+      console.error('Error Removing Loop:', error.message);
+    }
+  }
+
+  export async function isOwner(username, loopId) {
+    const token = await getToken();
+  
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/owner/${username}/${loopId}`;
+  
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Verifying Ownership Status 1: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log('response:', responseData);
+      return (responseData);
+  
+    } catch (error) {
+      console.error('Error Verifying Ownership Status 2:', error.message);
+    }
+  }
 
 export async function getUserPings(username) {
   const token = await getToken()
@@ -496,7 +693,6 @@ export async function searchUsers(query) {
     console.error("Error searching", error.message)
   }
 }
-
 
 
 export async function follow(username) {
@@ -581,3 +777,154 @@ export async function follow(username) {
       console.error("Error followcheck", error.message)
     }
   }
+=======
+export async function getAnnouncements(loopId) {
+  
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/getAnnouncements/${loopId}`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error getting DM! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('annoucnements:', responseData);
+    return responseData;
+
+  } catch (error) {
+    console.error("Error getting announcement", error.message);
+  }
+}
+
+
+export async function sendAnnouncement(loopId, content) {
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/createAnnouncement`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        loop_id: loopId, 
+        content: content
+      })
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error cereating cannoucnemtn! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('Sent announcement:', responseData);
+    return responseData
+
+  } catch(error) {
+    console.error("Error sending announcement", error.message)
+  }
+}
+
+
+export async function getChats(loopId) {
+  
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/getMessages/${loopId}`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error getting chat! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('chats:', responseData);
+    return responseData;
+
+  } catch (error) {
+    console.error("Error getting chat", error.message);
+  }
+}
+
+
+export async function sendChat(loopId, content) {
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/createMessage`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        loop_id: loopId, 
+        content: content
+      })
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error cereating chat! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('Sent chat:', responseData);
+    return responseData
+
+  } catch(error) {
+    console.error("Error sending chat", error.message)
+  }
+}
+
+
+export async function getRecentMsgs(loopId) {
+  
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/getRecentMsgs/${loopId}`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error getting msgs! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('recentmsgs:', responseData);
+    return responseData;
+
+  } catch (error) {
+    console.error("Error getting msgs", error.message);
+  }
+}
+

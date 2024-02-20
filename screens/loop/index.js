@@ -2,8 +2,9 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { View, TouchableOpacity, Image, Text, TextInput, ScrollView } from "react-native";
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect  } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
+import { getLoopInfo, getUser, getRecentMsgs } from "../../components/handlers";
 
 const exampleLoopData = {
     pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
@@ -14,8 +15,10 @@ const exampleLoopData = {
     chats: ['Chat 1', 'Chat 2', 'Chat 3', 'Chat 4', 'Chat 5','Chat 6', 'Chat 7', 'Chat 8', 'Chat 9'],
     recentAnnouncement: "Grant becomes world's first trillionaire after buying every single realfeel dumpad and selling them for billions each",
     recentAnnouncementUser:"@stefan",
-    recentChat: "Did anyone do the GA homework?",
+    recentChat: "Did anyone do the GA homework? I really need it and i dont want to ask for more points back again",
     recentChatUser:"@grant",
+    status:"public",
+    owner:"@grant",
     users: ["DrumDogLover","TanujBeatMaster","GrantPawRhythms", "DogGrooveMaster","GrantAndTanujJams","RhythmHound","DrumBeatsWithTanuj","GrantCanineGrooves","TanujDogDrummer","BarkingBeatsGrant","DrummingTanujPaws","GrantAndDogRhythms","TanujDrumTails","PuppyGroovesGrant","BeatBuddyTanuj","WoofingRhythmsGrant","DrummingPawsTanuj","GrantGroovePup","TanujAndTheBeat","DoggyDrummingGrant","RhythmTanujTail","GrantPercussionPup","TanujDoggieBeats","PawsAndSnaresGrant","DrummingDogTanuj","GrantBeatsHowl","TanujRhythmBuddy","DogBeatHarmonyGrant","DrumPawsTanujGroove","GrantAndTanujRhythmic",]
 }
 
@@ -37,28 +40,55 @@ const ChatButton = ({ name, navigation }) => (
 
   
 
-const LoopsPage = () => {
+const LoopsPage = ({route}) => {
+    const {loopId} = route.params;
     const navigation = useNavigation()
     const [notifications, setNotifications] = useState(exampleLoopData.notifications);
     const [isMember, setIsMember] = useState(exampleUserData.member);
+    const [activeButton, setActiveButton] = useState("news");
+    const [loopData, setLoopData] = useState([]);
+    const [ownerName, setOwnerName] = useState([]);
 
-    const leaveLoop = () => {
-        navigation.goBack();
+    const fetchLoopData = async () => {
+        try {
+          const fetchedLoopsString = await getLoopInfo(loopId);
+          console.log("FETCHED:", fetchedLoopsString);
+          setLoopData(fetchedLoopsString);
+        } catch (error) {
+          console.error("Error fetching loop:", error);
+        }
       };
 
-      const goToInfo = () => {
-        navigation.navigate('LoopInfo'); 
+      useEffect(() => {
+        fetchLoopData();
+      }, []);
+
+      useFocusEffect(
+        useCallback(() => {
+          console.log("loop focused");
+          fetchLoopData(); 
+        }, [])
+      );
+
+    const leaveLoop = () => {
+        navigation.navigate("Home");
+      };
+
+      const goToInfo = (loopData) => {
+        navigation.navigate('LoopInfo', { loopData });
       };
 
       const join = () => {
         setIsMember(true);
-        // JOIN THIS LOOP
+        console.log(loopId);
     };
 
     const toggleNotifications = () => {
         setNotifications((prevNotifications) => !prevNotifications);
         //TURN ON OR OFF NOTIFICATIONS FOR THIS LOOP
       };
+
+
 
 
       return (
@@ -71,9 +101,9 @@ const LoopsPage = () => {
             {isMember && (
             <View style={{ flexDirection: "row"}}>
 
-            <TouchableOpacity style={{padding:10,marginTop:30}} onPress={goToInfo}>
+            {/*<TouchableOpacity style={{padding:10,marginTop:30}} onPress={goToInfo}>
             <Icon name="information-circle-outline" size={30} color="#ffffff"/>
-            </TouchableOpacity>
+            </TouchableOpacity>*/}
 
             <TouchableOpacity onPress={toggleNotifications} style={{ padding: 10, marginTop: 30 }}>
             {notifications ? (
@@ -89,9 +119,9 @@ const LoopsPage = () => {
 
         </View>
          
-          <Image style={{height:150, width:150, alignSelf:'center', borderRadius:200}}source={{uri: exampleLoopData.pfp}}/>
-          <Text style={{color:"white", fontSize:30,marginTop:20, alignSelf:"center"}}>{exampleLoopData.displayName}</Text>
-          <Text style={{color:"white", fontSize:20, alignSelf:"center",marginTop:10, marginBottom:30}}>{exampleLoopData.description}</Text>
+          <Image style={{height:150, width:150, alignSelf:'center', borderRadius:200}}source={{uri: loopData.profile_picture}}/>
+          <Text style={{color:"white", fontSize:30,marginTop:20, alignSelf:"center"}}>{loopData.name}</Text>
+          <Text style={{color:"white", fontSize:20, alignSelf:"center",marginTop:10, marginBottom:30}}>{loopData.description}</Text>
 
           {!isMember && (
                 <TouchableOpacity
@@ -101,51 +131,96 @@ const LoopsPage = () => {
                 </TouchableOpacity>
             )}
 
-          <View style={{ backgroundColor: 'rgb(50,50,50)', alignSelf: "center", marginTop: 20, width: "85%", borderRadius: 20, marginVertical: 0 }}>
 
-{/* Conditionally render announcements */}
-{isMember && (
+
+            {isMember && (
+                <View>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 35, paddingBottom: 10, borderBottomWidth: 1, borderColor: "white" }}>
+
+            <TouchableOpacity onPress={() => setActiveButton("news")}>
+              <Text style={{ color: activeButton === "news" ? "rgb(247, 212, 114)" : "white", paddingHorizontal: 20 }}>News</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => setActiveButton("chat")}>
+              <Text style={{ color: activeButton === "chat" ? "rgb(247, 212, 114)" : "white", paddingHorizontal: 20, alignSelf: "center" }}>Chat</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => setActiveButton("about")}>
+              <Text style={{ color: activeButton === "about" ? "rgb(247, 212, 114)" : "white", paddingHorizontal: 20 }}>About</Text>
+            </TouchableOpacity>
+
+          </View>
+          {activeButton === "news" && (
+            <TouchableOpacity
+                onPress={async () => navigation.navigate("LoopAnnouncements", { username: "Announcements", loopId: loopId})}>
+                <View style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'transparent', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 0, zIndex: 0, }} >
+                 <Text style={{ color: 'white', fontSize: 20, textDecorationLine: "underline" }}>Announcements</Text>   
+                </View>
+                
+            
+
+          <View style={{ backgroundColor: 'rgb(50,50,50)', alignSelf: "center", marginTop: -5, width: "85%", borderRadius: 20, marginBottom: 10 }}>
+
     <View>
 
-    <TouchableOpacity
-        onPress={() => navigation.navigate("LoopAnnouncements", { username: "Chat" })}
-        style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'rgb(50,50,50)', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 40, zIndex: 0, }}>
-        <Text style={{ color: 'white', fontSize: 20, textDecorationLine: "underline" }}>Announcements</Text>
-    </TouchableOpacity>
 
-    <View style={{ paddingHorizontal: 25, marginBottom: 40 }}>
+    <View style={{ paddingHorizontal: 25, marginBottom:30,marginTop:20 }}>
+        <Text style={{ color: "white" }}>{exampleLoopData.recentAnnouncement}</Text>
         <Text style={{ color: "white" }}>{exampleLoopData.recentAnnouncementUser}</Text>
         <Text style={{ color: "white" }}>{exampleLoopData.recentAnnouncement}</Text>
     </View>
     </View>
-)}
 
 </View>
+</TouchableOpacity>
 
- <View style={{ backgroundColor: 'rgb(50,50,50)', alignSelf: "center", marginTop: 20, width: "85%", borderRadius: 20, marginVertical: 0 }}>
-{isMember && (
+)}
+
+{activeButton === "chat" && (
+<TouchableOpacity
+        onPress={() => navigation.navigate("LoopChat", { username: "Chat", loopId: loopId })}>
+        <View style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'transparent', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 40, zIndex: 0, }}>
+            <Text style={{ color: 'white', fontSize: 20, textDecorationLine: "underline" }}>Chat</Text>
+        </View>
+        
+    
+
+ <View style={{ backgroundColor: 'rgb(50,50,50)', alignSelf: "center", marginTop: -5, width: "85%", borderRadius: 20, marginVertical: 0 }}>
+
     <View>
 
-    <TouchableOpacity
-        onPress={() => navigation.navigate("LoopChat", { username: "Announcements" })}
-        style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'rgb(50,50,50)', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 40, zIndex: 0, }}>
-        <Text style={{ color: 'white', fontSize: 20, textDecorationLine: "underline" }}>Chat</Text>
-    </TouchableOpacity>
 
-    <View style={{ paddingHorizontal: 25, marginBottom: 40 }}>
+    <View style={{ paddingHorizontal: 25, marginBottom:30,marginTop:20 }}>
+    <Text style={{ color: "white" }}>{exampleLoopData.recentChatUser}</Text>
         <Text style={{ color: "white" }}>{exampleLoopData.recentChatUser}</Text>
         <Text style={{ color: "white" }}>{exampleLoopData.recentChat}</Text>
     </View>
     </View>
+
+</View>
+</TouchableOpacity>
 )}
+{activeButton === "about" && (
+            <View style ={{ alignContent:"center", marginVertical:20, flexDirection:"column"}}>
+            <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Owner: {exampleLoopData.owner}</Text>
+              <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Rules: </Text>
+              <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>loopData.rules</Text>
+              <TouchableOpacity style={{}} onPress={() => goToInfo(loopData)}>
+                <Text style={{color: "white", alignSelf: "center", fontSize: 25, textDecorationLine: "underline", marginTop: 150}}>More Info</Text>
+                </TouchableOpacity>
+            </View>
+          )}
 </View>
 
+)}
 
 </View>
 );
 }
 
 export default LoopsPage;
+
+
 
 /* 
             <ScrollView style={{marginTop:10, alignSelf:"center",alignContent:"center",maxHeight:300,borderBottomWidth:0,borderTopWidth:0,borderColor:'white', minWidth:"100%",}}>

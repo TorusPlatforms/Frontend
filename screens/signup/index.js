@@ -3,6 +3,7 @@ import { View, Text, Dimensions, Pressable, TextInput, KeyboardAvoidingView } fr
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getAuth, createUserWithEmailAndPassword, deleteUser } from "firebase/auth"
+import { registerUserBackend } from "../../components/handlers";
 import styles from "./styles";
 
 export default function SignUpScreen() {
@@ -20,27 +21,7 @@ export default function SignUpScreen() {
     //must check that pass and confirm pass are equal before sending
     //check that username doesnt exist
 
-    async function registerUserBackend(username, uid, email) {
-        const url = 'https://backend-26ufgpn3sq-uc.a.run.app/api/user/register';
-    
-        const data = {
-            username: username,
-            token: uid,
-            college_email: email
-        };
-        
-        console.log(JSON.stringify(data))
-        const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-        });
-    
-        const responseData = await response.json();
-        console.log('Response:', responseData);
-      }
+ 
       
     async function signUp() {
         const auth = getAuth()
@@ -53,10 +34,11 @@ export default function SignUpScreen() {
             console.log(user.user.uid)
 
             try {
-                await registerUserBackend(username, user.user.uid, user.user.email)
+                await registerUserBackend(username, user.user.email, displayName)
                 console.log("Successfully created user in Backend");
                 navigation.navigate("Home");
             } catch (error) {
+                console.error(error)
                 alert("Backend: Username in use")
                 deleteUser(auth.currentUser)
                 console.log('DEleted user')

@@ -9,7 +9,7 @@ export default function DirectMessage({ route }) {
   const [messages, setMessages] = useState(null)
 
   useEffect(() => {
-    fetchDM()
+    fetchDM();
     // setMessages([
     //   {
     //     _id: 1,
@@ -25,11 +25,14 @@ export default function DirectMessage({ route }) {
   }, [])
 
   async function fetchDM() {
-    console.log(route.params.username)
-    const dm = await getDM(route.params.username)
-    setMessages(dm.messages)
+    console.log(route.params.username);
+    const dm = await getDM(route.params.username);
+    console.log("FETCH DM DM: ")
+    console.log(dm);
+    console.log("dm messsages" + dm[0].messages);
+    setMessages(dm[0].messages);
   }
-
+ 
 
   const onSend = useCallback(async (messages = []) => {
     console.log("MESSAGSE", messages)
