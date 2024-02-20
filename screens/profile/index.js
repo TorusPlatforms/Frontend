@@ -50,15 +50,24 @@ export default function Profile() {
       }
   
 
-    async function getLoops() {
+    async function fetchLoops() {
 
         const user = await getUser();
         const username = await user.username;
 
         const loopData = getRecentLoops(await username, 6);
-        console.log(loopData);
+
         const exampleLoopsData = {name: "Dorm", pfp: "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png"}
-        return new Array(6).fill(loopData);
+        const loops = Array(6).fill(loopData);
+        
+        for (let i = 0; i < loops.length; i++) {
+            if (loops[i].profile_picture == null) {
+                loops[i].profile_picture = "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png";
+            }
+            console.log("fake loop" + loops[i])
+        }
+        setLoops(loops);
+        // return new Array(6).fill(loopData);
     } 
     
 
@@ -98,6 +107,10 @@ export default function Profile() {
     const lineStyles = [{top: 50, right: y, transform: [{rotate: "30deg"}]},  {top: 50, left: y, transform: [{rotate: "-30deg"}]},  {left: 85, transform: [{rotate: "90deg"}]},  {bottom: 50, left: y, transform: [{rotate: "30deg"}]}, {bottom: 50, right: y, transform: [{rotate: "-30deg"}]},   {right: 85, transform: [{rotate: "90deg"}]}]
 
     function renderLoops() {
+        console.log("LOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERE");
+        for (let i = 0; i < loops.length; i++) {
+            console.log(loops[i]);
+        }
         return loops.map((item, index) => {
         
           return (
@@ -154,9 +167,9 @@ export default function Profile() {
 
     useEffect(() => {
         setLoading(true)
-        console.log(getLoops());
-        setLoops(getLoops());
-        fetchUser()
+        // console.log(getLoops());
+        fetchLoops();
+        fetchUser();
       }, []);
     
 

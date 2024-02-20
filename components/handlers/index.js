@@ -635,7 +635,7 @@ export async function getUserPings(username) {
     }
 
     const responseData = await response.json();
-    console.log('User Pings:', responseData);
+    // console.log('User Pings:', responseData);
     return responseData
 
   } catch(error) {
