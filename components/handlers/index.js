@@ -694,6 +694,90 @@ export async function searchUsers(query) {
   }
 }
 
+
+export async function follow(username) {
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/followings/follow/${username}`;
+    const token = await getToken()
+    console.log(serverUrl)
+  
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+      })
+  
+      if (!response.ok) {
+        throw new Error(`Error following! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log("Following: ", responseData);
+      return responseData
+  
+    } catch(error) {
+      console.error("Error following", error.message)
+    }
+  }
+
+
+  export async function unfollow(username) {
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/followings/unfollow/${username}`;
+    const token = await getToken()
+    console.log(serverUrl)
+  
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+      })
+  
+      if (!response.ok) {
+        throw new Error(`Error unfollowing! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log("Following: ", responseData);
+      return responseData
+  
+    } catch(error) {
+      console.error("Error unfollowing", error.message)
+    }
+  }
+
+
+  export async function followCheck(username) {
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/followings/isFollowing/${username}`;
+    const token = await getToken()
+    console.log(serverUrl)
+  
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+      })
+  
+      if (!response.ok) {
+        throw new Error(`Error followcheck status! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      console.log("is following: ", responseData);
+      return responseData
+  
+    } catch(error) {
+      console.error("Error followcheck", error.message)
+    }
+  }
+=======
 export async function getAnnouncements(loopId) {
   
   const token = await getToken()
