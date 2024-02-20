@@ -5,7 +5,7 @@ import styles from "./styles";
 import { useNavigation, useFocusEffect  } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
 
-import { getLoopInfo, getUser, getLoopOwner, getMemberStatus,joinLoop,leaveLoop, getRecentMsgs } from "../../components/handlers";
+import { getLoopInfo, getUser, getLoopOwner, getMemberStatus,joinLoop, leaveLoop, getRecentMsgs } from "../../components/handlers";
 
 
 const exampleLoopData = {
@@ -62,7 +62,7 @@ const LoopsPage = ({route}) => {
           setOwnerName(fetchedLoopOwner.username);
           setLoopData(fetchedLoopsString);
           setIsMember(membership)
-          console.log(loopData);
+        
         } catch (error) {
           console.error("Error fetching loop:", error);
         }
@@ -172,8 +172,8 @@ const LoopsPage = ({route}) => {
 
 
     <View style={{ paddingHorizontal: 25, marginBottom:30,marginTop:20 }}>
-        <Text style={{ color: "white" }}>{loopData.recentAnnouncement.user}</Text>
-        <Text style={{ color: "white" }}>{loopData.recentAnnouncement.text}</Text>
+        <Text style={{ color: "white", fontWeight: 'bold'}}>{loopData.recentAnnouncementUser}</Text>
+        <Text style={{ color: "white" }}>{loopData.recentAnnouncement}</Text>
     </View>
     </View>
 
@@ -197,8 +197,8 @@ const LoopsPage = ({route}) => {
 
 
     <View style={{ paddingHorizontal: 25, marginBottom:30,marginTop:20 }}>
-        <Text style={{ color: "white" }}>{loopData.recentChat.user}</Text>
-        <Text style={{ color: "white" }}>{loopData.recentChat.text}</Text>
+        <Text style={{ color: "white", fontWeight: 'bold'}}>{loopData.recentChatUser}</Text>
+        <Text style={{ color: "white" }}>{loopData.recentChat}</Text>
     </View>
     </View>
 
