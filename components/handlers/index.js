@@ -635,7 +635,7 @@ export async function getUserPings(username) {
     }
 
     const responseData = await response.json();
-    console.log('User Pings:', responseData);
+    // console.log('User Pings:', responseData);
     return responseData
 
   } catch(error) {
@@ -1067,4 +1067,35 @@ export async function getRecentMsgs(loopId) {
     console.error("Error getting msgs", error.message);
   }
 }
+
+
+
+export async function getRecentLoops(userId, n) {
+  
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/joined/${userId}/${n}`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error getting msgs! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('recent ' + n + ' loops:', responseData);
+    return responseData;
+
+  } catch (error) {
+    console.error("Error getting loops", error.message);
+  }
+}
+
 

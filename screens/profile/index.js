@@ -5,7 +5,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 
-import { getUser, getUserPings, handleShare, handleLike, postComment } from "../../components/handlers";
+import { getUser, getUserPings, handleShare, handleLike, postComment, getRecentLoops } from "../../components/handlers";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
@@ -34,15 +34,14 @@ export default function Profile() {
       }, []);
 
     async function fetchUser() {
-        const user = await getUser()
+        const user = await getUser();
         setUser(user)
 
         const pings = await getUserPings(user.username)
         setPings(pings)
 
         setLoading(false)
-    }
-
+    }   
   
       function handleReply(data) {
         ref_input.current.focus()
@@ -51,18 +50,31 @@ export default function Profile() {
       }
   
 
-    function getLoops() {
+    async function fetchLoops() {
+
+        const user = await getUser();
+        const username = await user.username;
+
+        const loopData = getRecentLoops(await username, 6);
+
         const exampleLoopsData = {name: "Dorm", pfp: "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png"}
-        return new Array(6).fill(exampleLoopsData)
-    }
+        const loops = Array(6).fill(loopData);
+        
+        for (let i = 0; i < loops.length; i++) {
+            if (loops[i].profile_picture == null) {
+                loops[i].profile_picture = "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png";
+            }
+            console.log("fake loop" + loops[i])
+        }
+        setLoops(loops);
+        // return new Array(6).fill(loopData);
+    } 
     
 
     async function copyUsernameToClipboard() {
         await Clipboard.setStringAsync(user.username);
       };
 
-    
-    
     //ANIMATION 
     const symbolSize = 50;
     const radius = 125 
@@ -95,6 +107,10 @@ export default function Profile() {
     const lineStyles = [{top: 50, right: y, transform: [{rotate: "30deg"}]},  {top: 50, left: y, transform: [{rotate: "-30deg"}]},  {left: 85, transform: [{rotate: "90deg"}]},  {bottom: 50, left: y, transform: [{rotate: "30deg"}]}, {bottom: 50, right: y, transform: [{rotate: "-30deg"}]},   {right: 85, transform: [{rotate: "90deg"}]}]
 
     function renderLoops() {
+        console.log("LOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERE");
+        for (let i = 0; i < loops.length; i++) {
+            console.log(loops[i]);
+        }
         return loops.map((item, index) => {
         
           return (
@@ -106,7 +122,7 @@ export default function Profile() {
                             borderRadius: symbolSize / 2,
                             zIndex: 1
                       }}
-                      source={{ uri: 'https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png' }} />
+                      source={{ url: item.profile_picture }} />
 
                   {renderNotification()}
 
@@ -151,8 +167,9 @@ export default function Profile() {
 
     useEffect(() => {
         setLoading(true)
-        setLoops(getLoops())
-        fetchUser()
+        // console.log(getLoops());
+        fetchLoops();
+        fetchUser();
       }, []);
     
 
