@@ -37,8 +37,7 @@ const ChatButton = ({ name, navigation }) => (
       style={{alignSelf: 'center', marginVertical: 10, backgroundColor: 'rgb(50,50,50)', paddingVertical: 15,paddingHorizontal: 50, borderRadius: 40,zIndex:0}}>
       <Text style={{ color: 'white', fontSize: 20 }}>{name}</Text>
     </TouchableOpacity>
-  );
-
+);
 
   
 
@@ -63,6 +62,7 @@ const LoopsPage = ({route}) => {
           setOwnerName(fetchedLoopOwner.username);
           setLoopData(fetchedLoopsString);
           setIsMember(membership)
+          console.log(loopData);
         } catch (error) {
           console.error("Error fetching loop:", error);
         }
@@ -97,9 +97,6 @@ const LoopsPage = ({route}) => {
         setNotifications((prevNotifications) => !prevNotifications);
         //TURN ON OR OFF NOTIFICATIONS FOR THIS LOOP
       };
-
-
-
 
       return (
         <View style={{  paddingTop: 20, backgroundColor: "rgb(22, 23, 24)",height:"100%" }}>
@@ -175,9 +172,8 @@ const LoopsPage = ({route}) => {
 
 
     <View style={{ paddingHorizontal: 25, marginBottom:30,marginTop:20 }}>
-        <Text style={{ color: "white" }}>{exampleLoopData.recentAnnouncement}</Text>
-        <Text style={{ color: "white" }}>{exampleLoopData.recentAnnouncementUser}</Text>
-        <Text style={{ color: "white" }}>{exampleLoopData.recentAnnouncement}</Text>
+        <Text style={{ color: "white" }}>{loopData.recentAnnouncement.user}</Text>
+        <Text style={{ color: "white" }}>{loopData.recentAnnouncement.text}</Text>
     </View>
     </View>
 
@@ -201,9 +197,8 @@ const LoopsPage = ({route}) => {
 
 
     <View style={{ paddingHorizontal: 25, marginBottom:30,marginTop:20 }}>
-    <Text style={{ color: "white" }}>{exampleLoopData.recentChatUser}</Text>
-        <Text style={{ color: "white" }}>{exampleLoopData.recentChatUser}</Text>
-        <Text style={{ color: "white" }}>{exampleLoopData.recentChat}</Text>
+        <Text style={{ color: "white" }}>{loopData.recentChat.user}</Text>
+        <Text style={{ color: "white" }}>{loopData.recentChat.text}</Text>
     </View>
     </View>
 
