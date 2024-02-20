@@ -777,7 +777,7 @@ export async function follow(username) {
       console.error("Error followcheck", error.message)
     }
   }
-=======
+  
 export async function getAnnouncements(loopId) {
   
   const token = await getToken()
