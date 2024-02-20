@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback} from 'react'
-import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable, RefreshControl, ActivityIndicator, ScrollView } from 'react-native'
+import { Text, View, SafeAreaView, Image, Animated, TouchableOpacity, FlatList, Pressable, RefreshControl, ActivityIndicator, ScrollView } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
@@ -109,31 +109,28 @@ export default function Profile() {
     function renderLoops() {
         console.log("RENDERING LOOPS\n\n\n");
         console.log("LOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERE");
-        for (let i = 0; i < loops.length; i++) {
-            console.log(loops[i]);
-        }
-        return loops.map((item, index) => {
-        
-          return (
-            <View key={index} style={ [iconStyles[index], {justifyContent: "center", alignItems: "center", position: "absolute"}] }>
-                  <Image
-                      style={{
-                            width: symbolSize,
-                            height: symbolSize,
-                            borderRadius: symbolSize / 2,
-                            zIndex: 1,
-                            borderColor: "white",
-                            borderWidth: 1
-                      }}
-                      source={{ url: item.profile_picture }} />
-
-                  {renderNotification()}
-
-                  <Animated.View style={[lineStyles[index], { backgroundColor: "gray", width: 2, height: x, position: "absolute"}]} />
-
-              </View>
-          );
-        });
+      
+        return loops.map((item, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[iconStyles[index], { justifyContent: "center", alignItems: "center", position: "absolute" }]}
+            onPress={async () => navigation.navigate('Loop', { loopId: item.loop_id })}
+          >
+            <Image
+              style={{
+                width: symbolSize,
+                height: symbolSize,
+                borderRadius: symbolSize / 2,
+                zIndex: 1,
+                borderColor: "white",
+                borderWidth: 1
+              }}
+              source={{ uri: item.profile_picture }} // Note: use 'uri' instead of 'url'
+            />
+            {renderNotification()}
+            <Animated.View style={[lineStyles[index], { backgroundColor: "gray", width: 2, height: x, position: "absolute" }]} />
+          </TouchableOpacity>
+        ));
       }
      
     function renderPings() {
