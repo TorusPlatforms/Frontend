@@ -29,7 +29,7 @@ export const LoopsComponent = ({ loops, searchBarPlaceholder, paddingTop, onRefr
   const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
   const [scrollY] = useState(new Animated.Value(0));
   const [refreshing, setRefreshing] = useState(false);
-  const navigation = useNavigation(); // Move this line inside the component
+  const navigation = useNavigation(); 
 
   const headerHeight = scrollY.interpolate({
     inputRange: [0, 70],

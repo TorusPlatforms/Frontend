@@ -130,7 +130,7 @@ const LoopsPage = ({route}) => {
           <Text style={{color:"white", fontSize:30,marginTop:20, alignSelf:"center"}}>{loopData.name}</Text>
           <Text style={{color:"white", fontSize:20, alignSelf:"center",marginTop:10, marginBottom:30}}>{loopData.description}</Text>
 
-          {!isMember && (
+          {loopData && loopData.length != [] && !isMember && (
                 <TouchableOpacity
                     style={{ backgroundColor: "rgb(247, 212, 114)", borderRadius: 40, borderWidth: 1,borderColor: "black", paddingVertical: 10, paddingHorizontal: 20,marginTop: 20,width: 150,alignContent: "center",alignSelf: "center", height: 60}}
                     onPress={join}>
