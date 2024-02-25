@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, TouchableOpacity, Image, Text, TextInput, ScrollView } from "react-native";
+import { View, TouchableOpacity, Image, Text, TextInput, ScrollView, SafeAreaView } from "react-native";
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
 import { useNavigation, useFocusEffect  } from "@react-navigation/native";
@@ -99,9 +99,9 @@ const LoopsPage = ({route}) => {
       };
 
       return (
-        <View style={{  paddingTop: 20, backgroundColor: "rgb(22, 23, 24)",height:"100%" }}>
+        <SafeAreaView style={{ backgroundColor: "rgb(22, 23, 24)",height:"100%" }}>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <TouchableOpacity onPress={exitLoop} style={{ padding: 10, marginTop: 30 }}>
+            <TouchableOpacity onPress={exitLoop} style={{ padding: 10, marginTop: 0 }}>
                 <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Back</Text>
             </TouchableOpacity>
 
@@ -112,7 +112,7 @@ const LoopsPage = ({route}) => {
             <Icon name="information-circle-outline" size={30} color="#ffffff"/>
             </TouchableOpacity>*/}
 
-            <TouchableOpacity onPress={toggleNotifications} style={{ padding: 10, marginTop: 30 }}>
+            <TouchableOpacity onPress={toggleNotifications} style={{ padding: 10, marginTop: 0 }}>
             {notifications ? (
                 <Icon name="notifications-outline" size={30} color="#ffffff" />
             ) : (
@@ -219,7 +219,7 @@ const LoopsPage = ({route}) => {
 
 )}
 
-</View>
+</SafeAreaView>
 );
 }
 

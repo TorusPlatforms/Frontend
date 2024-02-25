@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, TouchableOpacity, Image, Text, TextInput, ScrollView, Modal, TouchableWithoutFeedback, Alert } from "react-native";
+import { View, TouchableOpacity, Image, Text, TextInput, ScrollView, Modal, TouchableWithoutFeedback, Alert, SafeAreaView } from "react-native";
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
 import { useNavigation } from "@react-navigation/native";
@@ -235,16 +235,16 @@ const LoopInfo = ({route}) => {
 
       
       return (
-        <View style={{ paddingTop: 20, backgroundColor: "rgb(22, 23, 24)", height: "100%" }}>
+        <SafeAreaView style={{ paddingTop: 20, backgroundColor: "rgb(22, 23, 24)", height: "100%" }}>
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
 
-          <TouchableOpacity onPress={goToLoop} style={{ padding: 10, marginTop: 30 }}>
+          <TouchableOpacity onPress={goToLoop} style={{ padding: 10, marginTop: 0 }}>
                 <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Back</Text>
             </TouchableOpacity>
 
 
             {isLoopOwner && (
-            <TouchableOpacity onPress={toggleEditMode} style={{ padding: 10, marginTop: 30 }}>
+            <TouchableOpacity onPress={toggleEditMode} style={{ padding: 10, marginTop: 0 }}>
             <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>
                 {isEditMode ? "Save" : "Edit"}
             </Text>
@@ -252,7 +252,7 @@ const LoopInfo = ({route}) => {
             )}
 
 
-            <TouchableOpacity onPress={isEditMode ? deleteLoop : leave} style={{ padding: 10, marginTop: 30 }}>
+            <TouchableOpacity onPress={isEditMode ? deleteLoop : leave} style={{ padding: 10, marginTop: 0 }}>
             <Text style={{ fontSize: 16, color: "red", paddingLeft: 10 }}>
                 {isEditMode ? "Delete" : "Leave"}
             </Text>
@@ -312,7 +312,7 @@ const LoopInfo = ({route}) => {
             onChangeText={(text) => handleTextChange("name", text)}
             />
         ) : (
-            <Text style={{ color: "white", fontSize: 25, alignSelf: "center",marginTop:20 }}>
+            <Text style={{ color: "white", fontSize: 25,fontWeight: 700, alignSelf: "center",marginTop:20 }}>
             {loopData.name}
             </Text>
         )}
@@ -329,7 +329,7 @@ const LoopInfo = ({route}) => {
             onChangeText={(text) => handleTextChange("description", text)}
             />
         ) : (
-            <Text style={{ color: "white", fontSize: 20, alignSelf: "center" }}>
+            <Text style={{ color: "white", fontSize: 20,fontWeight:500, alignSelf: "center" }}>
             {loopData.description}
             </Text>
         )}
@@ -346,15 +346,15 @@ const LoopInfo = ({route}) => {
       onChangeText={(text) => handleTextChange("rules", text)}
     />
   ) : (
-    <Text style={{ color: "white", fontSize: 20, alignSelf: "center",marginVertical:20 }}>
+    <Text style={{ color: "white", fontSize: 20,fontWeight:500, alignSelf: "center",marginVertical:20 }}>
       {loopData.rules}
     </Text>
   )}
 </View>
 </View>
 
-        <Text style={{color:"white", fontSize:25, alignSelf:"center"}}>Chats:{exampleLoopData.chatCount}</Text>
-        <Text style={{color:"white", fontSize:25, alignSelf:"center",marginTop:70, marginBottom:20}}>Users:</Text>
+        <Text style={{color:"white", fontSize:25, alignSelf:"center", marginTop:50, marginBottom:0}}>Chats: {exampleLoopData.chatCount}</Text>
+        <Text style={{color:"white", fontSize:25, alignSelf:"center",marginTop:20, marginBottom:20}}>Users:</Text>
         
         <ScrollView style={{}}>
 
@@ -410,7 +410,7 @@ const LoopInfo = ({route}) => {
 
 
 
-        </View>
+        </SafeAreaView>
       );
 }
 
