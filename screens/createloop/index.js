@@ -273,7 +273,7 @@ const CreateLoop = () => {
           </View> */}
 
           <TouchableOpacity
-          style={{ backgroundColor: "rgb(247, 212, 114)", borderRadius: 40, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop:70,width:150,alignContent:"center",alignSelf:"center",height:60 }}
+          style={{ backgroundColor: "rgb(54, 163, 107)", borderRadius: 40, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop:70,width:150,alignContent:"center",alignSelf:"center",height:60 }}
           onPress={handleCreateLoop}>
           <Text style={{ color: "black", textAlign: "center",alignSelf:"center",marginTop:6,fontSize:20 }}>Create</Text>
         </TouchableOpacity>

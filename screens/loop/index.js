@@ -132,7 +132,7 @@ const LoopsPage = ({route}) => {
 
           {loopData && loopData.length != [] && !isMember && (
                 <TouchableOpacity
-                    style={{ backgroundColor: "rgb(247, 212, 114)", borderRadius: 40, borderWidth: 1,borderColor: "black", paddingVertical: 10, paddingHorizontal: 20,marginTop: 20,width: 150,alignContent: "center",alignSelf: "center", height: 60}}
+                    style={{ backgroundColor: "rgb(54, 163, 107)", borderRadius: 40, borderWidth: 1,borderColor: "black", paddingVertical: 10, paddingHorizontal: 20,marginTop: 20,width: 150,alignContent: "center",alignSelf: "center", height: 60}}
                     onPress={join}>
                     <Text style={{ color: "black", textAlign: "center", alignSelf: "center", marginTop: 6, fontSize: 20 }}>Join</Text>
                 </TouchableOpacity>
@@ -145,15 +145,15 @@ const LoopsPage = ({route}) => {
                 <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 35, paddingBottom: 10, borderBottomWidth: 1, borderColor: "white" }}>
 
             <TouchableOpacity onPress={() => setActiveButton("news")}>
-              <Text style={{ color: activeButton === "news" ? "rgb(247, 212, 114)" : "white", paddingHorizontal: 20 }}>News</Text>
+              <Text style={{ color: activeButton === "news" ? "rgb(54, 163, 107)" : "white", paddingHorizontal: 20 }}>News</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => setActiveButton("chat")}>
-              <Text style={{ color: activeButton === "chat" ? "rgb(247, 212, 114)" : "white", paddingHorizontal: 20, alignSelf: "center" }}>Chat</Text>
+              <Text style={{ color: activeButton === "chat" ? "rgb(54, 163, 107)" : "white", paddingHorizontal: 20, alignSelf: "center" }}>Chat</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => setActiveButton("about")}>
-              <Text style={{ color: activeButton === "about" ? "rgb(247, 212, 114)" : "white", paddingHorizontal: 20 }}>About</Text>
+              <Text style={{ color: activeButton === "about" ? "rgb(54, 163, 107)" : "white", paddingHorizontal: 20 }}>About</Text>
             </TouchableOpacity>
 
           </View>

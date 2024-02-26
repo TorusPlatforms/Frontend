@@ -50,7 +50,7 @@ export default function PrivacySafety() {
             width: 24,
             borderRadius: 12,
             borderWidth: messagePrivacy === option.value ? 2 : 1,
-            borderColor: messagePrivacy === option.value ? 'rgb(247, 212, 114)' : 'white',
+            borderColor: messagePrivacy === option.value ? 'rgb(54, 163, 107)' : 'white',
             alignItems: 'center',
             justifyContent: 'center',
           }}
@@ -61,7 +61,7 @@ export default function PrivacySafety() {
                 height: 12,
                 width: 12,
                 borderRadius: 6,
-                backgroundColor: 'rgb(247, 212, 114)',
+                backgroundColor: 'rgb(54, 163, 107)',
               }}
             />
           )}
@@ -85,7 +85,7 @@ export default function PrivacySafety() {
         <Text style={{ fontSize: 15, color: "white", textAlign: 'center', marginBottom: 10}}>Private Account:</Text>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Switch 
-              trackColor={{ false: '#767577', true: 'rgb(247, 212, 114)' }}
+              trackColor={{ false: '#767577', true: 'rgb(54, 163, 107)' }}
               thumbColor={privacyEnabled ? 'grey' : 'white'}
               ios_backgroundColor="#3e3e3e"
               onValueChange={togglePrivacy}

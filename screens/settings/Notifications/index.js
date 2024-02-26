@@ -41,7 +41,7 @@ return (
   <View style={{flexDirection:"row", justifyContent:"space-between", paddingHorizontal:40,marginTop:50}}>
   <Text style={{ fontSize: 20, color: "white", textAlign: 'center', }}>Ping Notifications:</Text>
     <Switch
-        trackColor={{ false: '#767577', true: 'rgb(247, 212, 114)' }}
+        trackColor={{ false: '#767577', true: 'rgb(54, 163, 107)' }}
         thumbColor={pingEnabled ? 'grey' : 'white'}
         ios_backgroundColor="#3e3e3e"
         onValueChange={togglePing}
@@ -52,7 +52,7 @@ return (
   <View style={{flexDirection:"row", justifyContent:"space-between", paddingHorizontal:40,marginTop:50}}>
   <Text style={{ fontSize: 20, color: "white", textAlign: 'center', }}>Loop Notifications:</Text>
     <Switch
-        trackColor={{ false: '#767577', true: 'rgb(247, 212, 114)' }}
+        trackColor={{ false: '#767577', true: 'rgb(54, 163, 107)' }}
         thumbColor={loopEnabled ? 'grey' : 'white'}
         ios_backgroundColor="#3e3e3e"
         onValueChange={toggleLoop}

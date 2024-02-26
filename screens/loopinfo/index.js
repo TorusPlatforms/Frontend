@@ -391,7 +391,7 @@ const LoopInfo = ({route}) => {
       <View style={{ backgroundColor: 'rgb(22, 23, 24)', padding: 20, borderRadius: 10, width: '100%', height: '25%',justifyContent:"space-between",borderTopWidth:5,borderColor:"grey" }}>
 
         <TouchableOpacity onPress={() => handleManageItemPress('Promote to moderator')}>
-          <Text style={{fontSize:30,alignSelf:"center", color:"rgb(247, 212, 114)", marginTop:15, }}>Promote to moderator</Text>
+          <Text style={{fontSize:30,alignSelf:"center", color:"rgb(54, 163, 107)", marginTop:15, }}>Promote to moderator</Text>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => handleManageItemPress('Kick member')}>
