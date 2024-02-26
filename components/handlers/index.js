@@ -1097,5 +1097,3 @@ export async function getRecentLoops(userId, n) {
     console.error("Error getting loops", error.message);
   }
 }
-
-

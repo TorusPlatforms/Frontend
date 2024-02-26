@@ -62,15 +62,15 @@ export const LoopsComponent = ({ loops, searchBarPlaceholder, paddingTop, onRefr
   return (
     <SafeAreaView style={[styles.container, { paddingTop: paddingTop }]}>
       <Animated.View style={{ height: headerHeight, opacity: headerOpacity }}>
-        <View style={{ padding: 10, flexDirection: 'row', flex: 1, justifyContent: "space-between", alignItems: "center" }}>
+        <View style={{  padding: 10, flexDirection: 'row', flex: 1, justifyContent: "space-between", alignItems: "center" }}>
           <View style={{ flex: 1 }}>
             <SearchBar
               placeholder={searchBarPlaceholder}
-              containerStyle={{ backgroundColor: "rgb(22, 23, 24)", borderTopWidth: 0, borderBottomWidth: 0, color: "rgb(22, 23, 24)" }}
+              containerStyle={{ backgroundColor: "rgb(22, 23, 24)", borderTopWidth: 0, borderBottomWidth: 0 }}
               onChangeText={setSearch}
               value={search}
             />
-          </View>
+          </View> 
 
           <View style={{ flex: 0.1 }}>
             <Pressable onPress={() => createLoop()}>
