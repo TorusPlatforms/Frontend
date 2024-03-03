@@ -43,7 +43,7 @@ const LoopInfo = ({route}) => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [isLoopOwner, setIsLoopOwner] = useState(false);
     const [loopMembers, setLoopMembers] = useState([])
-
+    const [loopOwner, setLoopOwner] = useState(route.params.ownerName);
     const [isEditMode, setIsEditMode] = useState(false);
     const [editedData, setEditedData] = useState({
         name: loopData.name, 
@@ -80,6 +80,10 @@ const LoopInfo = ({route}) => {
     await setIsEditMode(!isEditMode)
     await console.log(isEditMode)
   };
+
+  const cancelEdit = async () => {
+    setIsEditMode(false)
+  }
 
   const handleTextChange = (key, value) => {
     setEditedData((prevData) => ({
@@ -225,6 +229,8 @@ const LoopInfo = ({route}) => {
               const ownerResult = await isOwner(user.username, loopData.loop_id);
               await setIsLoopOwner(ownerResult.isOwner); 
               await console.log(isLoopOwner)
+              
+              
             } catch (error) {
               console.error('Error checking ownership:', error);
             }
@@ -238,9 +244,16 @@ const LoopInfo = ({route}) => {
         <SafeAreaView style={{ paddingTop: 20, backgroundColor: "rgb(22, 23, 24)", height: "100%" }}>
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
 
-          <TouchableOpacity onPress={goToLoop} style={{ padding: 10, marginTop: 0 }}>
+          {isEditMode ? (
+            <TouchableOpacity onPress={cancelEdit} style={{ padding: 10, marginTop: 0 }}>
+                <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Cancel</Text>
+            </TouchableOpacity>
+            ) : (
+            <TouchableOpacity onPress={goToLoop} style={{ padding: 10, marginTop: 0 }}>
                 <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Back</Text>
             </TouchableOpacity>
+            )}
+
 
 
             {isLoopOwner && (
@@ -273,6 +286,7 @@ const LoopInfo = ({route}) => {
                 marginTop: 20,
                 backgroundColor: "white",
                 borderRadius: 100,
+                borderWidth:0.4,borderColor:"grey"
             }}
             />
             {isEditMode && (
@@ -322,14 +336,14 @@ const LoopInfo = ({route}) => {
 
         {isEditMode ? (
             <TextInput
-            style={{ color: "white", fontSize: 20, alignSelf: "center", borderWidth: 1, borderColor: 'white' }}
+            style={{ color: "white", fontSize: 20, alignSelf: "center", borderWidth: 1, borderColor: 'white', fontWeight:400 }}
             placeholder="Enter Description"
             placeholderTextColor="gray"
             value={editedData.description}
             onChangeText={(text) => handleTextChange("description", text)}
             />
         ) : (
-            <Text style={{ color: "white", fontSize: 20,fontWeight:500, alignSelf: "center" }}>
+            <Text style={{ color: "white", fontSize: 20,fontWeight:400, alignSelf: "center" }}>
             {loopData.description}
             </Text>
         )}
@@ -338,23 +352,38 @@ const LoopInfo = ({route}) => {
   <View>
 
   {isEditMode ? (
-    <TextInput
-      style={{ color: "white", fontSize: 20, alignSelf: "center", borderWidth: 1, borderColor: 'white',marginVertical:20 }}
+    <View><Text style={{ color: "white", fontSize: 20,fontWeight:500, alignSelf: "center",marginTop:30 }}>
+      Rules:
+    </Text>
+     <TextInput
+      style={{ color: "white", fontSize: 20, alignSelf: "center", borderWidth: 1, borderColor: 'white',marginVertical:0 }}
       placeholder="Enter Rules"
       placeholderTextColor="gray"
       value={editedData.rules}
       onChangeText={(text) => handleTextChange("rules", text)}
-    />
+    />   
+    </View>
+    
   ) : (
-    <Text style={{ color: "white", fontSize: 20,fontWeight:500, alignSelf: "center",marginVertical:20 }}>
+    <View><Text style={{ color: "white", fontSize: 20,fontWeight:500, alignSelf: "center",marginTop:30 }}>
+      Rules:
+    </Text>
+    <Text style={{ color: "white", fontSize: 20,fontWeight:500, alignSelf: "center",marginVertical:0 }}>
       {loopData.rules}
     </Text>
+    </View>
   )}
 </View>
 </View>
-
-        <Text style={{color:"white", fontSize:25, alignSelf:"center", marginTop:50, marginBottom:0}}>Chats: {exampleLoopData.chatCount}</Text>
-        <Text style={{color:"white", fontSize:25, alignSelf:"center",marginTop:20, marginBottom:20}}>Users:</Text>
+        {!isEditMode && (
+            <View>
+              <Text style={{ color: "white", fontSize: 22, alignSelf: "center", marginTop: 50, marginBottom: 0 }}>Public</Text>
+        <Text style={{ color: "white", fontSize: 22, alignSelf: "center", marginTop: 0, marginBottom: 0 }}>Advisor: {loopOwner}</Text>
+        <Text style={{color:"white", fontSize:22, alignSelf:"center", marginTop:0, marginBottom:0}}>Chats: {exampleLoopData.chatCount}</Text>  
+            </View>
+        
+        )}
+        <Text style={{color:"white", fontSize:22, alignSelf:"center",marginTop:10, marginBottom:20}}>Users:</Text>
         
         <ScrollView style={{}}>
 

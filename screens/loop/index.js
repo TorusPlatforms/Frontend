@@ -5,7 +5,7 @@ import styles from "./styles";
 import { useNavigation, useFocusEffect  } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
 
-import { getLoopInfo, getUser, getLoopOwner, getMemberStatus,joinLoop, leaveLoop, getRecentMsgs } from "../../components/handlers";
+import { getLoopInfo, getUser, getLoopOwner, getMemberStatus,joinLoop, leaveLoop, getRecentMsgs, getLoopMembers } from "../../components/handlers";
 
 
 const exampleLoopData = {
@@ -46,7 +46,8 @@ const LoopsPage = ({route}) => {
     const navigation = useNavigation()
     const [notifications, setNotifications] = useState(exampleLoopData.notifications);
     const [isMember, setIsMember] = useState(exampleUserData.member);
-    const [activeButton, setActiveButton] = useState("news");
+    const [activeButton, setActiveButton] = useState("chat");
+    const [memberCount, setMemberCount] = useState();
     const [loopData, setLoopData] = useState([]);
     const [ownerName, setOwnerName] = useState([]);
 
@@ -62,6 +63,8 @@ const LoopsPage = ({route}) => {
           setOwnerName(fetchedLoopOwner.username);
           setLoopData(fetchedLoopsString);
           setIsMember(membership)
+          const members = await getLoopMembers(loopId);
+          await setMemberCount(members.length);
         
         } catch (error) {
           console.error("Error fetching loop:", error);
@@ -84,7 +87,7 @@ const LoopsPage = ({route}) => {
       };
 
       const goToInfo = (loopData) => {
-        navigation.navigate('LoopInfo', { loopData });
+        navigation.navigate('LoopInfo', { loopData, ownerName });
       };
 
       const join = () => {
@@ -125,10 +128,22 @@ const LoopsPage = ({route}) => {
 
 
         </View>
-         
-          <Image style={{height:150, width:150, alignSelf:'center', borderRadius:200}}source={{uri: loopData.profile_picture}}/>
-          <Text style={{color:"white", fontSize:30,marginTop:20, alignSelf:"center"}}>{loopData.name}</Text>
-          <Text style={{color:"white", fontSize:20, alignSelf:"center",marginTop:10, marginBottom:30}}>{loopData.description}</Text>
+            {loopData && memberCount != null && (
+            <View>
+                <Image
+                style={{ height: 150, width: 150, alignSelf: 'center', borderRadius: 200, borderWidth: 0.4, borderColor: "grey" }}
+                source={{ uri: loopData.profile_picture }}
+                />
+                <Text style={{ color: "white", fontSize: 30, marginTop: 20, alignSelf: "center", textAlign: "center", fontWeight:500 }}>{loopData.name}</Text>
+                <Text style={{ color: "white", fontSize: 20, alignSelf: "center", marginTop: 10, marginBottom: 0, fontWeight:400 }}>Advisor: {ownerName} </Text>
+
+                <Text style={{ color: "white", fontSize: 20, alignSelf: "center", marginTop: 0, marginBottom: 0, fontWeight:400 }}>
+                {memberCount} {memberCount === 1 ? "member" : "members"}
+                </Text>
+                <Text style={{ color: "white", fontSize: 20, alignSelf: "center", marginTop: 0, marginBottom: 30, fontWeight:400 }}>public</Text>
+
+            </View>
+            )}
 
           {loopData && loopData.length != [] && !isMember && (
                 <TouchableOpacity
@@ -137,19 +152,24 @@ const LoopsPage = ({route}) => {
                     <Text style={{ color: "black", textAlign: "center", alignSelf: "center", marginTop: 6, fontSize: 20 }}>Join</Text>
                 </TouchableOpacity>
             )}
+          
 
 
 
             {isMember && (
                 <View>
-                <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 35, paddingBottom: 10, borderBottomWidth: 1, borderColor: "white" }}>
-
-            <TouchableOpacity onPress={() => setActiveButton("news")}>
-              <Text style={{ color: activeButton === "news" ? "rgb(54, 163, 107)" : "white", paddingHorizontal: 20 }}>News</Text>
-            </TouchableOpacity>
+                <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 0,marginHorizontal:20, paddingBottom: 10, borderBottomWidth: 1, borderColor: "white" }}>
 
             <TouchableOpacity onPress={() => setActiveButton("chat")}>
-              <Text style={{ color: activeButton === "chat" ? "rgb(54, 163, 107)" : "white", paddingHorizontal: 20, alignSelf: "center" }}>Chat</Text>
+              <Text style={{ color: activeButton === "chat" ? "rgb(54, 163, 107)" : "white", paddingHorizontal: 20 }}>Chat</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => setActiveButton("pings")}>
+              <Text style={{ color: activeButton === "pings" ? "rgb(54, 163, 107)" : "white", paddingHorizontal: 20, alignSelf: "center" }}>Pings</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => setActiveButton("events")}>
+              <Text style={{ color: activeButton === "events" ? "rgb(54, 163, 107)" : "white", paddingHorizontal: 20 }}>Events</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => setActiveButton("about")}>
@@ -157,7 +177,8 @@ const LoopsPage = ({route}) => {
             </TouchableOpacity>
 
           </View>
-          {activeButton === "news" && (
+          <ScrollView style = {{height:"100%"}}>
+          {activeButton === "pings" && (
             <TouchableOpacity
                 onPress={async () => navigation.navigate("LoopAnnouncements", { username: "Announcements", loopId: loopId})}>
                 <View style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'transparent', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 0, zIndex: 0, }} >
@@ -181,6 +202,8 @@ const LoopsPage = ({route}) => {
 </TouchableOpacity>
 
 )}
+
+
 
 {activeButton === "chat" && (
 <TouchableOpacity
@@ -207,17 +230,19 @@ const LoopsPage = ({route}) => {
 )}
 {activeButton === "about" && (
             <View style ={{ alignContent:"center", marginVertical:20, flexDirection:"column"}}>
-            <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Owner: {ownerName}</Text>
-              <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>Rules: </Text>
-              <Text style = {{color:"white", alignSelf:"center",fontSize:25}}>{loopData.rules}</Text>
+            <Text style = {{color:"white", alignSelf:"center",fontSize:20, fontWeight:400}}>{loopData.description}</Text>
+              <Text style = {{color:"white", alignSelf:"center",fontSize:20, marginTop:10, fontWeight:500}}>Rules: </Text>
+              <Text style = {{color:"white", alignSelf:"center",fontSize:20}}>{loopData.rules}</Text>
               <TouchableOpacity style={{}} onPress={() => goToInfo(loopData)}>
                 <Text style={{color: "white", alignSelf: "center", fontSize: 25, textDecorationLine: "underline", marginTop: 150}}>More Info</Text>
                 </TouchableOpacity>
             </View>
           )}
+          </ScrollView>
 </View>
 
 )}
+
 
 </SafeAreaView>
 );
