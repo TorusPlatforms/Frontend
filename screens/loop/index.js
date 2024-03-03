@@ -185,18 +185,18 @@ const LoopsPage = ({route}) => {
 {activeButton === "chat" && (
 <TouchableOpacity
         onPress={() => navigation.navigate("LoopChat", { username: "Chat", loopId: loopId })}>
-        <View style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'transparent', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 40, zIndex: 0, }}>
-            <Text style={{ color: 'white', fontSize: 20, textDecorationLine: "underline" }}>Chat</Text>
+        <View style={{ alignSelf: 'left', marginTop: 10, backgroundColor: 'transparent', paddingVertical: 10, paddingHorizontal: 30, borderRadius: 40, zIndex: 0, }}>
+            <Text style={{ color: 'white', fontSize: 15 }}>Main Chat</Text>
         </View>
         
     
 
- <View style={{ backgroundColor: 'rgb(50,50,50)', alignSelf: "center", marginTop: -5, width: "85%", borderRadius: 20, marginVertical: 0 }}>
+ <View style={{ backgroundColor: 'rgb(50,50,50)', alignSelf: "center", marginTop: -5, width: "90%", borderRadius: 20, marginVertical: 0 }}>
 
     <View>
 
 
-    <View style={{ paddingHorizontal: 25, marginBottom:30,marginTop:20 }}>
+    <View style={{ paddingHorizontal: 15, marginBottom:30,marginTop:20 }}>
         <Text style={{ color: "white", fontWeight: 'bold'}}>{loopData.recentChatUser}</Text>
         <Text style={{ color: "white" }}>{loopData.recentChat}</Text>
     </View>
