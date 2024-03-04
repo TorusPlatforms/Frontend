@@ -53,7 +53,9 @@ export default function Events({ route }) {
           message: "This is the annual meeting of the people who hate grant. wow he really is a fat lazy piece of shit!",
           createdAt: 1709287180,
           pfp_url: "https://zerotoai.org/images/tanujpic.png",
-          attendees_url: ["https://zerotoai.org/images/stefanpic.png", "https://zerotoai.org/images/weaselpic.png", "https://zerotoai.org/images/justinpic.png"]
+          attendee_count: 20,
+          mutual_attendees: ["Stefan", "Justin"],
+          mutual_attendees_url: ["https://zerotoai.org/images/stefanpic.png", "https://zerotoai.org/images/weaselpic.png"]
         }
         
       const fetchedEvents = new Array(6).fill(exampleEvent)
@@ -96,8 +98,8 @@ export default function Events({ route }) {
               <Image style={{ width: 50, height: 50, borderRadius: 25 }} source={{ uri: data.pfp_url || data?.pfp_url }} />
               <View style={{marginVertical: 12, width: 1, height: "70%", backgroundColor: "gray"}} />
               <View style={{alignItems: 'center'}}>
-                <Image style={{ left: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.attendees_url[0] || data?.attendees_url[0] }} />
-                <Image style={{ right: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.attendees_url[1] || data?.attendees_url[1] }} />
+                <Image style={{ left: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_url[0] || data?.mutual_attendees_url[0] }} />
+                <Image style={{ right: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_url[1] || data?.mutual_attendees_url[1] }} />
               </View>
             </View>
 
@@ -119,7 +121,7 @@ export default function Events({ route }) {
                 <Image style={{borderBottomLeftRadius: 20, borderBottomRightRadius: 20, width: "100%", height: 150, resizeMode: "cover"}} source={{ uri: data.image_url || data?.image_url }} />
 
                 <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 10}}>
-                  <Text style={{color: "white", fontSize: 12}}> Stefan & 2 others are attending</Text>
+                  <Text style={{color: "white", fontSize: 12}}> {data.mutual_attendees.join(",")} & {data.attendee_count} are attending</Text>
                   <Pressable onPress={() => setIsJoined(!isJoined)} style={{borderRadius: 5, borderColor: "gray", borderWidth: 1, padding: 4, paddingHorizontal: 20, backgroundColor: isJoined ? "blue" : "rgb(22, 23, 24)"}}>
                     <Text style={{ color: "white" }}>{isJoined ? "Joined" : "Join"}</Text>
                   </Pressable>
