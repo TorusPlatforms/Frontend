@@ -1,11 +1,13 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, TouchableOpacity, Image, Text, TextInput, ScrollView, SafeAreaView } from "react-native";
+import { View, TouchableOpacity, Image, Text, TextInput, ScrollView, SafeAreaView, AnimatedFlatList } from "react-native";
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import styles from "./styles";
 import { useNavigation, useFocusEffect  } from "@react-navigation/native";
 import Icon from '@expo/vector-icons/Ionicons';
-
+import { LinearGradient } from 'expo-linear-gradient';
 import { getLoopInfo, getUser, getLoopOwner, getMemberStatus,joinLoop, leaveLoop, getRecentMsgs, getLoopMembers } from "../../components/handlers";
+import { Ping } from "../../components/pings";
+import { getPings, handleLike, handleShare, postComment } from "../../components/handlers";
 
 
 const exampleLoopData = {
@@ -23,6 +25,17 @@ const exampleLoopData = {
     owner:"@grant",
     users: ["DrumDogLover","TanujBeatMaster","GrantPawRhythms", "DogGrooveMaster","GrantAndTanujJams","RhythmHound","DrumBeatsWithTanuj","GrantCanineGrooves","TanujDogDrummer","BarkingBeatsGrant","DrummingTanujPaws","GrantAndDogRhythms","TanujDrumTails","PuppyGroovesGrant","BeatBuddyTanuj","WoofingRhythmsGrant","DrummingPawsTanuj","GrantGroovePup","TanujAndTheBeat","DoggyDrummingGrant","RhythmTanujTail","GrantPercussionPup","TanujDoggieBeats","PawsAndSnaresGrant","DrummingDogTanuj","GrantBeatsHowl","TanujRhythmBuddy","DogBeatHarmonyGrant","DrumPawsTanujGroove","GrantAndTanujRhythmic",]
 }
+
+const examplePingData = {
+    author:"tanujks",
+    content:"whats good guys",
+    pfp_url: "https://cdn.discordapp.com/attachments/1183631743740284938/1185415012685201508/IMG_3018.jpg?ex=65f50a42&is=65e29542&hm=79b1ac32172cc9e5d3cd90496c3068824914d1999c3ab5ced28ab2d3cd79e615&",
+    isLiked:true,
+    image_url:"https://i.imgur.com/Xy1Lqha.png",
+    numberof_likes:10,
+    numberof_comments:2,
+    postURL:"idk"
+    }
 
 const exampleUserData ={
 
@@ -50,6 +63,7 @@ const LoopsPage = ({route}) => {
     const [memberCount, setMemberCount] = useState();
     const [loopData, setLoopData] = useState([]);
     const [ownerName, setOwnerName] = useState([]);
+    const [pings, setPings] = useState("hi")
 
     const fetchLoopData = async () => {
         try {
@@ -65,6 +79,10 @@ const LoopsPage = ({route}) => {
           setIsMember(membership)
           const members = await getLoopMembers(loopId);
           await setMemberCount(members.length);
+  
+          const fetchedPings = await getPings(user);
+          await setPings(fetchedPings);
+          await console.log("PING PING PING PING", pings)
         
         } catch (error) {
           console.error("Error fetching loop:", error);
@@ -73,6 +91,20 @@ const LoopsPage = ({route}) => {
 
       useEffect(() => {
         fetchLoopData();
+      }, []);
+
+      async function fetchPings() {
+        const user = await getUser();
+        setUser(user)
+  
+        const fetchedPings = await getPings(user);
+        setPings(fetchedPings);
+        await console.log("PING PING PING PING", pings)
+    
+      }
+
+      const updateLike = useCallback(() => {
+        fetchPings()
       }, []);
 
       useFocusEffect(
@@ -146,11 +178,13 @@ const LoopsPage = ({route}) => {
             )}
 
           {loopData && loopData.length != [] && !isMember && (
+            <LinearGradient colors={['#50C878', '#228B22', '#355E3B']} style={{overflow:"hidden", borderRadius: 40, borderWidth: 1,borderColor: "black", paddingHorizontal: 20,marginTop: 20,width: 150,alignContent: "center",alignSelf: "center", height: 60}}>
                 <TouchableOpacity
-                    style={{ backgroundColor: "rgb(54, 163, 107)", borderRadius: 40, borderWidth: 1,borderColor: "black", paddingVertical: 10, paddingHorizontal: 20,marginTop: 20,width: 150,alignContent: "center",alignSelf: "center", height: 60}}
+                    style={{  borderRadius: 40, borderWidth: 1,borderColor: "black", paddingVertical: 10, paddingHorizontal: 20,marginTop: 0,width: 150,alignContent: "center",alignSelf: "center", height: 60}}
                     onPress={join}>
                     <Text style={{ color: "black", textAlign: "center", alignSelf: "center", marginTop: 6, fontSize: 20 }}>Join</Text>
                 </TouchableOpacity>
+            </LinearGradient>
             )}
           
 
@@ -178,28 +212,24 @@ const LoopsPage = ({route}) => {
 
           </View>
           <ScrollView style = {{height:"100%"}}>
+
+
+
           {activeButton === "pings" && (
-            <TouchableOpacity
-                onPress={async () => navigation.navigate("LoopAnnouncements", { username: "Announcements", loopId: loopId})}>
-                <View style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'transparent', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 0, zIndex: 0, }} >
-                 <Text style={{ color: 'white', fontSize: 20, textDecorationLine: "underline" }}>Announcements</Text>   
+            <View style={{alignSelf:"center", alignContent:"center", marginLeft:0,marginBottom:500, height:"100%"}}>
+
+            {pings.map((ping, index) => (
+                <Ping 
+                        data={ping} 
+                        //setModalVisible={setModalVisible} 
+                        handleLike={() => handleLike(item, updateLike)} 
+                        handleComment={() => setCommentPing(item)} handleShare={handleShare}
+                        navigation={navigation}
+                />
+                ))}
+        
                 </View>
-                
-            
-
-          <View style={{ backgroundColor: 'rgb(50,50,50)', alignSelf: "center", marginTop: -5, width: "85%", borderRadius: 20, marginBottom: 10 }}>
-
-    <View>
-
-
-    <View style={{ paddingHorizontal: 25, marginBottom:30,marginTop:20 }}>
-        <Text style={{ color: "white", fontWeight: 'bold'}}>{loopData.recentAnnouncementUser}</Text>
-        <Text style={{ color: "white" }}>{loopData.recentAnnouncement}</Text>
-    </View>
-    </View>
-
-</View>
-</TouchableOpacity>
+                    
 
 )}
 
@@ -230,7 +260,7 @@ const LoopsPage = ({route}) => {
 )}
 {activeButton === "about" && (
             <View style ={{ alignContent:"center", marginVertical:20, flexDirection:"column"}}>
-            <Text style = {{color:"white", alignSelf:"center",fontSize:20, fontWeight:400}}>{loopData.description}</Text>
+            <Text style = {{color:"white", alignSelf:"center",fontSize:20, fontWeight:400}}>"{loopData.description}"</Text>
               <Text style = {{color:"white", alignSelf:"center",fontSize:20, marginTop:10, fontWeight:500}}>Rules: </Text>
               <Text style = {{color:"white", alignSelf:"center",fontSize:20}}>{loopData.rules}</Text>
               <TouchableOpacity style={{}} onPress={() => goToInfo(loopData)}>

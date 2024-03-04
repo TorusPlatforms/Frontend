@@ -344,7 +344,7 @@ const LoopInfo = ({route}) => {
             />
         ) : (
             <Text style={{ color: "white", fontSize: 20,fontWeight:400, alignSelf: "center" }}>
-            {loopData.description}
+            "{loopData.description}"
             </Text>
         )}
         </View>
