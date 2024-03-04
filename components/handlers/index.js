@@ -189,7 +189,7 @@ export async function uploadToCDN(image) {
   
 }
 
-export async function handleLike(post, updateLike) {
+export async function handleLike(post) {
   const token = await getToken()
 
   let endpoint;
@@ -219,9 +219,7 @@ export async function handleLike(post, updateLike) {
 
     const responseData = await response.json();
     console.log(`Post ${endpoint} successfully. Server response:`, responseData);
-
-    updateLike()
-
+    
   } catch (error) {
     console.error('Error liking post:', error.message);
   }

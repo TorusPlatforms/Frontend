@@ -30,7 +30,6 @@ export default function Feed() {
     const [commentPing, setCommentPing] = useState(null)
 
     const [refreshing, setRefreshing] = useState(false);
-    const scrollRef = useRef()
 
     const [user, setUser] = useState(null)
     const [pings, setPings] = useState(null)
@@ -56,12 +55,6 @@ export default function Feed() {
         { useNativeDriver: false }
       ) 
       }
-
-
- 
-    const updateLike = useCallback(() => {
-      fetchPings()
-    }, []);
 
     async function fetchPings() {
       const user = await getUser();
@@ -94,11 +87,6 @@ export default function Feed() {
     }, []);
 
 
-    function onContentSizeChange() {
-      scrollRef.current?.scrollToOffset({ offset: scrollY.__getValue(), animated: false });
-    };
-
-
     useEffect(() => {
       fetchPings();
     }, []); 
@@ -125,7 +113,7 @@ export default function Feed() {
                         activeColor='rgb(22, 23, 24)'
                         data={dropdownData}
                         placeholder='Torus'
-                        placeholderStyle={[styles.text, {fontWeight: "bold"}]}
+                        placeholderStyle={[styles.text, {fontWeight: "bold", fontSize: 24}]}
                         maxHeight={300}
                         labelField="label"
                         valueField="value"
@@ -153,20 +141,17 @@ export default function Feed() {
               <AnimatedFlatList
                     style={{paddingHorizontal: 20}}
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                    ref={scrollRef}
                     data={pings}
                     renderItem={({item}) => 
                       <Ping 
                         data={item} 
-                        setModalVisible={setModalVisible} 
-                        handleLike={() => handleLike(item, updateLike)} 
+                        setModalVisible={setModalVisible}  
                         handleComment={() => setCommentPing(item)} handleShare={handleShare}
                         navigation={navigation}
                       />
                     }
                     ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
                     onScroll={onScroll}
-                    onContentSizeChange={onContentSizeChange}
                     scrollEventThrottle={16}
                 />
             {/* <GestureRecognizer
