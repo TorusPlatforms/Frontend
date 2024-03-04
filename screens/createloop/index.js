@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, TouchableOpacity, Text, TextInput, TouchableWithoutFeedback, Image, Keyboard } from "react-native";
+import { View, TouchableOpacity, Text, TextInput, TouchableWithoutFeedback, Image, Keyboard, Switch, pingEnabled, togglePing } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Icon from '@expo/vector-icons/Ionicons';
 import ImagePickerComponent from "./imagepicker";
 import defaultPic from "../../assets/user.png";
 import { createLoop, getUser, joinLoop } from "../../components/handlers";
+import { LinearGradient } from 'expo-linear-gradient';
 
 const exampleLoopData = {
     pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
@@ -27,7 +28,8 @@ const CreateLoop = () => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [keyboardHeight, setKeyboardHeight] = useState(0);
     const [rulesInputValue, setRulesInputValue] = useState("");
-    
+    const [privateMode, setPrivateMode] = useState(false);
+
     const handleCreateLoop = async () => {
         const user = await getUser();
         const loopData = {
@@ -68,6 +70,15 @@ const CreateLoop = () => {
       const handleKeyboardDidHide = () => {
         setKeyboardHeight(0);
       };
+
+      
+    const togglePrivate = () => {
+
+        setPrivateMode(!privateMode)
+
+
+    }
+
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener(
@@ -142,36 +153,36 @@ const CreateLoop = () => {
           </View>
            
   
-            <View style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
-              <Text style={{ paddingTop: 0, fontWeight: "bold", fontSize: 30, color: "white",marginTop:20 }}>Create New Loop</Text>
+            <View style={{ alignItems: 'center', justifyContent: 'flex-start',paddingBottom:10, borderBottomWidth:.2,borderBottomColor:"white" }}>
+              <Text style={{ paddingTop: 0, fontWeight: "bold", fontSize: 30, color: "white",marginTop:0,borderColor:"white", borderBottomWidth:1,borderBottomColor:"white" }}>Create New Loop</Text>
             </View>
             <Image
             source={selectedImage ? { uri: selectedImage.assets[0].uri } : defaultPic}
             style={{
                 width: 100,
                 height: 100,
-                marginLeft: 140,
-                marginVertical: 30,
+                alignSelf:"center",
+                marginVertical: 15,
                 backgroundColor: "white",
                 borderRadius: 100,
             }}
             />
             {selectedImage && (
-                <TouchableOpacity onPress={handleResetImage} style={{ marginTop: -10,marginBottom:10, marginLeft: 155 }}>
+                <TouchableOpacity onPress={handleResetImage} style={{ marginTop: -10,marginBottom:10, alignSelf:"center" }}>
                 <Text style={{ color: "red",textDecorationLine:"underline", fontSize: 10 }}>Remove Image</Text>
                 </TouchableOpacity>
             )}
-            <View style={{marginLeft:150}}>
+            <View style={{alignSelf:"center"}}>
                 <ImagePickerComponent style={{}} setSelectedImage={handleImageSelect}></ImagePickerComponent>
 
             </View>
             
 
-            <View style={{ flexDirection: "row", alignItems: "baseline" }}>
-              <Text style={{ color: "white", fontSize: 25, marginTop: 50, marginLeft: "5%" }}>Name:</Text>
+            <View style={{ alignItems: "baseline" }}>
+              <Text style={{ color: "white", fontSize: 15, marginTop: 20, marginLeft: "5%" }}>Name</Text>
               <TextInput
                 ref ={textInputRefs.current[0]}
-                style={{ marginLeft: 20, paddingRight:20, paddingVertical: 0,marginTop:10, color: "white", fontSize: 18,minWidth:150, maxWidth:300 }}
+                style={{ marginLeft: 20, paddingLeft:10,paddingTop: 5, paddingBottom:5, marginTop:5, color: "white", fontSize: 18,minWidth:300, maxWidth:300, backgroundColor:"rgb(46, 46, 46)",borderRadius:5 }}
                 placeholder="Type something..."
                 multiline
                 numberOfLines={4}
@@ -183,10 +194,10 @@ const CreateLoop = () => {
             </View>
   
             <View style={{ alignItems: "baseline" }}>
-              <Text style={{ color: "white", fontSize: 25, marginTop: 25, marginLeft: "5%" }}>Description:</Text>
+              <Text style={{ color: "white", fontSize: 15, marginTop: 15, marginLeft: "5%" }}>Description</Text>
               <TextInput
                 ref={textInputRefs.current[1]}
-                style={{ marginLeft: 20, paddingRight:20, paddingVertical: 0,marginTop:10, color: "white", fontSize: 18,minWidth:150, maxWidth:500 }}
+                style={{ marginLeft: 20, paddingLeft:10, paddingTop: 5, paddingBottom:5,marginTop:5, color: "white", fontSize: 18,minWidth:300, maxWidth:500, backgroundColor:"rgb(46, 46, 46)",borderRadius:5 }}
                 placeholder="Type something else..."
                 multiline
                 numberOfLines={4}
@@ -199,18 +210,11 @@ const CreateLoop = () => {
 
 
             <View style={{ alignItems: "baseline" }}>
-        <Text style={{ color: "white", fontSize: 25, marginTop: 25, marginLeft: "5%" }}>Rules:</Text>
+        <Text style={{ color: "white", fontSize: 15, marginTop: 15, marginLeft: "5%" }}>Rules</Text>
         <TextInput
             ref={textInputRefs.current[2]} // Use the next available index
             style={{
-                marginLeft: 20,
-                paddingRight: 20,
-                paddingVertical: 0,
-                marginTop: 10,
-                color: "white",
-                fontSize: 18,
-                minWidth: 150,
-                maxWidth: 500,
+                marginLeft: 20, paddingLeft:10,paddingTop: 5, paddingBottom:5,marginTop:5, color: "white", fontSize: 18,minWidth:300, maxWidth:500, backgroundColor:"rgb(46, 46, 46)",borderRadius:5 
             }}
             placeholder="Type rules here..."
             multiline
@@ -221,6 +225,17 @@ const CreateLoop = () => {
             onChangeText={(text) => setRulesInputValue(text)}
         />
     </View>
+
+    <View style={{flexDirection:"row", justifyContent:"space-between", paddingHorizontal:25,marginTop:25}}>
+  <Text style={{ fontSize: 18, color: "white", textAlign: 'center', }}>Private Loop</Text>
+    <Switch
+        trackColor={{ false: '#767577', true: 'rgb(54, 163, 107)' }}
+        thumbColor={pingEnabled ? 'grey' : 'white'}
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={togglePrivate}
+        value={privateMode}
+      />
+  </View>
   
                 {/*
           <View style={{ marginTop: 50, }}>
@@ -272,11 +287,15 @@ const CreateLoop = () => {
                   </View> 
           </View> */}
 
-          <TouchableOpacity
-          style={{ backgroundColor: "rgb(54, 163, 107)", borderRadius: 40, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop:70,width:150,alignContent:"center",alignSelf:"center",height:60 }}
-          onPress={handleCreateLoop}>
-          <Text style={{ color: "black", textAlign: "center",alignSelf:"center",marginTop:6,fontSize:20 }}>Create</Text>
-        </TouchableOpacity>
+        
+                <TouchableOpacity
+                    style={{  borderRadius: 40, borderWidth: 1,borderColor: "black", paddingVertical: 10, paddingHorizontal: 20,marginTop: 0,width: 150,alignContent: "center",alignSelf: "center", height: 60}}
+                    onPress={handleCreateLoop}>
+                <LinearGradient colors={['#50C878', '#228B22', '#355E3B']} style={{overflow:"hidden", borderRadius: 40, borderWidth: 1,borderColor: "black", paddingHorizontal: 20,marginTop: 40,width: 150,alignContent: "center",alignSelf: "center", height: 60}}>
+                    <Text style={{ color: "black", textAlign: "center", alignSelf: "center", marginTop: 15, fontSize: 20 }}>Create</Text>
+                </LinearGradient>
+                </TouchableOpacity>
+  
 
         </View>
       </TouchableWithoutFeedback>
