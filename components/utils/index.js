@@ -1,6 +1,7 @@
 export function findTimeAgo(timestamp) {
     const now = new Date();
-    const timeDifference = now - timestamp;
+    const date = new Date(timestamp)
+    const timeDifference = now - date;
 
      const secondsDifference = Math.floor(timeDifference / 1000);
 
@@ -41,9 +42,42 @@ function addSuffix(num) {
 const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novemeber", "December"];
 
-export function strfEventTime(timestamp) {
+export function strfEventDate(timestamp) {
   const date = new Date(timestamp)
   return `${dayNames[date.getDay()]}, ${monthNames[date.getMonth()]} ${addSuffix(date.getDate())}`
+}
+
+export function strfEventTime(timestamp) {
+    const date = new Date(timestamp)
+    
+    let minutes = date.getMinutes()
+    if (minutes === 0) {
+        minutes = "00"
+    }
+
+    let hours = date.getHours()
+    let suffix = "";
+
+    if (hours === 0) {
+        hours = 12
+        suffix = "AM"
+    } else {
+        if (hours < 12) {
+          suffix = "AM"
+        } else if (hours === 12) {
+          suffix = "PM"
+        } else if (hours > 12) {
+          suffix = "PM"
+          hours -= 12
+        }
+    }
+
+    return `${hours}:${minutes} ${suffix}`
+
+}
+
+export function combineDateAndTme(date, time) {
+  return new Date(date.getYear(), date.getMonth() - 1, date.getDate(), time.getHours(), time.getMinutes())
 }
 
 

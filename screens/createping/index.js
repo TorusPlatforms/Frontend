@@ -17,7 +17,7 @@ const exampleUserData = {
   description: "A pretty funny guy. Has a strong affinity for dogs. \n Stefan Murphy: 'The test is in'"
 }
 
-const CreatePing = () => {
+export default function CreatePing() {
   const navigation = useNavigation();
   const [user, setUser] = useState(null)
   const [textInputValue, setTextInputValue] = useState("");
@@ -66,10 +66,13 @@ const CreatePing = () => {
   };
 
   const removeImage = () => {
-
-    setSelectedImage(null); // set image to null (delete image)
+      setSelectedImage(null); // set image to null (delete image)
   };
 
+  async function handlePost() {
+    await createPost(user, textInputValue, selectedImage);
+    navigation.goBack()
+  }
 
 
   const Post = () => { // when you click post
@@ -158,7 +161,7 @@ const CreatePing = () => {
 
           <TouchableOpacity
             style={{ backgroundColor: "rgb(54, 163, 107)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop: 20 }}
-            onPress={async() => {await createPost(user, textInputValue, selectedImage); navigation.goBack()}}
+            onPress={handlePost}
           >
             <Text style={{ color: "black", textAlign: "center" }}>Post</Text>
           </TouchableOpacity>
@@ -168,4 +171,3 @@ const CreatePing = () => {
   );
 };
 
-export default CreatePing;

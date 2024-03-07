@@ -1,5 +1,7 @@
 import { getAuth } from "firebase/auth";
 import { Share, Alert } from 'react-native'
+import { combineDateAndTme } from "../utils";
+
 
 async function getToken() {
   const auth = getAuth()
@@ -108,13 +110,76 @@ export async function getPings(user) {
       }
   
       const responseData = await response.json();
-      console.log('Pings:', responseData);
       return (responseData)
   
     } catch (error) {
       console.error('Error Getting Pings:', error.message);
     }
   }
+
+
+export async function getEvents() {
+    const token = await getToken()
+    console.log(token)
+
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/events/get`;
+
+    try {  
+      const response = await fetch(serverUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error Getting Events! Status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      console.log('Events:', responseData);
+      return (responseData)
+
+    } catch (error) {
+      console.error('Error Getting Events:', error.message);
+    }
+}
+
+
+export async function joinLeaveEvent(event) {
+    const token = await getToken()
+
+    let endpoint;
+    if (event.isJoined) {
+      endpoint = "leave"
+    } else {
+      endpoint = "join"
+    }
+
+    let serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/events/${event.event_id}/${endpoint}`
+
+    try {
+      const response = await fetch(serverUrl, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to ${endpoint} event. Status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      console.log(`Event ${endpoint} successful. Server response:`, responseData);
+      
+    } catch (error) {
+      console.error('Error event:', error.message);
+    }
+}
+
 
 
 export async function createPost(user, content, image = null ) {
@@ -155,6 +220,50 @@ export async function createPost(user, content, image = null ) {
     } catch (error) {
       console.error('Error Creating Ping:', error.message);
     }
+}
+
+export async function createEvent(name, address, day, time, details, image = null ) {
+  const token = await getToken()
+  
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/events/create`;
+
+
+  const date = combineDateAndTme(day, time)
+
+  const eventData = {
+    name: name,
+    time: date.getTime(),
+    address: address,
+    details: details,    
+  };
+
+  if (image) {
+    const uploadedImage = await uploadToCDN(image)
+    const image_url = uploadedImage.url
+    eventData["image_url"] = image_url
+  }
+
+  try {  
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(eventData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error Creating Event! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('Created Event:', responseData);
+    return (responseData)
+
+  } catch (error) {
+    console.error('Error Creating Event:', error.message);
+  }
 }
 
 export async function uploadToCDN(image) {
@@ -1066,6 +1175,34 @@ export async function getRecentMsgs(loopId) {
   }
 }
 
+
+export async function getGoogleMapsKey() {
+
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/googlemaps`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error getting key! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('key:', responseData);
+    return responseData;
+
+  } catch (error) {
+    console.error("Error getting key", error.message);
+  }
+}
 
 
 export async function getRecentLoops(userId, n) {

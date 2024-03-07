@@ -3,6 +3,7 @@ import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable, Alert, 
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { handleLike } from "../handlers";
+import { findTimeAgo } from "../utils";
 import styles from "./styles";
 
 
@@ -72,6 +73,10 @@ export const Ping = ({navigation, data, handleComment, handleShare }) => {
           <View style={{flex: 1, marginTop: 5}}>
             <Text style={styles.stats}>{numOfLikes} Likes • {data.numberof_comments} Comments</Text>
           </View>
+        </View>
+
+        <View>
+          <Text style={{color: "gray"}}>{findTimeAgo(data.created_at)}</Text>
         </View>
       </View>
   );

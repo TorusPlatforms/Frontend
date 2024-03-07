@@ -39,6 +39,7 @@ import EditProfile from "./screens/editprofile";
 import EditField from "./screens/editfield";
 import MyLoops from "./screens/myloops";
 import UserProfile from './screens/userprofile';
+import CreateEvent from './screens/createevent';
 
 
 const firebaseConfig = {
@@ -132,6 +133,7 @@ function App() {
         <Stack.Screen name="MyLoops" component={MyLoops} options={{headerShown: true}}/>
         <Stack.Screen name="Create" component={CreatePing} options={{presentation: "modal"}} />
         <Stack.Screen name="CreateLoop" component={CreateLoop} options={{pesentation: "modal"}} />
+        <Stack.Screen name="CreateEvent" component={CreateEvent} options={{pesentation: "modal"}} />
         <Stack.Screen name="Loop" component={LoopsPage} initialParams={{get:"loop"}} options={{headerShown:false}}/>
         <Stack.Screen name="LoopChat" component={LoopChat} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="LoopAnnouncements" component={LoopAnnouncements} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />

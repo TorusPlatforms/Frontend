@@ -19,7 +19,7 @@ const exampleLoopData = {
     users: ["DrumDogLover","TanujBeatMaster","GrantPawRhythms", "DogGrooveMaster","GrantAndTanujJams","RhythmHound","DrumBeatsWithTanuj","GrantCanineGrooves","TanujDogDrummer","BarkingBeatsGrant","DrummingTanujPaws","GrantAndDogRhythms","TanujDrumTails","PuppyGroovesGrant","BeatBuddyTanuj","WoofingRhythmsGrant","DrummingPawsTanuj","GrantGroovePup","TanujAndTheBeat","DoggyDrummingGrant","RhythmTanujTail","GrantPercussionPup","TanujDoggieBeats","PawsAndSnaresGrant","DrummingDogTanuj","GrantBeatsHowl","TanujRhythmBuddy","DogBeatHarmonyGrant","DrumPawsTanujGroove","GrantAndTanujRhythmic",]
 }
 
-const CreateLoop = () => {
+export default function CreateLoop() {
     const navigation = useNavigation();
     const [nameInputValue, setNameInputValue] = useState("");
     const [discInputValue, setDiscInputValue] = useState("");
@@ -283,5 +283,3 @@ const CreateLoop = () => {
       </KeyboardAwareScrollView>
     );
   };
-  
-  export default CreateLoop;
