@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Icon from '@expo/vector-icons/Ionicons';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 
 import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } from "../../components/imagepicker";
 import { getUser, uploadToCDN, createPost } from "../../components/handlers";
@@ -25,33 +25,21 @@ export default function CreatePing() {
   const [imageUri, setImageUri] = useState(null);
   const textInputRef = useRef(null);
 
-  useEffect(() => {
-    // run this whenever the selected image changes
-    async function fetchUser() {
+  async function fetchUser() {
       const user = await getUser()
       setUser(user)
-    }
-
+  }
+  
+  useEffect(() => {
     fetchUser()
 
     requestCameraPerms()
     requestPhotoLibraryPerms()
-    
-    if (selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri) {
-      console.log('Image is available:', selectedImage.assets[0].uri);
-      
-    } else {
-      console.log('No image available');
-    }
+  }, []); 
 
-  }, [selectedImage]); 
-
-  const closeKeyboard = () => {
-    Keyboard.dismiss();
-  };
 
   const handleBackgroundPress = () => {
-    closeKeyboard();
+      Keyboard.dismiss();
   };
 
   const handleImageSelect = (image) => {
@@ -59,10 +47,6 @@ export default function CreatePing() {
       setSelectedImage(image);
     }
     console.log("Selected Image in CreatePing:", image);
-  };
-
-  const handlePictureTaken = (uri) => {
-    setSelectedImage({ assets: [{ uri }] });
   };
 
   const removeImage = () => {
@@ -75,36 +59,11 @@ export default function CreatePing() {
   }
 
 
-  const Post = () => { // when you click post
-    var string = textInputValue;
+ 
+  if (!user) {
+    return <ActivityIndicator />
+  }
 
-    const newStr = string.replace(/\n{2,}/g, '\n\n');
-    var imageValid = (selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri)
-
-    if(newStr.trim() != "" || (imageValid) ){
-        var postData; // object for post data
-
-            if (imageValid) {
-                postData = {
-                    "text": newStr,
-                    "image": selectedImage.assets[0].uri // if theres an image use it in the post
-                };
-            } else {
-                postData = {
-                    "text": newStr,
-                    "image": null // if there isnt an image dont include one
-                };
-            }
-            
-            console.log(postData); // log the ping data, eventually make this a server upload shenanigan
-
-    }
-
-
-    
-
-  };
-  
   return (
     <TouchableWithoutFeedback onPress={handleBackgroundPress}>
       <View style={styles.container}>
@@ -118,7 +77,7 @@ export default function CreatePing() {
 
         <View style={{ flexDirection: "column", alignItems: "center", marginTop: 20 }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Image style={styles.pfp} source={{ uri: exampleUserData.pfp }} />
+            <Image style={styles.pfp} source={{ uri: user.pfp_url }} />
             <TextInput
               ref={textInputRef}
               style={{ marginLeft: 20, paddingRight: 20, paddingVertical: 10, marginTop: 10, color: "white", fontSize: 18, minWidth: 300, maxWidth: 300, maxHeight: 180 }}
@@ -130,32 +89,33 @@ export default function CreatePing() {
               value={textInputValue}
               onChangeText={(text) => setTextInputValue(text)}
             />
+
           </View>
+
+            {selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri && (
+              <View style={{marginTop: 10}}>
+                <Image source={{ uri: selectedImage.assets[0].uri }} style={{ width: 250, height: 300, borderRadius: 20, marginLeft: 20}} />
+                
+                <Pressable onPress={removeImage} style={{position: "absolute", right: -10, top: -10}} >
+                  <MaterialIcons name="cancel" size={32} color="gray" />
+                </Pressable>
+
+              </View>
+            )}
+
 
           <View style={{ flexDirection: "row", marginTop: 20 }}>
 
             {/* Render the ImagePickercomponeent and pass the callback function, image picker contrains both the camera and camera roll buttons */}
-            <View style={{flexDirection:"row"}}>
               <TouchableOpacity style={{ marginRight: 10 }} onPress={() => pickImage(handleImageSelect)}>
-                <Icon name="image-outline" size={30} color="#FFFFFF" />
+                <Ionicons name="image-outline" size={30} color="#FFFFFF" />
               </TouchableOpacity>
 
               <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => openCamera(handleImageSelect)}>
-                <Icon name="camera-outline" size={30} color="#FFFFFF" />
+                <Ionicons name="camera-outline" size={30} color="#FFFFFF" />
               </TouchableOpacity>
-            </View> 
           </View>
 
-          {selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri && (
-            <View>
-            <Image source={{ uri: selectedImage.assets[0].uri }} style={{ width: 200, height: 200, borderWidth: 2, borderColor: "white", marginTop: 15 }} />
-            <TouchableOpacity onPress={removeImage}>
-                <Text style={{alignSelf:"center", marginTop:10, color:"red", textDecorationLine:"underline"}}>Remove Image</Text>
-            </TouchableOpacity>
-             </View>
-            
-            
-          )}
 
             
 

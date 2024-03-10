@@ -1,11 +1,12 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, TouchableOpacity, Image, Text, TextInput, ScrollView, SafeAreaView } from "react-native";
+import { View, TouchableOpacity, Image, Text, TextInput, ScrollView } from "react-native";
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
-import styles from "./styles";
 import { useNavigation, useFocusEffect  } from "@react-navigation/native";
-import Icon from '@expo/vector-icons/Ionicons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { getLoopInfo, getUser, getLoopOwner, getMemberStatus,joinLoop, leaveLoop, getRecentMsgs, getLoopMembers } from "../../components/handlers";
+import styles from "./styles";
 
 
 const exampleLoopData = {
@@ -42,8 +43,10 @@ const ChatButton = ({ name, navigation }) => (
   
 
 const LoopsPage = ({route}) => {
-    const {loopId} = route.params;
+    const { loopId } = route.params.loopId;
     const navigation = useNavigation()
+
+    
     const [notifications, setNotifications] = useState(exampleLoopData.notifications);
     const [isMember, setIsMember] = useState(exampleUserData.member);
     const [activeButton, setActiveButton] = useState("chat");

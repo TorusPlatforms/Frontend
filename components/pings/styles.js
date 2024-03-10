@@ -11,8 +11,10 @@ const styles = StyleSheet.create({
     },
 
     attatchment: {
-        aspectRatio: 16/9,
-        marginVertical: 20
+        width: 250,
+        height: 300,
+        marginVertical: 10,
+        borderRadius: 20
     },
 
     tinyLogo: {

@@ -44,6 +44,7 @@ export default function Messages() {
                 <ActivityIndicator />
             </View>
         )
+    
     } else {
 
         return (

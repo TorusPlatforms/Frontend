@@ -73,7 +73,7 @@ export default function Events() {
 
 
   const Event = ({ data }) => {
-    const [isJoined, setIsJoined] = useState(false)
+    const [isJoined, setIsJoined] = useState(data.isJoined)
 
     async function handleJoinLeave() {
       setIsJoined(!isJoined)

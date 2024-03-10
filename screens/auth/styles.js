@@ -16,7 +16,8 @@ const styles = StyleSheet.create({
     },
 
     loginContainer: {
-        flex: 1, 
+        marginTop: 50,
+        flex: 0.3, 
         alignItems: "center", 
         justifyContent: "center",
     },
@@ -34,7 +35,8 @@ const styles = StyleSheet.create({
         marginBottom: 15, 
         color: "white", 
         padding: 10, 
-        fontSize: 16
+        fontSize: 16,
+        width: "100%"
     },
 
     welcomeBack: {

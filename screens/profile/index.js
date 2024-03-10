@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback} from 'react'
-import { Text, View, SafeAreaView, Image, Animated, TouchableOpacity, FlatList, Pressable, RefreshControl, ActivityIndicator, ScrollView } from 'react-native'
+import { Text, View, Image, Animated, TouchableOpacity, FlatList, Pressable, RefreshControl, ActivityIndicator, ScrollView } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
@@ -246,11 +247,22 @@ export default function Profile() {
     
                 <View style={styles.torusContainer}>
                     <View style={styles.centerLoop}>
-                        <Pressable onPress={() => navigation.navigate("MyLoops")} style={styles.centerLoopIcon}>
-                            <MaterialCommunityIcons name="google-circles-communities" color={"gray"} size={60}/>
-                        </Pressable>
+                        {loops.length != 0 && (
+                            <Pressable onPress={() => navigation.navigate("MyLoops")} style={styles.centerLoopIcon}>
+                                <MaterialCommunityIcons name="google-circles-communities" color={"gray"} size={60}/>
+                            </Pressable>
+                            
+
+                        )}
                         {renderLoops()}
+
+                        {loops.length === 0  && (
+                            <View style={{justifyContent: 'center', alignItems: "center"}}>
+                                <Text style={{color: "white", fontSize: 18}}>No Loops Found</Text>
+                            </View>
+                        )}
                     </View>
+
                 </View>
     
                 <View style={styles.loopsListContainer}>

@@ -9,6 +9,7 @@ async function getToken() {
   return token;
 }
 
+
 export async function registerUserBackend(username, email, display_name) {
   const token = await getToken();
   const serverUrl = 'https://backend-26ufgpn3sq-uc.a.run.app/api/user/register';
@@ -33,6 +34,7 @@ export async function registerUserBackend(username, email, display_name) {
   console.log('Response:', responseData);
   return responseData
 }
+
 
 export async function getUser() {
     const token = await getToken()
@@ -62,6 +64,7 @@ export async function getUser() {
    
 }
 
+
 export async function getUserByUsername(username) {
   const token = await getToken()
 
@@ -90,10 +93,12 @@ export async function getUserByUsername(username) {
  
 }
 
+
 export async function getPings(user) {
     const token = await getToken()
     console.log(token)
-
+    
+    //if college is none, should fetch by location instead
     const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/posts/college/${user.college}`;
 
     try {  
@@ -104,7 +109,10 @@ export async function getPings(user) {
           'Content-Type': 'application/json',
         },
       });
-  
+      
+      if (response.status === 404) {
+        return []
+      }
       if (!response.ok) {
         throw new Error(`Error Getting Pings! Status: ${response.status}`);
       }
@@ -168,18 +176,19 @@ export async function joinLeaveEvent(event) {
         },
       });
 
+      const responseData = await response.json();
+      console.log(`Event ${endpoint} successful. Server response:`, responseData);
+
       if (!response.ok) {
         throw new Error(`Failed to ${endpoint} event. Status: ${response.status}`);
       }
 
-      const responseData = await response.json();
-      console.log(`Event ${endpoint} successful. Server response:`, responseData);
+     
       
     } catch (error) {
       console.error('Error event:', error.message);
     }
 }
-
 
 
 export async function createPost(user, content, image = null ) {
@@ -190,7 +199,7 @@ export async function createPost(user, content, image = null ) {
     const postData = {
       content: content,
       college: user.college,
-      pfp_url: user.profile_picture,    
+      pfp_url: user.profile_picture || user?.profile_picture,    
     };
 
     if (image) {
@@ -198,6 +207,8 @@ export async function createPost(user, content, image = null ) {
       const image_url = uploadedImage.url
       postData["image_url"] = image_url
     }
+
+    console.log(postData)
 
     try {  
       const response = await fetch(serverUrl, {
@@ -208,19 +219,22 @@ export async function createPost(user, content, image = null ) {
         },
         body: JSON.stringify(postData),
       });
-  
+      
+      const responseData = await response.json();
+      console.log('Created Post:', responseData);
+
       if (!response.ok) {
         throw new Error(`Error Creating Ping! Status: ${response.status}`);
       }
   
-      const responseData = await response.json();
-      console.log('Created Post:', responseData);
+  
       return (responseData)
   
     } catch (error) {
       console.error('Error Creating Ping:', error.message);
     }
 }
+
 
 export async function createEvent(name, address, day, time, details, image = null ) {
   const token = await getToken()
@@ -266,6 +280,7 @@ export async function createEvent(name, address, day, time, details, image = nul
   }
 }
 
+
 export async function uploadToCDN(image) {
   const serverUrl = 'https://backend-26ufgpn3sq-uc.a.run.app/api/upload';
   
@@ -297,6 +312,7 @@ export async function uploadToCDN(image) {
   }
   
 }
+
 
 export async function handleLike(post) {
   const token = await getToken()
@@ -334,6 +350,7 @@ export async function handleLike(post) {
   }
 }
 
+
 export async function getComments(post) {
   const token = await getToken()
 
@@ -363,6 +380,7 @@ export async function getComments(post) {
   }
 }
 
+
 export async function handleShare(postURL) {
   try {
     const result = await Share.share({
@@ -373,6 +391,7 @@ export async function handleShare(postURL) {
     Alert.alert(error.message);
   }
 }
+
 
 export async function updateUser(endpoint, varName, content) {
   const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/user/update/${endpoint}`;
@@ -403,6 +422,7 @@ export async function updateUser(endpoint, varName, content) {
     console.error('Error updating:', error.message);
   }
 }
+
 
 export async function postComment(post, content) {
   console.log("HERE", post, content)
@@ -436,23 +456,30 @@ export async function postComment(post, content) {
   }
 }
 
+
 export async function updateUserProfilePicture(profilePictureURL) {
+  const token = await getToken()
+
   const serverUrl = 'https://backend-26ufgpn3sq-uc.a.run.app/api/user/update/profilepicture';
 
   const requestBody = {
-    token: auth.currentUser.uid,
     pfp_url: profilePictureURL,
   };
 
+  console.log(requestBody)
   try {
     const response = await fetch(serverUrl, {
       method: 'POST',
       headers: {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
       },
       body: JSON.stringify(requestBody),
       });
     
+      const responseData = await response.json();
+      console.log('Profile Picture:', responseData);
+  
       if (!response.ok) {
         throw new Error(`Failed to update profile picture. Status: ${response.status}`);
       }
@@ -468,7 +495,7 @@ export async function updateUserProfilePicture(profilePictureURL) {
 export async function getThreads() {
   const token = await getToken()
 
-  const serverUrl = 'https://backend-26ufgpn3sq-uc.a.run.app/api/messages/threads';
+  const serverUrl = 'https://97a9-76-21-126-166.ngrok-free.app/api/messages/threads';
 
   try {
     const response = await fetch(serverUrl, {
@@ -479,17 +506,24 @@ export async function getThreads() {
       }
     })
 
+    const responseData = await response.json();
+    console.log('Threads:', responseData);
+
+    if (responseData.status === 204) {
+      return []
+    }
+    
     if (!response.ok) {
       throw new Error(`Error getting threads! Status: ${response.status}`);
     }
 
-    const responseData = await response.json();
-    console.log('Threads:', responseData);
+
     return responseData
   } catch (error) {
     console.error("Error getting threads", error.message)
   }
 }
+
 
 export async function getDM(username) {
   const token = await getToken()
@@ -517,6 +551,7 @@ export async function getDM(username) {
     console.error("Error getting DM", error.message);
   }
 }
+
 
 export async function sendMessage(username, content) {
   const token = await getToken()
@@ -550,7 +585,6 @@ export async function sendMessage(username, content) {
 }
 
 
-
 export async function getLoops(user) {
     const token = await getToken()
 
@@ -564,13 +598,15 @@ export async function getLoops(user) {
           'Content-Type': 'application/json',
         },
       });
-  
+      
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+
       if (!response.ok) {
         throw new Error(`Error Getting Loops! Status: ${response.status}`);
       }
   
-      const responseData = await response.json();
-      console.log('Response Data:', responseData);
+  
       return (responseData)
   
     } catch (error) {
@@ -579,7 +615,7 @@ export async function getLoops(user) {
   }
 
 
-  export async function getLoopInfo(loopId) {
+export async function getLoopInfo(loopId) {
     const token = await getToken()
 
     const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}`;
@@ -592,25 +628,27 @@ export async function getLoops(user) {
           'Content-Type': 'application/json',
         },
       });
-  
+
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+
       if (!response.ok) {
         throw new Error(`Error Getting Loop info! Status: ${response.status}`);
       }
-  
-      const responseData = await response.json();
-      console.log('Response Data:', responseData);
+
+
       return (responseData)
-  
+
     } catch (error) {
-      console.error('Error Getting Loops:', error.message);
+      console.error('Error Getting Loops Info:', error.message);
     }
-  }
+}
 
 
 
-  export async function createLoop(loopInfo) {
+export async function createLoop(loopData) {
     const token = await getToken()
-
+    console.log(loopData)
     const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/add`;
 
     try {  
@@ -620,21 +658,22 @@ export async function getLoops(user) {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(loopInfo)
+        body: JSON.stringify(loopData)
       });
-  
+
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+
       if (!response.ok) {
         throw new Error(`Error Creating Loop! Status: ${response.status}`);
       }
-  
-      const responseData = await response.json();
-      console.log('Response Data:', responseData);
+
       return (responseData)
-  
+
     } catch (error) {
       console.error('Error Creating Loop:', error.message);
     }
-  }
+}
 
   
   export async function editLoop(userId, loopId, content) {

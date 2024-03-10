@@ -1,7 +1,4 @@
-import React, { useState, useEffect } from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import Icon from '@expo/vector-icons/Ionicons';
-import { View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { launchCamera } from 'react-native-image-picker';
 
 

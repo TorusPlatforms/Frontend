@@ -3,6 +3,9 @@ import { View, Text, Dimensions, Pressable, TextInput, KeyboardAvoidingView } fr
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getAuth, createUserWithEmailAndPassword, deleteUser } from "firebase/auth"
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
+
 import { registerUserBackend } from "../../components/handlers";
 import styles from "./styles";
 
@@ -53,7 +56,7 @@ export default function SignUpScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{flex: 1, marginTop: 50}}>
+            <KeyboardAwareScrollView contentContainerStyle={{flex: 1, marginTop: 50}}>
 
                 <View style={{flex: 1, justifyContent: "space-evenly"}}>
                     <Text style={{color: "white", fontSize: 16, textAlign: "center"}}>Sign up to become connected</Text>
@@ -101,7 +104,6 @@ export default function SignUpScreen() {
                         style={styles.input}
                     />
                 </View>
-            </KeyboardAvoidingView>
 
 
                 <View style={styles.signUpContainer}>
@@ -112,7 +114,7 @@ export default function SignUpScreen() {
                     </Pressable>
                     <Text style={styles.policy}>By signing up, you are agreeing to our Terms, Privacy, and Cookies policies</Text>
                 </View>
-
+            </KeyboardAwareScrollView>
         </SafeAreaView>
     )
 }

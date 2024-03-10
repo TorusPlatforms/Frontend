@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Input } from 'react-native-elements';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } from "../../components/imagepicker";
 import { getUser, createEvent, getGoogleMapsKey } from "../../components/handlers";
@@ -120,8 +120,8 @@ export default function CreateEvent() {
 
     return (
       <TouchableWithoutFeedback style={{backgroundColor: "rgb(22, 23, 24)"}} onPress={handleBackgroundPress}>
-        <View style={styles.container}>
-            <View style={{flex: 0.2, marginTop: 10}}>
+        <SafeAreaView style={styles.container}>
+            <View style={{flex: 0.2}}>
               <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 10 }}>
                 <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Cancel</Text>
               </TouchableOpacity>
@@ -258,7 +258,7 @@ export default function CreateEvent() {
                   </Pressable>
               </View>
             </View>
-        </View>
+        </SafeAreaView>
       </TouchableWithoutFeedback>
     );
   }

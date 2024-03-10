@@ -1,12 +1,15 @@
 export function findTimeAgo(timestamp) {
     const now = new Date();
+
+  
     const date = new Date(timestamp)
+
     const timeDifference = now - date;
 
-     const secondsDifference = Math.floor(timeDifference / 1000);
+    const secondsDifference = Math.floor(timeDifference / 1000);
 
     let agoMessage;
-    if (secondsDifference == 0) {
+    if (secondsDifference <= 0) {
       agoMessage = "Just Now";
     } else if (secondsDifference < 60) {
         agoMessage = `${secondsDifference} seconds ago`;

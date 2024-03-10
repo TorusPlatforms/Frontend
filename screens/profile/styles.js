@@ -81,14 +81,6 @@ const styles = StyleSheet.create({
         flex: 0.25, 
         paddingHorizontal: 30,
         marginBottom: 10,
-        ...Platform.select({
-            ios: {
-                marginTop: 10
-            },
-            android: {
-                marginTop: 60,
-            }
-        })
     },
 
     centerLoop: {

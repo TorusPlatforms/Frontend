@@ -4,7 +4,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as Notifications from 'expo-notifications';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Text } from "react-native";
+import { Text, Pressable } from "react-native";
+
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
@@ -75,7 +77,7 @@ const Tab = createBottomTabNavigator();
 const TopTab = createMaterialTopTabNavigator();
 const username = "Direct Messages"
 
-function DirectMessageHeader(props) {
+const DirectMessageHeader = (props) => {
   console.log(props)
   return (
     <Text style={{color: "white", fontWeight: "bold", fontSize: 18, marginBottom: 5}}>{props.params.username}</Text>
@@ -122,9 +124,19 @@ const FollowTabs = ({ route }) => {
   )
 };
 
+const CancelHeader = (props) => {
+  console.log(props)
+  return (
+  <Pressable onPress={() => navigation.goBack()} style={{ padding: 10 }}>
+    <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Cancel</Text>
+  </Pressable>
+  )
+}
+
 
 function App() {
   return (
+    <SafeAreaProvider>
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false, headerTitleStyle: {color: "white"}, headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}}}>
         <Stack.Screen name="Auth" component={AuthScreen}/>
@@ -134,7 +146,7 @@ function App() {
         <Stack.Screen name="Create" component={CreatePing} options={{presentation: "modal"}} />
         <Stack.Screen name="CreateLoop" component={CreateLoop} options={{pesentation: "modal"}} />
         <Stack.Screen name="CreateEvent" component={CreateEvent} options={{pesentation: "modal"}} />
-        <Stack.Screen name="Loop" component={LoopsPage} initialParams={{get:"loop"}} options={{headerShown:false}}/>
+        <Stack.Screen name="Loop" component={LoopsPage} initialParams={{get:"loop"}}/>
         <Stack.Screen name="LoopChat" component={LoopChat} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="LoopAnnouncements" component={LoopAnnouncements} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="LoopInfo" component={LoopInfo}/>
@@ -155,6 +167,7 @@ function App() {
         <Stack.Screen name="UserProfile" component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })}/>
       </Stack.Navigator>
     </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
 

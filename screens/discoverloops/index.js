@@ -36,9 +36,8 @@ export default function Loops({ route }) {
   };
 
   const goToLoop = (loopId) => {
-    console.log("||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||")
     console.log(loopId)
-    navigation.navigate('Loop', { loopId });
+    navigation.navigate('Loop', { loopId: loopId });
   };
 
   useEffect(() => {

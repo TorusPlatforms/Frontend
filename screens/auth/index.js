@@ -3,6 +3,7 @@ import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, Keyboard
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import styles from "./styles";
 
@@ -15,7 +16,7 @@ export default function AuthScreen() {
     const moveLogoAnim = useRef(new Animated.Value(windowHeight / 2)).current
     const fadeAnim = useRef(new Animated.Value(0)).current 
 
-    const [email, onChangeEmail] = useState("tanujsiripurapu@gmail.com")
+    const [email, onChangeEmail] = useState("torustestuser@calpoly.edu")
     const [password, onChangePassword] = useState("abc123")
     const handlePress = (screenName) => {
     navigation.navigate(screenName);
@@ -45,10 +46,10 @@ export default function AuthScreen() {
         navigation.navigate("Home")
     }
 
-    
+   
     return (
         <SafeAreaView style={styles.container}>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'position' : 'height'} style={styles.container}>
+        <KeyboardAwareScrollView contentContainerStyle={styles.container}>
              <Animated.View style={[{transform: [{translateY: moveLogoAnim}]}, styles.animation]}>
                     <Image style={{width: windowWidth, height: windowHeight / 3, resizeMode: "contain"}} source={require('../../assets/torus.png')}></Image>
                 </Animated.View>
@@ -68,7 +69,7 @@ export default function AuthScreen() {
                         placeholder="Email"
                         placeholderTextColor={"white"}
                         autoCapitalize="none"
-                        style={[{width: windowWidth - 50}, styles.submissionBox]}
+                        style={styles.submissionBox}
                     />
                 
                      <TextInput 
@@ -77,23 +78,18 @@ export default function AuthScreen() {
                         secureTextEntry={true}
                         placeholder="Password"
                         placeholderTextColor={"white"}
-                        style={[{width: windowWidth - 50}, styles.submissionBox]}
+                        style={styles.submissionBox}
                     />
-                
-                    
-                    
+                </View>
+
+                <View style={{flex: 0.1, marginTop: 10}}>
                     <Pressable onPress={() => handlePress('Forgot Password')}>
-                 
                         {({pressed}) => 
-                            <Text style={{color: pressed ? 'gray' : 'white', marginLeft: -185}}>Forgot your password?</Text>
+                            <Text style={{color: pressed ? 'gray' : 'white', marginLeft: 0}}>Forgot your password?</Text>
                             
                         }
                     </Pressable>
-
-
                 </View>
-
-                    
 
             
                 <View style={styles.welcomeBackContainer}>
@@ -114,7 +110,7 @@ export default function AuthScreen() {
                 </View>
             </Animated.View>
 
-        </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
         </SafeAreaView>
     )
 }

@@ -11,6 +11,7 @@ export const Ping = ({navigation, data, handleComment, handleShare }) => {
     const [isLiked, setIsLiked] = useState(data.isLiked)
     const [numOfLikes, setNumOfLikes] = useState(data.numberof_likes)
 
+    
     async function handleLikePress() {
       if (isLiked) {
         setNumOfLikes(Math.max(0, numOfLikes - 1))
@@ -29,11 +30,9 @@ export const Ping = ({navigation, data, handleComment, handleShare }) => {
             style={styles.tinyLogo}
             source={{uri: data.pfp_url}}
           />
+            </View>
     
-          <View style={styles.verticalLine} />
-        </View>
-    
-        <View style={{marginLeft: 10, flex: 6}}>
+        <View style={{marginLeft: 20, flex: 6}}>
           <View style={{flex: 1}}>
             <Pressable onPress={() => navigation.navigate("UserProfile", {username: data.author})}>
               {({pressed}) => (
@@ -44,11 +43,13 @@ export const Ping = ({navigation, data, handleComment, handleShare }) => {
           </View>
         
           <View style={{flex: 2}}>
-            <Image
-              style={[styles.attatchment, {display: data.image_url ? "flex" : "none"}]}
-              source={{uri: data.image_url}}
-              resizeMode='contain'
-            />
+            { data.image_url && (
+              <Image
+                style={styles.attatchment}
+                source={{uri: data.image_url}}
+                resizeMode='cover'
+              />
+            )}
           </View>
         
     
