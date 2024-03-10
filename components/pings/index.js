@@ -53,7 +53,7 @@ export const Ping = ({navigation, data, handleComment, handleShare }) => {
           </View>
         
     
-          <View style={{flexDirection: "row", flex: 1}}>
+          <View style={{flexDirection: "row", flex: 1, marginVertical: 5}}>
             <Pressable onPress={handleLikePress}>
               <Ionicons style={[styles.pingIcon, {color: isLiked ? "red" : "white"}]} name={isLiked ? "heart" : "heart-outline"} size={20}></Ionicons>
             </Pressable>

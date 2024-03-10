@@ -191,7 +191,7 @@ export async function joinLeaveEvent(event) {
 }
 
 
-export async function createPost(user, content, image = null ) {
+export async function createPost(user, content, latitude, longitude, image = null ) {
     const token = await getToken()
     
     const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/posts/add`;
@@ -200,6 +200,8 @@ export async function createPost(user, content, image = null ) {
       content: content,
       college: user.college,
       pfp_url: user.profile_picture || user?.profile_picture,    
+      latitude: latitude,
+      longitude: longitude
     };
 
     if (image) {

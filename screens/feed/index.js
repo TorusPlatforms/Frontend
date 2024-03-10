@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from '@react-navigation/native';
-import GestureRecognizer from 'react-native-swipe-gestures';
 
 import { getUser, getPings, handleLike, handleShare, postComment } from "../../components/handlers";
 import { abbreviate } from '../../components/utils';
@@ -33,7 +32,6 @@ export default function Feed() {
 
     const [user, setUser] = useState(null)
     const [pings, setPings] = useState(null)
-
 
 
     const headerHeight = scrollY.interpolate({
@@ -91,6 +89,9 @@ export default function Feed() {
       fetchPings();
     }, []); 
  
+  
+
+
 
     if (!user || !pings) {
       return (

@@ -3,6 +3,7 @@ import { View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedbac
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import * as Location from 'expo-location';
 
 import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } from "../../components/imagepicker";
 import { getUser, uploadToCDN, createPost } from "../../components/handlers";
@@ -20,10 +21,12 @@ const exampleUserData = {
 export default function CreatePing() {
   const navigation = useNavigation();
   const [user, setUser] = useState(null)
-  const [textInputValue, setTextInputValue] = useState("");
+  const [content, setContent] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
-  const [imageUri, setImageUri] = useState(null);
-  const textInputRef = useRef(null);
+
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
 
   async function fetchUser() {
       const user = await getUser()
@@ -36,6 +39,21 @@ export default function CreatePing() {
     requestCameraPerms()
     requestPhotoLibraryPerms()
   }, []); 
+
+  useEffect(() => {
+    (async () => {
+      
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+      console.log(location)
+    })();
+  }, []);
 
 
   const handleBackgroundPress = () => {
@@ -54,7 +72,7 @@ export default function CreatePing() {
   };
 
   async function handlePost() {
-    await createPost(user, textInputValue, selectedImage);
+    await createPost(user, content, location.coords.latitude, location.coords.longitude, selectedImage);
     navigation.goBack()
   }
 
@@ -66,28 +84,27 @@ export default function CreatePing() {
 
   return (
     <TouchableWithoutFeedback onPress={handleBackgroundPress}>
-      <View style={styles.container}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 10 }}>
-          <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Cancel</Text>
+      <SafeAreaView style={styles.container}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={{ paddingLeft: 20 }}>
+          <Text style={{ fontSize: 16, color: "white" }}>Cancel</Text>
         </TouchableOpacity>
 
         <View style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
-          <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>New Ping</Text>
+          <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>Send a Ping</Text>
         </View>
 
         <View style={{ flexDirection: "column", alignItems: "center", marginTop: 20 }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Image style={styles.pfp} source={{ uri: user.pfp_url }} />
             <TextInput
-              ref={textInputRef}
               style={{ marginLeft: 20, paddingRight: 20, paddingVertical: 10, marginTop: 10, color: "white", fontSize: 18, minWidth: 300, maxWidth: 300, maxHeight: 180 }}
               placeholder="Ping your campus and beyond"
               multiline
               maxLength={50}
               numberOfLines={4}
               placeholderTextColor="gray"
-              value={textInputValue}
-              onChangeText={(text) => setTextInputValue(text)}
+              value={content}
+              onChangeText={setContent}
             />
 
           </View>
@@ -126,7 +143,7 @@ export default function CreatePing() {
             <Text style={{ color: "black", textAlign: "center" }}>Post</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </SafeAreaView>
     </TouchableWithoutFeedback>
   );
 };
