@@ -109,7 +109,7 @@ const FeedScreens = () => {
 
 const DiscoverTabs = ({ route }) => {
   return (
-  <TopTab.Navigator screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)', paddingTop: 50}, tabBarLabelStyle: { "color": "white"}}}>
+  <TopTab.Navigator screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)', paddingTop: 50}, tabBarLabelStyle: { "color": "white"}}}>
     <TopTab.Screen name="Events" component={Events} options={{headerShown: false}} />
     <TopTab.Screen name="Loops" component={Loops} options={{headerShown: false}} />
   </TopTab.Navigator>)
@@ -146,7 +146,7 @@ function App() {
         <Stack.Screen name="Create" component={CreatePing} options={{presentation: "modal"}} />
         <Stack.Screen name="CreateLoop" component={CreateLoop} options={{pesentation: "modal"}} />
         <Stack.Screen name="CreateEvent" component={CreateEvent} options={{pesentation: "modal"}} />
-        <Stack.Screen name="Loop" component={LoopsPage} initialParams={{get:"loop"}}/>
+        <Stack.Screen name="Loop" component={LoopsPage} options={{headerShown: true, headerTitle: ""}}/>
         <Stack.Screen name="LoopChat" component={LoopChat} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="LoopAnnouncements" component={LoopAnnouncements} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="LoopInfo" component={LoopInfo}/>

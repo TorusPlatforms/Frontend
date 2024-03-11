@@ -5,7 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from '@react-navigation/native';
 
-import { getUser, getPings, handleLike, handleShare, postComment } from "../../components/handlers";
+import { getUser, getPings, handleLike, postComment } from "../../components/handlers";
 import { abbreviate } from '../../components/utils';
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
@@ -100,7 +100,7 @@ export default function Feed() {
         </View>
       )
 
-    } else {
+    }
       return (
         
           <SafeAreaView style={styles.container}>
@@ -147,7 +147,7 @@ export default function Feed() {
                       <Ping 
                         data={item} 
                         setModalVisible={setModalVisible}  
-                        handleComment={() => setCommentPing(item)} handleShare={handleShare}
+                        handleComment={() => setCommentPing(item)}
                         navigation={navigation}
                       />
                     }
@@ -175,4 +175,3 @@ export default function Feed() {
           </SafeAreaView>
         )
     }
-}

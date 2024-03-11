@@ -6,7 +6,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 
-import { getUser, getUserPings, handleShare, handleLike, postComment, getRecentLoops } from "../../components/handlers";
+import { getUser, getUserPings, postComment, getRecentLoops } from "../../components/handlers";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
@@ -44,11 +44,11 @@ export default function Profile() {
         setLoading(false)
     }   
   
-      function handleReply(data) {
-        ref_input.current.focus()
-        setReplyingTo(data.author)
-        onChangeComment("@" + data.author + " ")
-      }
+    function handleReply(data) {
+    ref_input.current.focus()
+    setReplyingTo(data.author)
+    onChangeComment("@" + data.author + " ")
+    }
   
 
     async function fetchLoops() {
@@ -139,9 +139,8 @@ export default function Profile() {
             <View key={item.post_id}>
                 <Ping 
                     data={item} 
-                    setModalVisible={setModalVisible} 
-                    handleLike={() => handleLike(item, updateLike)} 
-                    handleComment={() => setCommentPing(item)} handleShare={handleShare}
+                    setModalVisible={setModalVisible}  
+                    handleComment={() => setCommentPing(item)}
                     navigation={navigation}
                 />
                 <View style={styles.item_seperator} />

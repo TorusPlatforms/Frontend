@@ -35,9 +35,8 @@ export default function Loops({ route }) {
     navigation.navigate('CreateLoop');
   };
 
-  const goToLoop = (loopId) => {
-    console.log(loopId)
-    navigation.navigate('Loop', { loopId: loopId });
+  const goToLoop = (loop_id) => {
+    navigation.navigate('Loop', { loop_id: loop_id });
   };
 
   useEffect(() => {
@@ -51,7 +50,6 @@ export default function Loops({ route }) {
       const user = await getUser();
       const fetchedLoopsString = await getLoops(user);
       const fetchedLoops = JSON.parse(fetchedLoopsString);
-      console.log("Fetched Loops:", fetchedLoops);
       setLoops(fetchedLoops);
     } catch (error) {
       console.error("Error fetching loops:", error);

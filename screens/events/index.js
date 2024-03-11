@@ -96,10 +96,10 @@ export default function Events() {
             </View>
 
             <View style={{flex: 0.8, flexDirection: 'column'}}>
-                <View style={{ justifyContent: "space-between", borderWidth: 2, borderColor: "gray", borderRadius: 20, borderBottomWidth: data.image_url ? 0 : 2, padding: 20, height: 150}}>
+                <View style={{ justifyContent: "space-between", borderWidth: 2, borderColor: "gray", borderRadius: 20, borderBottomLeftRadius: data.image_url ? 0 : 20, borderBottomRightRadius: data.image_url ? 0 : 20, borderBottomWidth: data.image_url ? 0 : 2, padding: 20, height: 150}}>
                     <View>
-                      <Text style={{ color: "white", fontWeight: "bold" }}>{data.name || data?.name}</Text>
-                      <Text style={{ color: "white", fontSize: 12 }}>{strfEventDate(data.time) || data?.time}</Text>
+                      <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>{data.name || data?.name}</Text>
+                      <Text style={{ color: "white" }}>{strfEventDate(data.time) || data?.time}</Text>
                       <Pressable onPress={(openMaps)}>
                         <Text style={{ color: "white", textDecorationLine: "underline", fontSize: 12 }}>{data.address || data?.address}</Text>
                       </Pressable>
@@ -114,8 +114,15 @@ export default function Events() {
                     <Image style={{borderBottomLeftRadius: 20, borderBottomRightRadius: 20, width: "100%", height: 150, resizeMode: "cover"}} source={{ uri: data.image_url || data?.image_url }} />
                 )}
 
-                <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 10}}>
-                  <Text style={{color: "white", fontSize: 12}}> {data.mutual_attendees.join(",")} & {data.attendee_ids.length} are attending</Text>
+                <View style={{flexDirection: "row", justifyContent: data.attendee_ids.length > 0 ? "space-between" : "flex-end", alignItems: "center", marginTop: 10}}>
+                  {data.attendee_ids.length == 1 && (
+                    <Text style={{color: "white", fontSize: 12}}> 1 other is attending</Text>
+                  )}
+
+                  {data.attendee_ids.length > 1 && (
+                    <Text style={{color: "white", fontSize: 12}}> {data.mutual_attendees.join(",")} & {data.attendee_ids.length} others are attending</Text>
+                  )}
+
                   <Pressable onPress={handleJoinLeave} style={{borderRadius: 5, borderColor: "gray", borderWidth: 1, padding: 4, paddingHorizontal: 20, backgroundColor: isJoined ? "blue" : "rgb(22, 23, 24)"}}>
                     <Text style={{ color: "white" }}>{isJoined ? "Joined" : "Join"}</Text>
                   </Pressable>

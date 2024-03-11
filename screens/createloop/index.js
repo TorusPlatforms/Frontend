@@ -5,7 +5,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 import { pickImage } from '../../components/imagepicker';
-import { createLoop, getUser, joinLoop } from "../../components/handlers";
+import { createLoop, getUser, joinLoop, uploadToCDN } from "../../components/handlers";
+import { AlreadyExistsError } from "../../components/utils/errors";
 
 const exampleLoopData = {
     pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
@@ -21,37 +22,35 @@ const exampleLoopData = {
 
 export default function CreateLoop() {
     const navigation = useNavigation();
-    const [image, setImage] = useState();
+    const [image, setImage] = useState(); 
     const [name, setName] = useState();
     const [user, setUser] = useState();
-
-    async function handleImageSelect(image) {
-      setImage(image)
-    }
-    // const [nameInputValue, setNameInputValue] = useState("");
-    // const [discInputValue, setDiscInputValue] = useState("");
-    // const [chats, setChats] = useState([{ id: 1, value: "" }]);
-    // const [selectedImage, setSelectedImage] = useState(null);
-    // const [keyboardHeight, setKeyboardHeight] = useState(0);
-    // const [rulesInputValue, setRulesInputValue] = useState("");
+    const [errorMessage, setErrorMessage] = useState(null)
     
+    async function handleImageSelect(image) {
+      if (!image.canceled) {
+        setImage(image)
+      }
+    };
+
     async function handleCreateLoop() {
-        const loopData = {
-          name: name,
-          creator_id: user.username,
-          status: "public",
-          location: user.college,
-          profile_picture: image,
-        };
+  
+        try {
+          const createdLoop = await createLoop({name: name, creator_id: user.username, status: "public", location: user.college, image: image })
 
-        const createdLoop = await createLoop(loopData)
-
-        console.log("Created Loop", createdLoop)
+          console.log("Created Loop", createdLoop)
+          
+          const newLoopId = createdLoop.LOOPID
+          await joinLoop(newLoopId)
+          
+        } catch (error) {
+          if (error instanceof AlreadyExistsError) {
+            setErrorMessage(error.message)
+          } else {
+            console.error(error)
+          }
+        }
         
-        const newLoopId = createdLoop.LOOPID
-        await joinLoop(newLoopId)
-        
-        navigation.navigate('Loop', { loopId: newLoopId })
     }
     //     const createdLoop = await createLoop(loopData);
     //     //const createdLoopLog = await JSON.parse(createdLoop);
@@ -176,7 +175,13 @@ export default function CreateLoop() {
                           </View>
                       )}
 
-                      <Ionicons name="add-circle" size={32} color="blue" style={{position: "absolute", top: 0, right: 0}}/>
+                      
+                      {image && (
+                          <View style={{justifyContent: "center", alignItems: "center"}}>
+                            <Image style={{width: 100, height: 100, borderRadius: 50}} source={{uri:  image.assets[0].uri}}/>
+                          </View>
+                      )}
+                      <Ionicons name="add-circle" size={32} color="blue" style={{position: "absolute", top: -10, right: 0}}/>
                     </Pressable>
                   </View>
 
@@ -194,6 +199,10 @@ export default function CreateLoop() {
                           height: 40
                         }}
                       />
+
+                      {errorMessage && (
+                        <Text style={{color: "red"}}>{errorMessage}</Text>
+                      )}
                   </View>
 
                   <View style={{flex: 3, marginTop: 50, alignItems: "center"}}>

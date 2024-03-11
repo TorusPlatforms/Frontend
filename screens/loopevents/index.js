@@ -1,0 +1,100 @@
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { View, RefreshControl, Image, Text, FlatList, Animated, ActivityIndicator, Pressable } from "react-native";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
+
+import { postComment, getLoopPings, getLoop } from "../../components/handlers";
+import styles from "./styles";
+
+
+export default function LoopEvents({ route }) {
+  const navigation = useNavigation()
+
+  const { loop_id, loop_name } = route.params;
+  
+  const [events, setEvents] = useState([]);
+
+
+  const [refreshing, setRefreshing] = useState(false)
+
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+
+
+
+  const handleScrollEnd = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 1500,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handleScrollBegin = () => {
+    // Will change fadeAnim value to 0 in 3 seconds
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  };
+
+
+  const onRefresh = useCallback(async() => {
+    setRefreshing(true);
+    await fetchEvents()
+    setRefreshing(false)
+  }, []);
+
+
+  function handleReply(data) {
+      ref_input.current.focus()
+      setReplyingTo(data.author)
+      onChangeComment("@" + data.author + " ")
+  }
+
+
+  async function fetchEvents() {
+    //const events = await getLoopPings(loop_id)
+    console.log(events)
+    setEvents(events)
+  }
+
+  useEffect(() => {
+    fetchEvents()
+  }, []);
+
+
+
+  if (!events) {
+    return <ActivityIndicator />
+  }
+
+
+  return (
+    <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
+        <FlatList
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            style={{paddingHorizontal: 5}}
+            //refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            data={events}
+            renderItem={({item}) => 
+              <Ping 
+                data={item} 
+                setModalVisible={setModalVisible}  
+                handleComment={() => setCommentPing(item)}
+                navigation={navigation}
+              />
+            }
+            ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+            onMomentumScrollBegin={handleScrollBegin}
+            onMomentumScrollEnd={handleScrollEnd}
+        />
+        
+        <Animated.View style={{opacity: fadeAnim, width: 50, height: 50, borderRadius: 25, backgroundColor: "white", position: "absolute", bottom: 50, right: 25, alignItems: "center", justifyContent: "center"}}>
+            <Pressable onPress={() => navigation.navigate("Create", {loop_id: loop_id, postMessage: loop_name})}>
+                <Ionicons style={{left: 2}} size={50} color={"gray"} name="add" />
+            </Pressable>
+        </Animated.View>
+    </View>
+  )
+}

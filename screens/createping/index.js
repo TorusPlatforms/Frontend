@@ -18,11 +18,12 @@ const exampleUserData = {
   description: "A pretty funny guy. Has a strong affinity for dogs. \n Stefan Murphy: 'The test is in'"
 }
 
-export default function CreatePing() {
+export default function CreatePing({ route }) {
+  console.log(route.params)
   const navigation = useNavigation();
   const [user, setUser] = useState(null)
   const [content, setContent] = useState("");
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [image, setImage] = useState(null);
 
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -62,17 +63,28 @@ export default function CreatePing() {
 
   const handleImageSelect = (image) => {
     if (!image.canceled) {
-      setSelectedImage(image);
+      setImage(image);
     }
     console.log("Selected Image in CreatePing:", image);
   };
 
   const removeImage = () => {
-      setSelectedImage(null); // set image to null (delete image)
+      setImage(null);
   };
 
   async function handlePost() {
-    await createPost(user, content, location.coords.latitude, location.coords.longitude, selectedImage);
+    console.log("hi", route.params)
+
+    if (route.params && route.params.loop_id) {
+      console.log("sdfsdfo")
+      await createPost({author: user.username, pfp_url: user.pfp_url, content: content, loop_id: route.params.loop_id, image: image})
+    } else {
+      const latitude = location.coords.latitude;
+      const longitude = location.coords.longitude;
+  
+      await createPost({author: user.username, pfp_url: user.pfp_url, content, latitude, longitude, college: user.college, image: image})
+    }
+    
     navigation.goBack()
   }
 
@@ -91,6 +103,10 @@ export default function CreatePing() {
 
         <View style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
           <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>Send a Ping</Text>
+
+          {route.params && route.params.postMessage && (
+            <Text style={{color: "white", fontSize: 12}}>Posting in {route.params.postMessage}</Text>
+          )}
         </View>
 
         <View style={{ flexDirection: "column", alignItems: "center", marginTop: 20 }}>
@@ -109,9 +125,9 @@ export default function CreatePing() {
 
           </View>
 
-            {selectedImage && selectedImage.assets && selectedImage.assets.length > 0 && selectedImage.assets[0].uri && (
+            {image && (
               <View style={{marginTop: 10}}>
-                <Image source={{ uri: selectedImage.assets[0].uri }} style={{ width: 250, height: 300, borderRadius: 20, marginLeft: 20}} />
+                <Image source={{ uri: image.assets[0].uri }} style={{ width: 250, height: 300, borderRadius: 20, marginLeft: 20}} />
                 
                 <Pressable onPress={removeImage} style={{position: "absolute", right: -10, top: -10}} >
                   <MaterialIcons name="cancel" size={32} color="gray" />
@@ -136,10 +152,7 @@ export default function CreatePing() {
 
             
 
-          <TouchableOpacity
-            style={{ backgroundColor: "rgb(54, 163, 107)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop: 20 }}
-            onPress={handlePost}
-          >
+          <TouchableOpacity style={{ backgroundColor: "rgb(54, 163, 107)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop: 20 }} onPress={handlePost}>
             <Text style={{ color: "black", textAlign: "center" }}>Post</Text>
           </TouchableOpacity>
         </View>

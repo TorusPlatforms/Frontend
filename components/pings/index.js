@@ -7,7 +7,7 @@ import { findTimeAgo } from "../utils";
 import styles from "./styles";
 
 
-export const Ping = ({navigation, data, handleComment, handleShare }) => {
+export const Ping = ({navigation, data, handleComment }) => {
     const [isLiked, setIsLiked] = useState(data.isLiked)
     const [numOfLikes, setNumOfLikes] = useState(data.numberof_likes)
 
@@ -61,11 +61,11 @@ export const Ping = ({navigation, data, handleComment, handleShare }) => {
             <Pressable onPress={handleComment}>
               <Ionicons style={styles.pingIcon} name="chatbubble-outline" size={20}></Ionicons>
             </Pressable>
-    
+{/*     
             <Pressable onPress={() => handleShare(data.postURL)}>
               <Ionicons style={styles.pingIcon} name="share-social-outline" size={20}></Ionicons>
             </Pressable>
-    
+     */}
             <Pressable>
               <Ionicons style={styles.pingIcon} name="paper-plane-outline" size={20}></Ionicons>
             </Pressable>

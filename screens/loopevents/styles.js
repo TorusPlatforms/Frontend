@@ -7,12 +7,12 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center"
     },
-    manageOptions:{
-        fontSize:30,
-        alignSelf:"center",
-        color:"blue",
-        marginVertical:20
-    }
+
+    item_seperator: {
+        backgroundColor: 'gray',
+        height: 1,
+        width: "100%",
+      },
 })
 
 export default styles;

@@ -1,7 +1,7 @@
 import { getAuth } from "firebase/auth";
 import { Share, Alert } from 'react-native'
 import { combineDateAndTme } from "../utils";
-
+import { AlreadyExistsError } from "../utils/errors";
 
 async function getToken() {
   const auth = getAuth()
@@ -125,6 +125,38 @@ export async function getPings(user) {
     }
   }
 
+  export async function getLoopPings(loop_id) {
+    const token = await getToken()
+    console.log(token)
+    
+    //if college is none, should fetch by location instead
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/posts/loop/${loop_id}`;
+
+    try {  
+      const response = await fetch(serverUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (response.status === 404) {
+        return []
+      }
+      
+      if (!response.ok) {
+        throw new Error(`Error Getting Pings! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      return (responseData)
+  
+    } catch (error) {
+      console.error('Error Getting Pings:', error.message);
+    }
+  }
+
 
 export async function getEvents() {
     const token = await getToken()
@@ -191,26 +223,34 @@ export async function joinLeaveEvent(event) {
 }
 
 
-export async function createPost(user, content, latitude, longitude, image = null ) {
+export async function createPost({  content, author, pfp_url, latitude, longitude, college, loop_id, image }) {
     const token = await getToken()
     
     const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/posts/add`;
 
+    console.log("im here")
     const postData = {
       content: content,
-      college: user.college,
-      pfp_url: user.profile_picture || user?.profile_picture,    
+      author: author,
+      pfp_url: pfp_url,
       latitude: latitude,
-      longitude: longitude
-    };
-
-    if (image) {
-      const uploadedImage = await uploadToCDN(image)
-      const image_url = uploadedImage.url
-      postData["image_url"] = image_url
+      longitude: longitude,
+      college: college,
+      loop_id: loop_id
     }
 
-    console.log(postData)
+    console.log("HEREEEE", postData)
+
+    if (college && loop_id) {
+      throw new Error("College and loop_id should NOT be passed at the same time")
+    }
+    
+    if (image) {
+      const uploadedImage = await uploadToCDN(image)
+      postData.image_url = uploadedImage.url
+    }
+
+    console.log(content, loop_id)
 
     try {  
       const response = await fetch(serverUrl, {
@@ -238,7 +278,7 @@ export async function createPost(user, content, latitude, longitude, image = nul
 }
 
 
-export async function createEvent(name, address, day, time, details, image = null ) {
+export async function createEvent({name, address, day, time, details, image}) {
   const token = await getToken()
   
   const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/events/create`;
@@ -253,11 +293,15 @@ export async function createEvent(name, address, day, time, details, image = nul
     details: details,    
   };
 
+  
   if (image) {
     const uploadedImage = await uploadToCDN(image)
     const image_url = uploadedImage.url
-    eventData["image_url"] = image_url
+    eventData.image_url = image_url
   }
+
+  console.log("EVENT DATE", eventData)
+
 
   try {  
     const response = await fetch(serverUrl, {
@@ -617,10 +661,10 @@ export async function getLoops(user) {
   }
 
 
-export async function getLoopInfo(loopId) {
+export async function getLoop(loop_id) {
     const token = await getToken()
 
-    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}`;
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}`;
 
     try {  
       const response = await fetch(serverUrl, {
@@ -648,33 +692,48 @@ export async function getLoopInfo(loopId) {
 
 
 
-export async function createLoop(loopData) {
+export async function createLoop({ name, creator_id, status, location, image}) {
     const token = await getToken()
-    console.log(loopData)
+
     const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/add`;
 
-    try {  
-      const response = await fetch(serverUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(loopData)
-      });
-
-      const responseData = await response.json();
-      console.log('Response Data:', responseData);
-
-      if (!response.ok) {
-        throw new Error(`Error Creating Loop! Status: ${response.status}`);
-      }
-
-      return (responseData)
-
-    } catch (error) {
-      console.error('Error Creating Loop:', error.message);
+    const loopData = {
+      name: name,
+      creator_id: creator_id,
+      status: status,
+      location: location,
     }
+    
+        
+    if (image) {
+      const uploadedImage = await uploadToCDN(image)
+      loopData.pfp_url = uploadedImage.url
+    }
+
+    console.log(loopData)
+
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(loopData)
+    });
+
+    const responseData = await response.json();
+    console.log('Response Data:', responseData);
+    
+    if (responseData.status === 403) {
+      throw new AlreadyExistsError(responseData.message);
+    }
+
+    if (!response.ok) {
+      throw new Error(`Error Creating Loop! Status: ${response.status}`);
+    }
+
+    return (responseData)
+
 }
 
   
@@ -910,14 +969,15 @@ export async function getLoopOwner(loopId) {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-      });
+      }); 
+
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
       
       if (!response.ok) {
         throw new Error(`Error joining loop! Status: ${response.status}`);
       }
-  
-      const responseData = await response.json();
-      console.log('Response Data:', responseData);
+      
       return (responseData)
   
     } catch (error) {
@@ -928,7 +988,6 @@ export async function getLoopOwner(loopId) {
 
   export async function leaveLoop(loopId) {
     const token = await getToken()
-    await console.log(token)
 
     const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/leave`;
 
@@ -941,12 +1000,13 @@ export async function getLoopOwner(loopId) {
         },
       });
       
+      const responseData = await response.json();
+      console.log('Response Data:', responseData);
+
       if (!response.ok) {
         throw new Error(`Error leaving loop! Status: ${response.status}`);
       }
   
-      const responseData = await response.json();
-      console.log('Response Data:', responseData);
       return (responseData)
   
     } catch (error) {
