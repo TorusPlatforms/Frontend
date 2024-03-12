@@ -21,10 +21,7 @@ import CreatePing from './screens/createping';
 import Loops from "./screens/discoverloops";
 import Events from "./screens/events";
 import LoopsPage from './screens/loop'; //this is the view for a single loop
-import LoopChat from './screens/loopchat'
-import LoopInfo from "./screens/loopinfo"
 import CreateLoop from "./screens/createloop";
-import LoopAnnouncements from "./screens/loopannouncements";
 import Messages from "./screens/messages" 
 import DirectMessage from "./screens/directmessage";
 import Settings from "./screens/settings";
@@ -48,6 +45,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
   authDomain: "torus-ad58e.firebaseapp.com",
   projectId: "torus-ad58e",
+  
   storageBucket: "torus-ad58e.appspot.com",
   messagingSenderId: "210175229761",
   appId: "1:210175229761:web:774b6b86fb6255e3592bc0",
@@ -147,9 +145,6 @@ function App() {
         <Stack.Screen name="CreateLoop" component={CreateLoop} options={{pesentation: "modal"}} />
         <Stack.Screen name="CreateEvent" component={CreateEvent} options={{pesentation: "modal"}} />
         <Stack.Screen name="Loop" component={LoopsPage} options={{headerShown: true, headerTitle: ""}}/>
-        <Stack.Screen name="LoopChat" component={LoopChat} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
-        <Stack.Screen name="LoopAnnouncements" component={LoopAnnouncements} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
-        <Stack.Screen name="LoopInfo" component={LoopInfo}/>
         <Stack.Screen name="DirectMessage" component={DirectMessage} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.username })}/>
         <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>

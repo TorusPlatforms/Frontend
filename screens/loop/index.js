@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { getLoop } from "../../components/handlers";
 import LoopPings from "../looppings";
+import LoopEvents from "../loopevents";
 
 import styles from "./styles";
 
@@ -35,7 +36,6 @@ export default function LoopsPage({ route }) {
     return <ActivityIndicator />
   }
 
-  console.log(insets)
 
   return (
     <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right}}>
@@ -53,14 +53,14 @@ export default function LoopsPage({ route }) {
             )}
 
             <Text style={{color: "white", fontSize: 24, marginTop: 10}}>{loop.name}</Text>
-            <Text style={{color: "white", fontSize: 18, marginTop: 5}}>Member Count: {loop.member_count}</Text>
+            <Text style={{color: "white", fontSize: 18, marginTop: 5}}>{loop.description}</Text>
         </View>
         
         <View style={{flex: 1}}>
           {loop.isJoined && (
               <Tab.Navigator screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)' }, tabBarLabelStyle: { color: "white" }}}>
-                <Tab.Screen name="Pings" component={LoopPings} initialParams={{loop_id: loop_id, loop_name: loop.name}}/>
-                <Tab.Screen name="Events" component={LoopPings} />
+                <Tab.Screen name="Pings" component={LoopPings} initialParams={{loop: loop}}/>
+                <Tab.Screen name="Events" component={LoopEvents} initialParams={{loop: loop}} />
                 <Tab.Screen name="About" component={LoopPings} />
               </Tab.Navigator>
           )}

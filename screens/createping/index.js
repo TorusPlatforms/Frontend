@@ -6,7 +6,7 @@ import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 
 import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } from "../../components/imagepicker";
-import { getUser, uploadToCDN, createPost } from "../../components/handlers";
+import { getUser, createPost } from "../../components/handlers";
 import styles from "./styles";
 
 const exampleUserData = {
@@ -73,17 +73,18 @@ export default function CreatePing({ route }) {
   };
 
   async function handlePost() {
-    console.log("hi", route.params)
-
-    if (route.params && route.params.loop_id) {
-      console.log("sdfsdfo")
-      await createPost({author: user.username, pfp_url: user.pfp_url, content: content, loop_id: route.params.loop_id, image: image})
-    } else {
-      const latitude = location.coords.latitude;
-      const longitude = location.coords.longitude;
-  
-      await createPost({author: user.username, pfp_url: user.pfp_url, content, latitude, longitude, college: user.college, image: image})
+    const postData = {
+      author: (route.params?.loop) ? route.params.loop.name : user.username, 
+      pfp_url: (route.params?.loop) ? route.params.loop.pfp_url : user.pfp_url, 
+      content: content, 
+      latitude: location.coords.latitude, 
+      longitude: location.coords.longitude, 
+      college: user.college, 
+      image: image, 
+      loop_id: route.params?.loop?.loop_id 
     }
+    console.log(postData)
+    await createPost(postData)
     
     navigation.goBack()
   }
@@ -104,8 +105,8 @@ export default function CreatePing({ route }) {
         <View style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
           <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>Send a Ping</Text>
 
-          {route.params && route.params.postMessage && (
-            <Text style={{color: "white", fontSize: 12}}>Posting in {route.params.postMessage}</Text>
+          {route.params?.loop && (
+            <Text style={{color: "white", fontSize: 12}}>Posting as {route.params.loop.name}</Text>
           )}
         </View>
 

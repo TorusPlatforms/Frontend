@@ -52,23 +52,8 @@ export default function Profile() {
   
 
     async function fetchLoops() {
-
-        const user = await getUser();
-        const username = await user.username;
-
-        const loops = await getRecentLoops(await username, 6);
-
-        // const exampleLoopsData = {name: "Dorm", pfp: "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png"}
-        // const loops = Array(6).fill(loopData);
-        // console.log("FAKE SDFISODFJOSIDJFOISJEOWFIJG LOOPS\n\n\n");
-        // for (let i = 0; i < loops.length; i++) {
-        //     if (loops[i].profile_picture == null) {
-        //         loops[i].profile_picture = "https://icons.iconarchive.com/icons/graphicloads/100-flat/256/home-icon.png";
-        //     }
-        //     console.log("fake loop" + loops[i])
-        // }
+        const loops = await getRecentLoops(6);
         setLoops(loops);
-        // return new Array(6).fill(loopData);
     } 
     
 
@@ -115,7 +100,7 @@ export default function Profile() {
           <TouchableOpacity
             key={index}
             style={[iconStyles[index], { justifyContent: "center", alignItems: "center", position: "absolute" }]}
-            onPress={async () => navigation.navigate('Loop', { loopId: item.loop_id })}
+            onPress={async () => navigation.navigate('Loop', { loop_id: item.loop_id })}
           >
             <Image
               style={{
@@ -246,7 +231,7 @@ export default function Profile() {
     
                 <View style={styles.torusContainer}>
                     <View style={styles.centerLoop}>
-                        {loops.length != 0 && (
+                        {loops?.length != 0 && (
                             <Pressable onPress={() => navigation.navigate("MyLoops")} style={styles.centerLoopIcon}>
                                 <MaterialCommunityIcons name="google-circles-communities" color={"gray"} size={60}/>
                             </Pressable>

@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect, cloneElement } from "react";
-import { View, TouchableOpacity, Text, TextInput, TouchableWithoutFeedback, Image, Keyboard, Pressable, ActivityIndicator } from "react-native";
+import { View, TouchableOpacity, Text, TextInput, Image, Keyboard, Pressable, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 import { pickImage } from '../../components/imagepicker';
-import { createLoop, getUser, joinLoop, uploadToCDN } from "../../components/handlers";
+import { createLoop, getUser, joinLoop } from "../../components/handlers";
 import { AlreadyExistsError } from "../../components/utils/errors";
 
 const exampleLoopData = {
@@ -25,6 +26,7 @@ export default function CreateLoop() {
     const [image, setImage] = useState(); 
     const [name, setName] = useState();
     const [user, setUser] = useState();
+    const [description, setDescription] = useState();
     const [errorMessage, setErrorMessage] = useState(null)
     
     async function handleImageSelect(image) {
@@ -36,13 +38,14 @@ export default function CreateLoop() {
     async function handleCreateLoop() {
   
         try {
-          const createdLoop = await createLoop({name: name, creator_id: user.username, status: "public", location: user.college, image: image })
+          const createdLoop = await createLoop({name: name, creator_id: user.username, status: "public", location: user.college, description: description, image: image })
 
           console.log("Created Loop", createdLoop)
           
           const newLoopId = createdLoop.LOOPID
           await joinLoop(newLoopId)
           
+          navigation.navigate("Loop", {loop_id: newLoopId})
         } catch (error) {
           if (error instanceof AlreadyExistsError) {
             setErrorMessage(error.message)
@@ -150,69 +153,90 @@ export default function CreateLoop() {
     
     if (!user) {
       return <ActivityIndicator />
-    } else {
-        return (
-          <TouchableWithoutFeedback onPress={handleTapOutside}>
-              <SafeAreaView style={{ flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
-                  <View style={{flex: 0.5}}>
-                    <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 10 }}>
-                      <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Cancel</Text>
-                    </TouchableOpacity>
-                  </View>
-            
+    }
+        
+    return (
+        <SafeAreaView style={{ flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
+          <KeyboardAwareScrollView contentContainerStyle={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
 
-                  <View style={{flex: 1}}>
-                    <Text style={{color: "white", textAlign: "center", fontSize: 24}}>Create Your Loop</Text>
-                    <Text style={{color: "white", textAlign: "center"}}>Your loop is where you can connect with your community, from your 10 friends to a hundred-member club</Text>
-                  </View>
+              <View style={{flex: 0.5}}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 10 }}>
+                  <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+        
 
-                  <View style={{alignItems: "center", flex: 1}}>
-                    <Pressable onPress={() => pickImage(handleImageSelect)} style={{width: 100, height: 100, borderRadius: 50, borderWidth: 2, justifyContent: 'center', alignItems: "center", borderStyle: 'dashed', borderColor: "gray"}}>
-                      {!image && (
-                          <View style={{justifyContent: "center", alignItems: "center"}}>
-                            <Ionicons name="camera" size={24} color="gray" />
-                            <Text style={{color: "gray"}}>Upload</Text>
-                          </View>
-                      )}
+              <View style={{flex: 1}}>
+                <Text style={{color: "white", textAlign: "center", fontSize: 24}}>Create Your Loop</Text>
+                <Text style={{color: "white", textAlign: "center"}}>Your loop is where you can connect with your community, from your 10 friends to a hundred-member club</Text>
+              </View>
 
-                      
-                      {image && (
-                          <View style={{justifyContent: "center", alignItems: "center"}}>
-                            <Image style={{width: 100, height: 100, borderRadius: 50}} source={{uri:  image.assets[0].uri}}/>
-                          </View>
-                      )}
-                      <Ionicons name="add-circle" size={32} color="blue" style={{position: "absolute", top: -10, right: 0}}/>
-                    </Pressable>
-                  </View>
+              <View style={{alignItems: "center", flex: 1}}>
+                <Pressable onPress={() => pickImage(handleImageSelect)} style={{width: 100, height: 100, borderRadius: 50, borderWidth: 2, justifyContent: 'center', alignItems: "center", borderStyle: 'dashed', borderColor: "gray"}}>
+                  {!image && (
+                      <View style={{justifyContent: "center", alignItems: "center"}}>
+                        <Ionicons name="camera" size={24} color="gray" />
+                        <Text style={{color: "gray"}}>Upload</Text>
+                      </View>
+                  )}
 
-                  <View style={{marginTop: 25, alignItems: "flex-start", paddingLeft: 20, flex: 1, justifyContent: "space-evenly"}}>
-                    <Text style={{color: "gray", fontWeight: "bold"}}>Loop Name</Text>
+                  
+                  {image && (
+                      <View style={{justifyContent: "center", alignItems: "center"}}>
+                        <Image style={{width: 100, height: 100, borderRadius: 50}} source={{uri:  image.assets[0].uri}}/>
+                      </View>
+                  )}
+                  <Ionicons name="add-circle" size={32} color="blue" style={{position: "absolute", top: -10, right: 0}}/>
+                </Pressable>
+              </View>
 
-                    <TextInput 
-                        onChangeText={setName}
-                        value={name}
-                        style={{
-                          backgroundColor: "rgb(109, 116, 120)",
-                          width: "90%",
-                          borderRadius: 10,
-                          paddingLeft: 10,
-                          height: 40
-                        }}
-                      />
+              <View style={{marginTop: 25, alignItems: "flex-start", paddingLeft: 20, flex: 1, justifyContent: "space-evenly"}}>
+                  <Text style={{color: "gray", fontWeight: "bold"}}>Loop Name</Text>
 
-                      {errorMessage && (
-                        <Text style={{color: "red"}}>{errorMessage}</Text>
-                      )}
-                  </View>
+                  <TextInput 
+                      onChangeText={setName}
+                      value={name}
+                      style={{
+                        backgroundColor: "rgb(109, 116, 120)",
+                        width: "90%",
+                        borderRadius: 10,
+                        paddingLeft: 10,
+                        height: 40
+                      }}
+                    />
 
-                  <View style={{flex: 3, marginTop: 50, alignItems: "center"}}>
-                    <Pressable onPress={handleCreateLoop} style={{backgroundColor: "blue", width: "90%", height: 40, justifyContent: "center", alignItems: "center", borderRadius: 20}}>
-                      <Text style={{color: "white"}}>Create Loop</Text>
-                    </Pressable>
-                  </View>
-              </SafeAreaView>
-              </TouchableWithoutFeedback>
+                  {errorMessage && (
+                    <Text style={{color: "red"}}>{errorMessage}</Text>
+                  )}
+              </View>
+                  
+              <View style={{marginTop: 25, alignItems: "flex-start", paddingLeft: 20, flex: 1, justifyContent: "space-evenly"}}>
+                  <Text style={{color: "gray", fontWeight: "bold"}}>Description</Text>
 
-        );
-      }
-  };
+                  
+                  <TextInput 
+                      onChangeText={setDescription}
+                      value={description}
+                      placeholder="A fun place to chill!"
+                      placeholderTextColor={"black"}
+                      style={{
+                        backgroundColor: "rgb(109, 116, 120)",
+                        width: "90%",
+                        borderRadius: 10,
+                        paddingLeft: 10,
+                        height: 40
+                      }}
+                    />
+              </View>
+
+              <View style={{flex: 3, marginTop: 50, alignItems: "center"}}>
+                <Pressable onPress={handleCreateLoop} style={{backgroundColor: "blue", width: "90%", height: 40, justifyContent: "center", alignItems: "center", borderRadius: 20}}>
+                  <Text style={{color: "white"}}>Create Loop</Text>
+                </Pressable>
+              </View>
+
+          </KeyboardAwareScrollView>
+        </SafeAreaView>
+
+    );
+};

@@ -125,7 +125,7 @@ export async function getPings(user) {
     }
   }
 
-  export async function getLoopPings(loop_id) {
+export async function getLoopPings(loop_id) {
     const token = await getToken()
     console.log(token)
     
@@ -148,15 +148,49 @@ export async function getPings(user) {
       if (!response.ok) {
         throw new Error(`Error Getting Pings! Status: ${response.status}`);
       }
-  
+
       const responseData = await response.json();
       return (responseData)
-  
+
     } catch (error) {
       console.error('Error Getting Pings:', error.message);
     }
-  }
+}
 
+
+export async function getLoopEvents(loop_id) {
+  const token = await getToken()
+  console.log(token)
+  
+  //if college is none, should fetch by location instead
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/events/loop/${loop_id}`;
+
+  try {  
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    const responseData = await response.json();
+    console.log(response.status, responseData)
+
+    if (response.status === 404) {
+      return []
+    }
+    
+    if (!response.ok) {
+      throw new Error(`Error Getting Pings! Status: ${response.status}`);
+    }
+
+    return (responseData)
+
+  } catch (error) {
+    console.error('Error Getting Pings:', error.message);
+  }
+}
 
 export async function getEvents() {
     const token = await getToken()
@@ -228,7 +262,6 @@ export async function createPost({  content, author, pfp_url, latitude, longitud
     
     const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/posts/add`;
 
-    console.log("im here")
     const postData = {
       content: content,
       author: author,
@@ -239,18 +272,13 @@ export async function createPost({  content, author, pfp_url, latitude, longitud
       loop_id: loop_id
     }
 
-    console.log("HEREEEE", postData)
-
-    if (college && loop_id) {
-      throw new Error("College and loop_id should NOT be passed at the same time")
-    }
-    
     if (image) {
       const uploadedImage = await uploadToCDN(image)
       postData.image_url = uploadedImage.url
     }
 
-    console.log(content, loop_id)
+    console.log(postData)
+
 
     try {  
       const response = await fetch(serverUrl, {
@@ -278,7 +306,7 @@ export async function createPost({  content, author, pfp_url, latitude, longitud
 }
 
 
-export async function createEvent({name, address, day, time, details, image}) {
+export async function createEvent({name, address, day, time, details, image, isPublic, loop_id}) {
   const token = await getToken()
   
   const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/events/create`;
@@ -290,7 +318,9 @@ export async function createEvent({name, address, day, time, details, image}) {
     name: name,
     time: date.getTime(),
     address: address,
-    details: details,    
+    details: details,  
+    public: isPublic,
+    loop_id: loop_id
   };
 
   
@@ -299,8 +329,6 @@ export async function createEvent({name, address, day, time, details, image}) {
     const image_url = uploadedImage.url
     eventData.image_url = image_url
   }
-
-  console.log("EVENT DATE", eventData)
 
 
   try {  
@@ -313,12 +341,15 @@ export async function createEvent({name, address, day, time, details, image}) {
       body: JSON.stringify(eventData),
     });
 
+    
+    const responseData = await response.json();
+    console.log('Created Event:', responseData);
+
+    
     if (!response.ok) {
       throw new Error(`Error Creating Event! Status: ${response.status}`);
     }
 
-    const responseData = await response.json();
-    console.log('Created Event:', responseData);
     return (responseData)
 
   } catch (error) {
@@ -541,7 +572,7 @@ export async function updateUserProfilePicture(profilePictureURL) {
 export async function getThreads() {
   const token = await getToken()
 
-  const serverUrl = 'https://97a9-76-21-126-166.ngrok-free.app/api/messages/threads';
+  const serverUrl = 'https://backend-26ufgpn3sq-uc.a.run.app/api/messages/threads';
 
   try {
     const response = await fetch(serverUrl, {
@@ -692,7 +723,7 @@ export async function getLoop(loop_id) {
 
 
 
-export async function createLoop({ name, creator_id, status, location, image}) {
+export async function createLoop({ name, creator_id, status, location, image, description}) {
     const token = await getToken()
 
     const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/add`;
@@ -702,6 +733,7 @@ export async function createLoop({ name, creator_id, status, location, image}) {
       creator_id: creator_id,
       status: status,
       location: location,
+      description: description
     }
     
         
@@ -1306,11 +1338,11 @@ export async function getGoogleMapsKey() {
 }
 
 
-export async function getRecentLoops(userId, n) {
+export async function getRecentLoops(n) {
   
   const token = await getToken()
 
-  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/joined/${userId}/${n}`;
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/joined/${n}`;
 
   try {
     const response = await fetch(serverUrl, {
@@ -1321,12 +1353,15 @@ export async function getRecentLoops(userId, n) {
       },
     })
 
+    const responseData = await response.json();
+    console.log('recent ' + n + ' loops:', responseData);
+
+
     if (!response.ok) {
       throw new Error(`Error getting msgs! Status: ${response.status}`);
     }
 
-    const responseData = await response.json();
-    console.log('recent ' + n + ' loops:', responseData);
+   
     return responseData;
 
   } catch (error) {

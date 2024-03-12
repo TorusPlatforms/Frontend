@@ -11,8 +11,8 @@ import styles from "./styles";
 
 export default function LoopPings({ route }) {
   const navigation = useNavigation()
-
-  const { loop_id, loop_name } = route.params;
+  
+  const loop = route.params.loop
   
   const [pings, setPings] = useState([]);
 
@@ -61,7 +61,7 @@ export default function LoopPings({ route }) {
 
 
   async function fetchPings() {
-    const pings = await getLoopPings(loop_id)
+    const pings = await getLoopPings(loop.loop_id)
     console.log(pings)
     setPings(pings)
   }
@@ -97,12 +97,14 @@ export default function LoopPings({ route }) {
             onMomentumScrollEnd={handleScrollEnd}
         />
         
-        <Animated.View style={{opacity: fadeAnim, width: 50, height: 50, borderRadius: 25, backgroundColor: "white", position: "absolute", bottom: 50, right: 25, alignItems: "center", justifyContent: "center"}}>
-            <Pressable onPress={() => navigation.navigate("Create", {loop_id: loop_id, postMessage: loop_name})}>
-                <Ionicons style={{left: 2}} size={50} color={"gray"} name="add" />
-            </Pressable>
-        </Animated.View>
-
+        {loop.isOwner && (
+            <Animated.View style={{opacity: fadeAnim, width: 50, height: 50, borderRadius: 25, backgroundColor: "white", position: "absolute", bottom: 50, right: 25, alignItems: "center", justifyContent: "center"}}>
+                <Pressable onPress={() => navigation.navigate("Create", {loop: loop})}>
+                    <Ionicons style={{left: 2}} size={50} color={"gray"} name="add" />
+                </Pressable>
+            </Animated.View>
+        )}
+ 
 
         <CommentModal
             modalVisible={modalVisible}

@@ -3,14 +3,15 @@ import { View, RefreshControl, Image, Text, FlatList, Animated, ActivityIndicato
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
-import { postComment, getLoopPings, getLoop } from "../../components/handlers";
+import { Event } from "../../components/events";
+import { getLoopEvents } from "../../components/handlers";
 import styles from "./styles";
 
 
 export default function LoopEvents({ route }) {
   const navigation = useNavigation()
 
-  const { loop_id, loop_name } = route.params;
+  const loop = route.params.loop;
   
   const [events, setEvents] = useState([]);
 
@@ -46,15 +47,9 @@ export default function LoopEvents({ route }) {
   }, []);
 
 
-  function handleReply(data) {
-      ref_input.current.focus()
-      setReplyingTo(data.author)
-      onChangeComment("@" + data.author + " ")
-  }
-
 
   async function fetchEvents() {
-    //const events = await getLoopPings(loop_id)
+    const events = await getLoopEvents(loop.loop_id)
     console.log(events)
     setEvents(events)
   }
@@ -77,13 +72,9 @@ export default function LoopEvents({ route }) {
             style={{paddingHorizontal: 5}}
             //refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             data={events}
-            renderItem={({item}) => 
-              <Ping 
-                data={item} 
-                setModalVisible={setModalVisible}  
-                handleComment={() => setCommentPing(item)}
-                navigation={navigation}
-              />
+            renderItem={
+              ({item}) => 
+                <Event data={item} />
             }
             ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
             onMomentumScrollBegin={handleScrollBegin}
@@ -91,7 +82,7 @@ export default function LoopEvents({ route }) {
         />
         
         <Animated.View style={{opacity: fadeAnim, width: 50, height: 50, borderRadius: 25, backgroundColor: "white", position: "absolute", bottom: 50, right: 25, alignItems: "center", justifyContent: "center"}}>
-            <Pressable onPress={() => navigation.navigate("Create", {loop_id: loop_id, postMessage: loop_name})}>
+            <Pressable onPress={() => navigation.navigate("CreateEvent", {loop: loop})}>
                 <Ionicons style={{left: 2}} size={50} color={"gray"} name="add" />
             </Pressable>
         </Animated.View>
