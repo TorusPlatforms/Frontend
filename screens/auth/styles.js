@@ -53,9 +53,10 @@ const styles = StyleSheet.create({
     },
 
     welcomeBackContainer: {
-        flex: 0.5, 
+        flex: 0.6, 
         justifyContent: "flex-end", 
-        alignItems: "center"
+        alignItems: "center",
+        paddingBottom: 10
     }
 })
 

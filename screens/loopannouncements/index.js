@@ -3,18 +3,17 @@ import { View, RefreshControl, Image, Text, FlatList, Animated, ActivityIndicato
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
-import { Event } from "../../components/events";
-import { getLoopEvents } from "../../components/handlers";
+import { Announcement } from "../../components/announcements";
+import { getAnnouncements } from "../../components/handlers";
 import styles from "./styles";
 
 
-export default function LoopEvents({ route }) {
+export default function LoopAnnouncements({ route }) {
   const navigation = useNavigation()
 
-  const loop = route.params.loop;
+  const { loop } = route.params;
   
-  const [events, setEvents] = useState([]);
-
+  const [announcements, setAnnouncements] = useState([]);
 
   const [refreshing, setRefreshing] = useState(false)
 
@@ -31,7 +30,6 @@ export default function LoopEvents({ route }) {
   };
 
   const handleScrollBegin = () => {
-    // Will change fadeAnim value to 0 in 3 seconds
     Animated.timing(fadeAnim, {
       toValue: 0,
       duration: 100,
@@ -42,25 +40,25 @@ export default function LoopEvents({ route }) {
 
   const onRefresh = useCallback(async() => {
     setRefreshing(true);
-    await fetchEvents()
+    await fetchAnnouncements()
     setRefreshing(false)
   }, []);
 
 
 
-  async function fetchEvents() {
-    const events = await getLoopEvents(loop.loop_id)
-    console.log(events)
-    setEvents(events)
+  async function fetchAnnouncements() {
+    const announcements = await getAnnouncements(loop.loop_id)
+    console.log(announcements)
+    setAnnouncements(announcements)
   }
 
   useEffect(() => {
-    fetchEvents()
+    fetchAnnouncements()
   }, []);
 
 
 
-  if (!events) {
+  if (!announcements) {
     return <ActivityIndicator />
   }
 
@@ -70,10 +68,10 @@ export default function LoopEvents({ route }) {
         <FlatList
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             style={{paddingHorizontal: 5}}
-            data={events}
+            data={announcements}
             renderItem={
               ({item}) => 
-                <Event data={item} />
+                <Announcement data={item} />
             }
             ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
             onMomentumScrollBegin={handleScrollBegin}
@@ -81,7 +79,7 @@ export default function LoopEvents({ route }) {
         />
         
         <Animated.View style={{opacity: fadeAnim, width: 50, height: 50, borderRadius: 25, backgroundColor: "white", position: "absolute", bottom: 50, right: 25, alignItems: "center", justifyContent: "center"}}>
-            <Pressable onPress={() => navigation.navigate("CreateEvent", {loop: loop})}>
+            <Pressable onPress={() => navigation.navigate("CreateAnnouncement", {loop: loop})}>
                 <Ionicons style={{left: 2}} size={50} color={"gray"} name="add" />
             </Pressable>
         </Animated.View>

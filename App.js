@@ -39,7 +39,8 @@ import EditField from "./screens/editfield";
 import MyLoops from "./screens/myloops";
 import UserProfile from './screens/userprofile';
 import CreateEvent from './screens/createevent';
-
+import CreateAnnouncement from './screens/createannouncement';
+import LoopChat from './screens/loopchat';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -144,7 +145,8 @@ function App() {
         <Stack.Screen name="Create" component={CreatePing} options={{presentation: "modal"}} />
         <Stack.Screen name="CreateLoop" component={CreateLoop} options={{pesentation: "modal"}} />
         <Stack.Screen name="CreateEvent" component={CreateEvent} options={{pesentation: "modal"}} />
-        <Stack.Screen name="Loop" component={LoopsPage} options={{headerShown: true, headerTitle: ""}}/>
+        <Stack.Screen name="CreateAnnouncement" component={CreateAnnouncement} options={{pesentation: "modal"}} />
+        <Stack.Screen name="Loop" component={LoopsPage}/>
         <Stack.Screen name="DirectMessage" component={DirectMessage} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.username })}/>
         <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>
@@ -160,6 +162,7 @@ function App() {
         <Stack.Screen name="Edit Profile" component={EditProfile} options={{headerShown: true}}/>
         <Stack.Screen name="EditField" component={EditField}/>
         <Stack.Screen name="UserProfile" component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })}/>
+        <Stack.Screen name="LoopChat" component={LoopChat} />
       </Stack.Navigator>
     </NavigationContainer>
     </SafeAreaProvider>

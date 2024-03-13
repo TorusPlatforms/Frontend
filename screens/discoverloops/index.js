@@ -67,7 +67,6 @@ export default function Loops({ route }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log("search focused");
       fetchLoops(); 
     }, [])
   );

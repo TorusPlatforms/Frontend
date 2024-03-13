@@ -989,10 +989,10 @@ export async function getLoopOwner(loopId) {
   }
 
 
-  export async function joinLoop(loopId) {
+  export async function joinLoop(loop_id) {
     const token = await getToken()
 
-    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/join`;
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/join`;
 
     try {  
       const response = await fetch(serverUrl, {
@@ -1018,10 +1018,10 @@ export async function getLoopOwner(loopId) {
   }
 
 
-  export async function leaveLoop(loopId) {
+  export async function leaveLoop(loop_id) {
     const token = await getToken()
 
-    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/leave`;
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/leave`;
 
     try {  
       const response = await fetch(serverUrl, {
@@ -1158,11 +1158,11 @@ export async function follow(username) {
     }
   }
 
-export async function getAnnouncements(loopId) {
+export async function getAnnouncements(loop_id) {
   
   const token = await getToken()
 
-  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/getAnnouncements/${loopId}`;
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/getAnnouncements/${loop_id}`;
 
   try {
     const response = await fetch(serverUrl, {
@@ -1173,12 +1173,13 @@ export async function getAnnouncements(loopId) {
       },
     })
 
+    const responseData = await response.json();
+    console.log('announcements:', responseData);
+
     if (!response.ok) {
-      throw new Error(`Error getting DM! Status: ${response.status}`);
+      throw new Error(`Error getting announcement! Status: ${response.status}`);
     }
 
-    const responseData = await response.json();
-    console.log('annoucnements:', responseData);
     return responseData;
 
   } catch (error) {
@@ -1187,10 +1188,20 @@ export async function getAnnouncements(loopId) {
 }
 
 
-export async function sendAnnouncement(loopId, content) {
+export async function sendAnnouncement({loop_id, content, image}) {
   const token = await getToken()
 
   const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/createAnnouncement`;
+
+  const announcementData = {
+    loop_id: loop_id,
+    content: content,
+  }
+
+  if (image) {
+    const uploadedImage = await uploadToCDN(image)
+    announcementData.image_url = uploadedImage.url
+  }
 
   try {
     const response = await fetch(serverUrl, {
@@ -1199,18 +1210,18 @@ export async function sendAnnouncement(loopId, content) {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        loop_id: loopId, 
-        content: content
-      })
+      body: JSON.stringify(announcementData)
     })
+
+
+    const responseData = await response.json();
+    console.log('Sent announcement:', responseData);
+
 
     if (!response.ok) {
       throw new Error(`Error cereating cannoucnemtn! Status: ${response.status}`);
     }
 
-    const responseData = await response.json();
-    console.log('Sent announcement:', responseData);
     return responseData
 
   } catch(error) {

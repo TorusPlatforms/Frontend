@@ -6,27 +6,18 @@ import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 
 import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } from "../../components/imagepicker";
-import { getUser, createPost } from "../../components/handlers";
+import { getUser, sendAnnouncement } from "../../components/handlers";
 import styles from "./styles";
 
-const exampleUserData = {
-  pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
-  displayName: "Grant Hough",
-  username: "@granthough",
-  following: 128,
-  followers: 259,
-  description: "A pretty funny guy. Has a strong affinity for dogs. \n Stefan Murphy: 'The test is in'"
-}
 
-export default function CreatePing({ route }) {
-  console.log(route.params)
+export default function CreateAnnouncement({ route }) {
   const navigation = useNavigation();
+
   const [user, setUser] = useState(null)
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
 
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
+  const { loop } = route.params
 
 
   async function fetchUser() {
@@ -41,25 +32,12 @@ export default function CreatePing({ route }) {
     requestPhotoLibraryPerms()
   }, []); 
 
-  useEffect(() => {
-    (async () => {
-      
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-      console.log(location)
-    })();
-  }, []);
-
-
+  
   const handleBackgroundPress = () => {
-      Keyboard.dismiss();
+    Keyboard.dismiss();
   };
+
 
   const handleImageSelect = (image) => {
     if (!image.canceled) {
@@ -73,18 +51,13 @@ export default function CreatePing({ route }) {
   };
 
   async function handlePost() {
-    const postData = {
-      author: (route.params?.loop) ? route.params.loop.name : user.username, 
-      pfp_url: (route.params?.loop) ? route.params.loop.pfp_url : user.pfp_url, 
-      content: content, 
-      latitude: location.coords.latitude, 
-      longitude: location.coords.longitude, 
-      college: user.college, 
-      image: image, 
-      loop_id: route.params?.loop?.loop_id 
+    const announcementData = {
+      loop_id: loop.loop_id,
+      content: content,
+      image: image
     }
-    console.log(postData)
-    await createPost(postData)
+    console.log(announcementData)
+    await sendAnnouncement(announcementData)
     
     navigation.goBack()
   }
@@ -102,12 +75,8 @@ export default function CreatePing({ route }) {
           <Text style={{ fontSize: 16, color: "white" }}>Cancel</Text>
         </TouchableOpacity>
 
-        <View style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
-          <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>Send a Ping</Text>
-
-          {route.params?.loop && (
-            <Text style={{color: "white", fontSize: 12}}>Posting as {route.params.loop.name}</Text>
-          )}
+        <View style={{ alignItems: 'center', justifyContent: 'flex-start', marginTop: 20 }}>
+          <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>Send an Announcement</Text>
         </View>
 
         <View style={{ flexDirection: "column", alignItems: "center"}}>
@@ -115,14 +84,13 @@ export default function CreatePing({ route }) {
             <Image style={styles.pfp} source={{ uri: user.pfp_url }} />
             <TextInput
               style={{marginLeft: 20, marginTop: 10, color: "white", fontSize: 18, minWidth: 300, maxWidth: 300, minHeight: 50, paddingRight: 20}}
-              placeholder="Ping your campus and beyond"
+              placeholder="Announce something to your Loop"
               multiline
               numberOfLines={4}
               placeholderTextColor="gray"
               value={content}
               onChangeText={setContent}
             />
-
           </View>
 
             {image && (

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable, Alert, Share } from 'react-native'
+import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable, Alert, Share, TouchableOpacity } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { handleLike } from "../handlers";
@@ -23,6 +23,15 @@ export const Ping = ({navigation, data, handleComment }) => {
       await handleLike(data)
     }
 
+    function handleAuthorPress() {
+        if (data.loop_id) {
+          navigation.navigate("Loop", {loop_id: data.loop_id})
+        } else {
+          navigation.navigate("UserProfile", {username: data.author})
+        }
+    }
+
+
     return (
       <View style={{marginVertical: 10, width: "95%", flexDirection: "row", padding: 10}}>
         <View style={{flexDirection: "col", flex: 1}}>
@@ -34,11 +43,10 @@ export const Ping = ({navigation, data, handleComment }) => {
     
         <View style={{marginLeft: 20, flex: 6}}>
           <View style={{flex: 1}}>
-            <Pressable onPress={() => navigation.navigate("UserProfile", {username: data.author})}>
-              {({pressed}) => (
-                <Text style={[styles.author, {color: pressed ? "grey": "white"}]}>{data.author}</Text>
-              )}
-            </Pressable>
+              <TouchableOpacity onPress={handleAuthorPress}>
+                  <Text style={styles.author}>{data.author}</Text>
+              </TouchableOpacity>
+
             <Text style={styles.text}>{data.content}</Text>
           </View>
         
@@ -71,14 +79,12 @@ export const Ping = ({navigation, data, handleComment }) => {
             </Pressable>
           </View>
 
-          <View style={{flex: 1, marginTop: 5}}>
+          <View style={{flex: 1, marginTop: 5, justifyContent: 'space-between', flexDirection: "row"}}>
             <Text style={styles.stats}>{numOfLikes} Likes • {data.numberof_comments} Comments</Text>
+            <Text style={{color: "gray"}}>{findTimeAgo(data.created_at)}</Text>
           </View>
         </View>
 
-        <View>
-          <Text style={{color: "gray"}}>{findTimeAgo(data.created_at)}</Text>
-        </View>
       </View>
   );
 }

@@ -1,13 +1,14 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { View, TouchableOpacity, Image, Text, Animated, Pressable, ActivityIndicator } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
 
-import { getLoop } from "../../components/handlers";
+import { getLoop, joinLoop } from "../../components/handlers";
 import LoopPings from "../looppings";
 import LoopEvents from "../loopevents";
+import LoopAnnouncements from '../loopannouncements';
 
 import styles from "./styles";
 
@@ -16,9 +17,8 @@ const Tab = createMaterialTopTabNavigator();
 
 export default function LoopsPage({ route }) {
   const navigation = useNavigation()
-  const insets = useSafeAreaInsets();
 
-  const loop_id = route.params.loop_id
+  const { loop_id } = route.params
 
   const [loop, setLoop] = useState();
 
@@ -26,6 +26,10 @@ export default function LoopsPage({ route }) {
   async function fetchLoop() {
     const loop = await getLoop(loop_id)
     setLoop(loop)
+  }
+
+  async function handleJoinLoop() {
+    await joinLoop(loop_id)
   }
 
   useEffect(() => {
@@ -38,7 +42,31 @@ export default function LoopsPage({ route }) {
 
 
   return (
-    <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", paddingBottom: insets.bottom, paddingLeft: insets.left, paddingRight: insets.right}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
+        <View style={{paddingHorizontal: 20, flexDirection: "row", justifyContent: "space-between"}}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="arrow-back" size={24} color="white" />        
+            </TouchableOpacity>
+
+            <View style={{flexDirection: "row", justifyContent: "space-between", width: loop.isOwner ? 90 : 60}}>
+              <TouchableOpacity onPress={() => navigation.navigate("LoopChat", {loop: loop})}>
+                <Ionicons name="chatbubble-ellipses" size={24} color="white" />            
+              </TouchableOpacity>
+
+              <TouchableOpacity>
+                <Ionicons name="information-circle" size={24} color="white" />      
+              </TouchableOpacity>
+              
+              {loop.isOwner && (
+                <TouchableOpacity>
+                    <Ionicons name="settings" size={24} color="white" />                    
+                </TouchableOpacity>
+              )}
+             
+            </View>
+        </View>
+
+
         <View style={{marginBottom: 20, alignItems: "center"}}>
             {!loop.pfp_url && (
                 <View>
@@ -56,284 +84,26 @@ export default function LoopsPage({ route }) {
             <Text style={{color: "white", fontSize: 18, marginTop: 5}}>{loop.description}</Text>
         </View>
         
+
         <View style={{flex: 1}}>
           {loop.isJoined && (
-              <Tab.Navigator screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)' }, tabBarLabelStyle: { color: "white" }}}>
+              <Tab.Navigator screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)' }, tabBarLabelStyle: { color: "white", fontSize: 10 }}}>
                 <Tab.Screen name="Pings" component={LoopPings} initialParams={{loop: loop}}/>
                 <Tab.Screen name="Events" component={LoopEvents} initialParams={{loop: loop}} />
-                <Tab.Screen name="About" component={LoopPings} />
+                <Tab.Screen name="Announcements" component={LoopAnnouncements} initialParams={{loop: loop}} />
               </Tab.Navigator>
           )}
 
           {!(loop.isJoined) && (
-              <View>
-                <Pressable>
-                  <Text>Join</Text>
-                </Pressable>
+              <View style={{justifyContent: "center", alignItems: "center"}}>
+                <TouchableOpacity onPress={handleJoinLoop} style={{backgroundColor: "yellow", padding: 20, paddingHorizontal: 50, borderRadius: 20}}>
+                  <Text style={{color: "black"}}>Join</Text>
+                </TouchableOpacity>
               </View>
           )}
 
         </View>
-       
-        
-   
-    </View>
+
+    </SafeAreaView>
   )
 }
-// const exampleLoopData = {
-//     pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
-//     displayName: "Grant's Group",
-//     memberCount: 30,
-//     notifications:false,
-//     description: "A place for Grants and Hoes to chill",
-//     chats: ['Chat 1', 'Chat 2', 'Chat 3', 'Chat 4', 'Chat 5','Chat 6', 'Chat 7', 'Chat 8', 'Chat 9'],
-//     recentAnnouncement: "Grant becomes world's first trillionaire after buying every single realfeel dumpad and selling them for billions each",
-//     recentAnnouncementUser:"@stefan",
-//     recentChat: "Did anyone do the GA homework? I really need it and i dont want to ask for more points back again",
-//     recentChatUser:"@grant",
-//     status:"public",
-//     owner:"@grant",
-//     users: ["DrumDogLover","TanujBeatMaster","GrantPawRhythms", "DogGrooveMaster","GrantAndTanujJams","RhythmHound","DrumBeatsWithTanuj","GrantCanineGrooves","TanujDogDrummer","BarkingBeatsGrant","DrummingTanujPaws","GrantAndDogRhythms","TanujDrumTails","PuppyGroovesGrant","BeatBuddyTanuj","WoofingRhythmsGrant","DrummingPawsTanuj","GrantGroovePup","TanujAndTheBeat","DoggyDrummingGrant","RhythmTanujTail","GrantPercussionPup","TanujDoggieBeats","PawsAndSnaresGrant","DrummingDogTanuj","GrantBeatsHowl","TanujRhythmBuddy","DogBeatHarmonyGrant","DrumPawsTanujGroove","GrantAndTanujRhythmic",]
-// }
-
-// const exampleUserData ={
-
-//     member: false
-
-// }
-
-
-// const ChatButton = ({ name, navigation }) => (
-//     <TouchableOpacity 
-//       onPress={() => navigation.navigate("LoopChat", {username: "Chat"})}
-//       style={{alignSelf: 'center', marginVertical: 10, backgroundColor: 'rgb(50,50,50)', paddingVertical: 15,paddingHorizontal: 50, borderRadius: 40,zIndex:0}}>
-//       <Text style={{ color: 'white', fontSize: 20 }}>{name}</Text>
-//     </TouchableOpacity>
-// );
-
-  
-
-// const LoopsPage = ({route}) => {
-//     const { loopID } = route.params.loopID;
-//     const navigation = useNavigation()
-
-    
-//     const [notifications, setNotifications] = useState(exampleLoopData.notifications);
-//     const [isMember, setIsMember] = useState(exampleUserData.member);
-//     const [activeButton, setActiveButton] = useState("chat");
-//     const [memberCount, setMemberCount] = useState();
-//     const [loopData, setLoopData] = useState([]);
-//     const [ownerName, setOwnerName] = useState([]);
-
-//     const fetchLoopData = async () => {
-//         try {
-//         const user = await getUser();
-//           const fetchedLoopsString = await getLoopInfo(loopID);
-//           const fetchedLoopOwner = await getLoopOwner(loopID);
-//           const membership = await getMemberStatus(loopID, user.username)
-//           console.log("FETCHED:", fetchedLoopsString);
-//           console.log("OWNEROWNEROWNEROWNER:", fetchedLoopOwner.username)
-//           console.log("MEMBER STATUS:", membership)
-//           setOwnerName(fetchedLoopOwner.username);
-//           setLoopData(fetchedLoopsString);
-//           setIsMember(membership)
-//           const members = await getLoopMembers(loopId);
-//           await setMemberCount(members.length);
-        
-//         } catch (error) {
-//           console.error("Error fetching loop:", error);
-//         }
-//       };
-
-//       useEffect(() => {
-//         fetchLoopData();
-//       }, []);
-
-//       useFocusEffect(
-//         useCallback(() => {
-//           console.log("loop focused");
-//           fetchLoopData(); 
-//         }, [])
-//       );
-
-//     const exitLoop = () => { //THIS IS NAVIGATION NOT ACTUALLY LEAVING A LOOP
-//         navigation.navigate("Home");
-//       };
-
-//       const goToInfo = (loopData) => {
-//         navigation.navigate('LoopInfo', { loopData, ownerName });
-//       };
-
-//       const join = () => {
-//         joinLoop(loopId)
-//         console.log(loopId);
-//         fetchLoopData()
-//     };
-
-//     const toggleNotifications = () => {
-//         setNotifications((prevNotifications) => !prevNotifications);
-//         //TURN ON OR OFF NOTIFICATIONS FOR THIS LOOP
-//       };
-
-//       return (
-//         <SafeAreaView style={{ backgroundColor: "rgb(22, 23, 24)",height:"100%" }}>
-//         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-//             <TouchableOpacity onPress={exitLoop} style={{ padding: 10, marginTop: 0 }}>
-//                 <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Back</Text>
-//             </TouchableOpacity>
-
-//             {isMember && (
-//             <View style={{ flexDirection: "row"}}>
-
-//             {/*<TouchableOpacity style={{padding:10,marginTop:30}} onPress={goToInfo}>
-//             <Icon name="information-circle-outline" size={30} color="#ffffff"/>
-//             </TouchableOpacity>*/}
-
-//             <TouchableOpacity onPress={toggleNotifications} style={{ padding: 10, marginTop: 0 }}>
-//             {notifications ? (
-//                 <Icon name="notifications-outline" size={30} color="#ffffff" />
-//             ) : (
-//                 <Icon name="notifications-off-outline" size={30} color="#ff0000" />
-//             )}
-//             </TouchableOpacity>
-
-//             </View>
-//             )}
-
-
-//         </View>
-//             {loopData && memberCount != null && (
-//             <View>
-//                 <Image
-//                 style={{ height: 150, width: 150, alignSelf: 'center', borderRadius: 200, borderWidth: 0.4, borderColor: "grey" }}
-//                 source={{ uri: loopData.profile_picture }}
-//                 />
-//                 <Text style={{ color: "white", fontSize: 30, marginTop: 20, alignSelf: "center", textAlign: "center", fontWeight:500 }}>{loopData.name}</Text>
-//                 <Text style={{ color: "white", fontSize: 20, alignSelf: "center", marginTop: 10, marginBottom: 0, fontWeight:400 }}>Advisor: {ownerName} </Text>
-
-//                 <Text style={{ color: "white", fontSize: 20, alignSelf: "center", marginTop: 0, marginBottom: 0, fontWeight:400 }}>
-//                 {memberCount} {memberCount === 1 ? "member" : "members"}
-//                 </Text>
-//                 <Text style={{ color: "white", fontSize: 20, alignSelf: "center", marginTop: 0, marginBottom: 30, fontWeight:400 }}>public</Text>
-
-//             </View>
-//             )}
-
-//           {loopData && loopData.length != [] && !isMember && (
-//                 <TouchableOpacity
-//                     style={{ backgroundColor: "rgb(54, 163, 107)", borderRadius: 40, borderWidth: 1,borderColor: "black", paddingVertical: 10, paddingHorizontal: 20,marginTop: 20,width: 150,alignContent: "center",alignSelf: "center", height: 60}}
-//                     onPress={join}>
-//                     <Text style={{ color: "black", textAlign: "center", alignSelf: "center", marginTop: 6, fontSize: 20 }}>Join</Text>
-//                 </TouchableOpacity>
-//             )}
-          
-
-
-
-//             {isMember && (
-//                 <View>
-//                 <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 0,marginHorizontal:20, paddingBottom: 10, borderBottomWidth: 1, borderColor: "white" }}>
-
-//             <TouchableOpacity onPress={() => setActiveButton("chat")}>
-//               <Text style={{ color: activeButton === "chat" ? "rgb(54, 163, 107)" : "white", paddingHorizontal: 20 }}>Chat</Text>
-//             </TouchableOpacity>
-
-//             <TouchableOpacity onPress={() => setActiveButton("pings")}>
-//               <Text style={{ color: activeButton === "pings" ? "rgb(54, 163, 107)" : "white", paddingHorizontal: 20, alignSelf: "center" }}>Pings</Text>
-//             </TouchableOpacity>
-
-//             <TouchableOpacity onPress={() => setActiveButton("events")}>
-//               <Text style={{ color: activeButton === "events" ? "rgb(54, 163, 107)" : "white", paddingHorizontal: 20 }}>Events</Text>
-//             </TouchableOpacity>
-
-//             <TouchableOpacity onPress={() => setActiveButton("about")}>
-//               <Text style={{ color: activeButton === "about" ? "rgb(54, 163, 107)" : "white", paddingHorizontal: 20 }}>About</Text>
-//             </TouchableOpacity>
-
-//           </View>
-//           <ScrollView style = {{height:"100%"}}>
-//           {activeButton === "pings" && (
-//             <TouchableOpacity
-//                 onPress={async () => navigation.navigate("LoopAnnouncements", { username: "Announcements", loopId: loopId})}>
-//                 <View style={{ alignSelf: 'center', marginTop: 10, backgroundColor: 'transparent', paddingVertical: 10, paddingHorizontal: 50, borderRadius: 0, zIndex: 0, }} >
-//                  <Text style={{ color: 'white', fontSize: 20, textDecorationLine: "underline" }}>Announcements</Text>   
-//                 </View>
-                
-            
-
-//           <View style={{ backgroundColor: 'rgb(50,50,50)', alignSelf: "center", marginTop: -5, width: "85%", borderRadius: 20, marginBottom: 10 }}>
-
-//     <View>
-
-
-//     <View style={{ paddingHorizontal: 25, marginBottom:30,marginTop:20 }}>
-//         <Text style={{ color: "white", fontWeight: 'bold'}}>{loopData.recentAnnouncementUser}</Text>
-//         <Text style={{ color: "white" }}>{loopData.recentAnnouncement}</Text>
-//     </View>
-//     </View>
-
-// </View>
-// </TouchableOpacity>
-
-// )}
-
-
-
-// {activeButton === "chat" && (
-// <TouchableOpacity
-//         onPress={() => navigation.navigate("LoopChat", { username: "Chat", loopId: loopId })}>
-//         <View style={{ alignSelf: 'left', marginTop: 10, backgroundColor: 'transparent', paddingVertical: 10, paddingHorizontal: 30, borderRadius: 40, zIndex: 0, }}>
-//             <Text style={{ color: 'white', fontSize: 15 }}>Main Chat</Text>
-//         </View>
-        
-    
-
-//  <View style={{ backgroundColor: 'rgb(50,50,50)', alignSelf: "center", marginTop: -5, width: "90%", borderRadius: 20, marginVertical: 0 }}>
-
-//     <View>
-
-
-//     <View style={{ paddingHorizontal: 15, marginBottom:30,marginTop:20 }}>
-//         <Text style={{ color: "white", fontWeight: 'bold'}}>{loopData.recentChatUser}</Text>
-//         <Text style={{ color: "white" }}>{loopData.recentChat}</Text>
-//     </View>
-//     </View>
-
-// </View>
-// </TouchableOpacity>
-// )}
-// {activeButton === "about" && (
-//             <View style ={{ alignContent:"center", marginVertical:20, flexDirection:"column"}}>
-//             <Text style = {{color:"white", alignSelf:"center",fontSize:20, fontWeight:400}}>{loopData.description}</Text>
-//               <Text style = {{color:"white", alignSelf:"center",fontSize:20, marginTop:10, fontWeight:500}}>Rules: </Text>
-//               <Text style = {{color:"white", alignSelf:"center",fontSize:20}}>{loopData.rules}</Text>
-//               <TouchableOpacity style={{}} onPress={() => goToInfo(loopData)}>
-//                 <Text style={{color: "white", alignSelf: "center", fontSize: 25, textDecorationLine: "underline", marginTop: 150}}>More Info</Text>
-//                 </TouchableOpacity>
-//             </View>
-//           )}
-//           </ScrollView>
-// </View>
-
-// )}
-
-
-// </SafeAreaView>
-// );
-// }
-
-// export default LoopsPage;
-
-
-
-/* 
-            <ScrollView style={{marginTop:10, alignSelf:"center",alignContent:"center",maxHeight:300,borderBottomWidth:0,borderTopWidth:0,borderColor:'white', minWidth:"100%",}}>
-            {exampleLoopData.chats.map((name, index) => (
-            <ChatButton key={index} name={name} navigation={navigation} />
-            ))
-            MULTIPLE CHATS GO HERE
-            }
-
-            
-            </ScrollView>
-            */
