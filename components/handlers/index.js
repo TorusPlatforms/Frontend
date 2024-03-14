@@ -665,11 +665,11 @@ export async function sendMessage(username, content) {
 export async function getLoops(user) {
     const token = await getToken()
 
-    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/Location/${user.college}`;
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/location/${user.college}`;
 
     try {  
       const response = await fetch(serverUrl, {
-        method: 'POST',
+        method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
@@ -772,7 +772,7 @@ export async function createLoop({ name, creator_id, status, location, image, de
   export async function editLoop(userId, loopId, content) {
     const token = await getToken();
   
-    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/edit/${userId}/${loopId}`;
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/edit`;
   
     try {
       const response = await fetch(serverUrl, {
@@ -802,7 +802,7 @@ export async function createLoop({ name, creator_id, status, location, image, de
   export async function removeLoop(userId, loopId) {
     const token = await getToken();
   
-    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/delete/${userId}/${loopId}`;
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/delete`;
   
     try {
       const response = await fetch(serverUrl, {
@@ -826,32 +826,7 @@ export async function createLoop({ name, creator_id, status, location, image, de
     }
   }
 
-  export async function isOwner(username, loopId) {
-    const token = await getToken();
-  
-    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/owner/${username}/${loopId}`;
-  
-    try {
-      const response = await fetch(serverUrl, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Error Verifying Ownership Status 1: ${response.status}`);
-      }
-  
-      const responseData = await response.json();
-      console.log('response:', responseData);
-      return (responseData);
-  
-    } catch (error) {
-      console.error('Error Verifying Ownership Status 2:', error.message);
-    }
-  }
+
 
 export async function getUserPings(username) {
   const token = await getToken()
@@ -1051,7 +1026,7 @@ export async function getLoopOwner(loopId) {
     const token = await getToken()
     await console.log(token)
 
-    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/members/${loopId}`;
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/members`;
 
     try {  
       const response = await fetch(serverUrl, {
@@ -1162,7 +1137,7 @@ export async function getAnnouncements(loop_id) {
   
   const token = await getToken()
 
-  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/getAnnouncements/${loop_id}`;
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/announcements`;
 
   try {
     const response = await fetch(serverUrl, {
@@ -1234,7 +1209,7 @@ export async function getChats(loopId) {
   
   const token = await getToken()
 
-  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/getMessages/${loopId}`;
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/messages`;
 
   try {
     const response = await fetch(serverUrl, {
@@ -1291,34 +1266,6 @@ export async function sendChat(loopId, content) {
 }
 
 
-export async function getRecentMsgs(loopId) {
-  
-  const token = await getToken()
-
-  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/getRecentMsgs/${loopId}`;
-
-  try {
-    const response = await fetch(serverUrl, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    })
-
-    if (!response.ok) {
-      throw new Error(`Error getting msgs! Status: ${response.status}`);
-    }
-
-    const responseData = await response.json();
-    console.log('recentmsgs:', responseData);
-    return responseData;
-
-  } catch (error) {
-    console.error("Error getting msgs", error.message);
-  }
-}
-
 
 export async function getGoogleMapsKey() {
 
@@ -1349,7 +1296,7 @@ export async function getGoogleMapsKey() {
 }
 
 
-export async function getRecentLoops(n) {
+export async function getJoinedLoops(n) {
   
   const token = await getToken()
 

@@ -6,7 +6,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 
-import { getUser, getUserPings, postComment, getRecentLoops } from "../../components/handlers";
+import { getUser, getUserPings, postComment, getJoinedLoops } from "../../components/handlers";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
@@ -52,7 +52,7 @@ export default function Profile() {
   
 
     async function fetchLoops() {
-        const loops = await getRecentLoops(6);
+        const loops = await getJoinedLoops(6);
         setLoops(loops);
     } 
     
