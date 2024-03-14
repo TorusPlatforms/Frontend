@@ -29,7 +29,8 @@ export default function LoopsPage({ route }) {
   }
 
   async function handleJoinLoop() {
-    await joinLoop(loop_id)
+    await joinLoop(loop_id);
+    navigation.navigate("Loop", {loop_id: loop_id})
   }
 
   useEffect(() => {
