@@ -5,7 +5,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 
-import { getUserByUsername, getUserPings, handleShare, handleLike, postComment, follow, unfollow } from "../../components/handlers";
+import { getUserByUsername, getUserPings, handleShare, handleLike, postComment, follow, unfollow, sendMessage } from "../../components/handlers";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
@@ -113,15 +113,15 @@ export default function UserProfile({ route, navigation }) {
                 </View>
 
                 <View style={{flexDirection: "row", justifyContent: "space-evenly", alignItems: "center", paddingVertical: 20}}>
-                    <Pressable onPress={toggleFollow} style={[styles.followButton, {backgroundColor: isFollowing ? 'gray' : 'blue', width: isFollowing ? 300 : 300}]}>
+                    <Pressable onPress={toggleFollow} style={[styles.followButton, {backgroundColor: isFollowing ? 'gray' : 'blue', width: isFollowing ? 150 : 300}]}>
                         <Text style={styles.followButtonText}>{isFollowing ? 'Following' : 'Follow'}</Text>
                     </Pressable>
 
-                    {/* {isFollowing && (
+                    {isFollowing && (
                         <Pressable onPress={() => navigation.push("DirectMessage", {username: user.username})} style={[{backgroundColor: "black"}, styles.followButton]}>
                             <Text style={styles.followButtonText}>Message</Text>
                         </Pressable>
-                    )} */}
+                    )}
                 </View>
                
                 <View style={styles.loopsListContainer}>

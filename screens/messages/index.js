@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
-import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, Modal, FlatList, Button, ActivityIndicator } from "react-native";
+import React, { useState, useCallback, useEffect } from "react";
+import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, Modal, FlatList, RefreshControl, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import { getThreads } from "../../components/handlers";
@@ -9,6 +9,7 @@ import styles from "./styles";
 export default function Messages() {
     const navigation = useNavigation()
     const [DMs, setDMs] = useState([])
+    const [refreshing, setRefreshing] = useState(false)
 
 
     const DirectMessage = ({data}) => (
@@ -27,6 +28,13 @@ export default function Messages() {
       );
 
 
+    const onRefresh = useCallback(async() => {
+        setRefreshing(true);
+        await fetchThreads()
+        setRefreshing(false)
+    }, []);
+  
+
     async function fetchThreads() {
         const threads = await getThreads();
         console.log("THREADS");
@@ -34,10 +42,12 @@ export default function Messages() {
         setDMs(threads);
     }
 
+
     useEffect(() => {
         fetchThreads()
       }, []);
       
+
     if (!DMs) {
         return (
             <View style={[styles.container, {justifyContent: "center", alignItems: "center"}]}>
@@ -50,6 +60,7 @@ export default function Messages() {
         return (
             <View style={styles.container}>
                 <FlatList
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                     data={DMs}
                     renderItem={({item}) => <DirectMessage data={item} />}
                     ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}

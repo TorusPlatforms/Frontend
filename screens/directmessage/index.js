@@ -3,11 +3,12 @@ import { View, ActivityIndicator } from "react-native";
 import { GiftedChat, Bubble, InputToolbar, Avatar } from 'react-native-gifted-chat';
 import { getAuth } from "firebase/auth";
 
-import { getDM, sendMessage } from '../../components/handlers';
+import { getDM, sendMessage, getUser } from '../../components/handlers';
 import styles from "./styles";
 
 export default function DirectMessage({ route }) {
   const [messages, setMessages] = useState(null)
+  const [user, setUser] = useState(null)
   const auth = getAuth()
 
   useEffect(() => {
@@ -26,14 +27,21 @@ export default function DirectMessage({ route }) {
     // ])
   }, [])
 
-  async function fetchDM() {
-    console.log(route.params.username);
-    const dm = await getDM(route.params.username);
-    console.log("FETCH DM DM: ")
-    console.log(dm);
-    console.log("dm messsages" + dm[0].messages);
-    setMessages(dm[0].messages);
-  }
+  async function fetchDM() { 
+      const user = await getUser();
+      setUser(user)
+      console.log(route.params.username);
+
+      const dm = await getDM(route.params.username);
+      console.log(dm);
+      console.log("dm messsages" + dm[0].messages);
+      if (dm[0].messages) {
+        setMessages(dm[0].messages);
+      } else {
+        await sendMessage(route.params.username, "Hey there! Can we connect?")
+        await fetchDM()
+      }
+    };
  
 
   const onSend = useCallback(async (messages = []) => { //
@@ -88,8 +96,12 @@ export default function DirectMessage({ route }) {
     );
   };
 
-  console.log(messages)
 
+  if (!messages || !user) {
+    return <ActivityIndicator />
+  }
+
+  console.log(messages, user.username)
 
   return (
     <View style={[styles.container, {paddingVertical: 30}]}>
@@ -105,7 +117,7 @@ export default function DirectMessage({ route }) {
         messages={messages}
         onSend={messages => onSend(messages)}
         user={{
-          _id: auth.currentUser.uid,
+          _id: user.username,
         }}
         renderBubble={renderBubble}
         renderInputToolbar={props => <CustomInputToolbar {...props} />}
