@@ -51,7 +51,7 @@ export default function CreateEvent({ route }) {
 
     requestCameraPerms()
     requestPhotoLibraryPerms()
-    
+    console.log(user, key)
   }, []); 
 
   const closeKeyboard = () => {

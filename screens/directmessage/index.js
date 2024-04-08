@@ -90,9 +90,6 @@ export default function DirectMessage({ route }) {
 
   console.log(messages)
 
-  if (!messages) {
-    return <ActivityIndicator />
-  }
 
   return (
     <View style={[styles.container, {paddingVertical: 30}]}>

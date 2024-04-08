@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useRef, useCallback} from 'react'
-import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable, RefreshControl, ActivityIndicator, ScrollView } from 'react-native'
+import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable, RefreshControl, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 
-import { getUserByUsername, getUserPings, handleShare, handleLike, postComment, follow, unfollow, followCheck } from "../../components/handlers";
+import { getUserByUsername, getUserPings, handleShare, handleLike, postComment, follow, unfollow } from "../../components/handlers";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
 
 
-export default function UserProfile({ route }) {
-    const navigation = useNavigation()
+export default function UserProfile({ route, navigation }) {
     const [pings, setPings] = useState([])
     const [user, setUser] = useState(null)
     const [modalVisible, setModalVisible] = useState(false);
@@ -25,33 +24,25 @@ export default function UserProfile({ route }) {
     const [isFollowing, setIsFollowing] = useState(false); 
 
     const toggleFollow = async () => {
-        console.log("FOLLOWSTUFFFOLLOWSTUFF")
+        setIsFollowing(!isFollowing)
         if(isFollowing){
             await unfollow(route.params.username)
         }
         else{
            await follow(route.params.username) 
         }
-        await console.log(route.params.username)
-        console.log(route.params.username)
-        await setIsFollowing(current => !current)
-
-        //backend stuff here
     };
 
     const updateLike = useCallback(() => {
         fetchUser()
       }, []);
 
-
     async function fetchUser() {
         const user = await getUserByUsername(route.params.username)
         setUser(user)
-
+        console.log(user)
         const pings = await getUserPings(user.username)
-        const following = await followCheck(user.username)
-        console.log("FOLLOWING STATUS YYOYOYOYOYOYOYOYOY  ",following )
-        setIsFollowing(following)
+        setIsFollowing(user.isFollowing)
         setPings(pings)
     }
 
@@ -82,7 +73,8 @@ export default function UserProfile({ route }) {
         return <ActivityIndicator/>
 
     } else {
-        
+        console.log("IM HERE", user.username)
+
         return (
             <SafeAreaView style={styles.container}>
               <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
@@ -90,29 +82,24 @@ export default function UserProfile({ route }) {
                     <View style={styles.pfpContainer}>
                         <Image style={styles.pfp} source={{uri: user.pfp_url}}/>
                         <Text style={styles.displayName}>{user.display_name}</Text>
-                        <Pressable onPress={copyUsernameToClipboard}>
-                            {({pressed}) => (
-                                <Text style={{color: pressed ? "gray": "white"}}>@{user.username}</Text>
-                            )}
-                        </Pressable>
+                        <TouchableOpacity onPress={copyUsernameToClipboard}>
+                            <Text style={{color: "white"}}>@{user.username}</Text>
+                        </TouchableOpacity>
                        
                     </View>
     
                     <View style={styles.userRelationsContainer}>
                         <View style={styles.followCounts}>
-                            <Pressable onPress={() => navigation.navigate("MutualUserLists", {username: user.username})}>
+                            <Pressable onPress={() => navigation.push("MutualUserLists", {username: user.username, merge: true})}>
                                 <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.follower_count}</Text>
                                 <Text style={styles.text}>Followers</Text>
                             </Pressable>
                             
-    
-                                <Pressable onPress={() => navigation.navigate("MutualUserLists", {username: user.username})}>
+
+                            <Pressable onPress={() => navigation.push("MutualUserLists", {username: user.username, merge: true})}>
                                 <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.following_count}</Text>
                                 <Text style={styles.text}>Following</Text>
                             </Pressable>
-
-                            
-
                         </View>
     
                         <View style={styles.item_seperator}/>
@@ -124,24 +111,19 @@ export default function UserProfile({ route }) {
                     </View>
                    
                 </View>
-                <Pressable
-                                onPress={toggleFollow}
-                                style={({ pressed }) => [
-                                {
-                                backgroundColor: pressed ? 'darkblue' : 'blue',
-                                },
-                                styles.followButton,
-                                
-                                 ]}
-                                 >
-                               
-                                <Text style={styles.followButtonText}>
-                               {isFollowing ? 'Following' : 'Follow'}
 
-                                </Text>
-                                
+                <View style={{flexDirection: "row", justifyContent: "space-evenly", alignItems: "center", paddingVertical: 20}}>
+                    <Pressable onPress={toggleFollow} style={[styles.followButton, {backgroundColor: isFollowing ? 'gray' : 'blue', width: isFollowing ? 300 : 300}]}>
+                        <Text style={styles.followButtonText}>{isFollowing ? 'Following' : 'Follow'}</Text>
+                    </Pressable>
+
+                    {/* {isFollowing && (
+                        <Pressable onPress={() => navigation.push("DirectMessage", {username: user.username})} style={[{backgroundColor: "black"}, styles.followButton]}>
+                            <Text style={styles.followButtonText}>Message</Text>
                         </Pressable>
-    
+                    )} */}
+                </View>
+               
                 <View style={styles.loopsListContainer}>
                     <View style={styles.item_seperator} />
                         {pings.map((item) =>

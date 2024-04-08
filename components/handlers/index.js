@@ -860,9 +860,7 @@ export async function getUserPings(username) {
 export async function getFollowings(username, type) {
   const token = await getToken()
 
-  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/followings/${type}/${username}`;
-
-  console.log("HEREEEE", serverUrl)
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/user/${username}/${type}`;
 
   try {
     const response = await fetch(serverUrl, {
@@ -873,12 +871,13 @@ export async function getFollowings(username, type) {
       },
     })
 
+    const responseData = await response.json();
+    console.log(type, responseData);
+
     if (!response.ok) {
       throw new Error(`Error getting ${type}! Status: ${response.status}`);
     }
 
-    const responseData = await response.json();
-    console.log(type, responseData);
     return responseData
 
   } catch(error) {
@@ -936,32 +935,33 @@ export async function getLoopOwner(loopId) {
     }
   }
 
-  export async function getMemberStatus(loopId,userId) {
-    const token = await getToken()
 
-    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/isMember/${loopId}/${userId}`;
+export async function getMemberStatus(loopId,userId) {
+  const token = await getToken()
 
-    try {  
-      const response = await fetch(serverUrl, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Error Getting member info! Status: ${response.status}`);
-      }
-  
-      const responseData = await response.json();
-      console.log('Response Data:', responseData);
-      return (responseData)
-  
-    } catch (error) {
-      console.error('Error Getting Member status:', error.message);
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/isMember/${loopId}/${userId}`;
+
+  try {  
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Error Getting member info! Status: ${response.status}`);
     }
+
+    const responseData = await response.json();
+    console.log('Response Data:', responseData);
+    return (responseData)
+
+  } catch (error) {
+    console.error('Error Getting Member status:', error.message);
   }
+}
 
 
   export async function joinLoop(loop_id) {
@@ -1051,7 +1051,7 @@ export async function getLoopOwner(loopId) {
   }
 
 export async function follow(username) {
-    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/followings/follow/${username}`;
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/user/${username}/follow`;
     const token = await getToken()
     console.log(serverUrl)
   
@@ -1063,13 +1063,14 @@ export async function follow(username) {
             'Content-Type': 'application/json',
           },
       })
-  
+      
+      const responseData = await response.json();
+      console.log("Following: ", responseData);
+
       if (!response.ok) {
         throw new Error(`Error following! Status: ${response.status}`);
       }
-  
-      const responseData = await response.json();
-      console.log("Following: ", responseData);
+
       return responseData
   
     } catch(error) {
@@ -1078,11 +1079,11 @@ export async function follow(username) {
   }
 
 
-  export async function unfollow(username) {
-    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/followings/unfollow/${username}`;
+export async function unfollow(username) {
+    const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/user/${username}/unfollow`;
     const token = await getToken()
     console.log(serverUrl)
-  
+
     try {
       const response = await fetch(serverUrl, {
         method: 'POST',
@@ -1091,19 +1092,22 @@ export async function follow(username) {
             'Content-Type': 'application/json',
           },
       })
-  
+      
+      const responseData = await response.json();
+      console.log("Following: ", responseData);
+
+      
       if (!response.ok) {
         throw new Error(`Error unfollowing! Status: ${response.status}`);
       }
-  
-      const responseData = await response.json();
-      console.log("Following: ", responseData);
+
+
       return responseData
-  
+
     } catch(error) {
       console.error("Error unfollowing", error.message)
     }
-  }
+}
 
 
   export async function followCheck(username) {

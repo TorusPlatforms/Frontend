@@ -116,7 +116,6 @@ const styles = StyleSheet.create({
         flex: 2, 
         height: "100%", 
         width: "100%", 
-        marginTop: 50
     },
 
     loopText: {
@@ -155,24 +154,20 @@ const styles = StyleSheet.create({
         color: "white",
         marginRight: 10,
     },
-    followButton: {
-        marginTop: 20, 
-        marginBottom: -30,
-        marginLeft: 20,
-        marginRight: 20,
-        alignItems: "center",
-        paddingVertical: 10, 
-        paddingHorizontal: 0, 
-        borderRadius: 25, 
 
-       
-      },
-      followButtonText: {
+    followButton: {
+        alignItems: "center",
+        height: 40,
+        borderRadius: 25, 
+        justifyContent: "center",
+        width: 150
+    },
+
+    followButtonText: {
         color: 'white',
         fontWeight: 'bold',
         textAlign: 'center', 
-        
-      }
+    }
 
 
 })

@@ -54,7 +54,7 @@ export default function LoopsPage({ route }) {
                 <Ionicons name="chatbubble-ellipses" size={24} color="white" />            
               </TouchableOpacity>
 
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate("LoopMembers", {loop_id: loop.loop_id})}>
                 <Ionicons name="information-circle" size={24} color="white" />      
               </TouchableOpacity>
               

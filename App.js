@@ -41,6 +41,8 @@ import UserProfile from './screens/userprofile';
 import CreateEvent from './screens/createevent';
 import CreateAnnouncement from './screens/createannouncement';
 import LoopChat from './screens/loopchat';
+import LoopMembers from './screens/loopmembers';
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -143,10 +145,11 @@ function App() {
         <Stack.Screen name="Home" component={Tabs}/>
         <Stack.Screen name="MyLoops" component={MyLoops} options={{headerShown: true}}/>
         <Stack.Screen name="Create" component={CreatePing} options={{presentation: "modal"}} />
-        <Stack.Screen name="CreateLoop" component={CreateLoop} options={{pesentation: "modal"}} />
-        <Stack.Screen name="CreateEvent" component={CreateEvent} options={{pesentation: "modal"}} />
-        <Stack.Screen name="CreateAnnouncement" component={CreateAnnouncement} options={{pesentation: "modal"}} />
+        <Stack.Screen name="CreateLoop" component={CreateLoop} options={{presentation: "modal"}} />
+        <Stack.Screen name="CreateEvent" component={CreateEvent} options={{presentation: "modal"}} />
+        <Stack.Screen name="CreateAnnouncement" component={CreateAnnouncement} options={{presentation: "modal"}} />
         <Stack.Screen name="Loop" component={LoopsPage}/>
+        <Stack.Screen name="LoopMembers" component={LoopMembers} options={{presentation: "modal", title: "Members", headerShown: true}}/>
         <Stack.Screen name="DirectMessage" component={DirectMessage} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.username })}/>
         <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>
