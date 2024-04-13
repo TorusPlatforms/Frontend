@@ -470,14 +470,46 @@ export async function handleShare(postURL) {
 }
 
 
-export async function updateUser(endpoint, varName, content) {
+export async function updateUser(endpoint, content) {
   const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/user/update/${endpoint}`;
   
   const token = await getToken()
 
-  const requestBody = {};
-  requestBody[varName] = content
+  const requestBody = {
+    value: content
+  };
 
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to update. Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('Updated succesfully. Server response:', responseData);
+
+  } catch (error) {
+    console.error('Error updating:', error.message);
+  }
+}
+
+export async function updateLoop(loop_id, endpoint, content) {
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/update/${endpoint}`;
+  
+  const token = await getToken()
+
+  const requestBody = {
+    value: content
+  };
+  
   try {
     const response = await fetch(serverUrl, {
       method: 'POST',
@@ -531,41 +563,6 @@ export async function postComment(post, content) {
   } catch (error) {
     console.error('Error posting comment:', error.message);
   }
-}
-
-
-export async function updateUserProfilePicture(profilePictureURL) {
-  const token = await getToken()
-
-  const serverUrl = 'https://backend-26ufgpn3sq-uc.a.run.app/api/user/update/profilepicture';
-
-  const requestBody = {
-    pfp_url: profilePictureURL,
-  };
-
-  console.log(requestBody)
-  try {
-    const response = await fetch(serverUrl, {
-      method: 'POST',
-      headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-      });
-    
-      const responseData = await response.json();
-      console.log('Profile Picture:', responseData);
-  
-      if (!response.ok) {
-        throw new Error(`Failed to update profile picture. Status: ${response.status}`);
-      }
-    
-      console.log('Profile picture update successful');
-  } catch (error) {
-    console.error("Error uploading", error.message)
-  }
- 
 }
 
 
@@ -1024,7 +1021,6 @@ export async function getMemberStatus(loopId,userId) {
 
   export async function getLoopMembers(loopId) {
     const token = await getToken()
-    await console.log(token)
 
     const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/members`;
 
@@ -1269,6 +1265,34 @@ export async function sendChat(loopId, content) {
   }
 }
 
+
+export async function kickUser(loop_id, username) {
+  const token = await getToken()
+
+  const serverUrl = `https://backend-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/kick/${username}`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    const responseData = await response.json();
+    console.log('key:', responseData);
+
+    if (!response.ok) {
+      throw new Error(`Error getting key! Status: ${response.status}`);
+    }
+  
+    return responseData;
+
+  } catch (error) {
+    console.error("Error getting key", error.message);
+  }
+}
 
 
 export async function getGoogleMapsKey() {

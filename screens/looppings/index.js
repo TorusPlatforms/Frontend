@@ -82,7 +82,6 @@ export default function LoopPings({ route }) {
         <FlatList
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             style={{paddingHorizontal: 5}}
-            //refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             data={pings}
             renderItem={({item}) => 
               <Ping 

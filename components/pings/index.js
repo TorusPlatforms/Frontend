@@ -25,9 +25,9 @@ export const Ping = ({navigation, data, handleComment }) => {
 
     function handleAuthorPress() {
         if (data.loop_id) {
-          navigation.navigate("Loop", {loop_id: data.loop_id})
+          navigation.push("Loop", {loop_id: data.loop_id})
         } else {
-          navigation.navigate("UserProfile", {username: data.author})
+          navigation.push("UserProfile", {username: data.author})
         }
     }
 

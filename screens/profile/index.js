@@ -94,7 +94,6 @@ export default function Profile() {
 
     function renderLoops() {
         console.log("RENDERING LOOPS\n\n\n");
-        console.log("LOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERELOOPS ARE HERE");
       
         return loops.map((item, index) => (
           <TouchableOpacity

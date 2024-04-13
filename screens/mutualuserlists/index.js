@@ -1,13 +1,21 @@
-import React, { useState, useRef, useEffect } from "react";
-import { View, Image, Text, SafeAreaView, FlatList, ActivityIndicator, TouchableOpacity } from "react-native";
+import React, { useState, useCallback, useEffect } from "react";
+import { View, Image, Text, SafeAreaView, FlatList, ActivityIndicator, TouchableOpacity, RefreshControl } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import { getFollowings } from "../../components/handlers";
 import styles from "./styles";
 
+
 export default function MutualsScreen({ route, navigation }) {
     const [users, setUsers] = useState([])
+    const [refreshing, setRefreshing] = useState(false)
 
+    const onRefresh = useCallback(async() => {
+        setRefreshing(true);
+        await fetchMembers()
+        setRefreshing(false)
+      }, []);
+    
     const User = ({data}) => (
         <TouchableOpacity onPress={() => navigation.push("UserProfile", {username: data.username})}>
             <View style={styles.userContainer}>
@@ -22,13 +30,10 @@ export default function MutualsScreen({ route, navigation }) {
         </TouchableOpacity>
       );
         
-
     async function fetchUsers() {
-        console.log("TYPEEEE", route.params.get)
         const users = await getFollowings(route.params.username, route.params.get)
         setUsers(users)
     }
-
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -40,20 +45,18 @@ export default function MutualsScreen({ route, navigation }) {
 
     }, [navigation]);
 
-    
     if (!users) {
         return <ActivityIndicator />
-
-    } else {
-
-        return (
-            <SafeAreaView style={styles.container}>
-                <FlatList 
-                    data={users}
-                    renderItem={({item}) => <User data={item} />}
-                    ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
-                />
-            </SafeAreaView>
-        )
     }
+    
+    return (
+        <SafeAreaView style={styles.container}>
+            <FlatList 
+                data={users}
+                renderItem={({item}) => <User data={item} />}
+                ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            />
+        </SafeAreaView>
+    )
 }

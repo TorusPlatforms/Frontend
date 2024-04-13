@@ -1,20 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ActivityIndicator, Pressable, TextInput} from 'react-native';
-import { getAuth } from "firebase/auth";
 import { Ionicons } from '@expo/vector-icons';
 
-import { updateUser } from "../../components/handlers";
-import { pickImage } from '../../components/imagepicker';
+import { updateUser, updateLoop } from "../../components/handlers";
 import styles from './styles'
 
 export default function EditField({ route, navigation }) {
-    const [text, setText] = useState(route.params.user[route.params.varName])
-    const auth = getAuth()
+    const { type, field, endpoint, user, loop} = route.params
+    const [text, setText] = useState("")
 
     console.log(route.params)
-    
 
-    console.log("USER", route.params.user)
+    async function handleUpdate() {
+        if (type == "user") {
+            await updateUser(endpoint, text);
+        } else if (type == "loop") {
+            await updateLoop(loop.loop_id, endpoint, text)
+        } else {
+            throw new Error("Type Not Defined")
+        }
+
+        navigation.goBack()
+    }
+
+    
+    useEffect(() => {
+        if (type == "user") {
+            setText(user[endpoint])
+        } else if (type == "loop") {
+            setText(loop[endpoint])
+        } else {
+            throw new Error("Type Not Defined")
+        }
+      }, []);
+  
     return (
         <View style={styles.container}>
             <View style={{alignItems: 'center', flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 20, flex: 0.1}}>
@@ -22,9 +41,9 @@ export default function EditField({ route, navigation }) {
                     <Ionicons name="arrow-back" size={24} color="white" />
                 </Pressable>
 
-                <Text style={{color: "white"}}>{route.params.field}</Text>
+                <Text style={{color: "white"}}>{field}</Text>
 
-                <Pressable onPress={async() => { await updateUser(route.params.endpoint, route.params.varName, text); navigation.goBack()}}>
+                <Pressable onPress={handleUpdate}>
                     <Text style={{ color: text ? 'blue' : 'grey' }}>Done</Text>
                 </Pressable>
             </View>

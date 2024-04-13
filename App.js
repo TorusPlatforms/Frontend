@@ -42,6 +42,7 @@ import CreateEvent from './screens/createevent';
 import CreateAnnouncement from './screens/createannouncement';
 import LoopChat from './screens/loopchat';
 import LoopMembers from './screens/loopmembers';
+import EditLoop from './screens/editloop';
 
 
 const firebaseConfig = {
@@ -163,6 +164,7 @@ function App() {
         <Stack.Screen name="Forgot Password" component={ForgotPassword} options={{headerShown: true}}/>
         <Stack.Screen name="Reset Password" component={ResetPassword} options={{headerShown: true}}/>
         <Stack.Screen name="Edit Profile" component={EditProfile} options={{headerShown: true}}/>
+        <Stack.Screen name="EditLoop" component={EditLoop} options={{headerShown: true}}/>
         <Stack.Screen name="EditField" component={EditField}/>
         <Stack.Screen name="UserProfile" component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })}/>
         <Stack.Screen name="LoopChat" component={LoopChat} />

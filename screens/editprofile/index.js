@@ -4,7 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
 
 import { pickImage } from '../../components/imagepicker';
-import { getUser, uploadToCDN, updateUserProfilePicture } from "../../components/handlers";
+import { getUser, uploadToCDN, updateUser } from "../../components/handlers";
 import styles from './styles'
 import { renderNode } from 'react-native-elements/dist/helpers';
 
@@ -21,7 +21,7 @@ export default function EditProfile() {
         try {
             res = await uploadToCDN(image)
             console.log(res.url)
-            await updateUserProfilePicture(res.url)
+            await updateUser("profilepicture", "pfp_url", res.url)
         } catch (error) {   
             console.error('Error uploading image:', error.message);
         }
@@ -90,12 +90,12 @@ export default function EditProfile() {
               <Text style={{color: "white", flex: 1}}>@{user.username}</Text>
             </View>
 
-            <Pressable onPress={() => navigation.navigate("EditField", {field: "Display Name", "endpoint": "displayname", "varName": "display_name", "user": user})} style={styles.updateField}>
+            <Pressable onPress={() => navigation.navigate("EditField", {field: "Display Name", endpoint: "display_name", user: user, type: "user"})} style={styles.updateField}>
               <Text style={{color: "white", flex: 0.5}}>Name</Text>
               <Text style={{color: "white", flex: 1}}>{user.display_name}</Text>
             </Pressable>
 
-            <Pressable onPress={() => navigation.navigate("EditField", {"field": "Bio", "endpoint": "bio", "varName": "bio", "user": user})} style={styles.updateField}>
+            <Pressable onPress={() => navigation.navigate("EditField", {field: "Bio", endpoint: "bio", user: user, type: "user"})} style={styles.updateField}>
               <Text style={{color: "white", flex: 0.5}}>Bio</Text>
               <Text style={{color: "white", flex: 1}}>{user.bio}</Text>
             </Pressable>
