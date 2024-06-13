@@ -5,12 +5,12 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { handleLike } from "../handlers";
 import { findTimeAgo } from "../utils";
 import styles from "./styles";
+import { CommentModal } from "../comments";
 
-
-export const Ping = ({navigation, data, handleComment }) => {
+export const Ping = ({navigation, data }) => {
     const [isLiked, setIsLiked] = useState(data.isLiked)
     const [numOfLikes, setNumOfLikes] = useState(data.numberof_likes)
-
+    const [commentModalVisible, setCommentModalVisible] = useState(false)
     
     async function handleLikePress() {
       if (isLiked) {
@@ -31,6 +31,9 @@ export const Ping = ({navigation, data, handleComment }) => {
         }
     }
 
+    function handleComment() {
+      setCommentModalVisible(true)
+    }
 
     return (
       <View style={{marginVertical: 10, width: "95%", flexDirection: "row", padding: 10}}>
@@ -85,6 +88,11 @@ export const Ping = ({navigation, data, handleComment }) => {
           </View>
         </View>
 
+      <    CommentModal
+                ping={data}
+                modalVisible={commentModalVisible}
+                setModalVisible={setCommentModalVisible}
+              />
       </View>
   );
 }

@@ -5,8 +5,11 @@ import { strfEventDate } from "../../components/utils";
 import { joinLeaveEvent } from "../../components/handlers";
 import * as Linking from 'expo-linking';
 
+const torus_default_url = "https://cdn.torusplatform.com/5e17834c-989e-49a0-bbb6-0deae02ae5b5.jpg"
+
 
 export const Event = ({ data }) => {
+    data.image_url = data.image_url || torus_default_url
     const [isJoined, setIsJoined] = useState(data.isJoined)
 
     async function handleJoinLeave() {
@@ -21,33 +24,42 @@ export const Event = ({ data }) => {
     return (
         <View style={{ marginVertical: 20, width: "100%", flexDirection: "row", flex: 1 }}>
             <View style={{flex: 0.2, alignItems: "center"}}>
-              <Image style={{ width: 50, height: 50, borderRadius: 25 }} source={{ uri: data.creatorPfp.pfp_url || data?.pfp_url }} />
+              <Image style={{ width: 50, height: 50, borderRadius: 25 }} source={{ uri: torus_default_url }} />
               <View style={{marginVertical: 12, width: 1, height: "70%", backgroundColor: "gray"}} />
               <View style={{alignItems: 'center'}}>
-                <Image style={{ left: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_pfp_urls[0] || data?.mutual_attendees_pfp_urls[0] }} />
-                <Image style={{ right: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_pfp_urls[1] || data?.mutual_attendees_pfp_urls[1] }} />
+                <Image style={{ left: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_pfp_urls[0] || data?.mutual_attendees_pfp_urls[0] || torus_default_url }} />
+                <Image style={{ right: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_pfp_urls[1] || data?.mutual_attendees_pfp_urls[1] || torus_default_url }} />
               </View>
             </View>
 
             <View style={{flex: 0.8, flexDirection: 'column'}}>
-                <View style={{ justifyContent: "space-between", borderWidth: 2, borderColor: "gray", borderRadius: 20, borderBottomLeftRadius: data.image_url ? 0 : 20, borderBottomRightRadius: data.image_url ? 0 : 20, borderBottomWidth: data.image_url ? 0 : 2, padding: 20, height: 150}}>
-                    <View>
-                      <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>{data.name || data?.name}</Text>
-                      <Text style={{ color: "white" }}>{strfEventDate(data.time) || data?.time}</Text>
-                      <Pressable onPress={(openMaps)}>
-                        <Text style={{ color: "white", textDecorationLine: "underline", fontSize: 12 }}>{data.address || data?.address}</Text>
-                      </Pressable>
-                    </View>
+              <View style={{borderRadius: 20, borderWidth: 2, borderColor: "gray"}}>
+                <View style={{ justifyContent: "space-between", padding: 20, height: 150}}>
+                      <View>
+                        <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>{data.name || data?.name}</Text>
+                        <Text style={{ color: "white" }}>{strfEventDate(data.time) || data?.time}</Text>
+                        <Pressable onPress={(openMaps)}>
+                          <Text style={{ color: "white", textDecorationLine: "underline", fontSize: 12 }}>{data.address || data?.address}</Text>
+                        </Pressable>
+                      </View>
 
-                    <View style={{marginTop: 15}}>
-                      <Text style={{ color: "white" }}>{data.message || data?.message}</Text>
-                    </View>
-                </View>
+                      <View style={{marginTop: 15}}>
+                        <Text style={{ color: "white" }}>{data.message || data?.message}</Text>
+                      </View>
+                  </View>
 
-                {data.image_url && (
-                    <Image style={{borderBottomLeftRadius: 20, borderBottomRightRadius: 20, width: "100%", height: 150, resizeMode: "cover"}} source={{ uri: data.image_url || data?.image_url }} />
-                )}
+                  {data.image_url && (
+                      <Image style={{
+                          width: "100%", 
+                          height: 150, 
+                          resizeMode: "cover",
+                          borderBottomLeftRadius: 20,
+                          borderBottomRightRadius: 20
+                      }} source={{ uri: data.image_url || data?.image_url }} />
+                  )}
 
+              </View>
+               
                 <View style={{flexDirection: "row", justifyContent: data.attendee_ids.length > 0 ? "space-between" : "flex-end", alignItems: "center", marginTop: 10}}>
                   {data.attendee_ids.length == 1 && (
                     <Text style={{color: "white", fontSize: 12}}> 1 other is attending</Text>

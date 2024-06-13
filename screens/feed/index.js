@@ -5,7 +5,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from '@react-navigation/native';
 
-import { getUser, getPings, handleLike, postComment } from "../../components/handlers";
+import { getUser, getPings, getFollowingPings, handleLike, postComment } from "../../components/handlers";
 import { abbreviate } from '../../components/utils';
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
@@ -20,13 +20,8 @@ export default function Feed() {
     const [scrollY] = useState(new Animated.Value(0));
     
     const [dropdownData, setDropdownData] = useState([])
-    const [feedType, setFeedType] = useState(null);
-    const [isFocus, setIsFocus] = useState(false);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [commentText, onChangeComment] = useState('');
-    const ref_input = useRef();
-    const [replyingTo, setReplyingTo] = useState(null) 
-    const [commentPing, setCommentPing] = useState(null)
+    const [feedType, setFeedType] = useState("college");
+    const [isFocus, setIsFocus] = useState(false)
 
     const [refreshing, setRefreshing] = useState(false);
 
@@ -54,39 +49,47 @@ export default function Feed() {
       ) 
       }
 
-    async function fetchPings() {
+    async function fetchPings(type) {
       const user = await getUser();
       setUser(user)
 
-      const fetchedPings = await getPings(user);
+      let fetchedPings = []
+      if (type == "college") {
+        console.log("fetching College")
+        fetchedPings = await getPings(user);
+      } else if (type == "friends") {
+        fetchedPings = await getFollowingPings();
+      } else {
+        throw new Error("Type not defined in Feed")
+      }
+
       setPings(fetchedPings);
   
       setDropdownData([
         { label: 'Friends', value: 'friends' },
         { label: abbreviate(user.college), value: 'college' },
       ]);
+
     }
   
-    function feedChange(type) {
+    async function feedChange(type) {
       console.log("Feed was changed to" + type)
       setFeedType(type)
-    }
 
-    function handleReply(data) {
-      ref_input.current.focus()
-      setReplyingTo(data.author)
-      onChangeComment("@" + data.author + " ")
-    }
+      setRefreshing(true);
+      await fetchPings(type)
+      setRefreshing(false)    }
+
 
     const onRefresh = useCallback(async() => {
       setRefreshing(true);
-      await fetchPings()
+      await fetchPings(feedType)
       setRefreshing(false)
     }, []);
 
 
     useEffect(() => {
-      fetchPings();
+      fetchPings(feedType);
     }, []); 
  
   
@@ -130,7 +133,7 @@ export default function Feed() {
 
                   <View>
                     <Pressable onPress={() => navigation.navigate("Notifications")}>
-                        <Ionicons name="ios-notifications-outline" size={24} color="white" />
+                        <Ionicons name="notifications-outline" size={24} color="white" />
                     </Pressable>
                   </View>
 
@@ -146,8 +149,6 @@ export default function Feed() {
                     renderItem={({item}) => 
                       <Ping 
                         data={item} 
-                        setModalVisible={setModalVisible}  
-                        handleComment={() => setCommentPing(item)}
                         navigation={navigation}
                       />
                     }
@@ -159,7 +160,7 @@ export default function Feed() {
               style={{flex: 1}}
               onSwipeDown={ () => setModalVisible(false) }
             > */}
-              <CommentModal
+              {/* <CommentModal
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
                 onChangeComment={onChangeComment}
@@ -169,7 +170,7 @@ export default function Feed() {
                 handleReply={handleReply}
                 commentPing={commentPing}
                 setCommentPing={setCommentPing}
-              />
+              /> */}
 
             {/* </GestureRecognizer> */}
           </SafeAreaView>

@@ -11,6 +11,7 @@ import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
 
+const torus_default_url = "https://cdn.torusplatform.com/5e17834c-989e-49a0-bbb6-0deae02ae5b5.jpg"
 
 export default function Profile() {
     const navigation = useNavigation()
@@ -110,7 +111,7 @@ export default function Profile() {
                 borderColor: "white",
                 borderWidth: 1
               }}
-              source={{ uri: item.profile_picture }} // Note: use 'uri' instead of 'url'
+              source={{ uri: item.profile_picture || torus_default_url }} // Note: use 'uri' instead of 'url'
             />
             {renderNotification()}
             <Animated.View style={[lineStyles[index], { backgroundColor: "gray", width: 2, height: x, position: "absolute" }]} />
@@ -186,11 +187,11 @@ export default function Profile() {
               <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
               <View style={styles.header}>
                     <Pressable onPress={() => navigation.navigate("Edit Profile")}>
-                        <Ionicons name="ios-person-outline" size={24} color="white" />
+                        <Ionicons name="person-outline" size={24} color="white" />
                     </Pressable>
     
                     <Pressable onPress={() => navigation.navigate("Settings")}>
-                        <Ionicons name="ios-settings-outline" size={24} color="white" />
+                        <Ionicons name="settings-outline" size={24} color="white" />
                     </Pressable>
                 </View>
     

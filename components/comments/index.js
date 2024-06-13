@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Text, View, SafeAreaView, Image, Keyboard, FlatList, Pressable, Alert, Share, Modal, KeyboardAvoidingView, TextInput } from 'react-native'
+import React, { useEffect, useState, useRef } from 'react';
+import { Text, View, SafeAreaView, Image, Keyboard, FlatList, Pressable, Alert, Share, Modal, KeyboardAvoidingView, TextInput, Platform } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import { getComments } from '../handlers';
+import { getComments, postComment } from '../handlers';
 import { findTimeAgo } from '../utils';
 import styles from "./styles";
 
@@ -22,7 +22,7 @@ const Comment = ({data, handleReply}) => (
         <View style={{flexDirection: "row", justifyContent: "space-between"}}>
           <Text style={styles.text}>{data.content}</Text>
 
-          <Text style={styles.commentTime}>{findTimeAgo(data.created_at)}</Text>
+          <Text style={styles.commentTime}>{findTimeAgo((data.created_at))}</Text>
         </View>
   
         <View>
@@ -41,34 +41,40 @@ const Comment = ({data, handleReply}) => (
   )
   
   
-  export const CommentModal = ({ modalVisible, setModalVisible, onChangeComment, commentText, postComment, ref_input, handleReply, commentPing, setCommentPing }) => {
+  export const CommentModal = ({ping, modalVisible, setModalVisible}) => {
     const [comments, setComments] = useState(null)
+    const [commentText, onChangeCommentText] = useState("")
+    const [commentPing, setCommentPing] = useState(ping)
+    const ref_input = useRef();
 
     async function fetchComments() {
-      console.log("Fetching Comments of Post", commentPing)
-      if (commentPing) {
-        const fetchedComments = await getComments(commentPing)
+        const fetchedComments = await getComments(ping)
         setComments(fetchedComments)
-        setModalVisible(true)
-      }
     }
 
     useEffect(() => {
-      fetchComments();
-    }, [commentPing]); 
+      if (modalVisible) {
+        console.log("LOADED")
+        fetchComments();
+      }
+    }, [modalVisible]); 
 
     function handleModalClose() {
-      setCommentPing(null);
-      setModalVisible(!modalVisible);
+      setModalVisible(false);
     }
 
     async function handlePostClick() {
-      console.log("posting")
-      await postComment(commentPing, commentText)
-      console.log("posted")
+      console.log("posting comment")
+      await postComment(ping, commentText)
       Keyboard.dismiss()
-      onChangeComment("")
+      onChangeCommentText("")
       await fetchComments()
+    }
+
+
+    function handleReply(data) {
+      ref_input.current.focus()
+      onChangeCommentText("@" + data.author + " ")
     }
 
 
@@ -106,7 +112,7 @@ const Comment = ({data, handleReply}) => (
                 <TextInput 
                   placeholderTextColor="white" 
                   style={styles.addCommentInput} 
-                  onChangeText={onChangeComment} 
+                  onChangeText={onChangeCommentText} 
                   value={commentText} 
                   placeholder='Add a comment'
                   ref={ref_input}  

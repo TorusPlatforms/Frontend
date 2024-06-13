@@ -12,6 +12,7 @@ import { strfEventDate, strfEventTime } from "../../components/utils";
 import styles from "./styles";
 import { Input } from "react-native-elements";
 
+const torus_default_url = "https://cdn.torusplatform.com/5e17834c-989e-49a0-bbb6-0deae02ae5b5.jpg"
 
 export default function CreateEvent({ route }) {
   const navigation = useNavigation();
@@ -226,15 +227,10 @@ export default function CreateEvent({ route }) {
                       </View>
                   </View>
 
-                  {!image && (
-                    <Pressable onPress={() => pickImage(handleImageSelect)}>
-                      <Image style={{borderWidth: 2, borderBottomLeftRadius: 20, borderBottomRightRadius: 20, borderColor: 'gray', width: "100%", height: 200, resizeMode: "contain"}} source={{ uri: "https://static.thenounproject.com/png/4974686-200.png" }} />
-                    </Pressable>
-                  )}
 
-                  {image && (
-                      <Image style={{borderWidth: 2, borderBottomLeftRadius: 20, borderBottomRightRadius: 20, borderColor: 'gray', width: "100%", height: 200, resizeMode: "contain"}} source={{ uri: image.assets[0].uri }} />
-                  )}
+                    <Pressable onPress={() => pickImage(handleImageSelect)}>
+                      <Image style={{borderWidth: 2, borderBottomLeftRadius: 20, borderBottomRightRadius: 20, borderColor: 'gray', width: "100%", height: 200, resizeMode: "cover"}} source={{ uri: image.assets[0].uri || torus_default_url }} />
+                    </Pressable>
 
               </View>
           </View>

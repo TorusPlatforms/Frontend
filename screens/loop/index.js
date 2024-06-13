@@ -14,6 +14,8 @@ import styles from "./styles";
 
 const Tab = createMaterialTopTabNavigator();
 
+const torus_default_url = "https://cdn.torusplatform.com/5e17834c-989e-49a0-bbb6-0deae02ae5b5.jpg"
+
 
 export default function LoopsPage({ route }) {
   const navigation = useNavigation()
@@ -91,7 +93,7 @@ export default function LoopsPage({ route }) {
         <View style={{marginBottom: 20, alignItems: "center"}}>
             {!loop.pfp_url && (
                 <View>
-                  <Image source={{uri: "https://fdlc.org/wp-content/uploads/2021/01/157-1578186_user-profile-default-image-png-clipart.png.jpeg"}}  style={{width: 150, height: 150, borderRadius: 75}} />
+                  <Image source={{uri: torus_default_url}}  style={{width: 150, height: 150, borderRadius: 75}} />
                 </View>
             )}
 
