@@ -17,7 +17,7 @@ export default function Feed() {
     const navigation = useNavigation()
 
     const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-    const [scrollY] = useState(new Animated.Value(0));
+    const scrollY = useRef(new Animated.Value(0)).current;
     
     const [dropdownData, setDropdownData] = useState([])
     const [feedType, setFeedType] = useState("college");
@@ -42,12 +42,11 @@ export default function Feed() {
     });
 
 
-    function onScroll() {
-      Animated.event(
-        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-        { useNativeDriver: false }
-      ) 
-      }
+    const onScroll = Animated.event(
+      [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+      { useNativeDriver: false }
+    );
+  
 
     async function fetchPings(type) {
       const user = await getUser();
@@ -154,7 +153,6 @@ export default function Feed() {
                     }
                     ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
                     onScroll={onScroll}
-                    scrollEventThrottle={16}
                 />
             {/* <GestureRecognizer
               style={{flex: 1}}

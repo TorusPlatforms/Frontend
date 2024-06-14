@@ -45,7 +45,7 @@ export default function Loops({ route }) {
     setFilteredLoops(filtered);
   }, [search, loops]);
 
-  const fetchLoops = async () => {
+  async function fetchLoops() {
     try {
       const user = await getUser();
       const fetchedLoopsString = await getLoops(user);
@@ -61,8 +61,10 @@ export default function Loops({ route }) {
   }, []);
 
 
-  const onRefresh = async () => {
+  async function onRefresh() {
+    setRefreshing(true)
     await fetchLoops();
+    setRefreshing(false)
   };
 
   useFocusEffect(
@@ -105,11 +107,7 @@ export default function Loops({ route }) {
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
-            onRefresh={async () => {
-              setRefreshing(true);
-              await onRefresh();
-              setRefreshing(false);
-            }}
+            onRefresh={onRefresh}
             tintColor="white"
           />
         }

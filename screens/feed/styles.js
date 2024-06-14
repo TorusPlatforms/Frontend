@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
         padding: 10,
         flex: 1,
         justifyContent: 'space-between',
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
     },
 
    
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
         backgroundColor: "rgb(22, 23, 24)", 
         borderWidth: 1,
         borderColor: "white",
-        width: 125
+        width: 125,
     },
 
 

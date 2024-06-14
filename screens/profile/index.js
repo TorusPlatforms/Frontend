@@ -13,7 +13,7 @@ import styles from "./styles";
 
 const torus_default_url = "https://cdn.torusplatform.com/5e17834c-989e-49a0-bbb6-0deae02ae5b5.jpg"
 
-export default function Profile() {
+export default function Profile({ route }) {
     const navigation = useNavigation()
 
     const movingLine = useRef(new Animated.Value(0)).current;
@@ -22,35 +22,38 @@ export default function Profile() {
     const [pings, setPings] = useState([])
     const [user, setUser] = useState(null)
 
-    const [modalVisible, setModalVisible] = useState(false);
-    const [commentText, onChangeComment] = useState('');
-    const [commentPing, setCommentPing] = useState(null)
-    const [replyingTo, setReplyingTo] = useState(null) 
-    const ref_input = useRef();
-
     const [loading, setLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false)
 
-    const updateLike = useCallback(() => {
-        fetchUser()
-      }, []);
+    const pings_ref = useRef(null)
 
-    async function fetchUser() {
+    function findIndexById(arr, id) {
+        return arr.findIndex(obj => parseInt(obj.post_id) === parseInt(id));
+    }
+      
+    async function fetchUserPings(ping_id) {
         const user = await getUser();
         setUser(user)
 
         const pings = await getUserPings(user.username)
         setPings(pings)
 
+        if (ping_id) {
+            const index = findIndexById(pings, ping_id)
+            console.log("INDEX", index)
+            setTimeout(() => {
+              if (pings_ref.current) {
+                pings_ref.current.scrollToIndex({ index: index, animated: true });
+              }
+            }, 1000);
+          }
+
+
+        console.log(pings[pings.length - 1])
         setLoading(false)
     }   
   
-    function handleReply(data) {
-    ref_input.current.focus()
-    setReplyingTo(data.author)
-    onChangeComment("@" + data.author + " ")
-    }
-  
+ 
 
     async function fetchLoops() {
         const loops = await getJoinedLoops(6);
@@ -119,19 +122,6 @@ export default function Profile() {
         ));
       }
      
-    function renderPings() {
-        return pings.map((item) =>
-            <View key={item.post_id}>
-                <Ping 
-                    data={item} 
-                    setModalVisible={setModalVisible}  
-                    handleComment={() => setCommentPing(item)}
-                    navigation={navigation}
-                />
-                <View style={styles.item_seperator} />
-            </View>
-        )
-    }
 
     function renderNotification(item, index) {
         //figure out if loop has a notification
@@ -145,18 +135,28 @@ export default function Profile() {
 
     const onRefresh = useCallback(async() => {
       setRefreshing(true);
-      await fetchUser()
+      await fetchUserPings()
       setRefreshing(false)
     }, []);
 
 
     useEffect(() => {
+        console.log("PARAMS", route.params)
         setLoading(true)
-        // console.log(getLoops());
         fetchLoops();
-        fetchUser();
-      }, []);
+        fetchUserPings(route.params?.scrollToPing);
+      }, [route.params]);
     
+
+    const handleScrollToIndexFailed = (info) => {
+        const wait = new Promise(resolve => setTimeout(resolve, 500));
+        wait.then(() => {
+            if (pings_ref.current) {
+            pings_ref.current.scrollToIndex({ index: info.index, animated: true });
+            }
+        });
+    };
+
 
     useEffect(() => {
         if (!loading) {
@@ -172,6 +172,82 @@ export default function Profile() {
  
     }, [movingLine, loading])
 
+    
+
+    const header = () => (
+        <View>
+            <View style={styles.header}>
+                <Pressable onPress={() => navigation.navigate("Edit Profile")}>
+                    <Ionicons name="person-outline" size={24} color="white" />
+                </Pressable>
+
+                <Pressable onPress={() => navigation.navigate("Settings")}>
+                    <Ionicons name="settings-outline" size={24} color="white" />
+                </Pressable>
+            </View>
+    
+            <View style={styles.userInfoContainer}>
+                <View style={styles.pfpContainer}>
+                    <Image style={styles.pfp} source={{uri: user.pfp_url}}/>
+                    <Text style={styles.displayName}>{user.display_name}</Text>
+                    <Pressable onPress={copyUsernameToClipboard}>
+                        {({pressed}) => (
+                            <Text style={{color: pressed ? "gray": "white"}}>@{user.username}</Text>
+                        )}
+                    </Pressable>
+                </View>
+
+                <View style={styles.userRelationsContainer}>
+                    <View style={styles.followCounts}>
+                        <Pressable onPress={() => navigation.navigate("MutualUserLists", {username: user.username})}>
+                            <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.follower_count}</Text>
+                            <Text style={styles.text}>Followers</Text>
+                        </Pressable>
+
+                        <Pressable onPress={() => navigation.navigate("MutualUserLists", {username: user.username})}>
+                            <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.following_count}</Text>
+                            <Text style={styles.text}>Following</Text>
+                        </Pressable>
+                    </View>
+
+                    <View style={styles.item_seperator}/>
+
+                    <View style={styles.userDescription}>
+                        <Text style={[styles.text, {textAlign: "center"}]}>{user.bio}</Text>
+                    </View>
+                </View>
+            
+            </View>
+                
+    
+            <View style={styles.torusContainer}>
+                <View style={styles.centerLoop}>
+                    {loops?.length != 0 && (
+                        <Pressable onPress={() => navigation.navigate("MyLoops")} style={styles.centerLoopIcon}>
+                            <MaterialCommunityIcons name="google-circles-communities" color={"gray"} size={60}/>
+                        </Pressable>
+                        
+
+                    )}
+                    {renderLoops()}
+
+                    {loops.length === 0  && (
+                        <View style={{justifyContent: 'center', alignItems: "center"}}>
+                            <Text style={{color: "white", fontSize: 18}}>No Loops Found</Text>
+                        </View>
+                    )}
+                </View>
+
+            </View>
+
+            <View style={[styles.item_seperator, {marginTop: 50, marginBottom: 30}]} />
+        </View>
+    )
+
+
+
+
+
 
     if (loading) {
         return (
@@ -184,89 +260,21 @@ export default function Profile() {
 
         return (
             <SafeAreaView style={styles.container}>
-              <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-              <View style={styles.header}>
-                    <Pressable onPress={() => navigation.navigate("Edit Profile")}>
-                        <Ionicons name="person-outline" size={24} color="white" />
-                    </Pressable>
-    
-                    <Pressable onPress={() => navigation.navigate("Settings")}>
-                        <Ionicons name="settings-outline" size={24} color="white" />
-                    </Pressable>
-                </View>
-    
-                <View style={styles.userInfoContainer}>
-                    <View style={styles.pfpContainer}>
-                        <Image style={styles.pfp} source={{uri: user.pfp_url}}/>
-                        <Text style={styles.displayName}>{user.display_name}</Text>
-                        <Pressable onPress={copyUsernameToClipboard}>
-                            {({pressed}) => (
-                                <Text style={{color: pressed ? "gray": "white"}}>@{user.username}</Text>
-                            )}
-                        </Pressable>
-                    </View>
-    
-                    <View style={styles.userRelationsContainer}>
-                        <View style={styles.followCounts}>
-                            <Pressable onPress={() => navigation.navigate("MutualUserLists", {username: user.username})}>
-                                <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.follower_count}</Text>
-                                <Text style={styles.text}>Followers</Text>
-                            </Pressable>
-    
-                            <Pressable onPress={() => navigation.navigate("MutualUserLists", {username: user.username})}>
-                                <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.following_count}</Text>
-                                <Text style={styles.text}>Following</Text>
-                            </Pressable>
-                        </View>
-    
-                        <View style={styles.item_seperator}/>
-    
-                        <View style={styles.userDescription}>
-                            <Text style={[styles.text, {textAlign: "center"}]}>{user.bio}</Text>
-                        </View>
-                    </View>
-                
-                </View>
-                
-    
-                <View style={styles.torusContainer}>
-                    <View style={styles.centerLoop}>
-                        {loops?.length != 0 && (
-                            <Pressable onPress={() => navigation.navigate("MyLoops")} style={styles.centerLoopIcon}>
-                                <MaterialCommunityIcons name="google-circles-communities" color={"gray"} size={60}/>
-                            </Pressable>
-                            
-
-                        )}
-                        {renderLoops()}
-
-                        {loops.length === 0  && (
-                            <View style={{justifyContent: 'center', alignItems: "center"}}>
-                                <Text style={{color: "white", fontSize: 18}}>No Loops Found</Text>
-                            </View>
-                        )}
-                    </View>
-
-                </View>
-    
-                <View style={styles.loopsListContainer}>
-                    <View style={styles.item_seperator} />
-                        {renderPings()}
-                </View>       
-    
-                <CommentModal
-                  modalVisible={modalVisible}
-                  setModalVisible={setModalVisible}
-                  onChangeComment={onChangeComment}
-                  commentText={commentText}
-                  postComment={postComment}
-                  ref_input={ref_input}
-                  handleReply={handleReply}
-                  commentPing={commentPing}
-                  setCommentPing={setCommentPing}
+                <FlatList
+                    ref={pings_ref}
+                    onScrollToIndexFailed={handleScrollToIndexFailed}
+                    ListHeaderComponent={header}
+                    style={{paddingHorizontal: 20}}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                    data={pings}
+                    renderItem={({item}) => 
+                    <Ping 
+                        data={item} 
+                        navigation={navigation}
+                    />
+                    }
+                    ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
                 />
-    
-              </ScrollView>
             </SafeAreaView>
         )
     }

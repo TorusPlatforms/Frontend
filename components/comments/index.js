@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Text, View, SafeAreaView, Image, Keyboard, FlatList, Pressable, Alert, Share, Modal, KeyboardAvoidingView, TextInput, Platform } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
+import SwipeModal, { SwipeModalPublicMethods } from '@birdwingo/react-native-swipe-modal';
 
 import { getComments, postComment } from '../handlers';
 import { findTimeAgo } from '../utils';

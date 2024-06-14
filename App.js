@@ -27,7 +27,7 @@ import DirectMessage from "./screens/directmessage";
 import Settings from "./screens/settings";
 import YourAccountScreen from './screens/settings/Your Account';
 import AccessibilityDisplay from './screens/settings/Accessibility, Display, and Languages';
-import NotificationsV from './screens/settings/Notifications';
+import NotificationsScreen from './screens/notifications';
 import PrivacySafety from './screens/settings/Privacy and Safety';
 import SecurityAccountAccess from './screens/settings/Security and Account Access';
 import AdditionalResources from './screens/settings/Additional Resources';
@@ -156,7 +156,7 @@ function App() {
         <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>
         <Stack.Screen name="Your Account" component={YourAccountScreen} options={{headerShown: true}}/>
         <Stack.Screen name="Accessibility" component={AccessibilityDisplay} options={{headerShown: true}}/>
-        <Stack.Screen name="Notifications" component={NotificationsV} options={{headerShown: true}}/>
+        <Stack.Screen name="Notifications" component={NotificationsScreen} options={{headerShown: true}}/>
         <Stack.Screen name="Privacy and Safety" component={PrivacySafety} options={{headerShown: true}}/>
         <Stack.Screen name="Security and Account Access" component={SecurityAccountAccess} options={{headerShown: true}}/>
         <Stack.Screen name="AdditionalResources" component={AdditionalResources} options={{headerShown: true}}/>
