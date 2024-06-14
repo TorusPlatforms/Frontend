@@ -42,12 +42,14 @@ export const Ping = ({navigation, data }) => {
             style={styles.tinyLogo}
             source={{uri: data.pfp_url}}
           />
-            </View>
+        </View>
     
         <View style={{marginLeft: 20, flex: 6}}>
           <View style={{flex: 1}}>
               <TouchableOpacity onPress={handleAuthorPress}>
-                  <Text style={styles.author}>{data.author}</Text>
+                  <Text style={styles.author}>
+                    {data.loop_id ? `[LOOP] ${data.author}` : data.author}
+                  </Text>
               </TouchableOpacity>
 
             <Text style={styles.text}>{data.content}</Text>

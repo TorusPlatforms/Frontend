@@ -360,6 +360,7 @@ export async function createEvent({name, address, day, time, details, image, isP
     eventData.image_url = image_url
   }
 
+  console.log(eventData)
 
   try {  
     const response = await fetch(serverUrl, {
@@ -371,7 +372,6 @@ export async function createEvent({name, address, day, time, details, image, isP
       body: JSON.stringify(eventData),
     });
 
-    
     const responseData = await response.json();
     console.log('Created Event:', responseData);
 
@@ -1196,10 +1196,9 @@ export async function getAnnouncements(loop_id) {
 export async function sendAnnouncement({loop_id, content, image}) {
   const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/createAnnouncement`;
+  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/createAnnouncement`;
 
   const announcementData = {
-    loop_id: loop_id,
     content: content,
   }
 
@@ -1208,6 +1207,7 @@ export async function sendAnnouncement({loop_id, content, image}) {
     announcementData.image_url = uploadedImage.url
   }
 
+  console.log(announcementData)
   try {
     const response = await fetch(serverUrl, {
       method: 'POST',

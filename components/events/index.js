@@ -24,7 +24,7 @@ export const Event = ({ data }) => {
     return (
         <View style={{ marginVertical: 20, width: "100%", flexDirection: "row", flex: 1 }}>
             <View style={{flex: 0.2, alignItems: "center"}}>
-              <Image style={{ width: 50, height: 50, borderRadius: 25 }} source={{ uri: torus_default_url }} />
+              <Image style={{ width: 50, height: 50, borderRadius: 25 }} source={{ uri: data.pfp_url }} />
               <View style={{marginVertical: 12, width: 1, height: "70%", backgroundColor: "gray"}} />
               <View style={{alignItems: 'center'}}>
                 <Image style={{ left: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_pfp_urls[0] || data?.mutual_attendees_pfp_urls[0] || torus_default_url }} />
@@ -60,13 +60,13 @@ export const Event = ({ data }) => {
 
               </View>
                
-                <View style={{flexDirection: "row", justifyContent: data.attendee_ids.length > 0 ? "space-between" : "flex-end", alignItems: "center", marginTop: 10}}>
-                  {data.attendee_ids.length == 1 && (
+                <View style={{flexDirection: "row", justifyContent: data.mutual_usernames.length > 0 ? "space-between" : "flex-end", alignItems: "center", marginTop: 10}}>
+                  {data.mutual_usernames.length == 1 && (
                     <Text style={{color: "white", fontSize: 12}}> 1 other is attending</Text>
                   )}
 
-                  {data.attendee_ids.length > 1 && (
-                    <Text style={{color: "white", fontSize: 12}}> {data.mutual_attendees.join(",")} & {data.attendee_ids.length} others are attending</Text>
+                  {data.mutual_usernames.length > 1 && (
+                    <Text style={{color: "white", fontSize: 12, maxWidth: 200}}> {data.mutual_usernames?.join(",")} & {data.mutual_usernames.length} others are attending</Text>
                   )}
 
                   <Pressable onPress={handleJoinLeave} style={{borderRadius: 5, borderColor: "gray", borderWidth: 1, padding: 4, paddingHorizontal: 20, backgroundColor: isJoined ? "blue" : "rgb(22, 23, 24)"}}>

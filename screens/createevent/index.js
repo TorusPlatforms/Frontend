@@ -85,7 +85,7 @@ export default function CreateEvent({ route }) {
       details: message, 
       image: image, 
       isPublic: route.params?.loop ? false : true,
-      loop_id: route.params?.loop.loop_id
+      loop_id: route.params?.loop?.loop_id
     }
 
     console.log("Event data", eventData)
@@ -229,7 +229,7 @@ export default function CreateEvent({ route }) {
 
 
                     <Pressable onPress={() => pickImage(handleImageSelect)}>
-                      <Image style={{borderWidth: 2, borderBottomLeftRadius: 20, borderBottomRightRadius: 20, borderColor: 'gray', width: "100%", height: 200, resizeMode: "cover"}} source={{ uri: image.assets[0].uri || torus_default_url }} />
+                      <Image style={{borderWidth: 2, borderBottomLeftRadius: 20, borderBottomRightRadius: 20, borderColor: 'gray', width: "100%", height: 200, resizeMode: "cover"}} source={{ uri: image?.assets[0].uri || torus_default_url }} />
                     </Pressable>
 
               </View>

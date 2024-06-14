@@ -16,12 +16,6 @@ export default function LoopPings({ route }) {
   
   const [pings, setPings] = useState([]);
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [commentText, onChangeComment] = useState('');
-  const [commentPing, setCommentPing] = useState(null)
-  const [replyingTo, setReplyingTo] = useState(null) 
-  const ref_input = useRef();
-
   const [refreshing, setRefreshing] = useState(false)
 
   const fadeAnim = useRef(new Animated.Value(1)).current;
@@ -53,11 +47,6 @@ export default function LoopPings({ route }) {
   }, []);
 
 
-  function handleReply(data) {
-      ref_input.current.focus()
-      setReplyingTo(data.author)
-      onChangeComment("@" + data.author + " ")
-  }
 
 
   async function fetchPings() {
@@ -86,8 +75,6 @@ export default function LoopPings({ route }) {
             renderItem={({item}) => 
               <Ping 
                 data={item} 
-                setModalVisible={setModalVisible}  
-                handleComment={() => setCommentPing(item)}
                 navigation={navigation}
               />
             }
@@ -99,23 +86,11 @@ export default function LoopPings({ route }) {
         {loop.isOwner && (
             <Animated.View style={{opacity: fadeAnim, width: 50, height: 50, borderRadius: 25, backgroundColor: "white", position: "absolute", bottom: 50, right: 25, alignItems: "center", justifyContent: "center"}}>
                 <Pressable onPress={() => navigation.navigate("Create", {loop: loop})}>
-                    <Ionicons style={{left: 2}} size={50} color={"gray"} name="add" />
+                    <Ionicons size={50} color={"gray"} name="add" />
                 </Pressable>
             </Animated.View>
         )}
  
-
-        <CommentModal
-            modalVisible={modalVisible}
-            setModalVisible={setModalVisible}
-            onChangeComment={onChangeComment}
-            commentText={commentText}
-            postComment={postComment}
-            ref_input={ref_input}
-            handleReply={handleReply}
-            commentPing={commentPing}
-            setCommentPing={setCommentPing}
-        />
     </View>
   )
 }

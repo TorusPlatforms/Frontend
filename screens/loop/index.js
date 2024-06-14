@@ -66,7 +66,7 @@ export default function LoopsPage({ route }) {
               <Ionicons name="arrow-back" size={24} color="white" />        
             </TouchableOpacity>
 
-            <View style={{flexDirection: "row", justifyContent: "space-between", width: loop.isOwner ? 90 : 60}}>
+            <View style={{flexDirection: "row", justifyContent: "space-between", width: 90}}>
               <TouchableOpacity onPress={() => navigation.push("LoopChat", {loop: loop})}>
                 <Ionicons name="chatbubble-ellipses" size={24} color="white" />            
               </TouchableOpacity>

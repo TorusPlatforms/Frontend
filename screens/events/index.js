@@ -86,7 +86,7 @@ export default function Events() {
           </View> 
 
           <View style={{ flex: 0.1 }}>
-            <Pressable onPress={() => createEvent()}>
+            <Pressable onPress={createEvent}>
               <Ionicons name="add" size={24} color="white" />
             </Pressable>
           </View>

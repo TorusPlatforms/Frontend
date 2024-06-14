@@ -12,7 +12,6 @@ export default function LoopEvents({ route }) {
   const navigation = useNavigation()
 
   const loop = route.params.loop;
-  
   const [events, setEvents] = useState([]);
 
 
@@ -80,11 +79,15 @@ export default function LoopEvents({ route }) {
             onMomentumScrollEnd={handleScrollEnd}
         />
         
-        <Animated.View style={{opacity: fadeAnim, width: 50, height: 50, borderRadius: 25, backgroundColor: "white", position: "absolute", bottom: 50, right: 25, alignItems: "center", justifyContent: "center"}}>
+        
+        {loop.isOwner && (
+          <Animated.View style={{opacity: fadeAnim, width: 50, height: 50, borderRadius: 25, backgroundColor: "white", position: "absolute", bottom: 50, right: 25, alignItems: "center", justifyContent: "center"}}>
             <Pressable onPress={() => navigation.navigate("CreateEvent", {loop: loop})}>
-                <Ionicons style={{left: 2}} size={50} color={"gray"} name="add" />
+                <Ionicons size={50} color={"gray"} name="add" />
             </Pressable>
-        </Animated.View>
+          </Animated.View>
+        )}
+        
     </View>
   )
 }

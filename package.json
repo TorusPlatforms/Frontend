@@ -44,7 +44,9 @@
     "react-native-screens": "3.31.1",
     "react-native-swipe-gestures": "^1.0.5",
     "react-native-tab-view": "^3.5.2",
-    "react-native-vector-icons": "^10.0.3"
+    "react-native-vector-icons": "^10.0.3",
+    "expo-device": "~6.0.2",
+    "expo-constants": "~16.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0"
