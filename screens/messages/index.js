@@ -15,7 +15,7 @@ export default function Messages() {
     const DirectMessage = ({data}) => (
         <Pressable onPress={() => navigation.navigate("DirectMessage", {username: data.username})} style={{marginVertical: 20, flex: 1, width: "100%", flexDirection: "row", paddingHorizontal: 20, alignItems: "center", justifyContent: 'space-between'}}>
             <View style={{flex: 0.4, justifyContent: "center", alignItems: "center"}}>
-                <Image style={{width: 50, height: 50, borderRadius: 50}} source={{uri: data.lastMessageObj.receiver_pfp_url}}/>
+                <Image style={{width: 50, height: 50, borderRadius: 50}} source={{uri: data.pfp_url}}/>
             </View>
             <View style={{marginLeft: 10, flexDirection: 'col', alignItems: "flex-start", flex: 1}}>
                 <Text style={{color: "white", fontWeight: "bold"}}>{data.username}</Text>

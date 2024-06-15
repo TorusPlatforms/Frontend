@@ -12,7 +12,7 @@ export default function MutualsScreen({ route, navigation }) {
 
     const onRefresh = useCallback(async() => {
         setRefreshing(true);
-        await fetchMembers()
+        await fetchUsers()
         setRefreshing(false)
       }, []);
     

@@ -99,7 +99,7 @@ export default function Profile({ route }) {
     function renderLoops() {
         console.log("RENDERING LOOPS\n\n\n");
       
-        return loops.map((item, index) => (
+        return loops.slice(0, 6).map((item, index) => (
           <TouchableOpacity
             key={index}
             style={[iconStyles[index], { justifyContent: "center", alignItems: "center", position: "absolute" }]}

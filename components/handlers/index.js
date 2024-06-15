@@ -10,14 +10,15 @@ async function getToken() {
 }
 
 
-export async function registerUserBackend(username, email, display_name) {
+export async function registerUserBackend({username, email, display_name, expo_notification_id}) {
   const token = await getToken();
   const serverUrl = 'https://hello-26ufgpn3sq-uc.a.run.app/api/user/register';
 
   const data = {
       username: username,
       college_email: email,
-      display_name: display_name
+      display_name: display_name,
+      expo_notification_id: expo_notification_id
   };
   
   console.log(JSON.stringify(data))

@@ -33,13 +33,8 @@ export default function DirectMessage({ route }) {
       console.log(route.params.username);
 
       const dm = await getDM(route.params.username);
-      console.log(dm);
-      console.log("dm messsages" + dm[0].messages);
-      if (dm[0].messages) {
-        setMessages(dm[0].messages);
-      } else {
-        await sendMessage(route.params.username, "Hey there! Can we connect?")
-        await fetchDM()
+      if (dm.messages) {
+        setMessages(dm.messages);
       }
     };
  

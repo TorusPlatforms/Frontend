@@ -21,7 +21,7 @@ export default function EditProfile() {
         try {
             res = await uploadToCDN(image)
             console.log(res.url)
-            await updateUser("profilepicture", "pfp_url", res.url)
+            await updateUser("pfp_url", res.url)
         } catch (error) {   
             console.error('Error uploading image:', error.message);
         }
