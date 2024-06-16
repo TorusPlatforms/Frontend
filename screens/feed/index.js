@@ -54,14 +54,16 @@ export default function Feed() {
 
       let fetchedPings = []
       if (type == "college") {
-        console.log("fetching College")
+        console.log("Fetching pings from College")
         fetchedPings = await getPings(user);
       } else if (type == "friends") {
+        console.log("Fetching pings from Friends")
         fetchedPings = await getFollowingPings();
       } else {
         throw new Error("Type not defined in Feed")
       }
 
+      console.log("Fetched", fetchedPings.length, "pings. First entry:", fetchedPings[0])
       setPings(fetchedPings);
   
       setDropdownData([
@@ -72,7 +74,6 @@ export default function Feed() {
     }
   
     async function feedChange(type) {
-      console.log("Feed was changed to" + type)
       setFeedType(type)
 
       setRefreshing(true);

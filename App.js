@@ -4,7 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as Notifications from 'expo-notifications';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Text, Pressable } from "react-native";
+import React, { useState, useRef, useEffect } from "react";
+import { Text, Pressable, Linking } from "react-native";
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -74,6 +75,9 @@ Notifications.setNotificationHandler({
   }),
 });
 
+
+
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const TopTab = createMaterialTopTabNavigator();
@@ -135,11 +139,44 @@ const CancelHeader = (props) => {
   )
 }
 
-
 function App() {
+
+
   return (
     <SafeAreaProvider>
-    <NavigationContainer>
+    <NavigationContainer
+    linking={{
+      async getInitialURL() {
+        const url = await Linking.getInitialURL();
+
+        if (url != null) {
+          return url;
+        }
+
+        const response = await Notifications.getLastNotificationResponseAsync();
+
+        return response?.notification.request.content.data.url;
+      },
+
+      subscribe(listener) {
+        const onReceiveURL = ({ url }) => listener(url);
+
+        // Listen to incoming links from deep linking
+        const eventListenerSubscription = Linking.addEventListener('url', onReceiveURL);
+
+        // Listen to expo push notifications
+        const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+          const data = response.notification.content.data;
+
+          listener(url);
+        });
+
+        return () => {
+          eventListenerSubscription.remove();
+          subscription.remove();
+        };
+      },
+    }}>
       <Stack.Navigator screenOptions={{headerShown: false, headerTitleStyle: {color: "white"}, headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}}}>
         <Stack.Screen name="Auth" component={AuthScreen}/>
         <Stack.Screen name="SignUp" component={SignUpScreen}/>

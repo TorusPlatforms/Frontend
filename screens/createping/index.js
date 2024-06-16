@@ -19,7 +19,7 @@ const exampleUserData = {
 }
 
 export default function CreatePing({ route }) {
-  console.log(route.params)
+  console.log("Navigated to CreatePing with params", route.params)
   const navigation = useNavigation();
   const [user, setUser] = useState(null)
   const [content, setContent] = useState("");
@@ -41,20 +41,20 @@ export default function CreatePing({ route }) {
     requestPhotoLibraryPerms()
   }, []); 
 
-  useEffect(() => {
-    (async () => {
+  // useEffect(() => {
+  //   (async () => {
       
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== 'granted') {
+  //       setErrorMsg('Permission to access location was denied');
+  //       return;
+  //     }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-      console.log(location)
-    })();
-  }, []);
+  //     let location = await Location.getCurrentPositionAsync({});
+  //     setLocation(location);
+  //     console.log("Fetched location:", location)
+  //   })();
+  // }, []);
 
 
   const handleBackgroundPress = () => {
@@ -77,13 +77,13 @@ export default function CreatePing({ route }) {
       author: (route.params?.loop) ? route.params.loop.name : user.username, 
       pfp_url: (route.params?.loop) ? route.params.loop.pfp_url : user.pfp_url, 
       content: content, 
-      latitude: location.coords.latitude, 
-      longitude: location.coords.longitude, 
+      // latitude: location?.coords.latitude, 
+      // longitude: location?.coords.longitude, 
       college: user.college, 
       image: image, 
       loop_id: route.params?.loop?.loop_id 
     }
-    console.log(postData)
+    console.log("Creating post with data:", postData)
     await createPost(postData)
     
     navigation.goBack()

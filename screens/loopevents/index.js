@@ -72,7 +72,7 @@ export default function LoopEvents({ route }) {
             data={events}
             renderItem={
               ({item}) => 
-                <Event data={item} />
+                <Event data={item} navigation={navigation} />
             }
             ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
             onMomentumScrollBegin={handleScrollBegin}

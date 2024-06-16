@@ -96,7 +96,7 @@ export default function Events() {
       <AnimatedFlatList
         style={{ paddingHorizontal: 20 }}
         data={filteredEvents}
-        renderItem={({ item }) => <Event data={item}/>}
+        renderItem={({ item }) => <Event data={item} navigation={navigation}/>}
         ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],

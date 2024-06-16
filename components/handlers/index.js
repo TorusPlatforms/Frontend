@@ -308,9 +308,6 @@ export async function createPost({  content, author, pfp_url, latitude, longitud
       postData.image_url = uploadedImage.url
     }
 
-    console.log(postData)
-
-
     try {  
       const response = await fetch(serverUrl, {
         method: 'POST',
@@ -565,7 +562,6 @@ export async function updateLoop(loop_id, endpoint, content) {
 
 
 export async function postComment(post, content) {
-  console.log("HERE", post, content)
   const token = await getToken()
   
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/add`;

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Pressable, Platform, KeyboardAvoidingView, ScrollView } from "react-native";
+import { View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Pressable, Platform, Alert, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -27,6 +27,7 @@ export default function CreateEvent({ route }) {
   const [time, setTime] = useState(new Date())
   const [displayDate, setDisplayDate]= useState(Platform.OS === "android" ? strfEventDate(date) : "")
   const [displayTime, setDisplayTime] = useState(Platform.OS === "android" ? strfEventTime(time) : "")
+  const [isPublic, setIsPublic] = useState(true)
 
   const [showCalendar, setShowCalendar] = useState(Platform.OS === "android" ? false : true);
   const [showClock, setShowClock] = useState(Platform.OS === "android" ? false : true);
@@ -83,7 +84,7 @@ export default function CreateEvent({ route }) {
       time: time, 
       details: message, 
       image: image, 
-      isPublic: route.params?.loop ? false : true,
+      isPublic: isPublic,
       loop_id: route.params?.loop.loop_id
     }
 
@@ -115,7 +116,26 @@ export default function CreateEvent({ route }) {
     }
   };
 
+  function handleLockPress() {
+    let alertTitle, alertMessage = ""
+    if (isPublic) {
+      alertTitle = "Are you sure you want to make this event private?"
+      alertMessage = "This means only members of this loop will be able to join this event."
+    } else {
+      alertTitle = "Are you sure you want to make this event public?"
+      alertMessage = "This means anyone from your college will be able to join this event."
+    }
 
+    Alert.alert(alertTitle, alertMessage, [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: 'OK', onPress: () => setIsPublic(!isPublic)},
+    ]);
+
+  }
 
 
   if (!user || !key) {
@@ -152,7 +172,7 @@ export default function CreateEvent({ route }) {
               <View style={{flex: 0.8, flexDirection: 'column'}}>
                   <View style={{ justifyContent: "space-between", borderWidth: 2,  borderColor: "gray", borderRadius: 20, flex: 1}}>
                       <View style={{flex: 1, padding: 20}}>
-                          <View>
+                          <View style={{justifyContent: 'space-between', flexDirection: "row", paddingRight: 25}}>
                               <Input 
                                 value={name}
                                 onChangeText={setName}
@@ -160,6 +180,16 @@ export default function CreateEvent({ route }) {
                                 placeholder={user.username + "'s event"}
                                 placeholderTextColor={"gray"}
                               />
+
+                              {route.params?.loop && (
+                                <Pressable onPress={handleLockPress} style={{top: 5}} >
+                                   {({pressed}) => (
+                                      <Ionicons name={isPublic ? "lock-open" : "lock-closed"} size={24} color={pressed ? "gray" : "white"}/>
+                                  )}
+                                </Pressable>
+
+                                
+                              )}
                           </View>
 
                           
@@ -233,7 +263,7 @@ export default function CreateEvent({ route }) {
                       
 
                       <Pressable style={{flex: 0.6}} onPress={() => pickImage(handleImageSelect)}>
-                        <Image style={{width: "100%", height: "100%", resizeMode: "cover", borderBottomLeftRadius: 20, borderBottomRightRadius: 20}} source={{ uri: image?.assets[0].uri || "https://static.thenounproject.com/png/4974686-200.png" }} />
+                        <Image style={{width: "100%", height: "100%", resizeMode: "cover", borderBottomLeftRadius: 20, borderBottomRightRadius: 20, bottom: image?.assets[0] ? 0 : 20}} source={{ uri: image?.assets[0].uri || "https://static.thenounproject.com/png/4974686-200.png" }} />
                       </Pressable>
                   </View>
               </View>

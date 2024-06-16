@@ -8,7 +8,7 @@ import * as Linking from 'expo-linking';
 const torus_default_url = "https://cdn.torusplatform.com/5e17834c-989e-49a0-bbb6-0deae02ae5b5.jpg"
 
 
-export const Event = ({ data }) => {
+export const Event = ({ data, navigation }) => {
     data.image_url = data.image_url || torus_default_url
     const [isJoined, setIsJoined] = useState(data.isJoined)
 
@@ -19,6 +19,10 @@ export const Event = ({ data }) => {
 
     function openMaps() {
       Linking.openURL(`http://maps.google.com/?q=${data.address}`);
+    }
+
+    function handleLoopPress() {
+      navigation.navigate("Loop", {loop_id: data.loop_id})
     }
 
     return (
@@ -36,7 +40,16 @@ export const Event = ({ data }) => {
               <View style={{borderRadius: 20, borderWidth: 2, borderColor: "gray"}}>
                 <View style={{ justifyContent: "space-between", padding: 20, height: 150}}>
                       <View>
-                        <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>{data.name || data?.name}</Text>
+                        <View style={{flexDirection: 'row', justifyContent: "space-between"}}>
+                          <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>{data.name || data?.name}</Text>
+                          {(data.public && data.loop_id) && (
+                            <Pressable onPress={handleLoopPress}>
+                               {({pressed}) => (
+                                  <Text style={{ color: pressed ? "gray" : "white", fontSize: 12, top: 5, maxWidth: 150, textAlign: "right" }}>A Loop's Public Event</Text>
+                                )}
+                            </Pressable>
+                          )}
+                        </View>
                         <Text style={{ color: "white" }}>{strfEventDate(data.time) || data?.time}</Text>
                         <Pressable onPress={(openMaps)}>
                           <Text style={{ color: "white", textDecorationLine: "underline", fontSize: 12 }}>{data.address || data?.address}</Text>
