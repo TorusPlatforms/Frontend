@@ -105,10 +105,10 @@ const Comment = ({data, handleReply}) => (
   
             <View style={styles.addCommentContainer}>
               <View style={{flexDirection: "row", flex: 2}}>
-                <Image
+                {/* <Image
                   style={styles.tinyLogo}
-                  source={{uri: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4  &"}}
-                />
+                  source={{uri: data.pfp_url}}
+                /> */}
   
                 <TextInput 
                   placeholderTextColor="white" 

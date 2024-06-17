@@ -83,13 +83,11 @@ export default function LoopPings({ route }) {
             onMomentumScrollEnd={handleScrollEnd}
         />
         
-        {loop.isOwner && (
-            <Animated.View style={{opacity: fadeAnim, width: 50, height: 50, borderRadius: 25, backgroundColor: "white", position: "absolute", bottom: 50, right: 25, alignItems: "center", justifyContent: "center"}}>
-                <Pressable onPress={() => navigation.navigate("Create", {loop: loop})}>
-                    <Ionicons size={50} color={"gray"} name="add" />
-                </Pressable>
-            </Animated.View>
-        )}
+        <Animated.View style={{opacity: fadeAnim, width: 50, height: 50, borderRadius: 25, backgroundColor: "white", position: "absolute", bottom: 50, right: 25, alignItems: "center", justifyContent: "center"}}>
+            <Pressable onPress={() => navigation.navigate("Create", {loop: loop})}>
+                <Ionicons size={50} color={"gray"} name="add" />
+            </Pressable>
+        </Animated.View>
  
     </View>
   )

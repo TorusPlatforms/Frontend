@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, Modal, FlatList, RefreshControl, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 
 import { getThreads } from "../../components/handlers";
 import { findTimeAgo } from "../../components/utils";
@@ -10,7 +11,7 @@ export default function Messages() {
     const navigation = useNavigation()
     const [DMs, setDMs] = useState([])
     const [refreshing, setRefreshing] = useState(false)
-
+    const isFocused = useIsFocused()
 
     const DirectMessage = ({data}) => (
         <Pressable onPress={() => navigation.navigate("DirectMessage", {username: data.username})} style={{marginVertical: 20, flex: 1, width: "100%", flexDirection: "row", paddingHorizontal: 20, alignItems: "center", justifyContent: 'space-between'}}>
@@ -37,15 +38,14 @@ export default function Messages() {
 
     async function fetchThreads() {
         const threads = await getThreads();
-        console.log("THREADS");
-        console.log(threads);
         setDMs(threads);
     }
 
 
     useEffect(() => {
+        console.log("Refocused...")
         fetchThreads()
-      }, []);
+      }, [isFocused]);
       
 
     if (!DMs) {

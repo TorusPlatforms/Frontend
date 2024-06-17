@@ -79,9 +79,16 @@ export function strfEventTime(timestamp) {
 
 }
 
-export function combineDateAndTme(date, time) {
-  return new Date(date.getYear(), date.getMonth() - 1, date.getDate(), time.getHours(), time.getMinutes())
+export function combineDateAndTime(date, time) {
+  return new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    time.getHours(),
+    time.getMinutes()
+  );
 }
+
 
 
 export function abbreviate(inputString) {

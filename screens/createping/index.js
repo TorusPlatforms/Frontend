@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Platform, View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Pressable } from "react-native";
+import { Platform, View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Pressable, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
@@ -24,7 +24,7 @@ export default function CreatePing({ route }) {
   const [user, setUser] = useState(null)
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
-
+  const [isPublic, setIsPublic] = useState(route.params?.loop ? false : true);
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
@@ -39,7 +39,7 @@ export default function CreatePing({ route }) {
 
     requestCameraPerms()
     requestPhotoLibraryPerms()
-  }, []); 
+  }, [route.params]); 
 
   // useEffect(() => {
   //   (async () => {
@@ -75,13 +75,14 @@ export default function CreatePing({ route }) {
   async function handlePost() {
     const postData = {
       author: (route.params?.loop) ? route.params.loop.name : user.username, 
-      pfp_url: (route.params?.loop) ? route.params.loop.pfp_url : user.pfp_url, 
+      pfp_url: user.pfp_url, 
       content: content, 
       // latitude: location?.coords.latitude, 
       // longitude: location?.coords.longitude, 
       college: user.college, 
       image: image, 
-      loop_id: route.params?.loop?.loop_id 
+      loop_id: route.params?.loop?.loop_id,
+      isPublic: isPublic
     }
     console.log("Creating post with data:", postData)
     await createPost(postData)
@@ -90,7 +91,27 @@ export default function CreatePing({ route }) {
   }
 
 
- 
+  function handleLockPress() {
+    let alertTitle, alertMessage = ""
+    if (isPublic) {
+      alertTitle = "Are you sure you want to make this ping private?"
+      alertMessage = "This means only members of this loop will be able to see this ping."
+    } else {
+      alertTitle = "Are you sure you want to make this ping public?"
+      alertMessage = "This means anyone from your college will be able to see this ping."
+    }
+
+    Alert.alert(alertTitle, alertMessage, [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {text: 'OK', onPress: () => setIsPublic(!isPublic)},
+    ]);
+
+  }
+
   if (!user) {
     return <ActivityIndicator />
   }
@@ -102,12 +123,24 @@ export default function CreatePing({ route }) {
           <Text style={{ fontSize: 16, color: "white" }}>Cancel</Text>
         </TouchableOpacity>
 
-        <View style={{ alignItems: 'center', justifyContent: 'flex-start' }}>
-          <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>Send a Ping</Text>
+        <View style={{flexDirection: "row"}}>
+          <View style={{flex: 0.25}}/>
+          <View style={{justifyContent: "center", alignItems: "center", flex: 0.5}}>
+              <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>Send a Ping</Text>
 
-          {route.params?.loop && (
-            <Text style={{color: "white", fontSize: 12}}>Posting as {route.params.loop.name}</Text>
-          )}
+              {route.params?.loop && (
+                <Text style={{color: "white", fontSize: 12, textAlign: "center"}}>Posting {isPublic ? "as" : "in"} {route.params.loop.name}</Text>
+              )}
+          </View>
+          <View style={{flex: 0.25, justifyContent: "center", alignItems: "flex-end"}}>
+              {route.params?.loop && route.params?.loop?.isOwner && (
+                <Pressable onPress={handleLockPress} style={{marginRight: 30}} >
+                    {({pressed}) => (
+                      <Ionicons name={isPublic ? "lock-open" : "lock-closed"} size={24} color={pressed ? "gray" : "white"}/>
+                  )}
+                </Pressable>                
+              )}
+          </View>
         </View>
 
         <View style={{ flexDirection: "column", alignItems: "center"}}>

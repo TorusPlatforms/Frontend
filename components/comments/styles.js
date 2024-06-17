@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
         marginTop: 20, 
         flexDirection: "row", 
         paddingHorizontal: 10, 
-        paddingRight: 30
+        paddingRight: 30,
     },
 
     addCommentInput: {
@@ -86,7 +86,9 @@ const styles = StyleSheet.create({
         borderRadius: 10, 
         borderWidth: 1, 
         borderColor: "gray", 
-        width: "75%"
+        width: "90%",
+        padding: 10,
+        height: 50
     },
 
     addCommentButton: {

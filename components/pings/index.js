@@ -7,10 +7,10 @@ import { findTimeAgo } from "../utils";
 import styles from "./styles";
 import { CommentModal } from "../comments";
 
-export const Ping = ({navigation, data }) => {
+export const Ping = ({navigation, data, openComment }) => {
     const [isLiked, setIsLiked] = useState(data.isLiked)
     const [numOfLikes, setNumOfLikes] = useState(data.numberof_likes)
-    const [commentModalVisible, setCommentModalVisible] = useState(false)
+    const [commentModalVisible, setCommentModalVisible] = useState(openComment == data.post_id)
     
     async function handleLikePress() {
       if (isLiked) {
@@ -48,7 +48,7 @@ export const Ping = ({navigation, data }) => {
           <View style={{flex: 1}}>
               <TouchableOpacity onPress={handleAuthorPress}>
                   <Text style={styles.author}>
-                    {data.loop_id ? `[LOOP] ${data.author}` : data.author}
+                    {(data.loop_id && data.public) ? `[LOOP] ${data.author}` : data.author}
                   </Text>
               </TouchableOpacity>
 

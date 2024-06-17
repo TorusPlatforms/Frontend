@@ -5,7 +5,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import * as Notifications from 'expo-notifications';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { useState, useRef, useEffect } from "react";
-import { Text, Pressable, Linking } from "react-native";
+import { View, Text, Pressable, Linking } from "react-native";
 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -84,9 +84,8 @@ const TopTab = createMaterialTopTabNavigator();
 const username = "Direct Messages"
 
 const DirectMessageHeader = (props) => {
-  console.log(props)
   return (
-    <Text style={{color: "white", fontWeight: "bold", fontSize: 18, marginBottom: 5}}>{props.params.username}</Text>
+      <Text style={{color: "white", fontWeight: "bold", fontSize: 18, marginBottom: 5}}>{props.params.username}</Text>
   );
 }
 
@@ -144,39 +143,39 @@ function App() {
 
   return (
     <SafeAreaProvider>
-    <NavigationContainer
-    linking={{
-      async getInitialURL() {
-        const url = await Linking.getInitialURL();
+    <NavigationContainer>
+    {/* // linking={{
+    //   async getInitialURL() {
+    //     const url = await Linking.getInitialURL();
 
-        if (url != null) {
-          return url;
-        }
+    //     if (url != null) {
+    //       return url;
+    //     }
 
-        const response = await Notifications.getLastNotificationResponseAsync();
+    //     const response = await Notifications.getLastNotificationResponseAsync();
 
-        return response?.notification.request.content.data.url;
-      },
+    //     return response?.notification.request.content.data.url;
+    //   },
 
-      subscribe(listener) {
-        const onReceiveURL = ({ url }) => listener(url);
+    //   subscribe(listener) {
+    //     const onReceiveURL = ({ url }) => listener(url);
 
-        // Listen to incoming links from deep linking
-        const eventListenerSubscription = Linking.addEventListener('url', onReceiveURL);
+    //     // Listen to incoming links from deep linking
+    //     const eventListenerSubscription = Linking.addEventListener('url', onReceiveURL);
 
-        // Listen to expo push notifications
-        const subscription = Notifications.addNotificationResponseReceivedListener(response => {
-          const data = response.notification.content.data;
+    //     // Listen to expo push notifications
+    //     const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+    //       const data = response.notification.content.data;
+          
+    //       listener(url);
+    //     });
 
-          listener(url);
-        });
-
-        return () => {
-          eventListenerSubscription.remove();
-          subscription.remove();
-        };
-      },
-    }}>
+    //     return () => {
+    //       eventListenerSubscription.remove();
+    //       subscription.remove();
+    //     };
+    //   },
+    // }}> */}
       <Stack.Navigator screenOptions={{headerShown: false, headerTitleStyle: {color: "white"}, headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}}}>
         <Stack.Screen name="Auth" component={AuthScreen}/>
         <Stack.Screen name="SignUp" component={SignUpScreen}/>
@@ -188,7 +187,7 @@ function App() {
         <Stack.Screen name="CreateAnnouncement" component={CreateAnnouncement} options={{presentation: "modal"}} />
         <Stack.Screen name="Loop" component={LoopsPage}/>
         <Stack.Screen name="LoopMembers" component={LoopMembers} options={{presentation: "modal", title: "Members", headerShown: true}}/>
-        <Stack.Screen name="DirectMessage" component={DirectMessage} options={ ({ route }) => ({headerShown: true, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
+        <Stack.Screen name="DirectMessage" component={DirectMessage} options={ ({ route }) => ({headerShown: true, contentStyle: {borderTopColor: "gray", borderTopWidth: 1}, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.username })}/>
         <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>
         <Stack.Screen name="Your Account" component={YourAccountScreen} options={{headerShown: true}}/>

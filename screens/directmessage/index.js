@@ -1,128 +1,91 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { View, ActivityIndicator } from "react-native";
 import { GiftedChat, Bubble, InputToolbar, Avatar } from 'react-native-gifted-chat';
-import { getAuth } from "firebase/auth";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { getDM, sendMessage, getUser } from '../../components/handlers';
-import styles from "./styles";
+import { ChatComponent } from '../../components/chat';
+import { getFirestore, collection, getDocs, query, where, onSnapshot, doc } from "firebase/firestore"
+
+import styles from "./styles"
+
 
 export default function DirectMessage({ route }) {
-  const [messages, setMessages] = useState(null)
-  const [user, setUser] = useState(null)
-  const auth = getAuth()
+    const [messages, setMessages] = useState(null)
+    const [user, setUser] = useState(null)
+    const [unsubscribe, setUnsubscribe] = useState(null)
+    const db = getFirestore();
 
-  useEffect(() => {
-    fetchDM();
-    // setMessages([
-    //   {
-    //     _id: 1,
-    //     text: 'Hello developer',
-    //     createdAt: new Date(),
-    //     user: {
-    //       _id: 2,
-    //       name: 'React Native',
-    //       avatar: 'https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&',
-    //     },
-    //   },
-    // ])
-  }, [])
-
-  async function fetchDM() { 
-      const user = await getUser();
-      setUser(user)
-      console.log(route.params.username);
-
-      const dm = await getDM(route.params.username);
-      if (dm.messages) {
-        setMessages(dm.messages);
+    async function findThreadFirebase(username_1, username_2) {
+      console.log("Searching for usernames...", username_1, username_2);
+    
+      const q = query(collection(db, 'messages'), where(`members.${username_1}`, '!=', null));
+      const querySnapshot = await getDocs(q);
+      
+      console.log(querySnapshot.empty)
+      console.log("DOCS", querySnapshot.docs)
+      for (const doc of querySnapshot.docs) {
+        console.log(doc.id, doc.data().members);
+        const members = doc.data().members;
+        if (members.hasOwnProperty(username_2)) {
+          return doc; 
+        }
       }
-    };
- 
-
-  const onSend = useCallback(async (messages = []) => { //
-    console.log("MESSAGSE", messages)
-    if (messages) {
-      await sendMessage(route.params.username, messages[0].text)
+    
+      return null; 
     }
 
-    setMessages(previousMessages =>
-      GiftedChat.append(messages, previousMessages),
+    useEffect(() => {
+      fetchDM();
+        
+      if (unsubscribe) {
+        return () => unsubscribe();
+      }
+    }, [route.params])
+
+    async function fetchDM() { 
+        const user = await getUser();
+        setUser(user)
+
+        const dm = await getDM(route.params.username);
+        if (dm.messages) {
+          setMessages(dm.messages);
+          console.log("Fetched DMs between: ", user.username, route.params.username)
+          console.log("Fetched", dm.messages.length, "messages. First entry:", dm.messages[0])
+
+          const messageDoc = await findThreadFirebase(user.username, route.params.username)
+          const unsub = onSnapshot(doc(db, "messages", messageDoc.id), (snapshot) => {
+              console.log("Chat was updated")
+              const data = snapshot.data()
+              if (data && data?.messages) {
+                setMessages(data.messages);
+              }
+            })
+          
+          setUnsubscribe(() => unsub); 
+        } else {
+            setMessages([])
+        }
+    }
+  
+
+    const onSend = useCallback(async (messages = []) => { //
+        if (messages) {
+          await sendMessage(route.params.username, messages[0].text)
+        }
+
+        setMessages(previousMessages =>
+          GiftedChat.append(messages, previousMessages),
+        )
+      }, [])
+
+    if (!messages || !user) {
+      return <ActivityIndicator />
+    }
+    
+    return (
+      <SafeAreaView style={styles.container}>
+        <ChatComponent onSend={onSend} messages={messages} id={user.username}/>
+      </SafeAreaView>
     )
-  }, [])
-
-  const CustomInputToolbar = props => {
-    return (
-      <InputToolbar
-        {...props}
-        containerStyle={{
-          backgroundColor: 'transparent', 
-          borderTopWidth: 0, 
-          paddingHorizontal: 10, 
-        }}
-      />
-    );
-  };
-
-  const renderBubble = (props) => {
-    return (
-      <Bubble
-        {...props}
-        wrapperStyle={{
-          left: {
-            marginLeft: 5,
-            marginBottom: 20,
-          },
-        }}
-      />
-    );
-  }
-
-  const renderAvatar = (props) => {
-    return (
-        <View style={{marginBottom:20}}>
-            <Avatar 
-            {...props}
-            containerStyle={{ marginLeft: 10, marginRight: 10 }} 
-            imageStyle={{ borderRadius: 20 }} 
-            />
-
-        </View>
-      
-    );
-  };
-
-
-  if (!messages || !user) {
-    return <ActivityIndicator />
-  }
-
-  console.log(messages, user.username)
-
-  return (
-    <View style={[styles.container, {paddingVertical: 30}]}>
-      <GiftedChat
-        textInputStyle={{
-          backgroundColor: "rgb(50,50,50)",
-          color: "white",
-          marginLeft: 5,
-          marginTop: 10,
-          paddingLeft:10,
-          borderRadius:25
-        }}
-        messages={messages}
-        onSend={messages => onSend(messages)}
-        user={{
-          _id: user.username,
-        }}
-        renderBubble={renderBubble}
-        renderInputToolbar={props => <CustomInputToolbar {...props} />}
-        textInputProps={{
-          placeholderTextColor: 'gray',
-          multiline: false,
-        }}
-        renderAvatar={renderAvatar}
-        inverted={false}
-      />
-    </View>
-  );
 }

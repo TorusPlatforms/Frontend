@@ -26,6 +26,7 @@ export default function CreateLoop() {
     const [image, setImage] = useState(); 
     const [name, setName] = useState();
     const [user, setUser] = useState();
+    const [isPublic, setIsPublic] = useState(true)
     const [description, setDescription] = useState();
     const [errorMessage, setErrorMessage] = useState(null)
     
@@ -38,7 +39,7 @@ export default function CreateLoop() {
     async function handleCreateLoop() {
   
         try {
-          const createdLoop = await createLoop({name: name, creator_id: user.username, status: "public", location: user.college, description: description, image: image })
+          const createdLoop = await createLoop({name: name, description: description, image: image, isPublic: isPublic })
 
           console.log("Created Loop", createdLoop)
           

@@ -66,27 +66,29 @@ export default function LoopsPage({ route }) {
               <Ionicons name="arrow-back" size={24} color="white" />        
             </TouchableOpacity>
 
-            <View style={{flexDirection: "row", justifyContent: "space-between", width: 90}}>
-              <TouchableOpacity onPress={() => navigation.push("LoopChat", {loop: loop})}>
-                <Ionicons name="chatbubble-ellipses" size={24} color="white" />            
-              </TouchableOpacity>
+            {loop.isJoined && (
+                <View style={{flexDirection: "row", justifyContent: "space-between", width: 90}}>
+                    <TouchableOpacity onPress={() => navigation.push("LoopChat", {loop: loop})}>
+                      <Ionicons name="chatbubble-ellipses" size={24} color="white" />            
+                    </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => navigation.push("LoopMembers", {loop_id: loop.loop_id, isOwner: loop.isOwner})}>
-                <Ionicons name="information-circle" size={24} color="white" />      
-              </TouchableOpacity>
-             
-              {!loop.isOwner && (
-                  <TouchableOpacity onPress={handleLeave}>
-                    <Ionicons name="exit" size={24} color="white" />      
-                  </TouchableOpacity>
-              )}
-              
-              {loop.isOwner && (
-                <TouchableOpacity onPress={() => navigation.push("EditLoop", {loop_id: loop_id})}>
-                    <Ionicons name="settings" size={24} color="white" />                    
-                </TouchableOpacity>
-              )}
-            </View>
+                    <TouchableOpacity onPress={() => navigation.push("LoopMembers", {loop_id: loop.loop_id, isOwner: loop.isOwner})}>
+                      <Ionicons name="information-circle" size={24} color="white" />      
+                    </TouchableOpacity>
+
+                    {!loop.isOwner && (
+                        <TouchableOpacity onPress={handleLeave}>
+                          <Ionicons name="exit" size={24} color="white" />      
+                        </TouchableOpacity>
+                    )}
+                    
+                    {loop.isOwner && (
+                      <TouchableOpacity onPress={() => navigation.push("EditLoop", {loop_id: loop_id})}>
+                          <Ionicons name="settings" size={24} color="white" />                    
+                      </TouchableOpacity>
+                    )}
+                </View>
+            )}
         </View>
 
 

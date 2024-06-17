@@ -45,8 +45,8 @@ export default function Events() {
   const fetchEvents = async () => {
     try {
         const fetchedEvents = await getEvents()
-        console.log("WOOF WOOF", fetchedEvents)
-        setEvents(fetchedEvents);
+        console.log("Fetched", fetchedEvents.length, "events. First entry:", fetchedEvents[0])
+        setEvents(fetchedEvents.reverse());
     } catch (error) {
       console.error("Error fetching events:", error);
     }

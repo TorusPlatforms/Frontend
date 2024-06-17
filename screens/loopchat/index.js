@@ -1,11 +1,13 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { ActivityIndicator, View, Text, TouchableOpacity, Image } from "react-native";
 import { GiftedChat, Bubble, InputToolbar, Avatar } from 'react-native-gifted-chat';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from "@react-navigation/native";
+import { getFirestore, collection, getDocs, query, where, onSnapshot, doc } from "firebase/firestore"
 
 import styles from "./styles";
+import { ChatComponent } from '../../components/chat';
 import { getChats, sendChat, getUser} from '../../components/handlers';
 
 
@@ -14,19 +16,38 @@ export default function LoopChat({ route }) {
 
   const [messages, setMessages] = useState([])
   const [user, setUser] = useState();
+
+  const [unsubscribe, setUnsubscribe] = useState(null)
+  const db = getFirestore();
+  
   const { loop } = route.params;
 
 
   useEffect(() => {
     fetchChats();
     fetchUser();
-  }, [])
+
+    if (unsubscribe) {
+      return () => unsubscribe();
+    }
+  }, [route.params])
 
 
   async function fetchChats() {
     const chat = await getChats(loop.loop_id);
+
     if (chat.messages) {
-        setMessages(chat.messages.reverse())
+        setMessages(chat.messages)
+
+        const unsub = onSnapshot(doc(db, "loops", String(loop.loop_id)), (snapshot) => {
+            console.log("Loop chat was updated")
+            const data = snapshot.data()
+            if (data && data?.messages) {
+              setMessages(data.messages);
+            }
+          })
+        
+        setUnsubscribe(() => unsub); 
     } else {
         setMessages([]);
     }
@@ -42,8 +63,9 @@ export default function LoopChat({ route }) {
   const onSend = useCallback(async (messages = []) => {
     await sendChat(loop.loop_id, messages[0].text);
     setMessages(previousMessages =>
-      GiftedChat.append(previousMessages, messages),
+      GiftedChat.append(messages, previousMessages),
     )
+
   }, [])
 
 
@@ -52,11 +74,9 @@ export default function LoopChat({ route }) {
   }
 
 
-  console.log(loop)
-
   return (
     <SafeAreaView style={styles.container}>
-         <View style={{paddingHorizontal: 20, flexDirection: "row", alignItems: "center"}}>
+         <View style={{paddingHorizontal: 20, flexDirection: "row", alignItems: "center", borderBottomWidth: 1, borderColor: "gray", paddingBottom: 10}}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Ionicons name="arrow-back" size={24} color="white" />        
             </TouchableOpacity>
@@ -66,12 +86,10 @@ export default function LoopChat({ route }) {
             <Text style={{color: 'white', fontSize: 16}}>{loop.name}</Text>
         </View>
 
-        <GiftedChat
+        <ChatComponent
           messages={messages}
           onSend={messages => onSend(messages)}
-          user={{
-            _id: user.username,
-          }}
+          id={user.username}
         />
     </SafeAreaView>
   );

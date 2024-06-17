@@ -1,6 +1,6 @@
 import { getAuth } from "firebase/auth";
 import { Share, Alert } from 'react-native'
-import { combineDateAndTme } from "../utils";
+import { combineDateAndTime } from "../utils";
 import { AlreadyExistsError } from "../utils/errors";
 
 async function getToken() {
@@ -288,7 +288,7 @@ export async function joinLeaveEvent(event) {
 }
 
 
-export async function createPost({  content, author, pfp_url, latitude, longitude, college, loop_id, image }) {
+export async function createPost({ content, author, pfp_url, latitude, longitude, college, loop_id, image, isPublic }) {
     const token = await getToken()
     
     const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/add`;
@@ -300,7 +300,8 @@ export async function createPost({  content, author, pfp_url, latitude, longitud
       latitude: latitude,
       longitude: longitude,
       college: college,
-      loop_id: loop_id
+      loop_id: loop_id,
+      public: isPublic
     }
 
     if (image) {
@@ -340,7 +341,7 @@ export async function createEvent({name, address, day, time, details, image, isP
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/create`;
 
 
-  const date = combineDateAndTme(day, time)
+  const date = combineDateAndTime(day, time)
 
   const eventData = {
     name: name,
@@ -608,7 +609,7 @@ export async function getThreads() {
     })
 
     const responseData = await response.json();
-    console.log('Threads:', responseData);
+    console.log('Fetched', responseData?.length, 'threads. First entry:', responseData[0]);
 
     if (responseData.status === 204) {
       return []
@@ -645,7 +646,7 @@ export async function getDM(username) {
     }
 
     const responseData = await response.json();
-    console.log('DMs:', responseData);
+
     return responseData;
 
   } catch (error) {
@@ -747,17 +748,15 @@ export async function getLoop(loop_id) {
 
 
 
-export async function createLoop({ name, creator_id, status, location, image, description}) {
+export async function createLoop({ name, image, description, isPublic}) {
     const token = await getToken()
 
     const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/add`;
 
     const loopData = {
       name: name,
-      creator_id: creator_id,
-      status: status,
-      location: location,
-      description: description
+      description: description,
+      public: isPublic
     }
     
         
@@ -1221,7 +1220,7 @@ export async function sendAnnouncement({loop_id, content, image}) {
 
 
     if (!response.ok) {
-      throw new Error(`Error cereating cannoucnemtn! Status: ${response.status}`);
+      throw new Error(`Error cereating cannoucnemtn! Status: ${response.status, JSON.stringify(response)}`);
     }
 
     return responseData

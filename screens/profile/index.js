@@ -271,6 +271,7 @@ export default function Profile({ route }) {
                     <Ping 
                         data={item} 
                         navigation={navigation}
+                        openComment={route.params?.scrollToPing}
                     />
                     }
                     ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}

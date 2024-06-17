@@ -41,11 +41,11 @@ export const Event = ({ data, navigation }) => {
                 <View style={{ justifyContent: "space-between", padding: 20, height: 150}}>
                       <View>
                         <View style={{flexDirection: 'row', justifyContent: "space-between"}}>
-                          <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>{data.name || data?.name}</Text>
+                          <Text style={{ color: "white", fontWeight: "bold", fontSize: 16, maxWidth: 150 }}>{data.name || data?.name}</Text>
                           {(data.public && data.loop_id) && (
                             <Pressable onPress={handleLoopPress}>
                                {({pressed}) => (
-                                  <Text style={{ color: pressed ? "gray" : "white", fontSize: 12, top: 5, maxWidth: 150, textAlign: "right" }}>A Loop's Public Event</Text>
+                                  <Text style={{ color: pressed ? "gray" : "white", fontSize: 12, textAlign: "right", maxWidth: 100 }}>[Hosted by a Loop]</Text>
                                 )}
                             </Pressable>
                           )}
