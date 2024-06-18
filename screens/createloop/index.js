@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, cloneElement } from "react";
-import { View, TouchableOpacity, Text, TextInput, Image, Keyboard, Pressable, ActivityIndicator } from "react-native";
+import React, { useState, useRef, useEffect } from "react";
+import { View, TouchableOpacity, Text, TextInput, Image, Alert, Pressable, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,18 +8,10 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { pickImage } from '../../components/imagepicker';
 import { createLoop, getUser, joinLoop } from "../../components/handlers";
 import { AlreadyExistsError } from "../../components/utils/errors";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
-const exampleLoopData = {
-    pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
-    displayName: "Grant's Group",
-    memberCount: 30,
-    notifications:false,
-    description: "A place for Grants and Hoes to chill",
-    chats: ['Chat 1', 'Chat 2', 'Chat 3', 'Chat 4', 'Chat 5','Chat 6', 'Chat 7', 'Chat 8', 'Chat 9'],
-    recentAnnouncement: "Grant becomes world's first trillionaire after buying every single realfeel dumpad and selling them for billions each",
-    recentAnnouncementUser:"@stefan",
-    users: ["DrumDogLover","TanujBeatMaster","GrantPawRhythms", "DogGrooveMaster","GrantAndTanujJams","RhythmHound","DrumBeatsWithTanuj","GrantCanineGrooves","TanujDogDrummer","BarkingBeatsGrant","DrummingTanujPaws","GrantAndDogRhythms","TanujDrumTails","PuppyGroovesGrant","BeatBuddyTanuj","WoofingRhythmsGrant","DrummingPawsTanuj","GrantGroovePup","TanujAndTheBeat","DoggyDrummingGrant","RhythmTanujTail","GrantPercussionPup","TanujDoggieBeats","PawsAndSnaresGrant","DrummingDogTanuj","GrantBeatsHowl","TanujRhythmBuddy","DogBeatHarmonyGrant","DrumPawsTanujGroove","GrantAndTanujRhythmic",]
-}
+
+
 
 export default function CreateLoop() {
     const navigation = useNavigation();
@@ -39,14 +31,19 @@ export default function CreateLoop() {
     async function handleCreateLoop() {
   
         try {
-          const createdLoop = await createLoop({name: name, description: description, image: image, isPublic: isPublic })
+          const createdLoop = await createLoop({
+            name: name, 
+            description: description, 
+            image: image, 
+            isPublic: isPublic 
+          })
 
-          console.log("Created Loop", createdLoop)
+          console.log("Created Loop with Data:", createdLoop)
           
           const newLoopId = createdLoop.LOOPID
           await joinLoop(newLoopId)
           
-          navigation.navigate("Loop", {loop_id: newLoopId})
+          navigation.push("Loop", {loop_id: newLoopId})
         } catch (error) {
           if (error instanceof AlreadyExistsError) {
             setErrorMessage(error.message)
@@ -56,50 +53,6 @@ export default function CreateLoop() {
         }
         
     }
-    //     const createdLoop = await createLoop(loopData);
-    //     //const createdLoopLog = await JSON.parse(createdLoop);
-    //     console.log("Created loop:", createdLoop);
-    //     const newLoopId = await createdLoop.LOOPID
-    //     await joinLoop(newLoopId);
-    //     console.log("LOOOOOOOOOOOOP IDDDDDDDDDDDDDD", newLoopId);
-    //     goToLoop(newLoopId)
-
-    //   };
-
-    //   const goToLoop = (loopId) => {
-    //     console.log("||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||")
-    //     console.log(loopId)
-    //     navigation.navigate('Loop', { loopId });
-    //   };
-  
-    // const textInputRefs = useRef(chats.reduce((acc, _, index) => {
-    //   acc[index] = React.createRef();
-    //   return acc;
-    // }, {}));
-  
-    // const handleKeyboardDidShow = (event) => {
-    //     setKeyboardHeight(event.endCoordinates.height);
-    //   };
-    
-    //   const handleKeyboardDidHide = () => {
-    //     setKeyboardHeight(0);
-    //   };
-
-    // useEffect(() => {
-    //     const keyboardDidShowListener = Keyboard.addListener(
-    //       'keyboardDidShow',
-    //       handleKeyboardDidShow,
-    //     );
-    //     const keyboardDidHideListener = Keyboard.addListener(
-    //       'keyboardDidHide',
-    //       handleKeyboardDidHide,
-    //     );
-    
-    //     return () => {
-    //       keyboardDidShowListener.remove();
-    //       keyboardDidHideListener.remove();
-    //     };
-    //   }, []);
     
     async function fetchUser() {
       const user = await getUser()
@@ -111,46 +64,27 @@ export default function CreateLoop() {
       fetchUser()
     }, []);
 
-
-    const handleTapOutside = () => {
-      Keyboard.dismiss();
-    };
-    
-    // const handleImageSelect = (image) => {
-    //     setSelectedImage(image);
-    //     console.log("Selected Image in CreateLoop:", image);
-    //   };
-
-    // const handleAddChat = () => {
-    //     const newId = chats.length + 1;
-    //     setChats([...chats, { id: newId, value: "" }]);
-      
-    //     // Ensure the new ref is created
-    //     textInputRefs.current[newId - 1] = React.createRef();
-      
-    //     // Check if the ref is not null before focusing
-    //     if (textInputRefs.current[newId - 1].current) {
-    //       textInputRefs.current[newId - 1].current.focus();
-    //     }
-    //   };
-
-    //   const handleResetImage = () => {
-    //     setSelectedImage(null);
-    //   };
-
-    //   const handleRemoveChat = () => {
-    //     if (chats.length > 1) {
-    //       const updatedChats = [...chats];
-    //       updatedChats.pop(); // Remove the last chat
-    //       setChats(updatedChats);
-    //     }
-    //   };
+    function handleLockPress() {
+      let alertTitle, alertMessage = ""
+      if (isPublic) {
+        alertTitle = "Are you sure you want to make this loop private?"
+        alertMessage = "This means members will have to request to join your loop. Only you can approve members to join."
+      } else {
+        alertTitle = "Are you sure you want to make this loop public?"
+        alertMessage = "This means anyone from your college will be able to join this loop."
+      }
   
-    // const handleChatInputChange = (text, index) => {
-    //   const updatedChats = [...chats];
-    //   updatedChats[index].value = text;
-    //   setChats(updatedChats);
-    //};
+      Alert.alert(alertTitle, alertMessage, [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'OK', onPress: () => setIsPublic(!isPublic)},
+      ]);
+  
+    }
+   
     
     if (!user) {
       return <ActivityIndicator />
@@ -187,25 +121,35 @@ export default function CreateLoop() {
                         <Image style={{width: 100, height: 100, borderRadius: 50}} source={{uri:  image.assets[0].uri}}/>
                       </View>
                   )}
+
                   <Ionicons name="add-circle" size={32} color="blue" style={{position: "absolute", top: -10, right: 0}}/>
                 </Pressable>
               </View>
 
               <View style={{marginTop: 25, alignItems: "flex-start", paddingLeft: 20, flex: 1, justifyContent: "space-evenly"}}>
                   <Text style={{color: "gray", fontWeight: "bold"}}>Loop Name</Text>
+                  
+                  <View style={{flexDirection: 'row'}}>
+                      <TextInput 
+                          onChangeText={setName}
+                          value={name}
+                          style={{
+                            backgroundColor: "rgb(109, 116, 120)",
+                            width: "70%",
+                            borderRadius: 10,
+                            paddingLeft: 10,
+                            height: 40,
+                            flex: 0.8
+                          }}
+                        />
 
-                  <TextInput 
-                      onChangeText={setName}
-                      value={name}
-                      style={{
-                        backgroundColor: "rgb(109, 116, 120)",
-                        width: "90%",
-                        borderRadius: 10,
-                        paddingLeft: 10,
-                        height: 40
-                      }}
-                    />
-
+                        <Pressable onPress={handleLockPress} style={{flex: 0.2, flexDirection: "row", justifyContent: "flex-end", alignItems: "center"}}>
+                            {({pressed}) => (
+                              <Ionicons name={isPublic ? "lock-open" : "lock-closed"} size={32} color={pressed ? "gray" : "white"} style={{marginRight: 20}}/>
+                            )}
+                        </Pressable>
+                  </View>
+                  
                   {errorMessage && (
                     <Text style={{color: "red"}}>{errorMessage}</Text>
                   )}

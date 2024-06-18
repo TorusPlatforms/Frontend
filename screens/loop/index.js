@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, TouchableOpacity, Image, Text, Animated, Alert, ActivityIndicator } from "react-native";
+import { View, TouchableOpacity, Image, Text, ScrollView, Alert, ActivityIndicator, RefreshControl } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -11,6 +11,7 @@ import LoopEvents from "../loopevents";
 import LoopAnnouncements from '../loopannouncements';
 
 import styles from "./styles";
+import Scroll from '@birdwingo/react-native-swipe-modal/src/components/SwipeModal/scroll';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -19,7 +20,7 @@ const torus_default_url = "https://cdn.torusplatform.com/5e17834c-989e-49a0-bbb6
 
 export default function LoopsPage({ route }) {
   const navigation = useNavigation()
-
+  const [refreshing, setRefreshing] = useState(false)
   const { loop_id } = route.params
 
   const [loop, setLoop] = useState();
@@ -32,7 +33,7 @@ export default function LoopsPage({ route }) {
 
   async function handleJoinLoop() {
     await joinLoop(loop_id);
-    navigation.push("Loop", {loop_id: loop_id})
+    navigation.replace("Loop", {loop_id: loop_id})
   }
 
   async function handleLeave() {
@@ -49,6 +50,12 @@ export default function LoopsPage({ route }) {
     ]);
   }
 
+  const onRefresh = useCallback(async() => {
+      setRefreshing(true);
+      await fetchLoop()
+      setRefreshing(false)
+  }, []);
+
 
   useEffect(() => {
     fetchLoop()
@@ -61,6 +68,7 @@ export default function LoopsPage({ route }) {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
+      <ScrollView style={{flex: 0.2}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={{paddingHorizontal: 20, flexDirection: "row", justifyContent: "space-between"}}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Ionicons name="arrow-back" size={24} color="white" />        
@@ -106,28 +114,36 @@ export default function LoopsPage({ route }) {
             )}
 
             <Text style={{color: "white", fontSize: 24, marginTop: 10}}>{loop.name}</Text>
-            <Text style={{color: "white", fontSize: 18, marginTop: 5}}>{loop.description}</Text>
+            <Text style={{color: "white", fontSize: 14, marginTop: 5}}>{loop.description}</Text>
         </View>
         
+      </ScrollView>
 
-        <View style={{flex: 1}}>
-          {loop.isJoined && (
-              <Tab.Navigator screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)' }, tabBarLabelStyle: { color: "white", fontSize: 10 }}}>
-                <Tab.Screen name="Pings" component={LoopPings} initialParams={{loop: loop}}/>
-                <Tab.Screen name="Events" component={LoopEvents} initialParams={{loop: loop}} />
-                <Tab.Screen name="Announcements" component={LoopAnnouncements} initialParams={{loop: loop}} />
-              </Tab.Navigator>
-          )}
+      <View style={{flex: 2}}>
+        {loop.isJoined && (
+            <Tab.Navigator screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)' }, tabBarLabelStyle: { color: "white", fontSize: 10 }}}>
+              <Tab.Screen name="Pings" component={LoopPings} initialParams={{loop: loop}}/>
+              <Tab.Screen name="Events" component={LoopEvents} initialParams={{loop: loop}} />
+              <Tab.Screen name="Announcements" component={LoopAnnouncements} initialParams={{loop: loop}} />
+            </Tab.Navigator>
+        )}
 
-          {!(loop.isJoined) && (
-              <View style={{justifyContent: "center", alignItems: "center"}}>
-                <TouchableOpacity onPress={handleJoinLoop} style={{backgroundColor: "yellow", padding: 20, paddingHorizontal: 50, borderRadius: 20}}>
-                  <Text style={{color: "black"}}>Join</Text>
-                </TouchableOpacity>
-              </View>
-          )}
+        {!(loop.isJoined) && !(loop.joinPending) && (
+            <View style={{justifyContent: "center", alignItems: "center"}}>
+              <TouchableOpacity onPress={handleJoinLoop} style={{backgroundColor: "yellow", padding: 20, paddingHorizontal: 50, borderRadius: 20}}>
+                <Text style={{color: "black"}}>{loop.public ? "Join" : "Request to Join"}</Text>
+              </TouchableOpacity>
+            </View>
+        )}
 
-        </View>
+        {!(loop.isJoined) && (loop.joinPending) && (
+            <View style={{justifyContent: "center", alignItems: "center"}}>
+              <TouchableOpacity onPress={handleJoinLoop} style={{backgroundColor: "gray", padding: 20, paddingHorizontal: 50, borderRadius: 20}}>
+                <Text style={{color: "black"}}>Request Pending</Text>
+              </TouchableOpacity>
+            </View>
+        )}
+      </View>
 
     </SafeAreaView>
   )

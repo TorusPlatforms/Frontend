@@ -5,7 +5,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 
-import { getUserByUsername, getUserPings, handleShare, handleLike, postComment, follow, unfollow, sendMessage } from "../../components/handlers";
+import { getUserByUsername, getUserPings, follow, unfollow } from "../../components/handlers";
 import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
@@ -14,12 +14,7 @@ import styles from "./styles";
 export default function UserProfile({ route, navigation }) {
     const [pings, setPings] = useState([])
     const [user, setUser] = useState(null)
-    const [modalVisible, setModalVisible] = useState(false);
-    const [commentText, onChangeComment] = useState('');
-    const [commentPing, setCommentPing] = useState(null)
-    const [replyingTo, setReplyingTo] = useState(null) 
     const [refreshing, setRefreshing] = useState(false)
-    const ref_input = useRef();
 
     const [isFollowing, setIsFollowing] = useState(false); 
 
@@ -33,26 +28,18 @@ export default function UserProfile({ route, navigation }) {
         }
     };
 
-    const updateLike = useCallback(() => {
-        fetchUser()
-      }, []);
-
     async function fetchUser() {
         const user = await getUserByUsername(route.params.username)
         setUser(user)
-        console.log(user)
+
+        if (user.isSelf) {
+            navigation.navigate("Profile")
+        }
+
         const pings = await getUserPings(user.username)
         setIsFollowing(user.isFollowing)
         setPings(pings)
     }
-
-  
-    function handleReply(data) {
-        ref_input.current.focus()
-        setReplyingTo(data.author)
-        onChangeComment("@" + data.author + " ")
-    }
-
 
     async function copyUsernameToClipboard() {
         await Clipboard.setStringAsync(user.username);
@@ -130,9 +117,6 @@ export default function UserProfile({ route, navigation }) {
                                 <View key={item.post_id}>
                                     <Ping 
                                         data={item} 
-                                        setModalVisible={setModalVisible} 
-                                        handleLike={() => handleLike(item, updateLike)} 
-                                        handleComment={() => setCommentPing(item)} handleShare={handleShare}
                                         navigation={navigation}
                                     />
                                     <View style={styles.item_seperator} />
@@ -140,19 +124,7 @@ export default function UserProfile({ route, navigation }) {
                             )
                         }
                 </View>       
-    
-                <CommentModal
-                  modalVisible={modalVisible}
-                  setModalVisible={setModalVisible}
-                  onChangeComment={onChangeComment}
-                  commentText={commentText}
-                  postComment={postComment}
-                  ref_input={ref_input}
-                  handleReply={handleReply}
-                  commentPing={commentPing}
-                  setCommentPing={setCommentPing}
-                />
-    
+
               </ScrollView>
             </SafeAreaView>
         )

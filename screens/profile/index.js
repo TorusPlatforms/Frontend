@@ -97,7 +97,7 @@ export default function Profile({ route }) {
     const lineStyles = [{top: 50, right: y, transform: [{rotate: "30deg"}]},  {top: 50, left: y, transform: [{rotate: "-30deg"}]},  {left: 85, transform: [{rotate: "90deg"}]},  {bottom: 50, left: y, transform: [{rotate: "30deg"}]}, {bottom: 50, right: y, transform: [{rotate: "-30deg"}]},   {right: 85, transform: [{rotate: "90deg"}]}]
 
     function renderLoops() {
-        console.log("RENDERING LOOPS\n\n\n");
+        console.log("RENDERING LOOPS", loops.length, loops[0]);
       
         return loops.slice(0, 6).map((item, index) => (
           <TouchableOpacity
@@ -141,7 +141,6 @@ export default function Profile({ route }) {
 
 
     useEffect(() => {
-        console.log("PARAMS", route.params)
         setLoading(true)
         fetchLoops();
         fetchUserPings(route.params?.scrollToPing);

@@ -36,14 +36,8 @@ export default function MutualsScreen({ route, navigation }) {
     }
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            console.log(route.params.get, route.params.username)
-            fetchUsers()
-        });
-        
-        return unsubscribe;
-
-    }, [navigation]);
+        fetchUsers()
+    }, []);
 
     if (!users) {
         return <ActivityIndicator />

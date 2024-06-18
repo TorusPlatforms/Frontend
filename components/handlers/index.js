@@ -32,13 +32,14 @@ export async function registerUserBackend({username, email, display_name, expo_n
   });
 
   const responseData = await response.json();
-  console.log('Response:', responseData);
+  console.log('Registerd user. Response:', responseData);
   return responseData
 }
 
 
 export async function getUser() {
     const token = await getToken()
+    console.log("Authentication Token:", token)
 
     const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/user`;
 
@@ -51,12 +52,19 @@ export async function getUser() {
             },
         });
     
+                
+        if (response.status == 503) {
+          Alert.alert("We are sorry! Torus appears to be down right now...")
+          return []
+        }
+
+
         if (!response.ok) {
           throw new Error(`Error Getting User! Status: ${response.status}`);
         }
-    
+
         const userData = await response.json();
-        console.log('User Data:', userData);
+        console.log('Fetched User Data:', userData);
      
         return (userData)
     } catch (error) {
@@ -70,7 +78,7 @@ export async function getUserByUsername(username) {
   const token = await getToken()
 
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/user/${username}`;
-  console.log(serverUrl)
+
   try {
       const response = await fetch(serverUrl, {
           method: "GET",
@@ -85,7 +93,7 @@ export async function getUserByUsername(username) {
       }
   
       const userData = await response.json();
-      console.log('User Data:', userData);
+      console.log('Fetched User Data:', userData);
    
       return (userData)
   } catch (error) {
@@ -97,7 +105,6 @@ export async function getUserByUsername(username) {
 
 export async function getPings(user) {
     const token = await getToken()
-    console.log(token)
     
     //if college is none, should fetch by location instead
     const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/college/${user.college}`;
@@ -128,7 +135,6 @@ export async function getPings(user) {
 
 export async function getFollowingPings() {
   const token = await getToken()
-  console.log(token)
   
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/following`;
 
@@ -158,7 +164,6 @@ export async function getFollowingPings() {
 
 export async function getLoopPings(loop_id) {
     const token = await getToken()
-    console.log(token)
     
     //if college is none, should fetch by location instead
     const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/loop/${loop_id}`;
@@ -191,7 +196,6 @@ export async function getLoopPings(loop_id) {
 
 export async function getLoopEvents(loop_id) {
   const token = await getToken()
-  console.log(token)
   
   //if college is none, should fetch by location instead
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/loop/${loop_id}`;
@@ -225,7 +229,6 @@ export async function getLoopEvents(loop_id) {
 
 export async function getEvents() {
     const token = await getToken()
-    console.log(token)
 
     const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/get`;
 

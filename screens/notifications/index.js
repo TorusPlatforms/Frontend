@@ -3,7 +3,7 @@ import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, Modal, F
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons'; 
 
-import { getNotifications } from "../../components/handlers/notifications";
+import { getJoinRequests, getNotifications } from "../../components/handlers/notifications";
 import styles from "./styles";
 
 const torus_default_url = "https://cdn.torusplatform.com/5e17834c-989e-49a0-bbb6-0deae02ae5b5.jpg"
@@ -12,14 +12,10 @@ const torus_default_url = "https://cdn.torusplatform.com/5e17834c-989e-49a0-bbb6
 export default function NotificationsScreen() {
     const navigation = useNavigation()
     const [notifications, setNotifications] = useState([])
-    const [followRequests, setFollowRequests] = useState([])
+    const [joinRequests, setJoinRequests] = useState([])
      //handle getting notifications
 
 
-    //handle getting follow requests
-    function getFollowRequests() {
-        return new Array(1).fill("granthough")
-    }
 
     function onNotificationsPress(data) {
         console.log(data.type)
@@ -46,23 +42,37 @@ export default function NotificationsScreen() {
         </Pressable>
       );
     
+
     async function fetchNotifications() {
         const fetchedNotifications = (await getNotifications()).notifications
         console.log("Fetched", fetchedNotifications.length, "notifications. First entry:", fetchedNotifications[0])
         setNotifications(fetchedNotifications)
     }
+
+    async function fetchRequests() {
+        const fetchedRequests = await getJoinRequests()
+        console.log("Fetched", fetchedRequests.length, "requests. First entry:", fetchedRequests[0])
+        for (const request in fetchedRequests) {
+            setJoinRequests([
+                ...joinRequests,
+                request.username
+            ])
+        }
+    }
     useEffect(() => {
         fetchNotifications()
-        setFollowRequests(getFollowRequests())
+        fetchRequests()
       }, []);
+
+    console.log(joinRequests)
 
     return (
         <View style={styles.container}>
-           {followRequests.length > 0 && (
-                <Pressable onPress={() => navigation.navigate("Follow Requests")} style={styles.followRequests}>
+           {joinRequests.length > 0 && (
+                <Pressable onPress={() => navigation.navigate("JoinRequests")} style={styles.followRequests}>
                     <View style={styles.followRequestText}>
                         <Text style={styles.text}>Join Requests</Text>
-                        <Text style={{color: "lightgrey"}}>{followRequests.join(', ')}</Text>
+                        <Text style={{color: "lightgrey"}}>{joinRequests.join(', ')}</Text>
                     </View>
                     <View style={{flex: 3, alignItems: "flex-end"}}>
                         <Ionicons name="arrow-forward-sharp" size={24} color="white" />

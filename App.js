@@ -44,7 +44,7 @@ import CreateAnnouncement from './screens/createannouncement';
 import LoopChat from './screens/loopchat';
 import LoopMembers from './screens/loopmembers';
 import EditLoop from './screens/editloop';
-
+import JoinRequests from './screens/joinrequests';
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -204,6 +204,7 @@ function App() {
         <Stack.Screen name="EditField" component={EditField}/>
         <Stack.Screen name="UserProfile" component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })}/>
         <Stack.Screen name="LoopChat" component={LoopChat} />
+        <Stack.Screen name="JoinRequests" component={JoinRequests} options={{headerShown: true}} />
       </Stack.Navigator>
     </NavigationContainer>
     </SafeAreaProvider>

@@ -43,7 +43,7 @@ export default function Messages() {
 
 
     useEffect(() => {
-        console.log("Refocused...")
+        console.log("Messages screen refocused...")
         fetchThreads()
       }, [isFocused]);
       
