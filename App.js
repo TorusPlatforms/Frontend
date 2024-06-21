@@ -1,12 +1,13 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as Notifications from 'expo-notifications';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { useState, useRef, useEffect } from "react";
 import { View, Text, Pressable, Linking } from "react-native";
-
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { initializeApp, getApps, getApp } from 'firebase/app';
@@ -45,6 +46,8 @@ import LoopChat from './screens/loopchat';
 import LoopMembers from './screens/loopmembers';
 import EditLoop from './screens/editloop';
 import JoinRequests from './screens/joinrequests';
+import SearchUsers from './screens/searchusers';
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -77,11 +80,9 @@ Notifications.setNotificationHandler({
 
 
 
-
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const TopTab = createMaterialTopTabNavigator();
-const username = "Direct Messages"
 
 const DirectMessageHeader = (props) => {
   return (
@@ -96,7 +97,7 @@ const Tabs = () => {
       <Tab.Screen name="Feed" component={FeedScreens} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "home" : "home-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="Community" component={DiscoverTabs} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "people" : "people-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="CreateContainer" listeners={({ navigation }) => ({tabPress: (e) => {e.preventDefault(); navigation.navigate("Create")}})} component={CreatePing} options={{ presentation: "modal", tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "add-circle" : "add-circle-outline"} color={"white"} size={size}/>)}} />
-      <Tab.Screen name="Messages" component={Messages} options={{headerShown: true, title: username, tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "chatbox" : "chatbox-outline"} color={"white"} size={size}/>)}}/>
+      <Tab.Screen name="Messages" component={Messages} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "chatbox" : "chatbox-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="Profile" component={Profile} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "person" : "person-outline"} color={"white"} size={size}/>)}}/>
     </Tab.Navigator>
   )
@@ -142,6 +143,7 @@ function App() {
 
 
   return (
+    <GestureHandlerRootView>
     <SafeAreaProvider>
     <NavigationContainer>
     {/* // linking={{
@@ -205,9 +207,13 @@ function App() {
         <Stack.Screen name="UserProfile" component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })}/>
         <Stack.Screen name="LoopChat" component={LoopChat} />
         <Stack.Screen name="JoinRequests" component={JoinRequests} options={{headerShown: true}} />
+        <Stack.Group screenOptions={{ presentation: 'modal' }}>
+            <Stack.Screen name="SearchUsers" component={SearchUsers} options={{headerShown: true, title: ""}} />
+        </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>
     </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }
 

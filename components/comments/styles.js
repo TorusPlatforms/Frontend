@@ -9,17 +9,16 @@ const styles = StyleSheet.create({
         marginVertical: 10, 
         width: "95%", 
         flexDirection: "row", 
-        justifyContent: "flex-start", 
         paddingHorizontal: 10, 
-        height: 60, 
-        flex: 1
+        minHeight: 60, 
+        flex: 1,
+        alignItems: "flex-start"
     },
 
     commentTextContainer: {
         flexDirection: "column", 
-        marginLeft: 10, 
-        justifyContent: "space-around", 
-        flex: 1
+        marginLeft: 10,  
+        flex: 1,
     },
 
     commentContent: {
@@ -107,7 +106,51 @@ const styles = StyleSheet.create({
         overflow: "hidden",
       },
 
-
+    leftAction: {
+        flex: 1,
+        backgroundColor: '#497AFC',
+        justifyContent: 'center',
+    },
+    actionText: {
+        color: 'white',
+        fontSize: 16,
+        backgroundColor: 'transparent',
+        padding: 10,
+    },
+    rightAction: {
+        alignItems: 'center',
+        flex: 1,
+        justifyContent: 'center',
+    },
+    rectButton: {
+        flex: 1,
+        height: 80,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        justifyContent: 'space-between',
+        flexDirection: 'column',
+        backgroundColor: 'white',
+      },
+      separator: {
+        backgroundColor: 'rgb(200, 199, 204)',
+        height: StyleSheet.hairlineWidth,
+      },
+      fromText: {
+        fontWeight: 'bold',
+        backgroundColor: 'transparent',
+      },
+      messageText: {
+        color: '#999',
+        backgroundColor: 'transparent',
+      },
+      dateText: {
+        backgroundColor: 'transparent',
+        position: 'absolute',
+        right: 20,
+        top: 10,
+        color: '#999',
+        fontWeight: 'bold',
+      },
 })
 
 export default styles;

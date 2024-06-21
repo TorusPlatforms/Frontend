@@ -11,6 +11,7 @@ import { getUser, createEvent, getGoogleMapsKey } from "../../components/handler
 import { strfEventDate, strfEventTime } from "../../components/utils";
 import styles from "./styles";
 import { Input } from "react-native-elements";
+import { AlreadyExistsError } from "../../components/utils/errors";
 
 
 export default function CreateEvent({ route }) {
@@ -22,6 +23,7 @@ export default function CreateEvent({ route }) {
   const [message, setMessage] = useState("A hella cool fun event. All are welcoem!");
   const [address, setAddress] = useState("");
 
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date())
@@ -71,10 +73,6 @@ export default function CreateEvent({ route }) {
   };
 
 
-  const removeImage = () => {
-    setImage(null);
-  };
-
 
   async function handlePost() {
     const eventData = {
@@ -82,7 +80,7 @@ export default function CreateEvent({ route }) {
       address: address, 
       day: date, 
       time: time, 
-      details: message, 
+      message: message, 
       image: image, 
       isPublic: isPublic,
       loop_id: route.params?.loop.loop_id
@@ -90,8 +88,14 @@ export default function CreateEvent({ route }) {
 
     console.log("Event data", eventData)
 
-    await createEvent(eventData);
-    navigation.goBack()
+    try {
+      await createEvent(eventData);
+      navigation.goBack()
+    } catch(error) {
+      if (error instanceof AlreadyExistsError) {
+        setErrorMessage("That event name is taken!")
+      }
+    }
   }
 
   function onChangeDate(event, selectedDate) {
@@ -146,18 +150,19 @@ export default function CreateEvent({ route }) {
   return (
     <TouchableWithoutFeedback style={{backgroundColor: "rgb(22, 23, 24)"}} onPress={handleBackgroundPress}>
       <SafeAreaView style={styles.container}>
-          <View style={{flex: 0.2}}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 10 }}>
+          <View style={{flex: 0.1}}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={{ paddingHorizontal: 10 }}>
               <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Cancel</Text>
             </TouchableOpacity>
           </View>
     
-          <View style={{ alignItems: 'center', flex: 0.3}}>
+          <View style={{ alignItems: 'center', flex: 0.4}}>
             <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>Create Event</Text>
             <Text style={{ fontSize: 16, color: "white", textAlign: "center", marginTop: 5, paddingHorizontal: 25 }}>{route.params?.loop ? `Posting in ${route.params.loop.name}` : "Get together. Reunite. Connect."}</Text>
+            <Text style={{ fontSize: 16, color: "red", textAlign: "center", marginTop: 5 }}>{errorMessage}</Text>
           </View>     
 
-          <View style={{flex: 2, flexDirection: "row", paddingHorizontal: 25}}>
+          <View style={{flex: 2, flexDirection: "row", paddingHorizontal: 25, marginTop: 20}}>
               <View style={{ width: "100%", flexDirection: "row", flex: 0.2 }}>
                   <View style={{alignItems: "center"}}>
                       <Image style={{ width: 50, height: 50, borderRadius: 25 }} source={{ uri: user.pfp_url }} />

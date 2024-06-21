@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, Image, ActivityIndicator, Pressable, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, Text, Image, ActivityIndicator, Pressable, ScrollView, RefreshControl, TouchableOpacity, Touchable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { pickImage } from '../../components/imagepicker';
-import { getLoop, uploadToCDN, updateLoop } from "../../components/handlers";
+import { getLoop, uploadToCDN, updateLoop, deleteLoop } from "../../components/handlers";
 import styles from './styles'
-import { renderNode } from 'react-native-elements/dist/helpers';
 
 export default function EditLoop({ navigation, route }) {
     const { loop_id } = route.params
@@ -34,6 +33,11 @@ export default function EditLoop({ navigation, route }) {
         setRefreshing(false)
       }, []);
     
+    
+    async function handleDelete() {
+      await deleteLoop(loop_id)
+      navigation.navigate("Community")
+    }
 
     async function fetchLoop() {
       const loop = await getLoop(loop_id)
@@ -41,7 +45,6 @@ export default function EditLoop({ navigation, route }) {
       setImageURL(loop.pfp_url)
     }
     
-
     useEffect(() => {
       fetchLoop()
     }, []);
@@ -83,6 +86,11 @@ export default function EditLoop({ navigation, route }) {
               <Text style={{color: "white", flex: 0.5}}>Description</Text>
               <Text style={{color: "white", flex: 1}}>{loop.description}</Text>
             </Pressable>
+
+            <TouchableOpacity onPress={handleDelete} style={styles.updateField}>
+              <Text style={{color: "red", flex: 0.5}}>Delete Loop</Text>
+            </TouchableOpacity>
+
           </View>
         </ScrollView>
     )

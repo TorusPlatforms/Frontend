@@ -49,12 +49,10 @@ const CustomInputToolbar = props => {
 
 
 export const ChatComponent = ({ messages, onSend, id }) => {
-
-        
       return (
         <View style={[styles.container]}>
           <GiftedChat
-            // listViewProps={{style: {marginBottom: 20}}}
+            listViewProps={{style: {marginBottom: 20, marginTop: 10}}}
             textInputStyle={{
               backgroundColor: "rgb(50,50,50)",
               color: "white",
@@ -63,6 +61,7 @@ export const ChatComponent = ({ messages, onSend, id }) => {
               maxLength: 100,
               borderRadius: 25,
               padding: 15,
+              marginBottom: 10
             }}
             placeholder='Send a message'
             messages={messages}

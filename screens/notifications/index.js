@@ -1,10 +1,11 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, Modal, FlatList, Button, InputAccessoryView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons'; 
 
 import { getJoinRequests, getNotifications } from "../../components/handlers/notifications";
 import styles from "./styles";
+import { RefreshControl } from "react-native-gesture-handler";
 
 const torus_default_url = "https://cdn.torusplatform.com/5e17834c-989e-49a0-bbb6-0deae02ae5b5.jpg"
 
@@ -13,19 +14,25 @@ export default function NotificationsScreen() {
     const navigation = useNavigation()
     const [notifications, setNotifications] = useState([])
     const [joinRequests, setJoinRequests] = useState([])
-     //handle getting notifications
+    const [refreshing, setRefreshing] = useState(false)
 
-
+    const onRefresh = useCallback(async() => {
+        setRefreshing(true);
+        await fetchNotifications()
+        setRefreshing(false)
+      }, []);
+  
+  
 
     function onNotificationsPress(data) {
         console.log(data.type)
         switch (data.type) {
             case "comment":
-                navigation.navigate("Profile", {scrollToPing: data.source_id})
+                navigation.navigate("Profile", {scrollToPing: data.parent_id})
                 break
             case "announcement":
             case "event":
-                navigation.navigate("Loop", {loop_id: data.source_id})
+                navigation.navigate("Loop", {loop_id: data.parent_id})
                 break
             }
     }
@@ -52,7 +59,7 @@ export default function NotificationsScreen() {
     async function fetchRequests() {
         const fetchedRequests = await getJoinRequests()
         console.log("Fetched", fetchedRequests.length, "requests. First entry:", fetchedRequests[0])
-        for (const request in fetchedRequests) {
+        for (const request of fetchedRequests) {
             setJoinRequests([
                 ...joinRequests,
                 request.username
@@ -86,6 +93,7 @@ export default function NotificationsScreen() {
                 data={notifications}
                 renderItem={({item}) => <Notification data={item} />}
                 ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+                refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} />}
             />
         </View>
     )

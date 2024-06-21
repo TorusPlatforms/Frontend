@@ -1,52 +1,30 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { Text, View, TextInput, Pressable, FlatList, Image, Animated, Modal, Keyboard, RefreshControl, Share, Alert, ActivityIndicator } from 'react-native'
+import React, { useState, useRef, useEffect, useCallback, useMemo, forwardRef } from 'react'
+import { Text, View, TextInput, Pressable, FlatList, Image, KeyboardAvoidingView, Modal, Platform, RefreshControl, Share, Alert, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from '@react-navigation/native';
 
-import { getUser, getPings, getFollowingPings, handleLike, postComment } from "../../components/handlers";
+import { getUser, getPings, getFollowingPings } from "../../components/handlers";
 import { abbreviate } from '../../components/utils';
-import { CommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
+import {  NewCommentModal } from '../../components/comments';
 import styles from "./styles";
-
 
 
 export default function Feed() {
     const navigation = useNavigation()
-
-    const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-    const scrollY = useRef(new Animated.Value(0)).current;
     
     const [dropdownData, setDropdownData] = useState([])
     const [feedType, setFeedType] = useState("college");
-    const [isFocus, setIsFocus] = useState(false)
 
     const [refreshing, setRefreshing] = useState(false);
 
     const [user, setUser] = useState(null)
     const [pings, setPings] = useState(null)
 
-
-    const headerHeight = scrollY.interpolate({
-      inputRange: [0, 70],
-      outputRange: [70, 0],
-      extrapolate: 'clamp',
-    })
-
-    const headerOpacity = scrollY.interpolate({
-      inputRange: [0, 70],
-      outputRange: [1, 0],
-      extrapolate: 'clamp',
-    });
-
-
-    const onScroll = Animated.event(
-      [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-      { useNativeDriver: false }
-    );
-  
+    const modalRef = useRef()
+    const [commentPing, setCommentPing] = useState(null)
 
     async function fetchPings(type) {
       const user = await getUser();
@@ -81,19 +59,18 @@ export default function Feed() {
       setRefreshing(false)    }
 
 
+  
     const onRefresh = useCallback(async() => {
       setRefreshing(true);
       await fetchPings(feedType)
       setRefreshing(false)
-    }, []);
+    }, [feedType]);
 
 
     useEffect(() => {
       fetchPings(feedType);
     }, []); 
- 
-  
-
+    
 
 
     if (!user || !pings) {
@@ -102,76 +79,65 @@ export default function Feed() {
             <ActivityIndicator />
         </View>
       )
-
     }
+
+    const header = (
+      <View style={styles.header}>
+          <View style={{flex: 0.3}}>
+              <Dropdown
+                containerStyle={styles.dropdownContainer}
+                itemTextStyle={styles.text}
+                selectedTextStyle={[styles.text, {fontWeight: "bold"}]}
+                activeColor='rgb(22, 23, 24)'
+                data={dropdownData}
+                placeholder='Torus'
+                placeholderStyle={[styles.text, {fontWeight: "bold", fontSize: 24}]}
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                value={feedType}
+                onChange={item => {
+                  feedChange(item.value);
+                }}
+              />
+          </View>
+
+          <View>
+              <Pressable onPress={() => navigation.navigate("Notifications")}>
+                  <Ionicons name="notifications-outline" size={24} color="white" />
+                  
+                  { user.hasUnreadNotifications && (
+                      <View style={{backgroundColor: "red", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
+                  )}
+
+              </Pressable>
+          </View>
+
+      </View>
+      )
+
       return (
         
           <SafeAreaView style={styles.container}>
-            <Animated.View style={{height: headerHeight, opacity: headerOpacity}}>
-                <View style={styles.header}>
-                    <View style={{flex: 0.3}}>
-                      <Dropdown
-                        containerStyle={styles.dropdownContainer}
-                        itemTextStyle={styles.text}
-                        selectedTextStyle={[styles.text, {fontWeight: "bold"}]}
-                        activeColor='rgb(22, 23, 24)'
-                        data={dropdownData}
-                        placeholder='Torus'
-                        placeholderStyle={[styles.text, {fontWeight: "bold", fontSize: 24}]}
-                        maxHeight={300}
-                        labelField="label"
-                        valueField="value"
-                        value={feedType}
-                        onFocus={() => setIsFocus(true)}
-                        onBlur={() => setIsFocus(false)}
-                        onChange={item => {
-                          feedChange(item.value);
-                          setIsFocus(false);
-                        }}
-                      />
-                    </View>
-
-                  <View>
-                    <Pressable onPress={() => navigation.navigate("Notifications")}>
-                        <Ionicons name="notifications-outline" size={24} color="white" />
-                    </Pressable>
-                  </View>
-
-                </View>
-              </Animated.View>
-            
-
-
-              <AnimatedFlatList
-                    style={{paddingHorizontal: 20}}
+              <FlatList
+                    ListHeaderComponent={header}
+                    style={{ paddingHorizontal: 20, zIndex: 1 }}
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                     data={pings}
-                    renderItem={({item}) => 
+                    renderItem={({item}) => (
                       <Ping 
                         data={item} 
                         navigation={navigation}
-                      />
-                    }
-                    ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
-                    onScroll={onScroll}
+                        modalRef={modalRef}
+                        setCommentPing={setCommentPing}
+                    />
+                    )}
+                    ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
                 />
-            {/* <GestureRecognizer
-              style={{flex: 1}}
-              onSwipeDown={ () => setModalVisible(false) }
-            > */}
-              {/* <CommentModal
-                modalVisible={modalVisible}
-                setModalVisible={setModalVisible}
-                onChangeComment={onChangeComment}
-                commentText={commentText}
-                postComment={postComment}
-                ref_input={ref_input}
-                handleReply={handleReply}
-                commentPing={commentPing}
-                setCommentPing={setCommentPing}
-              /> */}
 
-            {/* </GestureRecognizer> */}
-          </SafeAreaView>
+
+              <NewCommentModal modalRef={modalRef} commentPing={commentPing} />
+                 
+            </SafeAreaView>
         )
     }

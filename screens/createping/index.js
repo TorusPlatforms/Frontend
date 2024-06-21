@@ -74,7 +74,7 @@ export default function CreatePing({ route }) {
 
   async function handlePost() {
     const postData = {
-      author: (route.params?.loop) ? route.params.loop.name : user.username, 
+      author: (route.params?.loop && isPublic) ? route.params.loop.name : user.username, 
       pfp_url: user.pfp_url, 
       content: content, 
       // latitude: location?.coords.latitude, 
@@ -147,10 +147,11 @@ export default function CreatePing({ route }) {
           <View style={{ flexDirection: "row", alignItems: Platform.OS === "ios" ? "flex-start" : "center", marginTop: Platform.OS === "ios" ? 20 : 0}}>
             <Image style={styles.pfp} source={{ uri: user.pfp_url }} />
             <TextInput
-              style={{marginLeft: 20, marginTop: 10, color: "white", fontSize: 18, minWidth: 300, maxWidth: 300, minHeight: 50, paddingRight: 20}}
+              style={{marginLeft: 20, marginTop: 10, color: "white", fontSize: 18, width: 300, minHeight: 50, maxHeight: 300}}
               placeholder="Ping your campus and beyond"
               multiline
               numberOfLines={4}
+              maxLength={300}
               placeholderTextColor="gray"
               value={content}
               onChangeText={setContent}

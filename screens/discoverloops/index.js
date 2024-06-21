@@ -5,15 +5,14 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { SearchBar } from "react-native-elements";
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import { getLoops, getUser } from "../../components/handlers";
+import { getLoops } from "../../components/handlers";
 import { Loop } from "../../components/loops";
 import styles from "./styles";
 
 
-export default function Loops({ route }) {
+export default function Loops() {
   const [loops, setLoops] = useState([]);
-  const [search, setSearch] = useState("");
-  const [filteredLoops, setFilteredLoops] = useState([]);
+  const [search, setSearch] = useState(null);
   const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
   const [scrollY] = useState(new Animated.Value(0));
   const [refreshing, setRefreshing] = useState(false);
@@ -39,26 +38,15 @@ export default function Loops({ route }) {
     navigation.navigate('Loop', { loop_id: loop_id });
   };
 
-  useEffect(() => {
-    // Filter loops based on the search term
-    const filtered = loops.filter((loop) => loop.name.toLowerCase().includes(search.toLowerCase()));
-    setFilteredLoops(filtered);
-  }, [search, loops]);
-
   async function fetchLoops() {
-    try {
-      const user = await getUser();
-      const fetchedLoopsString = await getLoops(user);
-      const fetchedLoops = JSON.parse(fetchedLoopsString);
+      const fetchedLoops = await getLoops(search);
       setLoops(fetchedLoops);
-    } catch (error) {
-      console.error("Error fetching loops:", error);
-    }
+      console.log("LOOOPS", loops)
   };
 
   useEffect(() => {
     fetchLoops();
-  }, []);
+  }, [search]);
 
 
   async function onRefresh() {
@@ -66,12 +54,6 @@ export default function Loops({ route }) {
     await fetchLoops();
     setRefreshing(false)
   };
-
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchLoops(); 
-    }, [])
-  );
           
   return (
     <SafeAreaView style={styles.container}>
@@ -96,7 +78,7 @@ export default function Loops({ route }) {
 
       <AnimatedFlatList
         style={{ paddingHorizontal: 20 }}
-        data={filteredLoops}
+        data={loops}
         renderItem={({ item }) => <Loop data={item} goToLoop={goToLoop} />}
         ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
         onScroll={Animated.event(

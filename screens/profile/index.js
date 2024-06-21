@@ -6,12 +6,11 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useNavigation } from "@react-navigation/native";
 
-import { getUser, getUserPings, postComment, getJoinedLoops } from "../../components/handlers";
-import { CommentModal } from '../../components/comments';
+import { getUser, getUserPings, getJoinedLoops } from "../../components/handlers";
 import { Ping } from "../../components/pings";
+import { NewCommentModal } from '../../components/comments';
 import styles from "./styles";
 
-const torus_default_url = "https://cdn.torusplatform.com/5e17834c-989e-49a0-bbb6-0deae02ae5b5.jpg"
 
 export default function Profile({ route }) {
     const navigation = useNavigation()
@@ -25,6 +24,8 @@ export default function Profile({ route }) {
     const [loading, setLoading] = useState(true)
     const [refreshing, setRefreshing] = useState(false)
 
+    const modalRef = useRef()
+    const [commentPing, setCommentPing] = useState(null)
     const pings_ref = useRef(null)
 
     function findIndexById(arr, id) {
@@ -97,7 +98,7 @@ export default function Profile({ route }) {
     const lineStyles = [{top: 50, right: y, transform: [{rotate: "30deg"}]},  {top: 50, left: y, transform: [{rotate: "-30deg"}]},  {left: 85, transform: [{rotate: "90deg"}]},  {bottom: 50, left: y, transform: [{rotate: "30deg"}]}, {bottom: 50, right: y, transform: [{rotate: "-30deg"}]},   {right: 85, transform: [{rotate: "90deg"}]}]
 
     function renderLoops() {
-        console.log("RENDERING LOOPS", loops.length, loops[0]);
+        console.log("RENDERING", loops.length, loops[0], "LOOPS");
       
         return loops.slice(0, 6).map((item, index) => (
           <TouchableOpacity
@@ -114,7 +115,7 @@ export default function Profile({ route }) {
                 borderColor: "white",
                 borderWidth: 1
               }}
-              source={{ uri: item.profile_picture || torus_default_url }} // Note: use 'uri' instead of 'url'
+              source={{ uri: item.pfp_url }}
             />
             {renderNotification()}
             <Animated.View style={[lineStyles[index], { backgroundColor: "gray", width: 2, height: x, position: "absolute" }]} />
@@ -124,7 +125,6 @@ export default function Profile({ route }) {
      
 
     function renderNotification(item, index) {
-        //figure out if loop has a notification
         const unread = false
 
         if (unread) {
@@ -136,11 +136,13 @@ export default function Profile({ route }) {
     const onRefresh = useCallback(async() => {
       setRefreshing(true);
       await fetchUserPings()
+      await fetchLoops()
       setRefreshing(false)
     }, []);
 
 
     useEffect(() => {
+        console.log("Scrolling to Ping:", route.params)
         setLoading(true)
         fetchLoops();
         fetchUserPings(route.params?.scrollToPing);
@@ -271,10 +273,15 @@ export default function Profile({ route }) {
                         data={item} 
                         navigation={navigation}
                         openComment={route.params?.scrollToPing}
+                        setCommentPing={setCommentPing}
+                        modalRef={modalRef}
                     />
                     }
                     ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
                 />
+
+                <NewCommentModal modalRef={modalRef} commentPing={commentPing} />
+
             </SafeAreaView>
         )
     }

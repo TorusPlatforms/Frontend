@@ -1,11 +1,15 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, Modal, FlatList, RefreshControl, ActivityIndicator } from "react-native";
+import { View, Image, Text, Animated, Dimensions, Pressable, Modal, FlatList, RefreshControl, ActivityIndicator, Touchable } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 import { useNavigation } from "@react-navigation/native";
 import { useIsFocused } from "@react-navigation/native";
 
 import { getThreads } from "../../components/handlers";
 import { findTimeAgo } from "../../components/utils";
 import styles from "./styles";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function Messages() {
     const navigation = useNavigation()
@@ -47,25 +51,39 @@ export default function Messages() {
         fetchThreads()
       }, [isFocused]);
       
+    const header = () => (
+        <View>
+            <View style={{flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 20, alignItems: "center", paddingBottom: 20, marginTop: 10}}>
+                    <View style={{flexDirection: "row", alignItems: "center"}}>
+                        <Text style={{color: "white", fontSize: 18, fontWeight: "bold", marginLeft: 10}}>Direct Messages</Text>
+                    </View>
+
+                    <TouchableOpacity onPress={() => navigation.push("SearchUsers")}>
+                        <Ionicons name="search" size={24} color="white" />
+                    </TouchableOpacity>
+                </View>
+
+            <View style={styles.item_seperator} />
+        </View>
+    )
 
     if (!DMs) {
         return (
             <View style={[styles.container, {justifyContent: "center", alignItems: "center"}]}>
                 <ActivityIndicator />
             </View>
-        )
+    )}
     
-    } else {
 
-        return (
-            <View style={styles.container}>
-                <FlatList
-                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                    data={DMs}
-                    renderItem={({item}) => <DirectMessage data={item} />}
-                    ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
-                />
-            </View>
-        )
-    }
+    return (
+        <SafeAreaView style={styles.container}>
+            <FlatList
+                ListHeaderComponent={header}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                data={DMs}
+                renderItem={({item}) => <DirectMessage data={item} />}
+                ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+            />
+        </SafeAreaView>
+    )
 }

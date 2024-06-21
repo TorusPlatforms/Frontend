@@ -1,16 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, Text, Pressable } from "react-native";
+import { View, Image, Text, Pressable, Alert, TouchableOpacity } from "react-native";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { strfEventDate } from "../../components/utils";
-import { joinLeaveEvent } from "../../components/handlers";
+import { deleteEvent, joinLeaveEvent } from "../../components/handlers";
 import * as Linking from 'expo-linking';
 
 const torus_default_url = "https://cdn.torusplatform.com/5e17834c-989e-49a0-bbb6-0deae02ae5b5.jpg"
 
 
 export const Event = ({ data, navigation }) => {
-    data.image_url = data.image_url || torus_default_url
     const [isJoined, setIsJoined] = useState(data.isJoined)
+
+    async function handleDelete() {
+      Alert.alert("Are you sure you want to delete this event?", "This is a permanent action that cannot be undone.", [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'OK', onPress: async() => await deleteEvent(data.event_id)},
+      ]);
+    }
 
     async function handleJoinLeave() {
       setIsJoined(!isJoined)
@@ -26,10 +37,10 @@ export const Event = ({ data, navigation }) => {
     }
 
     return (
-        <View style={{ marginVertical: 20, width: "100%", flexDirection: "row", flex: 1 }}>
+        <View style={{ marginVertical: 20, width: "100%", flexDirection: "row", flex: 1, paddingBottom: 10 }}>
             <View style={{flex: 0.2, alignItems: "center"}}>
               <Image style={{ width: 50, height: 50, borderRadius: 25 }} source={{ uri: data.pfp_url }} />
-              <View style={{marginVertical: 12, width: 1, height: "70%", backgroundColor: "gray"}} />
+              <View style={{marginVertical: 12, width: 1, flex: 0.9, backgroundColor: "gray"}} />
               <View style={{alignItems: 'center'}}>
                 <Image style={{ left: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_pfp_urls[0] || data?.mutual_attendees_pfp_urls[0] || torus_default_url }} />
                 <Image style={{ right: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_pfp_urls[1] || data?.mutual_attendees_pfp_urls[1] || torus_default_url }} />
@@ -38,7 +49,7 @@ export const Event = ({ data, navigation }) => {
 
             <View style={{flex: 0.8, flexDirection: 'column'}}>
               <View style={{borderRadius: 20, borderWidth: 2, borderColor: "gray"}}>
-                <View style={{ justifyContent: "space-between", padding: 20, height: 150}}>
+                <View style={{ justifyContent: "space-between", padding: 20, minHeight: 150}}>
                       <View>
                         <View style={{flexDirection: 'row', justifyContent: "space-between"}}>
                           <Text style={{ color: "white", fontWeight: "bold", fontSize: 16, maxWidth: 150 }}>{data.name || data?.name}</Text>
@@ -57,23 +68,51 @@ export const Event = ({ data, navigation }) => {
                       </View>
 
                       <View style={{marginTop: 15}}>
-                        <Text style={{ color: "white" }}>{data.message || data?.message}</Text>
+                          <Text style={{ color: "white" }}>{data.message || data?.message}</Text>
+                          
+                          {!data.image_url && data.isCreator && (
+                            <TouchableOpacity onPress={handleDelete}>
+                                <Ionicons
+                                    name="trash-outline"
+                                    size={20}
+                                    color="gray"
+                                    style={{ position: 'absolute', top: -10, right: -12, opacity: 0.5 }}
+                                />
+                            </TouchableOpacity>
+                          )}
                       </View>
                   </View>
 
                   {data.image_url && (
-                      <Image style={{
-                          width: "100%", 
-                          height: 150, 
-                          resizeMode: "cover",
-                          borderBottomLeftRadius: 20,
-                          borderBottomRightRadius: 20
-                      }} source={{ uri: data.image_url || data?.image_url }} />
-                  )}
+                      <View style={{ position: 'relative' }}>
+                          <Image
+                              style={{
+                                  width: "100%",
+                                  height: 150,
+                                  resizeMode: "cover",
+                                  borderBottomLeftRadius: 20,
+                                  borderBottomRightRadius: 20
+                              }}
+                              source={{ uri: data.image_url || data?.image_url }}
+                          />
 
+                          { data.isCreator && (
+                            <TouchableOpacity onPress={handleDelete}>
+                                <Ionicons
+                                    name="trash-outline"
+                                    size={24}
+                                    color="black"
+                                    style={{ position: 'absolute', bottom: 10, right: 10 }}
+                                />
+                            </TouchableOpacity>
+                            
+                          )}
+                          
+                      </View>
+                  )}
               </View>
                
-                <View style={{flexDirection: "row", justifyContent: data.mutual_usernames.length > 0 ? "space-between" : "flex-end", alignItems: "center", marginTop: 10}}>
+                <View style={{flexDirection: "row", justifyContent: data.mutual_usernames.length > 0 ? "space-between" : "flex-end", alignItems: "center", paddingTop: 20, paddingRight: 10}}>
                   {data.mutual_usernames.length == 1 && (
                     <Text style={{color: "white", fontSize: 12}}> 1 other is attending</Text>
                   )}

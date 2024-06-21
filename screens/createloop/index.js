@@ -43,7 +43,7 @@ export default function CreateLoop() {
           const newLoopId = createdLoop.LOOPID
           await joinLoop(newLoopId)
           
-          navigation.push("Loop", {loop_id: newLoopId})
+          navigation.replace("Loop", {loop_id: newLoopId})
         } catch (error) {
           if (error instanceof AlreadyExistsError) {
             setErrorMessage(error.message)

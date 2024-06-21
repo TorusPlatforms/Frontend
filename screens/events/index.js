@@ -12,8 +12,7 @@ import styles from "./styles";
 
 export default function Events() {
   const [events, setEvents] = useState([]);
-  const [search, setSearch] = useState("");
-  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [search, setSearch] = useState(null);
   const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
   const [scrollY] = useState(new Animated.Value(0));
   const [refreshing, setRefreshing] = useState(false);
@@ -35,16 +34,10 @@ export default function Events() {
     navigation.navigate("CreateEvent");
   };
 
-  useEffect(() => {
-    if (events) {
-      const filtered = events.filter((event) => event.name.toLowerCase().includes(search.toLowerCase()));
-      setFilteredEvents(filtered);
-    }
-  }, [search, events]);
 
   const fetchEvents = async () => {
     try {
-        const fetchedEvents = await getEvents()
+        const fetchedEvents = await getEvents(search)
         console.log("Fetched", fetchedEvents.length, "events. First entry:", fetchedEvents[0])
         setEvents(fetchedEvents.reverse());
     } catch (error) {
@@ -54,24 +47,23 @@ export default function Events() {
 
   useEffect(() => {
     fetchEvents();
-  }, []);
+  }, [search]);
 
 
   const onRefresh = async () => {
+    setRefreshing(true)
     await fetchEvents();
+    setRefreshing(false)
   };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      console.log("search focused");
-      fetchEvents(); 
-    }, [])
-  );
-    
 
   if (!events) {
-    return <ActivityIndicator />
-  } else {
+    return (
+      <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+        <ActivityIndicator />
+      </View>
+  )}
+
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View style={{ height: headerHeight, opacity: headerOpacity }}>
@@ -95,7 +87,7 @@ export default function Events() {
 
       <AnimatedFlatList
         style={{ paddingHorizontal: 20 }}
-        data={filteredEvents}
+        data={events}
         renderItem={({ item }) => <Event data={item} navigation={navigation}/>}
         ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
         onScroll={Animated.event(
@@ -117,7 +109,6 @@ export default function Events() {
       />
     </SafeAreaView>
   );
-  }
 };
 
 

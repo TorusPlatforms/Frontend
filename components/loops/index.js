@@ -4,6 +4,8 @@ import { View, Image, Text,  TouchableOpacity } from "react-native";
 
 
 export const Loop = ({ data, goToLoop }) => {
+
+  console.log("rendering loop", data)
   return (
     <TouchableOpacity onPress={() => goToLoop(data.loop_id)}>
       <View style={{ marginVertical: 20, width: "100%", flexDirection: "row", paddingHorizontal: 20 }}>

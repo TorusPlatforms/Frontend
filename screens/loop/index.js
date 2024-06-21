@@ -10,9 +10,6 @@ import LoopPings from "../looppings";
 import LoopEvents from "../loopevents";
 import LoopAnnouncements from '../loopannouncements';
 
-import styles from "./styles";
-import Scroll from '@birdwingo/react-native-swipe-modal/src/components/SwipeModal/scroll';
-
 const Tab = createMaterialTopTabNavigator();
 
 const torus_default_url = "https://cdn.torusplatform.com/5e17834c-989e-49a0-bbb6-0deae02ae5b5.jpg"
@@ -28,6 +25,9 @@ export default function LoopsPage({ route }) {
 
   async function fetchLoop() {
     const loop = await getLoop(loop_id)
+    if (!loop) {
+      navigation.goBack()
+    }
     setLoop(loop)
   }
 

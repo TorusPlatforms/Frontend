@@ -227,10 +227,14 @@ export async function getLoopEvents(loop_id) {
   }
 }
 
-export async function getEvents() {
+export async function getEvents(query) {
     const token = await getToken()
 
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/get`;
+    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/get`;
+
+    if (query) {
+      serverUrl += `?query=${encodeURIComponent(query)}`;
+    }
 
     try {  
       const response = await fetch(serverUrl, {
@@ -337,8 +341,37 @@ export async function createPost({ content, author, pfp_url, latitude, longitude
     }
 }
 
+export async function deletePost(post_id) {
+  const token = await getToken()
+  
+  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/delete/${post_id}`;
 
-export async function createEvent({name, address, day, time, details, image, isPublic, loop_id}) {
+  try {  
+    const response = await fetch(serverUrl, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    const responseData = await response.json();
+    console.log('Deleted Post:', responseData);
+
+    if (!response.ok) {
+      throw new Error(`Error Deleting Ping! Status: ${response.status}`);
+    }
+
+
+    return (responseData)
+
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+
+export async function createEvent({name, address, day, time, message, image, isPublic, loop_id}) {
   const token = await getToken()
   
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/create`;
@@ -350,7 +383,7 @@ export async function createEvent({name, address, day, time, details, image, isP
     name: name,
     time: date.getTime(),
     address: address,
-    details: details,  
+    message: message,  
     public: isPublic,
     loop_id: loop_id
   };
@@ -364,7 +397,6 @@ export async function createEvent({name, address, day, time, details, image, isP
 
   console.log(eventData)
 
-  try {  
     const response = await fetch(serverUrl, {
       method: 'POST',
       headers: {
@@ -377,17 +409,40 @@ export async function createEvent({name, address, day, time, details, image, isP
     const responseData = await response.json();
     console.log('Created Event:', responseData);
 
-    
+    if (response.status == 403) {
+      throw new AlreadyExistsError("This event already exists! Try a different name.")
+    }
     if (!response.ok) {
       throw new Error(`Error Creating Event! Status: ${response.status}`);
     }
 
     return (responseData)
-
-  } catch (error) {
-    console.error('Error Creating Event:', error.message);
-  }
 }
+
+
+export async function deleteEvent(event_id) {
+    const token = await getToken()
+    
+    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/${event_id}/delete`;
+
+    const response = await fetch(serverUrl, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const responseData = await response.json();
+    console.log('Deleted Event:', responseData);
+
+    if (!response.ok) {
+      throw new Error(`Error Creating Event! Status: ${response.status} ${response.message}`);
+    }
+
+    return (responseData)
+}
+
 
 
 export async function uploadToCDN(image) {
@@ -597,6 +652,30 @@ export async function postComment(post, content) {
 }
 
 
+export async function deleteComment(comment_id) {
+  const token = await getToken()
+  
+  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/${comment_id}/delete`;
+
+  const response = await fetch(serverUrl, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error deleting comment! Status: ${response.status}`);
+  }
+
+  const responseData = await response.json();
+  console.log('Deleted Comment:', responseData);
+  return responseData
+
+}
+
+
 export async function getThreads() {
   const token = await getToken()
 
@@ -690,33 +769,32 @@ export async function sendMessage(username, content) {
 }
 
 
-export async function getLoops(user) {
+export async function getLoops(query) {
     const token = await getToken()
 
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/location/${user.college}`;
-
-    try {  
-      const response = await fetch(serverUrl, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      
-      const responseData = await response.json();
-      console.log('Response Data:', responseData);
-
-      if (!response.ok) {
-        throw new Error(`Error Getting Loops! Status: ${response.status}`);
-      }
-  
-  
-      return (responseData)
-  
-    } catch (error) {
-      console.error('Error Getting Loops:', error.message);
+    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops`;
+    if (query) {
+      serverUrl += `?query=${encodeURIComponent(query)}`;
     }
+    console.log("fetching...", serverUrl)
+
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    const responseData = await response.json();
+    console.log('Response Data:', responseData);
+
+    if (!response.ok) {
+      throw new Error(`Error Getting Loops! Status: ${response.status}`);
+    }
+
+    return (responseData)
+
   }
 
 
@@ -746,6 +824,7 @@ export async function getLoop(loop_id) {
 
     } catch (error) {
       console.error('Error Getting Loops Info:', error.message);
+      return null
     }
 }
 
@@ -794,64 +873,64 @@ export async function createLoop({ name, image, description, isPublic}) {
 
 }
 
+export async function deleteLoop(loop_id) {
+  const token = await getToken()
   
-  export async function editLoop(userId, loopId, content) {
-    const token = await getToken();
-  
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/edit`;
-  
-    try {
-      const response = await fetch(serverUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(content),
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Error Editing Loop! Status: ${response.status}`);
-      }
-  
-      const responseData = await response.json();
-      console.log('Loop Edited:', responseData);
-      return responseData;
-  
-    } catch (error) {
-      console.error('Error Editing Loop:', error.message);
+  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/delete`;
+
+  try {  
+    const response = await fetch(serverUrl, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    const responseData = await response.json();
+    console.log('Deleted Loop:', responseData);
+
+    if (!response.ok) {
+      throw new Error(`Error Deleting Loop! Status: ${response.status} ${response.message}`);
     }
+
+
+    return (responseData)
+
+  } catch (error) {
+    console.error(error.message);
   }
+}
 
 
   
-  export async function removeLoop(userId, loopId) {
-    const token = await getToken();
-  
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/delete`;
-  
-    try {
-      const response = await fetch(serverUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Error Removing Loop! Status: ${response.status}`);
-      }
-  
-      const responseData = await response.json();
-      console.log('Loop Removed:', responseData);
-      return (responseData);
-  
-    } catch (error) {
-      console.error('Error Removing Loop:', error.message);
+export async function editLoop(userId, loopId, content) {
+  const token = await getToken();
+
+  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/edit`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(content),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error Editing Loop! Status: ${response.status}`);
     }
-  }
 
+    const responseData = await response.json();
+    console.log('Loop Edited:', responseData);
+    return responseData;
+
+  } catch (error) {
+    console.error('Error Editing Loop:', error.message);
+  }
+}
 
 
 export async function getUserPings(username) {
@@ -908,28 +987,6 @@ export async function getFollowings(username, type) {
 
   } catch(error) {
     console.error("Error getting followings", error.message)
-  }
-}
-
-export async function searchUsers(query) {
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/user/search/${query}`;
-  console.log(serverUrl)
-
-  try {
-    const response = await fetch(serverUrl, {
-      method: 'GET',
-    })
-
-    if (!response.ok) {
-      throw new Error(`Error searching! Status: ${response.status}`);
-    }
-
-    const responseData = await response.json();
-    console.log("Searched Users", responseData);
-    return responseData
-
-  } catch(error) {
-    console.error("Error searching", error.message)
   }
 }
 
