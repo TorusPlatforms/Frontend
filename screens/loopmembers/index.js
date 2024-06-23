@@ -5,7 +5,7 @@ import { getLoopMembers, kickUser } from "../../components/handlers";
 import styles from "./styles";
 
 export default function LoopMembers({ route, navigation }) {
-    const [users, setUsers] = useState([])
+    const [members, setMembers] = useState([])
     const { loop_id, isOwner } = route.params
 
     const [refreshing, setRefreshing] = useState(false)
@@ -17,6 +17,7 @@ export default function LoopMembers({ route, navigation }) {
         setRefreshing(false)
       }, []);
     
+
     async function handleKick(username) {
         Alert.alert(`Are you sure you want kick ${username}`, 'They will be able to rejoin or request to rejoin this loop at any time', [
             {
@@ -35,7 +36,7 @@ export default function LoopMembers({ route, navigation }) {
 
 
     const User = ({ data }) => (
-        <View style={{flexDirection: "row", justifyContent: "space-between", height: 80}}>
+        <View style={{flexDirection: "row", justifyContent: "space-between", minHeight: 80, paddingVertical: 10}}>
             <TouchableOpacity onPress={() => navigation.push("UserProfile", {username: data.username})}>
                 <View style={styles.userContainer}>
                     <Image style={styles.pfp} source={{uri: data.pfp_url}}/>
@@ -61,8 +62,8 @@ export default function LoopMembers({ route, navigation }) {
         
 
     async function fetchMembers() {
-        const users = await getLoopMembers(loop_id)
-        setUsers(users)
+        const members = await getLoopMembers(loop_id)
+        setMembers(members)
     }
 
 
@@ -71,15 +72,14 @@ export default function LoopMembers({ route, navigation }) {
     }, []);
 
 
-    if (!users) {
+    if (!members) {
         return <ActivityIndicator />
     }
 
-    const temp = new Array(3).fill({"bio": null, "birthdate": null, "college": "California Polytechnic State University, San Luis Obispo", "college_email": "torustestuser2@calpoly.edu", "created_at": "1712549821565", "display_name": "Tanuj Siripurapu", "email": null, "first_name": null, "follower_count": 1, "following_count": 1, "last_name": null, "location": null, "pfp_url": "https://cdn.torusplatform.com/beffa7ec-7c97-4028-a6bd-8282986a7aa1.jpg", "updated_at": "1712549821565", "username": "tanujks7"})
     return (
         <SafeAreaView style={styles.container}>
             <FlatList 
-                data={temp}
+                data={members}
                 renderItem={({item}) => <User data={item} />}
                 ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}

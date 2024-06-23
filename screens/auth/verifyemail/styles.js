@@ -8,24 +8,24 @@ const styles = StyleSheet.create({
     },
 
     loginContainer: {
-        flex: 1, 
+        flex: 0.5, 
         alignItems: "center", 
     },
 
     text: {
         color: "white", 
         fontSize: 24, 
+        margin: 20
     },
 
     submissionBox: {
         borderRadius: 10, 
         borderColor: "white", 
         borderWidth: 1, 
+        marginBottom: 15, 
         color: "white", 
         padding: 10, 
-        fontSize: 16,
-        marginTop: 20,
-        width: 300
+        fontSize: 16
     },
 
     welcomeBack: {
@@ -40,6 +40,12 @@ const styles = StyleSheet.create({
         justifyContent: "center", 
         flexDirection: "row"
     },
+
+    welcomeBackContainer: {
+        flex: 0.5, 
+        justifyContent: "flex-end", 
+        alignItems: "center"
+    }
 })
 
 export default styles;

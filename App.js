@@ -36,6 +36,7 @@ import AdditionalResources from './screens/settings/Additional Resources';
 import ComingSoon from './screens/settings/Coming Soon';
 import ForgotPassword from './screens/auth/Forgot your password';
 import ResetPassword from './screens/settings/Your Account/Reset Password';
+import VerifyEmail from './screens/auth/verifyemail';
 import EditProfile from "./screens/editprofile";
 import EditField from "./screens/editfield";
 import MyLoops from "./screens/myloops";
@@ -47,6 +48,7 @@ import LoopMembers from './screens/loopmembers';
 import EditLoop from './screens/editloop';
 import JoinRequests from './screens/joinrequests';
 import SearchUsers from './screens/searchusers';
+import Comments from './screens/comments';
 
 
 const firebaseConfig = {
@@ -130,6 +132,7 @@ const FollowTabs = ({ route }) => {
   )
 };
 
+
 const CancelHeader = (props) => {
   console.log(props)
   return (
@@ -188,6 +191,7 @@ function App() {
         <Stack.Screen name="CreateEvent" component={CreateEvent} options={{presentation: "modal"}} />
         <Stack.Screen name="CreateAnnouncement" component={CreateAnnouncement} options={{presentation: "modal"}} />
         <Stack.Screen name="Loop" component={LoopsPage}/>
+        <Stack.Screen name="Comments" component={Comments} options={{presentation: "modal", headerShown: true, headerBackVisible: false, headerTitleAlign: 'center'}}/>
         <Stack.Screen name="LoopMembers" component={LoopMembers} options={{presentation: "modal", title: "Members", headerShown: true}}/>
         <Stack.Screen name="DirectMessage" component={DirectMessage} options={ ({ route }) => ({headerShown: true, contentStyle: {borderTopColor: "gray", borderTopWidth: 1}, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.username })}/>
@@ -200,6 +204,7 @@ function App() {
         <Stack.Screen name="AdditionalResources" component={AdditionalResources} options={{headerShown: true}}/>
         <Stack.Screen name="Coming Soon" component={ComingSoon} options={{headerShown: true}}/>
         <Stack.Screen name="Forgot Password" component={ForgotPassword} options={{headerShown: true}}/>
+        <Stack.Screen name="Verify Email" component={VerifyEmail} options={{headerShown: true}}/>
         <Stack.Screen name="Reset Password" component={ResetPassword} options={{headerShown: true}}/>
         <Stack.Screen name="Edit Profile" component={EditProfile} options={{headerShown: true}}/>
         <Stack.Screen name="EditLoop" component={EditLoop} options={{headerShown: true}}/>
@@ -207,9 +212,7 @@ function App() {
         <Stack.Screen name="UserProfile" component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })}/>
         <Stack.Screen name="LoopChat" component={LoopChat} />
         <Stack.Screen name="JoinRequests" component={JoinRequests} options={{headerShown: true}} />
-        <Stack.Group screenOptions={{ presentation: 'modal' }}>
-            <Stack.Screen name="SearchUsers" component={SearchUsers} options={{headerShown: true, title: ""}} />
-        </Stack.Group>
+        <Stack.Screen name="SearchUsers" component={SearchUsers} options={{headerShown: true, title: "", presentation: "modal"}} />
       </Stack.Navigator>
     </NavigationContainer>
     </SafeAreaProvider>

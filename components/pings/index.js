@@ -2,13 +2,15 @@ import React, { useState, useEffect, useRef, forwardRef } from "react";
 import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable, Alert, Modal, TouchableOpacity } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
+import { useNavigation } from "@react-navigation/native";
 
-import { handleLike, deletePost, getComments } from "../handlers";
+import { handleLike, deletePost } from "../handlers";
 import { findTimeAgo } from "../utils";
 import styles from "./styles";
-import { CommentModal } from "../comments";
 
-export const Ping = ({navigation, data, openComment, modalRef, setCommentPing }) => {
+
+export const Ping = ({data, openComment }) => {
+    const navigation = useNavigation()
     const [isLiked, setIsLiked] = useState(data.isLiked)
     const [numOfLikes, setNumOfLikes] = useState(data.numberof_likes)
 
@@ -32,8 +34,7 @@ export const Ping = ({navigation, data, openComment, modalRef, setCommentPing })
     }
 
     async function handleComment() {
-      setCommentPing(data)
-      modalRef.current?.show()
+      navigation.navigate("Comments", {post_id: data.post_id})
     }
 
     function handleDeletePress() {

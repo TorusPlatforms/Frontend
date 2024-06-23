@@ -3,8 +3,7 @@ import { View, Image, Text, Animated, Dimensions, Pressable, Modal, FlatList, Re
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import { useNavigation } from "@react-navigation/native";
-import { useIsFocused } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 
 import { getThreads } from "../../components/handlers";
 import { findTimeAgo } from "../../components/utils";
@@ -24,7 +23,7 @@ export default function Messages() {
             </View>
             <View style={{marginLeft: 10, flexDirection: 'col', alignItems: "flex-start", flex: 1}}>
                 <Text style={{color: "white", fontWeight: "bold"}}>{data.username}</Text>
-                <Text style={{color: "lightgrey"}}>{data.lastMessageObj.lastMessage}</Text>
+                <Text style={{color: "lightgrey"}}>{data.lastMessageObj.lastMessage.substring(0, 35)}...</Text>
             </View>
             <View style={{flex: 1, alignItems: "flex-end"}}>
                 <Text style={{color: "lightgrey", marginLeft: 10}}>{findTimeAgo(data.lastMessageObj.created_at)}</Text>

@@ -39,7 +39,7 @@ export default function Events() {
     try {
         const fetchedEvents = await getEvents(search)
         console.log("Fetched", fetchedEvents.length, "events. First entry:", fetchedEvents[0])
-        setEvents(fetchedEvents.reverse());
+        setEvents(fetchedEvents);
     } catch (error) {
       console.error("Error fetching events:", error);
     }

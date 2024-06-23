@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'space-between',
         paddingHorizontal: 20,
+        alignItems: "center"
     },
 
    
@@ -38,7 +39,6 @@ const styles = StyleSheet.create({
         backgroundColor: "rgb(22, 23, 24)", 
         borderWidth: 1,
         borderColor: "white",
-        width: 125,
     },
 
 

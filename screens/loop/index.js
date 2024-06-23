@@ -122,9 +122,9 @@ export default function LoopsPage({ route }) {
       <View style={{flex: 2}}>
         {loop.isJoined && (
             <Tab.Navigator screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)' }, tabBarLabelStyle: { color: "white", fontSize: 10 }}}>
+              <Tab.Screen name="Announcements" component={LoopAnnouncements} initialParams={{loop: loop}} />
               <Tab.Screen name="Pings" component={LoopPings} initialParams={{loop: loop}}/>
               <Tab.Screen name="Events" component={LoopEvents} initialParams={{loop: loop}} />
-              <Tab.Screen name="Announcements" component={LoopAnnouncements} initialParams={{loop: loop}} />
             </Tab.Navigator>
         )}
 

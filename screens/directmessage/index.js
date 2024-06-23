@@ -22,8 +22,6 @@ export default function DirectMessage({ route }) {
       const q = query(collection(db, 'messages'), where(`members.${username_1}`, '!=', null));
       const querySnapshot = await getDocs(q);
       
-      console.log(querySnapshot.empty)
-      console.log("DOCS", querySnapshot.docs)
       for (const doc of querySnapshot.docs) {
         console.log(doc.id, doc.data().members);
         const members = doc.data().members;
@@ -48,21 +46,25 @@ export default function DirectMessage({ route }) {
         setUser(user)
 
         const dm = await getDM(route.params.username);
-        if (dm.messages) {
+        if (dm?.messages) {
           setMessages(dm.messages);
           console.log("Fetched DMs between: ", user.username, route.params.username)
           console.log("Fetched", dm.messages.length, "messages. First entry:", dm.messages[0])
 
           const messageDoc = await findThreadFirebase(user.username, route.params.username)
-          const unsub = onSnapshot(doc(db, "messages", messageDoc.id), (snapshot) => {
-              console.log("Chat was updated")
-              const data = snapshot.data()
-              if (data && data?.messages) {
-                setMessages(data.messages);
-              }
-            })
-          
-          setUnsubscribe(() => unsub); 
+
+          if (messageDoc) {
+              const unsub = onSnapshot(doc(db, "messages", messageDoc.id), (snapshot) => {
+                console.log("Chat was updated")
+                const data = snapshot.data()
+                if (data && data?.messages) {
+                  setMessages(data.messages);
+                }
+              })
+            
+              setUnsubscribe(() => unsub);
+          }
+       
         } else {
             setMessages([])
         }

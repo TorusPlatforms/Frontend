@@ -21,17 +21,25 @@ export async function registerUserBackend({username, email, display_name, expo_n
       expo_notification_id: expo_notification_id
   };
   
-  console.log(JSON.stringify(data))
   const response = await fetch(serverUrl, {
-  method: 'POST',
-  headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-  },
-  body: JSON.stringify(data),
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
   });
 
+  if (!response.ok) {
+    console.error("Error registering.", response.status, response.message)
+  }
+
   const responseData = await response.json();
+
+  if (response.status == 400) {
+    throw new AlreadyExistsError(responseData.message)
+  }
+
   console.log('Registerd user. Response:', responseData);
   return responseData
 }
@@ -55,9 +63,12 @@ export async function getUser() {
                 
         if (response.status == 503) {
           Alert.alert("We are sorry! Torus appears to be down right now...")
-          return []
+          return null
         }
 
+        if (response.status == 404) {
+          return 404
+        }
 
         if (!response.ok) {
           throw new Error(`Error Getting User! Status: ${response.status}`);
@@ -195,12 +206,10 @@ export async function getLoopPings(loop_id) {
 
 
 export async function getLoopEvents(loop_id) {
-  const token = await getToken()
-  
-  //if college is none, should fetch by location instead
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/loop/${loop_id}`;
+    const token = await getToken()
+    
+    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/loop/${loop_id}`;
 
-  try {  
     const response = await fetch(serverUrl, {
       method: 'GET',
       headers: {
@@ -217,15 +226,39 @@ export async function getLoopEvents(loop_id) {
     }
     
     if (!response.ok) {
-      throw new Error(`Error Getting Pings! Status: ${response.status}`);
+      throw new Error(`Error Getting Events! Status: ${response.status}`);
     }
 
     return (responseData)
-
-  } catch (error) {
-    console.error('Error Getting Pings:', error.message);
-  }
 }
+
+export async function getUserEvents() {
+    const token = await getToken()
+    
+    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/user`;
+
+      const response = await fetch(serverUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      const responseData = await response.json();
+      console.log(response.status, responseData)
+
+      if (response.status === 404) {
+        return []
+      }
+      
+      if (!response.ok) {
+        throw new Error(`Error Getting Pings! Status: ${response.status}`);
+      }
+
+      return (responseData)
+}
+
 
 export async function getEvents(query) {
     const token = await getToken()
@@ -515,11 +548,10 @@ export async function handleLike(post) {
 }
 
 
-export async function getComments(post) {
+export async function getComments(post_id) {
   const token = await getToken()
 
-  console.log("post", post.post_id)
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/post/${post.post_id}`;
+  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/post/${post_id}`;
 
   try {
     const response = await fetch(serverUrl, {
@@ -620,7 +652,7 @@ export async function updateLoop(loop_id, endpoint, content) {
 }
 
 
-export async function postComment(post, content) {
+export async function postComment(post_id, content) {
   const token = await getToken()
   
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/add`;
@@ -633,7 +665,7 @@ export async function postComment(post, content) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        post_id: post.post_id,
+        post_id: post_id,
         content: content
       }),
     });
@@ -656,7 +688,7 @@ export async function deleteComment(comment_id) {
   const token = await getToken()
   
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/${comment_id}/delete`;
-
+  console.log(serverUrl)
   const response = await fetch(serverUrl, {
     method: 'DELETE',
     headers: {
@@ -714,26 +746,21 @@ export async function getDM(username) {
 
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/messages/get/${username}`;
 
-  try {
-    const response = await fetch(serverUrl, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    })
+  const response = await fetch(serverUrl, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  })
 
-    if (!response.ok) {
-      throw new Error(`Error getting DM! Status: ${response.status}`);
-    }
-
-    const responseData = await response.json();
-
-    return responseData;
-
-  } catch (error) {
-    console.error("Error getting DM", error.message);
+  if (!response.ok) {
+    throw new Error(`Error getting DM! Status: ${response.status}`);
   }
+
+  const responseData = await response.json();
+
+  return responseData;
 }
 
 
@@ -938,8 +965,6 @@ export async function getUserPings(username) {
 
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/user/${username}`;
 
-  console.log("HEREEEE", serverUrl)
-
   try {
     const response = await fetch(serverUrl, {
       method: 'GET',
@@ -1110,7 +1135,6 @@ export async function getMemberStatus(loopId,userId) {
 
     const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/members`;
 
-    try {  
       const response = await fetch(serverUrl, {
         method: 'GET',
         headers: {
@@ -1126,10 +1150,7 @@ export async function getMemberStatus(loopId,userId) {
       const responseData = await response.json();
       console.log('Response Data:', responseData);
       return (responseData)
-  
-    } catch (error) {
-      console.error('Error getting loop members:', error.message);
-    }
+
   }
 
 export async function follow(username) {
@@ -1426,7 +1447,6 @@ export async function getJoinedLoops(n) {
     })
 
     const responseData = await response.json();
-    console.log('recent ' + n + ' loops:', responseData);
 
 
     if (!response.ok) {

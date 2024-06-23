@@ -50,7 +50,7 @@ export default function LoopEvents({ route }) {
   async function fetchEvents() {
     const events = await getLoopEvents(loop.loop_id)
     console.log(events)
-    setEvents(events.reverse())
+    setEvents(events)
   }
 
   useEffect(() => {

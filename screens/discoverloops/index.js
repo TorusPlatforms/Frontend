@@ -35,7 +35,7 @@ export default function Loops() {
   };
 
   const goToLoop = (loop_id) => {
-    navigation.navigate('Loop', { loop_id: loop_id });
+    navigation.push('Loop', { loop_id: loop_id });
   };
 
   async function fetchLoops() {

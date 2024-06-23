@@ -3,7 +3,6 @@ import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable, Refresh
 import * as Clipboard from 'expo-clipboard';
 
 import { getUserByUsername, getUserPings, follow, unfollow } from "../../components/handlers";
-import { NewCommentModal } from '../../components/comments';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
 
@@ -15,10 +14,7 @@ export default function UserProfile({ route, navigation }) {
 
     const [isFollowing, setIsFollowing] = useState(false); 
 
-    const modalRef = useRef()
-    const [ commentPing, setCommentPing ]= useState(null)
-
-
+ 
     const toggleFollow = async () => {
         setIsFollowing(!isFollowing)
         if(isFollowing){
@@ -58,7 +54,11 @@ export default function UserProfile({ route, navigation }) {
       }, []);
     
     if (!user || !pings) {
-        return <ActivityIndicator/>
+        return (
+            <View style={{justifyContent: "center", alignItems: "center", flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
+                <ActivityIndicator/>
+            </View>
+        )
     }
     
     const header = (
@@ -111,29 +111,19 @@ export default function UserProfile({ route, navigation }) {
         </View>
     )
 
-        return (
-            <SafeAreaView style={styles.container}>
-           
-               
-                    <FlatList
-                        ListHeaderComponent={header}
-                        style={{paddingHorizontal: 20}}
-                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                        data={pings}
-                        renderItem={({item}) => 
-                        <Ping 
-                            data={item} 
-                            navigation={navigation}
-                            openComment={route.params?.scrollToPing}
-                            setCommentPing={setCommentPing}
-                            modalRef={modalRef}
-                        />
-                        }
-                        ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
-                    />
+    return (
+        <SafeAreaView style={styles.container}>
+    
+                <FlatList
+                    ListHeaderComponent={header}
+                    style={{paddingHorizontal: 20}}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                    data={pings}
+                    renderItem={({item}) => <Ping data={item} />}
+                    ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+                />
 
-                <NewCommentModal modalRef={modalRef} commentPing={commentPing} />
-                </SafeAreaView>
-        )
+        </SafeAreaView>
+    )
     
 }

@@ -2,19 +2,20 @@ import React, { useState, useRef, useEffect } from "react";
 import { View, Text, Dimensions, Pressable, TextInput, Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getAuth, createUserWithEmailAndPassword, deleteUser } from "firebase/auth"
+import { getAuth, createUserWithEmailAndPassword, deleteUser, onAuthStateChanged, updateProfile } from "firebase/auth"
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 
 import { registerUserBackend } from "../../components/handlers";
+
 import styles from "./styles";
+import { AlreadyExistsError } from "../../components/utils/errors";
+
 
 export default function SignUpScreen() {
     const navigation = useNavigation()
-    const windowWidth = Dimensions.get('window').width;
-    const windowHeight = Dimensions.get('window').height;
 
     const [username, onChangeUsername] = useState("tanujks")
     const [displayName, onChangeDisplayName] = useState("Tanuj Siripurapu")
@@ -85,30 +86,32 @@ export default function SignUpScreen() {
       
     async function signUp() {
         const auth = getAuth()
-        console.log("AUTH", auth)
         console.log(email, password)
 
+        const user = await createUserWithEmailAndPassword(auth, email, password);
+
+        console.log("Successfully created user in Firebase");
+
+        updateProfile(user, {
+            username: username,
+            display_name: displayName,
+            expo_notification_id: expoPushToken
+        })
+        
         try {
-            const user = await createUserWithEmailAndPassword(auth, email, password);
-            console.log("Successfully created user in Firebase");
-            console.log(user.user.uid)
-
-            try {
-                await registerUserBackend({username: username, email: user.user.email, display_name: displayName, expo_notification_id: expoPushToken})
-                console.log("Successfully created user in Backend");
-                navigation.navigate("Home");
-            } catch (error) {
-                console.error(error)
-                alert("Backend: Username in use")
-                deleteUser(auth.currentUser)
-                console.log('DEleted user')
+            const result = await registerUserBackend({username: username, email: email, display_name: displayName, expo_notification_id: expoPushToken})
+            if (result.success) {
+                console.log("Successfully created user in Backend")
+                navigation.replace("Verify Email");
             }
-          } catch (error) {
-            const errorCode = error.code;
-            const errorMessage = error.message;        
-            alert(errorMessage);
-          }
-
+        } catch (error) {
+            if (error instanceof AlreadyExistsError) {
+                alert(error.message)
+                console.log('Deleted User')
+            }
+            console.error(error)
+            deleteUser(auth.currentUser)
+        }
     }
 
     return (

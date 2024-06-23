@@ -16,6 +16,7 @@ export default function NotificationsScreen() {
     const [joinRequests, setJoinRequests] = useState([])
     const [refreshing, setRefreshing] = useState(false)
 
+
     const onRefresh = useCallback(async() => {
         setRefreshing(true);
         await fetchNotifications()
@@ -25,14 +26,13 @@ export default function NotificationsScreen() {
   
 
     function onNotificationsPress(data) {
-        console.log(data.type)
         switch (data.type) {
             case "comment":
                 navigation.navigate("Profile", {scrollToPing: data.parent_id})
                 break
             case "announcement":
             case "event":
-                navigation.navigate("Loop", {loop_id: data.parent_id})
+                navigation.push("Loop", {loop_id: data.parent_id})
                 break
             }
     }
@@ -71,7 +71,6 @@ export default function NotificationsScreen() {
         fetchRequests()
       }, []);
 
-    console.log(joinRequests)
 
     return (
         <View style={styles.container}>

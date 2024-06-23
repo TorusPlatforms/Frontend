@@ -5,6 +5,11 @@ const styles = StyleSheet.create({
         color: "white"
     },
 
+    container: {
+        flex: 1,
+        backgroundColor: "rgb(22, 23, 24)",
+    },
+
     commentContainer: {
         marginVertical: 10, 
         width: "95%", 
@@ -65,14 +70,6 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
 
-    addCommentContainer: {
-        alignItems: "center", 
-        marginTop: 20, 
-        flexDirection: "row", 
-        paddingHorizontal: 10, 
-        paddingRight: 30,
-    },
-
     addCommentInput: {
         marginLeft: 20, 
         paddingHorizontal: 10, 
@@ -80,9 +77,9 @@ const styles = StyleSheet.create({
         borderRadius: 10, 
         borderWidth: 1, 
         borderColor: "gray", 
-        width: "90%",
+        width: "70%",
         padding: 10,
-        height: 50
+        minHeight: 30,
     },
 
     addCommentButton: {
@@ -91,7 +88,8 @@ const styles = StyleSheet.create({
         borderRadius: 30, 
         width: 50, 
         height: 30, 
-        justifyContent: "center" 
+        justifyContent: "center",
+        marginLeft: 20
     },
 
     tinyLogo: {

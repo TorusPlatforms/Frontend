@@ -4,7 +4,6 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
 import { Ping } from '../../components/pings';
-import { CommentModal } from '../../components/comments';
 import { postComment, getLoopPings, getLoop } from "../../components/handlers";
 import styles from "./styles";
 
@@ -72,12 +71,7 @@ export default function LoopPings({ route }) {
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             style={{paddingHorizontal: 5}}
             data={pings}
-            renderItem={({item}) => 
-              <Ping 
-                data={item} 
-                navigation={navigation}
-              />
-            }
+            renderItem={({item}) => <Ping data={item} />}
             ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
             onMomentumScrollBegin={handleScrollBegin}
             onMomentumScrollEnd={handleScrollEnd}

@@ -4,3 +4,24 @@ export class AlreadyExistsError extends Error {
         this.name = "ValidationError"
     }
 }
+
+export class ServiceUnavailable extends Error {
+    constructor(message) {
+        super(message)
+        this.name = "ServiceUnavailable"
+    }
+}
+
+export class NotFoundError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = "NotFoundError"
+    }
+}
+
+export class CollegeNotFoundError extends NotFoundError {
+    constructor(message) {
+        super(message)
+        this.name = "CollegeNotFoundError"
+    }
+}

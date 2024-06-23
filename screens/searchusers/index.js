@@ -28,7 +28,10 @@ export default function SearchUsers({ route, navigation }) {
   };
 
   const User = ({data}) => (
-    <TouchableOpacity onPress={() => navigation.push("UserProfile", {username: data.username})}>
+    <TouchableOpacity onPress={() => {
+      navigation.goBack();
+      navigation.push("UserProfile", {username: data.username});
+      }}>
         <View style={styles.userContainer}>
             <Image style={styles.pfp} source={{uri: data.pfp_url}}/>
 

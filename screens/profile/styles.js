@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
 
 
     userInfoContainer: {
-        flex: 1.5, 
+        flex: 1, 
         flexDirection: 'row',
     }, 
 
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     },
 
     torusContainer: {
-        flex: 2, 
+        minHeight: (Platform.OS == "ios" ? 200 : 100), 
         justifyContent: "center", 
         alignItems: "center",
     },
