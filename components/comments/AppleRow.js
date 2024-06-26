@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Animated, StyleSheet, Text, View, I18nManager } from 'react-native';
+import { Animated, StyleSheet, Alert, View, I18nManager } from 'react-native';
 import { RectButton, Swipeable } from 'react-native-gesture-handler';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { deleteComment } from '../handlers';
 
@@ -10,18 +11,24 @@ export default class AppleRow extends Component {
         inputRange: [0, 1],
         outputRange: [x, 0],
       });
+
       const pressHandler = async() => {
+        Alert.alert("Are you sure you want to delete this comment?", "This is a permanent action that cannot be undone.", [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {text: 'OK', onPress: async() => await deleteComment(this.props.comment_id)},
+        ]);
+        
         this.close()
-        await deleteComment(this.props.comment_id)
       };
 
       return (
         <Animated.View style={{ flex: 1, transform: [{ translateX: trans }] }}>
-          <RectButton
-            style={[styles.rightAction, { backgroundColor: color }]}
-            onPress={pressHandler}
-          >
-            <Text style={styles.actionText}>{text}</Text>
+          <RectButton style={[styles.rightAction, { backgroundColor: color }]} onPress={pressHandler}>
+              <Ionicons name={"trash"} color={"red"} size={20}></Ionicons>
           </RectButton>
         </Animated.View>
       );
@@ -35,7 +42,7 @@ export default class AppleRow extends Component {
           flexDirection: I18nManager.isRTL ? 'row-reverse' : 'row',
         }}
       >
-        {this.renderRightAction('Delete', '#dd2c00', 64, progress)}
+        {this.renderRightAction('Delete', 'rgb(22, 23, 24)', 64, progress)}
       </View>
     );
 

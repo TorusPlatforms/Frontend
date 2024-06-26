@@ -55,11 +55,11 @@ export default function UserPings({ username, scrollToPing }) {
     useEffect(() => {
       fetchUserPings()
       console.log("Pings screen refocused...", username, scrollToPing)
-    }, [isFocused]);
+    }, [isFocused, scrollToPing]);
     
   
   if (!pings) {
-    return <ActivityIndicator />
+    return (<ActivityIndicator />)
   }
 
 
@@ -68,16 +68,13 @@ export default function UserPings({ username, scrollToPing }) {
           <FlatList
                 ref={pings_ref}
                 onScrollToIndexFailed={handleScrollToIndexFailed}
-                style={{paddingHorizontal: 20}}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                // refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 data={pings}
                 renderItem={({item}) => 
-                <Ping 
-                    data={item} 
-                    openComment={scrollToPing}
-                />
+                  <Ping data={item} openComment={scrollToPing}/>
                 }
                 ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+                keyExtractor={(item) => item.post_id}
             />
     </View>
   )

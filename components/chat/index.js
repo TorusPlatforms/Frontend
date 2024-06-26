@@ -56,12 +56,13 @@ export const ChatComponent = ({ messages, onSend, id }) => {
             textInputStyle={{
               backgroundColor: "rgb(50,50,50)",
               color: "white",
-              minHeight: 50,
+              minHeight: 40,
               maxHeight: 200,
               maxLength: 100,
               borderRadius: 25,
-              padding: 15,
-              marginBottom: 10
+              marginBottom: 10,
+              paddingHorizontal: 15,
+              paddingVertical: 12
             }}
             placeholder='Send a message'
             messages={messages}

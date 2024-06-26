@@ -92,7 +92,8 @@ export default function NotificationsScreen() {
                 data={notifications}
                 renderItem={({item}) => <Notification data={item} />}
                 ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
-                refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} />}
+                refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} tintColor={"white"} />}
+                keyExtractor={item => item.notification_id}
             />
         </View>
     )

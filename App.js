@@ -6,7 +6,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import * as Notifications from 'expo-notifications';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, Pressable, Linking } from "react-native";
+import { StatusBar, Text, View, Linking, TouchableOpacity } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -14,8 +14,8 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import AuthScreen from "./screens/auth";
-import SignUpScreen from "./screens/signup"
+import AuthScreen from "./screens/auth/login";
+import SignUpScreen from "./screens/auth/signup"
 import Feed from "./screens/feed"
 import Profile from "./screens/profile"
 import MutualsScreen from './screens/mutualuserlists';
@@ -34,7 +34,7 @@ import PrivacySafety from './screens/settings/Privacy and Safety';
 import SecurityAccountAccess from './screens/settings/Security and Account Access';
 import AdditionalResources from './screens/settings/Additional Resources';
 import ComingSoon from './screens/settings/Coming Soon';
-import ForgotPassword from './screens/auth/Forgot your password';
+import ForgotPassword from './screens/auth/forgotpassword';
 import ResetPassword from './screens/settings/Your Account/Reset Password';
 import VerifyEmail from './screens/auth/verifyemail';
 import EditProfile from "./screens/editprofile";
@@ -49,6 +49,7 @@ import EditLoop from './screens/editloop';
 import JoinRequests from './screens/joinrequests';
 import SearchUsers from './screens/searchusers';
 import Comments from './screens/comments';
+import SearchColleges from './screens/searchcolleges';
 
 
 const firebaseConfig = {
@@ -97,7 +98,7 @@ const Tabs = () => {
   return (
     <Tab.Navigator screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)'}, headerShown: false, tabBarShowLabel: false, headerStyle: { backgroundColor: 'rgb(22, 23, 24)'}, headerTitleStyle: { "color": "white" }}}>
       <Tab.Screen name="Feed" component={FeedScreens} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "home" : "home-outline"} color={"white"} size={size}/>)}}/>
-      <Tab.Screen name="Community" component={DiscoverTabs} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "people" : "people-outline"} color={"white"} size={size}/>)}}/>
+      <Tab.Screen name="Community" component={DiscoverTabs} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "search" : "search-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="CreateContainer" listeners={({ navigation }) => ({tabPress: (e) => {e.preventDefault(); navigation.navigate("Create")}})} component={CreatePing} options={{ presentation: "modal", tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "add-circle" : "add-circle-outline"} color={"white"} size={size}/>)}} />
       <Tab.Screen name="Messages" component={Messages} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "chatbox" : "chatbox-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="Profile" component={Profile} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "person" : "person-outline"} color={"white"} size={size}/>)}}/>
@@ -118,8 +119,8 @@ const FeedScreens = () => {
 const DiscoverTabs = ({ route }) => {
   return (
   <TopTab.Navigator screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)', paddingTop: 50}, tabBarLabelStyle: { "color": "white"}}}>
-    <TopTab.Screen name="Events" component={Events} options={{headerShown: false}} />
     <TopTab.Screen name="Loops" component={Loops} options={{headerShown: false}} />
+    <TopTab.Screen name="Events" component={Events} options={{headerShown: false}} />
   </TopTab.Navigator>)
 }
 
@@ -131,16 +132,6 @@ const FollowTabs = ({ route }) => {
     </TopTab.Navigator>
   )
 };
-
-
-const CancelHeader = (props) => {
-  console.log(props)
-  return (
-  <Pressable onPress={() => navigation.goBack()} style={{ padding: 10 }}>
-    <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Cancel</Text>
-  </Pressable>
-  )
-}
 
 function App() {
 
@@ -181,18 +172,27 @@ function App() {
     //     };
     //   },
     // }}> */}
-      <Stack.Navigator screenOptions={{headerShown: false, headerTitleStyle: {color: "white"}, headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}}}>
+    <StatusBar
+        barStyle="light-content" 
+        backgroundColor="rgb(22, 23, 24)" 
+      />
+      <Stack.Navigator screenOptions={({ navigation }) => ({   
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+        ),  headerShown: false, headerBackTitleVisible: false, headerTitleStyle: {color: "white"}, headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}, animation: 'slide_from_bottom'})}>
         <Stack.Screen name="Auth" component={AuthScreen}/>
-        <Stack.Screen name="SignUp" component={SignUpScreen}/>
-        <Stack.Screen name="Home" component={Tabs}/>
-        <Stack.Screen name="MyLoops" component={MyLoops} options={{headerShown: true}}/>
-        <Stack.Screen name="Create" component={CreatePing} options={{presentation: "modal"}} />
-        <Stack.Screen name="CreateLoop" component={CreateLoop} options={{presentation: "modal"}} />
-        <Stack.Screen name="CreateEvent" component={CreateEvent} options={{presentation: "modal"}} />
-        <Stack.Screen name="CreateAnnouncement" component={CreateAnnouncement} options={{presentation: "modal"}} />
+        <Stack.Screen name="SignUp" component={SignUpScreen} options={{headerShown: true}}/>
+        <Stack.Screen name="Home" options={{ gestureEnabled: false }} component={Tabs}/>
+        <Stack.Screen name="My Loops" component={MyLoops} options={{headerShown: true}}/>
+        <Stack.Screen name="Create" component={CreatePing} options={{presentation: "modal", gestureEnabled: true}} />
+        <Stack.Screen name="CreateLoop" component={CreateLoop} options={{presentation: "modal", gestureEnabled: true}} />
+        <Stack.Screen name="CreateEvent" component={CreateEvent} options={{presentation: "modal", gestureEnabled: true}} />
+        <Stack.Screen name="CreateAnnouncement" component={CreateAnnouncement} options={{presentation: "modal", gestureEnabled: true}} />
         <Stack.Screen name="Loop" component={LoopsPage}/>
-        <Stack.Screen name="Comments" component={Comments} options={{presentation: "modal", headerShown: true, headerBackVisible: false, headerTitleAlign: 'center'}}/>
-        <Stack.Screen name="LoopMembers" component={LoopMembers} options={{presentation: "modal", title: "Members", headerShown: true}}/>
+        <Stack.Screen name="Comments" component={Comments} options={{presentation: "modal", gestureEnabled: true, headerShown: true, headerLeft: () => (<View />), headerBackVisible: false, headerTitleAlign: 'center'}}/>
+        <Stack.Screen name="LoopMembers" component={LoopMembers} options={{presentation: "modal", gestureEnabled: true, title: "Members", headerShown: true}}/>
         <Stack.Screen name="DirectMessage" component={DirectMessage} options={ ({ route }) => ({headerShown: true, contentStyle: {borderTopColor: "gray", borderTopWidth: 1}, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
         <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.username })}/>
         <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>
@@ -212,7 +212,8 @@ function App() {
         <Stack.Screen name="UserProfile" component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })}/>
         <Stack.Screen name="LoopChat" component={LoopChat} />
         <Stack.Screen name="JoinRequests" component={JoinRequests} options={{headerShown: true}} />
-        <Stack.Screen name="SearchUsers" component={SearchUsers} options={{headerShown: true, title: "", presentation: "modal"}} />
+        <Stack.Screen name="Search Users" component={SearchUsers} options={{headerShown: true, presentation: "modal", headerLeft: () => (<View />)}} />
+        <Stack.Screen name="Search Colleges" component={SearchColleges} options={{headerShown: true, presentation: "modal", headerLeft: () => (<View />)}} />
       </Stack.Navigator>
     </NavigationContainer>
     </SafeAreaProvider>

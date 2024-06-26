@@ -55,7 +55,7 @@ export const Ping = ({data, openComment }) => {
     }, [openComment])
 
     return (
-      <View style={{marginVertical: 10, width: "95%", flexDirection: "row", padding: 10}}>
+      <View style={{marginVertical: 10, width: "95%", flexDirection: "row", padding: 10, paddingHorizontal: 20}}>
         <View style={{flexDirection: "col", flex: 1}}>
           <Image
             style={styles.tinyLogo}

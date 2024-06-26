@@ -23,11 +23,10 @@ export default function EditProfile() {
             res = await uploadToCDN(image)
             console.log(res.url)
             await updateUser("pfp_url", res.url)
+            await fetchUser()
         } catch (error) {   
             console.error('Error uploading image:', error.message);
         }
-
-        
       };  
 
     async function logOut() {
@@ -74,7 +73,7 @@ export default function EditProfile() {
                           </View>
                       )}
 
-                      <Ionicons name="add-circle" size={32} color="blue" style={{position: "absolute", top: 0, right: 0}}/>
+                      <Ionicons name="add-circle" size={32} color="rgb(47, 139, 128)" style={{position: "absolute", top: 0, right: 0}}/>
                     </Pressable>
           </View>
             

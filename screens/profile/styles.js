@@ -4,6 +4,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "rgb(22, 23, 24)",
+        paddingTop: 10
     },
 
     torusLogo: {
@@ -74,14 +75,6 @@ const styles = StyleSheet.create({
         height: 1,
         width: "100%",
       },
-
-    header: {
-        flexDirection: "row", 
-        justifyContent: "space-between", 
-        flex: 0.25, 
-        paddingHorizontal: 30,
-        marginBottom: 10,
-    },
 
     centerLoop: {
         width: 250,

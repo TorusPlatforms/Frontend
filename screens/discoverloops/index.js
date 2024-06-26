@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
-import { View, Image, Text, Animated, Pressable, FlatList, SafeAreaView, RefreshControl } from "react-native";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { View, Image, Text, Animated, Pressable, FlatList, SafeAreaView, RefreshControl, Keyboard } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-elements";
 import Ionicons from '@expo/vector-icons/Ionicons';
 
@@ -11,13 +11,13 @@ import styles from "./styles";
 
 
 export default function Loops() {
-  const [loops, setLoops] = useState([]);
-  const [search, setSearch] = useState(null);
-  const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-  const [scrollY] = useState(new Animated.Value(0));
-  const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation(); 
 
+  const [loops, setLoops] = useState([]);
+
+  
+  const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+  const [scrollY] = useState(new Animated.Value(0));
   const headerHeight = scrollY.interpolate({
     inputRange: [0, 70],
     outputRange: [70, 0],
@@ -30,13 +30,23 @@ export default function Loops() {
     extrapolate: 'clamp',
   });
 
-  const createLoop = () => {
-    navigation.navigate('CreateLoop');
-  };
+
+
+  function onScrollLoops() {
+    Keyboard.dismiss()
+    Animated.event(
+      [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+      { useNativeDriver: false }
+    )
+  }
 
   const goToLoop = (loop_id) => {
     navigation.push('Loop', { loop_id: loop_id });
   };
+
+
+
+  const [search, setSearch] = useState(null);
 
   async function fetchLoops() {
       const fetchedLoops = await getLoops(search);
@@ -49,12 +59,19 @@ export default function Loops() {
   }, [search]);
 
 
+
+
+  const [refreshing, setRefreshing] = useState(false);
+
   async function onRefresh() {
     setRefreshing(true)
     await fetchLoops();
     setRefreshing(false)
   };
-          
+        
+  
+
+
   return (
     <SafeAreaView style={styles.container}>
       <Animated.View style={{ height: headerHeight, opacity: headerOpacity }}>
@@ -69,7 +86,7 @@ export default function Loops() {
           </View> 
 
           <View style={{ flex: 0.1 }}>
-            <Pressable onPress={() => createLoop()}>
+            <Pressable onPress={() => navigation.navigate("CreateLoop")}>
               <Ionicons name="add" size={24} color="white" />
             </Pressable>
           </View>
@@ -81,19 +98,11 @@ export default function Loops() {
         data={loops}
         renderItem={({ item }) => <Loop data={item} goToLoop={goToLoop} />}
         ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: false }
-        )}
+        onScroll={onScrollLoops}
         scrollEventThrottle={16}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="white"
-          />
-        }
-      />
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white" />}
+        keyExtractor={(item) => item.loop_id}
+        />
     </SafeAreaView>
   );
 };

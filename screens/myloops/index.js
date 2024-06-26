@@ -80,13 +80,7 @@ export default function MyLoops({ route }) {
         fetchLoops(route.params?.scrollToLoop);
     }, [route.params]);
 
-    useFocusEffect(
-        React.useCallback(() => {
-        fetchLoops(); 
-        }, [])
-    );
-
-
+    
     const onScroll = Animated.event(
         [{ nativeEvent: { contentOffset: { y: scrollY } } }],
         { useNativeDriver: false }

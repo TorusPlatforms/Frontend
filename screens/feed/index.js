@@ -23,8 +23,6 @@ export default function Feed() {
     const [user, setUser] = useState(null)
     const [pings, setPings] = useState(null)
 
-    const modalRef = useRef()
-    const [commentPing, setCommentPing] = useState(null)
 
     async function fetchPings(type) {
       const user = await getUser();
@@ -83,53 +81,55 @@ export default function Feed() {
 
     const header = (
       <View style={styles.header}>
-          <View style={{flex: 0.3, flexDirection: "row", alignItems: "center"}}>
-              <View style={{width: 150}}>
-                  <Dropdown
-                    containerStyle={styles.dropdownContainer}
-                    itemTextStyle={styles.text}
-                    selectedTextStyle={[styles.text, {fontWeight: "bold"}]}
-                    activeColor='rgb(22, 23, 24)'
-                    data={dropdownData}
-                    placeholder='Torus'
-                    placeholderStyle={[styles.text, {fontWeight: "bold", fontSize: 24}]}
-                    maxHeight={300}
-                    labelField="label"
-                    valueField="value"
-                    value={feedType}
-                    onChange={item => {
-                      feedChange(item.value);
-                    }}
-                  />
+          <View style={{flex: 0.8, flexDirection: "row", alignItems: "center"}}>
+                <Image style={{width: 60, height: 60, resizeMode: "cover"}} source={require('../../assets/torus.png')}></Image>
 
-              </View>
-              
-              <View style={{marginLeft: 10}}>
-                  <Popover
-                      from={(
-                        <TouchableOpacity>
-                            <Ionicons name="information-circle" size={24} color="white" />
-                        </TouchableOpacity>
-                      )}>
+                <Dropdown
+                  containerStyle={{width: 140, borderRadius: 10, backgroundColor: "rgb(22, 23, 24)", borderWidth: 1, borderColor: "white" }}
+                  itemContainerStyle={{borderRadius: 10}}
+                  itemTextStyle={styles.text}
+                  selectedTextStyle={[styles.text, {fontWeight: "bold"}]}
+                  activeColor='rgb(22, 23, 24)'
+                  data={dropdownData}
+                  placeholder='Torus'
+                  placeholderStyle={[styles.text, {fontWeight: "bold", fontSize: 24}]}
+                  maxHeight={300}
+                  labelField="label"
+                  valueField="value"
+                  value={feedType}
+                  onChange={item => {
+                    feedChange(item.value);
+                  }}
+                />
 
-                      <View style={{backgroundColor: "rgb(22, 23, 24)", padding: 20}}>
-                        <Text style={{color: "white"}}>Your account has been registered to: {user.college}</Text>
-                      </View>
-                </Popover>
-              </View>
-            
           </View>
    
 
-          <View>
-              <Pressable onPress={() => navigation.navigate("Notifications")}>
-                  <Ionicons name="notifications-outline" size={24} color="white" />
-                  
-                  { user.hasUnreadNotifications && (
-                      <View style={{backgroundColor: "red", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
-                  )}
+          <View style={{flex: 0.3, flexDirection: 'row', justifyContent: "space-between"}}>
+                <TouchableOpacity onPress={() => navigation.navigate("Search Colleges")}>
+                    <Ionicons name="school" size={24} color="white" />
+                </TouchableOpacity>
 
-              </Pressable>
+                <Popover
+                    from={(
+                      <TouchableOpacity>
+                          <Ionicons name="information-circle" size={24} color="white" />
+                      </TouchableOpacity>
+                    )}>
+
+                    <View style={{backgroundColor: "rgb(22, 23, 24)", padding: 20}}>
+                      <Text style={{color: "white"}}>Your account has been registered to: {user.college}</Text>
+                    </View>
+                </Popover>
+
+                <TouchableOpacity onPress={() => navigation.navigate("Notifications")}>
+                    <Ionicons name="notifications-outline" size={24} color="white" />
+                    
+                    { user.hasUnreadNotifications && (
+                        <View style={{backgroundColor: "red", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
+                    )}
+
+                </TouchableOpacity>
           </View>
 
       </View>
@@ -140,11 +140,11 @@ export default function Feed() {
           <SafeAreaView style={styles.container}>
               <FlatList
                     ListHeaderComponent={header}
-                    style={{ paddingHorizontal: 20, zIndex: 1 }}
-                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"}/>}
                     data={pings}
                     renderItem={({item}) => (<Ping data={item} />)}
                     ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
+                    keyExtractor={(item) => item.post_id}
                 />                 
             </SafeAreaView>
         )

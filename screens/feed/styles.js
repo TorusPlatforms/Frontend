@@ -33,15 +33,6 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
 
-   
-    dropdownContainer: {
-        borderRadius: 10,
-        backgroundColor: "rgb(22, 23, 24)", 
-        borderWidth: 1,
-        borderColor: "white",
-    },
-
-
 })
 
 export default styles;

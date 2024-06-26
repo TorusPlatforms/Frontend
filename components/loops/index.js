@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, Text,  TouchableOpacity } from "react-native";
 
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export const Loop = ({ data, goToLoop }) => {
 
@@ -15,6 +16,10 @@ export const Loop = ({ data, goToLoop }) => {
             <Text style={{ color: "white", fontWeight: "bold" }}>{data.name || data?.name}</Text>
             <Text style={{ color: "white" }}>{data.description || data?.description}</Text>
           </View>
+          
+          { data.name.includes("Rooming") && (
+            <Ionicons name="star" size={24} color={'white'} />
+          )}
       </View>
     </TouchableOpacity>
   );

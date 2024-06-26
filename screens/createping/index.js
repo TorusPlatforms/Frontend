@@ -30,8 +30,8 @@ export default function CreatePing({ route }) {
 
 
   async function fetchUser() {
-      const user = await getUser()
-      setUser(user)
+      const fetchedUser = await getUser()
+      setUser(fetchedUser)
   }
   
   useEffect(() => {
@@ -153,8 +153,7 @@ export default function CreatePing({ route }) {
               numberOfLines={4}
               maxLength={300}
               placeholderTextColor="gray"
-              value={content}
-              onChangeText={setContent}
+              onChangeText={ text => setContent(text.trim())}
             />
 
           </View>
@@ -186,7 +185,7 @@ export default function CreatePing({ route }) {
 
             
 
-          <TouchableOpacity style={{ backgroundColor: "rgb(54, 163, 107)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop: 20 }} onPress={handlePost}>
+          <TouchableOpacity style={{ backgroundColor: content.length > 0 ? "rgb(54, 163, 107)" : "gray", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop: 20 }} onPress={handlePost}>
             <Text style={{ color: "black", textAlign: "center" }}>Post</Text>
           </TouchableOpacity>
         </View>

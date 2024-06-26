@@ -72,7 +72,6 @@ const styles = StyleSheet.create({
 
     addCommentInput: {
         marginLeft: 20, 
-        paddingHorizontal: 10, 
         color: "white", 
         borderRadius: 10, 
         borderWidth: 1, 
@@ -82,15 +81,6 @@ const styles = StyleSheet.create({
         minHeight: 30,
     },
 
-    addCommentButton: {
-        alignItems: 'center', 
-        backgroundColor: "rgb(0, 114, 160)", 
-        borderRadius: 30, 
-        width: 50, 
-        height: 30, 
-        justifyContent: "center",
-        marginLeft: 20
-    },
 
     tinyLogo: {
         width: 40,

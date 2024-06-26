@@ -21,7 +21,7 @@ export const Announcement = ({ data }) => {
     
         <View style={{marginLeft: 20, flex: 6}}>
           <View style={{flex: 1}}>
-            <View style={{flexDirection: "row", justifyContent: "space-between", marginBottom: 5}}>
+            <View style={{flexDirection: "row", justifyContent: "space-between"}}>
                 <TouchableOpacity onPress={handleAuthorPress}>
                     <Text style={styles.author}>{data.author}</Text>
                 </TouchableOpacity>

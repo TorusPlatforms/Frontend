@@ -98,12 +98,12 @@ export default function UserProfile({ route, navigation }) {
                 </View>
 
                 <View style={{flexDirection: "row", justifyContent: "space-evenly", alignItems: "center", paddingVertical: 20}}>
-                    <Pressable onPress={toggleFollow} style={[styles.followButton, {backgroundColor: isFollowing ? 'gray' : 'blue', width: isFollowing ? 150 : 300}]}>
+                    <Pressable onPress={toggleFollow} style={[styles.followButton, {backgroundColor: isFollowing ? 'rgb(62, 62, 62)' : 'rgb(47, 139, 128)', width: isFollowing ? 150 : 300}]}>
                         <Text style={styles.followButtonText}>{isFollowing ? 'Following' : 'Follow'}</Text>
                     </Pressable>
 
                     {isFollowing && (
-                        <Pressable onPress={() => navigation.push("DirectMessage", {username: user.username})} style={[{backgroundColor: "black"}, styles.followButton]}>
+                        <Pressable onPress={() => navigation.push("DirectMessage", {username: user.username})} style={[{backgroundColor: "rgb(47, 139, 128)"}, styles.followButton]}>
                             <Text style={styles.followButtonText}>Message</Text>
                         </Pressable>
                     )}
@@ -116,7 +116,6 @@ export default function UserProfile({ route, navigation }) {
     
                 <FlatList
                     ListHeaderComponent={header}
-                    style={{paddingHorizontal: 20}}
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                     data={pings}
                     renderItem={({item}) => <Ping data={item} />}

@@ -4,13 +4,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
-import { useNavigation, useScrollToTop } from "@react-navigation/native";
+import { useIsFocused, useNavigation, useScrollToTop } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import UserEvents from "../userevents"
 import UserPings from '../userpings';
 
-import { getUser, getUserPings, getJoinedLoops } from "../../components/handlers";
+import { getUser, getUserEvents, getJoinedLoops } from "../../components/handlers";
 import styles from "./styles";
 
 
@@ -24,21 +24,7 @@ export default function Profile({ route }) {
     const [loops, setLoops] = useState([])
     const [user, setUser] = useState(null)
 
-    const [scrollToPing, setScrollToPing] = useState(null)
     const [refreshing, setRefreshing] = useState(false)
-
-  
-    async function fetchUser() {
-        const fetchedUser = await getUser()
-        setUser(fetchedUser)
-    }
-
-
-    async function fetchLoops() {
-        const loops = await getJoinedLoops(6);
-        setLoops(loops);
-    } 
-    
 
     async function copyUsernameToClipboard() {
         await Clipboard.setStringAsync(user.username);
@@ -53,13 +39,14 @@ export default function Profile({ route }) {
         return deg * Math.PI / 180
     }
 
+    console.log("First symbol:",  radius * Math.cos(degToRad(60)) + center - symbolSize / 2, radius * Math.sin(degToRad(60)) + center - symbolSize / 2)
     const iconStyles = [
         {left: radius * Math.cos(degToRad(60)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(60)) + center - symbolSize / 2}, 
         {left: radius * Math.cos(degToRad(120)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(120)) + center - symbolSize / 2},
         {left: radius * Math.cos(degToRad(180)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(180)) + center - symbolSize / 2},
         {left: radius * Math.cos(degToRad(360)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(360)) + center - symbolSize / 2},
-        {left: radius * Math.cos(degToRad(240)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(240)) + center - symbolSize / 2},
-        {left: radius * Math.cos(degToRad(300)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(300)) + center - symbolSize / 2}
+        // {left: radius * Math.cos(degToRad(240)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(240)) + center - symbolSize / 2},
+        // {left: radius * Math.cos(degToRad(300)) + center - symbolSize / 2, bottom: radius * Math.sin(degToRad(300)) + center - symbolSize / 2}
     ]
     
     const x = movingLine.interpolate({
@@ -67,19 +54,19 @@ export default function Profile({ route }) {
         outputRange: [0, 60],
         });
 
-    const y = movingLine.interpolate({
-        inputRange: [0, 1],
-        outputRange: [30, 50],
-        });
+    // const y = movingLine.interpolate({
+    //     inputRange: [0, 1],
+    //     outputRange: [30, 50],
+    //     });
 
  
     const lineStyles = [
-        {top: 50, right: y, transform: [{rotate: "30deg"}]},  
-        {top: 50, left: y, transform: [{rotate: "-30deg"}]},  
+        {top: 50, right: 55, transform: [{rotate: "30deg"}]},  
+        {top: 50, left: 55, transform: [{rotate: "-30deg"}]},  
         {left: 85, transform: [{rotate: "90deg"}]},  
         {right: 85, transform: [{rotate: "90deg"}]},
-        {bottom: 50, left: y, transform: [{rotate: "30deg"}]}, 
-        {bottom: 50, right: y, transform: [{rotate: "-30deg"}]}
+        // {bottom: 50, left: y, transform: [{rotate: "30deg"}]}, 
+        // {bottom: 50, right: y, transform: [{rotate: "-30deg"}]}
     ]
 
     function LoopsSpiral() {      
@@ -106,32 +93,6 @@ export default function Profile({ route }) {
         ));
       }
      
-
-    // function renderNotification(item, index) {
-    //     const unread = false
-
-    //     if (unread) {
-    //         return <View style={{width: 15, height: 15, borderRadius: 7.5, backgroundColor: 'red', bottom: 30, position: 'absolute', alignSelf: 'flex-end', zIndex: 1}}/>
-    //     }
-    // };
-
-
-    const onRefresh = useCallback(async() => {
-      setRefreshing(true);
-      await fetchUser()
-      await fetchLoops()
-      setRefreshing(false)
-    }, []);
-
-
-    useEffect(() => {
-        fetchLoops();
-        fetchUser();
-        console.log("Parent updated scroll ping", route.params?.scrollToPing)
-        setScrollToPing(route.params?.scrollToPing)
-      }, [route.params]);
-    
-
     useEffect(() => {
         Animated.sequence([
             Animated.delay(300),
@@ -142,7 +103,43 @@ export default function Profile({ route }) {
                 })
             ]).start();
  
-    }, [movingLine])
+    }, [])
+
+    // function renderNotification(item, index) {
+    //     const unread = false
+
+    //     if (unread) {
+    //         return <View style={{width: 15, height: 15, borderRadius: 7.5, backgroundColor: 'red', bottom: 30, position: 'absolute', alignSelf: 'flex-end', zIndex: 1}}/>
+    //     }
+    // };
+
+
+    async function fetchUser() {
+        const fetchedUser = await getUser()
+        setUser(fetchedUser)
+    }
+
+
+    async function fetchLoops() {
+        const loops = await getJoinedLoops(4);
+        setLoops(loops);
+    } 
+    
+  
+    const onRefresh = useCallback(async() => {
+      setRefreshing(true);
+      await fetchUser()
+      await fetchLoops()
+      setRefreshing(false)
+    }, []);
+
+    useEffect(() => {
+        fetchLoops();
+        fetchUser();
+        console.log("Parent updated scroll ping", route.params?.scrollToPing)
+      }, [route.params]);
+    
+
 
     
     if (!user || !loops) {
@@ -156,14 +153,14 @@ export default function Profile({ route }) {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} />} style={{flex: 1}}>
-                <View style={styles.header}>
+                <View style={{ flexDirection: "row", justifyContent: "flex-end", flex: 0.25, paddingHorizontal: 30, marginTop: 10}}>
                     <Pressable onPress={() => navigation.navigate("Edit Profile")}>
                         <Ionicons name="person-outline" size={24} color="white" />
                     </Pressable>
 
-                    <Pressable onPress={() => navigation.navigate("Settings")}>
+                    {/* <Pressable onPress={() => navigation.navigate("Settings")}>
                         <Ionicons name="settings-outline" size={24} color="white" />
-                    </Pressable>
+                    </Pressable> */}
                 </View>
         
                 <View style={styles.userInfoContainer}>
@@ -203,7 +200,7 @@ export default function Profile({ route }) {
                 <View style={styles.torusContainer}>
                     <View style={styles.centerLoop}>
                         {loops?.length > 0 && (
-                            <Pressable onPress={() => navigation.navigate("MyLoops")} style={styles.centerLoopIcon}>
+                            <Pressable onPress={() => navigation.navigate("My Loops")} style={styles.centerLoopIcon}>
                                 <MaterialCommunityIcons name="google-circles-communities" color={"gray"} size={60}/>
                             </Pressable>
                             

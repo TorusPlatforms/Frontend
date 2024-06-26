@@ -1431,13 +1431,15 @@ export async function getGoogleMapsKey() {
 }
 
 
-export async function getJoinedLoops(n) {
-  
-  const token = await getToken()
+export async function getJoinedLoops(limit) {
+    const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/joined/${n}`;
+    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/joined`;
 
-  try {
+    if (limit) {
+      serverUrl += "?limit=" + limit
+    }
+
     const response = await fetch(serverUrl, {
       method: 'GET',
       headers: {
@@ -1453,10 +1455,6 @@ export async function getJoinedLoops(n) {
       throw new Error(`Error getting msgs! Status: ${response.status}`);
     }
 
-   
+    
     return responseData;
-
-  } catch (error) {
-    console.error("Error getting loops", error.message);
-  }
 }

@@ -44,7 +44,7 @@ export default function EditField({ route, navigation }) {
                 <Text style={{color: "white"}}>{field}</Text>
 
                 <Pressable onPress={handleUpdate}>
-                    <Text style={{ color: text ? 'blue' : 'grey' }}>Done</Text>
+                    <Text style={{ color: text ? 'rgb(47, 139, 128)' : 'grey' }}>Done</Text>
                 </Pressable>
             </View>
 

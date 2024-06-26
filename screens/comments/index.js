@@ -57,13 +57,12 @@ export default function Comments({ route }) {
                         multiline
                         placeholderTextColor="white" 
                         style={styles.addCommentInput} 
-                        onChangeText={onChangeCommentText} 
-                        value={commentText} 
+                        onChangeText={text => onChangeCommentText(text.trim())} 
                         placeholder='Add a comment'
                         maxLength={255}
                       />
                   
-                    <Pressable onPress={handlePostClick} style={styles.addCommentButton}>
+                    <Pressable onPress={handlePostClick} style={{ alignItems: 'center', backgroundColor:  commentText.length > 0 ? "rgb(47, 139, 128)" : "gray", borderRadius: 30, width: 50, height: 30, justifyContent: "center", marginLeft: 20 }}>
                       <Ionicons style={styles.text} name="arrow-up" size={20}></Ionicons>
                     </Pressable>
                 </View>

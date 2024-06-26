@@ -1,15 +1,16 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { View, Image, Text, SafeAreaView, FlatList, ActivityIndicator, TouchableOpacity, RefreshControl, Alert } from "react-native";
 
-import { getLoopMembers, kickUser } from "../../components/handlers";
+import { getLoopMembers, getUser, kickUser } from "../../components/handlers";
 import styles from "./styles";
 
 export default function LoopMembers({ route, navigation }) {
     const [members, setMembers] = useState([])
+    const [user, setUser] = useState()
     const { loop_id, isOwner } = route.params
 
-    const [refreshing, setRefreshing] = useState(false)
 
+    const [refreshing, setRefreshing] = useState(false)
 
     const onRefresh = useCallback(async() => {
         setRefreshing(true);
@@ -17,6 +18,7 @@ export default function LoopMembers({ route, navigation }) {
         setRefreshing(false)
       }, []);
     
+
 
     async function handleKick(username) {
         Alert.alert(`Are you sure you want kick ${username}`, 'They will be able to rejoin or request to rejoin this loop at any time', [
@@ -48,7 +50,7 @@ export default function LoopMembers({ route, navigation }) {
                 </View>
             </TouchableOpacity>
 
-            { isOwner && (
+            { isOwner && (data.username != user.username) && (
                 <View style={{justifyContent: "center", marginRight: 30}}>
                     <TouchableOpacity onPress={async() => handleKick(data.username)} style={{backgroundColor: "red", padding: 10, borderRadius: 50, paddingHorizontal: 20}}>
                         <Text>Remove</Text>
@@ -60,20 +62,31 @@ export default function LoopMembers({ route, navigation }) {
         
       );
         
+    
+    async function fetchUser() {
+        const fetchedUser = await getUser()
+        setUser(fetchedUser)
+    }
 
     async function fetchMembers() {
         const members = await getLoopMembers(loop_id)
+        console.log("Fetched", members.length, "members. First entry:", members[0])
         setMembers(members)
     }
 
 
     useEffect(() => {
         fetchMembers()
+        fetchUser()
     }, []);
 
 
-    if (!members) {
-        return <ActivityIndicator />
+    if (!members || !user) {
+        return (
+            <View style={{justifyContent: "center", alignItems: "center", flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
+                <ActivityIndicator />
+            </View>
+        )
     }
 
     return (
@@ -83,6 +96,7 @@ export default function LoopMembers({ route, navigation }) {
                 renderItem={({item}) => <User data={item} />}
                 ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                keyExtractor={item => item.username}
             />
         </SafeAreaView>
     )

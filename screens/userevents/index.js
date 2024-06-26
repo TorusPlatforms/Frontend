@@ -53,10 +53,10 @@ export default function UserEvents() {
             style={{paddingHorizontal: 20}}
             data={events}
             renderItem={
-              ({item}) => 
-                <Event data={item} navigation={navigation} />
-            }
+              ({item}) => <Event data={item} navigation={navigation} 
+            />}
             ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+            keyExtractor={(item) => item.event_id}
         />
     </View>
   )

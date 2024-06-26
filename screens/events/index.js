@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { View, Image, Text, Animated, Pressable, FlatList, SafeAreaView, RefreshControl, Platform, ActivityIndicator} from "react-native";
+import { View, Image, Text, Animated, Pressable, FlatList, SafeAreaView, RefreshControl, Platform, ActivityIndicator, Keyboard} from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { SearchBar } from "react-native-elements";
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -13,10 +13,13 @@ import styles from "./styles";
 export default function Events() {
   const [events, setEvents] = useState([]);
   const [search, setSearch] = useState(null);
-  const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-  const [scrollY] = useState(new Animated.Value(0));
   const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation(); 
+
+
+
+  const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+  const [scrollY] = useState(new Animated.Value(0));
 
   const headerHeight = scrollY.interpolate({
     inputRange: [0, 70],
@@ -30,9 +33,6 @@ export default function Events() {
     extrapolate: 'clamp',
   });
 
-  const createEvent = () => {
-    navigation.navigate("CreateEvent");
-  };
 
 
   const fetchEvents = async () => {
@@ -50,11 +50,24 @@ export default function Events() {
   }, [search]);
 
 
-  const onRefresh = async () => {
+  async function onRefresh() {
     setRefreshing(true)
     await fetchEvents();
     setRefreshing(false)
   };
+
+
+
+  function onScrollEvents() {
+      Keyboard.dismiss()
+      Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        { useNativeDriver: false }
+      )
+  }
+
+
+
 
 
   if (!events) {
@@ -78,7 +91,7 @@ export default function Events() {
           </View> 
 
           <View style={{ flex: 0.1 }}>
-            <Pressable onPress={createEvent}>
+            <Pressable onPress={() => navigation.navigate("CreateEvent")}>
               <Ionicons name="add" size={24} color="white" />
             </Pressable>
           </View>
@@ -90,22 +103,10 @@ export default function Events() {
         data={events}
         renderItem={({ item }) => <Event data={item} navigation={navigation}/>}
         ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: false }
-        )}
+        onScroll={onScrollEvents}
         scrollEventThrottle={16}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={async () => {
-              setRefreshing(true);
-              await onRefresh();
-              setRefreshing(false);
-            }}
-            tintColor="white"
-          />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white" />}
+        keyExtractor={(item) => item.event_id}
       />
     </SafeAreaView>
   );

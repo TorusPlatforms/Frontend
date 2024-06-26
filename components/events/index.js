@@ -54,11 +54,9 @@ export const Event = ({ data, navigation }) => {
                         <View style={{flexDirection: 'row', justifyContent: "space-between"}}>
                           <Text style={{ color: "white", fontWeight: "bold", fontSize: 16, maxWidth: 150 }}>{data.name || data?.name}</Text>
                           {(data.public && data.loop_id) && (
-                            <Pressable onPress={handleLoopPress}>
-                               {({pressed}) => (
-                                  <Text style={{ color: pressed ? "gray" : "white", fontSize: 12, textAlign: "right", maxWidth: 100 }}>[Hosted by a Loop]</Text>
-                                )}
-                            </Pressable>
+                            <TouchableOpacity onPress={handleLoopPress}>
+                                <Text style={{ color: "white", fontSize: 12, textAlign: "right", maxWidth: 100 }}>[Hosted]</Text>
+                            </TouchableOpacity>
                           )}
                         </View>
                         <Text style={{ color: "white" }}>{strfEventDate(data.time) || data?.time}</Text>
@@ -121,7 +119,7 @@ export const Event = ({ data, navigation }) => {
                     <Text style={{color: "white", fontSize: 12, maxWidth: 200}}> {data.mutual_usernames?.join(",")} & {data.mutual_usernames.length} others are attending</Text>
                   )}
 
-                  <Pressable onPress={handleJoinLeave} style={{borderRadius: 5, borderColor: "gray", borderWidth: 1, padding: 4, paddingHorizontal: 20, backgroundColor: isJoined ? "blue" : "rgb(22, 23, 24)"}}>
+                  <Pressable onPress={handleJoinLeave} style={{borderRadius: 5, borderColor: "gray", borderWidth: 1, padding: 4, paddingHorizontal: 20, backgroundColor: isJoined ? "rgb(62, 62, 62)" : "rgb(47, 139, 128)"}}>
                     <Text style={{ color: "white" }}>{isJoined ? "Joined" : "Join"}</Text>
                   </Pressable>
                 </View>

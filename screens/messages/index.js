@@ -57,7 +57,7 @@ export default function Messages() {
                         <Text style={{color: "white", fontSize: 18, fontWeight: "bold", marginLeft: 10}}>Direct Messages</Text>
                     </View>
 
-                    <TouchableOpacity onPress={() => navigation.push("SearchUsers")}>
+                    <TouchableOpacity onPress={() => navigation.push("Search Users")}>
                         <Ionicons name="search" size={24} color="white" />
                     </TouchableOpacity>
                 </View>

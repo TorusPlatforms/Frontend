@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Text, View, Animated, Image, Keyboard, FlatList, Pressable, Alert, Share, Modal, KeyboardAvoidingView, TextInput, Platform } from 'react-native'
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { getComments, postComment } from '../handlers';
 import { findTimeAgo } from '../utils';
