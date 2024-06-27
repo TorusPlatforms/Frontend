@@ -114,12 +114,12 @@ export async function getUserByUsername(username) {
 }
 
 
-export async function getPings(user) {
+export async function getPings(college) {
     const token = await getToken()
     
     //if college is none, should fetch by location instead
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/college/${user.college}`;
-
+    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/college/${college}`;
+    console.log(serverUrl)
     try {  
       const response = await fetch(serverUrl, {
         method: 'GET',
@@ -128,10 +128,11 @@ export async function getPings(user) {
           'Content-Type': 'application/json',
         },
       });
-      
+  
       if (response.status === 404) {
         return []
       }
+
       if (!response.ok) {
         throw new Error(`Error Getting Pings! Status: ${response.status}`);
       }

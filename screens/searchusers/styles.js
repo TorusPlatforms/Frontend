@@ -13,33 +13,6 @@ const styles = StyleSheet.create({
         width: "100%",
       },
 
-      userContainer: {
-        marginVertical: 10, 
-        width: "100%", 
-        flexDirection: "row", 
-        paddingHorizontal: 20, 
-        flex: 1, 
-        alignItems: "center"
-    },
-
-    pfp: {
-        width: 50, 
-        height: 50, 
-        borderRadius: 25
-    },
-    
-    text: {
-        color: "white"
-    },
-
-    button: {
-        borderRadius: 20, 
-        flex: 1, 
-        justifyContent: "center", 
-        alignItems: "center", 
-        padding: 5
-    }
-
 })
 
 export default styles;

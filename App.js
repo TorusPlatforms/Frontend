@@ -6,7 +6,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import * as Notifications from 'expo-notifications';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { useState, useRef, useEffect } from "react";
-import { StatusBar, Text, View, Linking, TouchableOpacity } from "react-native";
+import { StatusBar, Text, View, Linking, TouchableOpacity, Platform } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -181,7 +181,7 @@ function App() {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
-        ),  headerShown: false, headerBackTitleVisible: false, headerTitleStyle: {color: "white"}, headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}, animation: 'slide_from_bottom'})}>
+        ),  headerShown: false, headerBackTitleVisible: false, headerTitleStyle: {color: "white"}, headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}, animation: (Platform.OS == "android") ? 'slide_from_bottom' : null})}>
         <Stack.Screen name="Auth" component={AuthScreen}/>
         <Stack.Screen name="SignUp" component={SignUpScreen} options={{headerShown: true}}/>
         <Stack.Screen name="Home" options={{ gestureEnabled: false }} component={Tabs}/>

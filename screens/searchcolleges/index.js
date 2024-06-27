@@ -6,6 +6,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import styles from "./styles";
 import { searchColleges } from "../../components/handlers/search";
+import { addCollege, removeCollege } from "../../components/handlers/colleges";
 
 
 export default function SearchColleges({ route, navigation }) {
@@ -29,16 +30,34 @@ export default function SearchColleges({ route, navigation }) {
       setRefreshing(false)
   };
 
+  async function handleAdd(college_id) {
+    await addCollege(college_id)
+    await fetchColleges()
+  }
+
+  async function handleRemove(college_id) {
+    await removeCollege(college_id)
+    await fetchColleges()
+  }
+
   const College = ({data}) => (
     <View style={{padding: 20, flexDirection: 'row', justifyContent: "space-between", alignItems: "center"}}>
         <View style={{maxWidth: "90%"}}>
-              <Text style={[styles.text, {fontWeight: "bold"}]}>{data.name}</Text>
-              <Text style={styles.text}>{data.state_province}</Text>
+              <Text style={{color: "white", fontWeight: "bold"}}>{data.name}</Text>
+              <Text style={{color: "white"}}>{data.state_province}</Text>
         </View>
 
-        <TouchableOpacity style={{borderRadius: 12, backgroundColor: "rgb(47, 139, 128)"}}>
-            <Ionicons name="add" size={24} color="white" />
-        </TouchableOpacity>
+        { !data.isAdded && (
+            <TouchableOpacity style={{borderRadius: 12, backgroundColor: "rgb(47, 139, 128)"}} onPress={() => handleAdd(data.college_id)}>
+              <Ionicons name="add" size={24} color="white" />
+            </TouchableOpacity>
+        )}
+        
+        { data.isAdded && (
+            <TouchableOpacity style={{borderRadius: 12, backgroundColor: "rgb(208, 116, 127)"}} onPress={() => handleRemove(data.college_id)}>
+              <Ionicons name="remove" size={24} color="white" />
+            </TouchableOpacity>
+        )}
 
     </View>
   );
@@ -60,24 +79,10 @@ export default function SearchColleges({ route, navigation }) {
         data={colleges}
         ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
         renderItem={({item}) => <College data={item} />}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="white"
-          />
-        }
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white" />}
+        keyExtractor={item => item.college_id}
       />
     </SafeAreaView>
   );
 };
-
-
-
-/*const exampleLoopData = {
-            pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
-            displayName: "Grant's Epic Group",
-            members: 120,
-            interests: ["Golfing", "Frolicking", "Hijinks"]
-        }   */     
 

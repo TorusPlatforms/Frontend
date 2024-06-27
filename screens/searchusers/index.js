@@ -7,10 +7,9 @@ import styles from "./styles";
 import { searchUsers } from "../../components/handlers/search";
 
 
-export default function SearchUsers({ route, navigation }) {
+export default function SearchUsers({ navigation }) {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState(null);
-  const [refreshing, setRefreshing] = useState(false);
 
   async function fetchUsers() {
     const fetchedUsers = await searchUsers(search)
@@ -21,23 +20,31 @@ export default function SearchUsers({ route, navigation }) {
     fetchUsers();
   }, [search]);
 
+
+
+
+  const [refreshing, setRefreshing] = useState(false);
+
   async function onRefresh() {
       setRefreshing(true)
       await fetchUsers();
       setRefreshing(false)
   };
 
+
+
+
   const User = ({data}) => (
     <TouchableOpacity onPress={() => {
       navigation.goBack();
       navigation.push("UserProfile", {username: data.username});
       }}>
-        <View style={styles.userContainer}>
-            <Image style={styles.pfp} source={{uri: data.pfp_url}}/>
+        <View style={{ marginVertical: 10, width: "100%", flexDirection: "row", paddingHorizontal: 20, flex: 1, alignItems: "center"}}>
+            <Image style={{ width: 50, height: 50, borderRadius: 25}} source={{uri: data.pfp_url}}/>
 
             <View style={{flex: 3, left: 20}}>
-                <Text style={[styles.text, {fontWeight: "bold"}]}>{data.display_name}</Text>
-                <Text style={styles.text}>{data.username}</Text>
+                <Text style={{fontWeight: "bold", color: "white"}}>{data.display_name}</Text>
+                <Text style={{color: "white"}}>{data.username}</Text>
             </View>
 
         </View>
@@ -45,6 +52,7 @@ export default function SearchUsers({ route, navigation }) {
   );
     
    
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{paddingHorizontal: 10}}>
@@ -57,28 +65,13 @@ export default function SearchUsers({ route, navigation }) {
       </View>
 
       <FlatList
-        style={{ paddingHorizontal: 20 }}
-        data={users}
-        ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
-        renderItem={({item}) => <User data={item} />}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="white"
-          />
-        }
+          style={{ paddingHorizontal: 20 }}
+          data={users}
+          ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
+          renderItem={({item}) => <User data={item} />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white" />}
+          keyExtractor={item => item.username}
       />
     </SafeAreaView>
   );
 };
-
-
-
-/*const exampleLoopData = {
-            pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
-            displayName: "Grant's Epic Group",
-            members: 120,
-            interests: ["Golfing", "Frolicking", "Hijinks"]
-        }   */     
-

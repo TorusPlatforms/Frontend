@@ -95,7 +95,7 @@ export default function Profile({ route }) {
      
     useEffect(() => {
         Animated.sequence([
-            Animated.delay(300),
+            Animated.delay(500),
             Animated.timing(movingLine, {
                 toValue: 1,
                 duration: 1000,

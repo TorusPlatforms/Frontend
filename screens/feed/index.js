@@ -8,8 +8,8 @@ import Popover from 'react-native-popover-view';
 import { getUser, getPings, getFollowingPings } from "../../components/handlers";
 import { abbreviate } from '../../components/utils';
 import { Ping } from "../../components/pings";
-import {  NewCommentModal } from '../../components/comments';
 import styles from "./styles";
+import { getColleges } from '../../components/handlers/colleges';
 
 
 export default function Feed() {
@@ -17,58 +17,73 @@ export default function Feed() {
     
     const [dropdownData, setDropdownData] = useState([])
     const [feedType, setFeedType] = useState("college");
-
     const [refreshing, setRefreshing] = useState(false);
 
     const [user, setUser] = useState(null)
     const [pings, setPings] = useState(null)
 
 
-    async function fetchPings(type) {
-      const user = await getUser();
-      setUser(user)
+    async function fetchPingsAndColleges() {
+        setRefreshing(true)
 
-      let fetchedPings = []
-      if (type == "college") {
-        console.log("Fetching pings from College")
-        fetchedPings = await getPings(user);
-      } else if (type == "friends") {
-        console.log("Fetching pings from Friends")
-        fetchedPings = await getFollowingPings();
-      } else {
-        throw new Error("Type not defined in Feed")
-      }
+        const fetchedUser = await getUser()
+        setUser(fetchedUser)
+        
+        await fetchPings(fetchedUser)
+        await fetchColleges(fetchedUser)
 
-      console.log("Fetched", fetchedPings.length, "pings. First entry:", fetchedPings[0])
-      setPings(fetchedPings);
-  
-      setDropdownData([
-        { label: 'Friends', value: 'friends' },
-        { label: abbreviate(user.college), value: 'college' },
-      ]);
-
+        setRefreshing(false)
     }
+
+    async function fetchPings(user) {
   
-    async function feedChange(type) {
-      setFeedType(type)
 
-      setRefreshing(true);
-      await fetchPings(type)
-      setRefreshing(false)    }
+        let fetchedPings = []
+        console.log("TYPE", feedType)
+        switch (feedType) {
+          case "friends":
+            fetchedPings = await getFollowingPings()
+            break;
+          case "college":
+            console.log("Fetching", user.college)
+            fetchedPings = await getPings(user.college)
+            break;
+          default:
+            fetchedPings = await getPings(feedType)
+        }
+  
+        console.log("Fetched", fetchedPings.length, "pings. First entry:", fetchedPings[0])
+        setPings(fetchedPings);      
+    }
 
+    async function fetchColleges(user) {
+        const fetchedColleges = await getColleges()
+        const cleanedColleges = fetchedColleges.map(college => ({ label: college.nickname ? college.nickname : abbreviate(college.name), value: college.name }))
+  
+        console.log("Fetched", fetchedColleges.length, 'colleges. First entry:', fetchedColleges[0])
+        console.log(cleanedColleges)
+  
+          setDropdownData([
+            { label: 'Friends', value: 'friends' },
+            { label: abbreviate(user.college), value: 'college' },
+            ...cleanedColleges
+          ])
+    }
+
+    useEffect(() => {
+      fetchPingsAndColleges()
+    }, [feedType]); 
+    
 
   
     const onRefresh = useCallback(async() => {
-      setRefreshing(true);
-      await fetchPings(feedType)
-      setRefreshing(false)
+      setFeedType('college')
+      fetchPingsAndColleges()
+      setFeedType('college')
     }, []);
 
 
-    useEffect(() => {
-      fetchPings(feedType);
-    }, []); 
-    
+ 
 
  
     if (!user || !pings) {
@@ -97,9 +112,7 @@ export default function Feed() {
                   labelField="label"
                   valueField="value"
                   value={feedType}
-                  onChange={item => {
-                    feedChange(item.value);
-                  }}
+                  onChange={item => {setFeedType(item.value)}}
                 />
 
           </View>
