@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "torus",
+    "scheme": "torus",
     "slug": "torus",
     "version": "1.0.0",
     "orientation": "portrait",

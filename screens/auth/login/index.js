@@ -23,27 +23,18 @@ export default function AuthScreen() {
     const auth = getAuth();
 
     useEffect(() => {
-        const animation = Animated.timing(moveLogoAnim, {
-            toValue: windowHeight / 16,
-            duration: 1000,
-            useNativeDriver: true,
-        });
-
-        animation.start(() => {
-            onAuthStateChanged(auth, async (user) => {
-                if (user && user.emailVerified) {
-                    navigation.navigate('Home')
-                } else {
-                    Animated.timing(fadeAnim, {
-                        toValue: 1,
-                        duration: 500,
-                        useNativeDriver: true,
-                    }).start();
-                }
+        Animated.sequence([
+            Animated.timing(moveLogoAnim, {
+                toValue: windowHeight / 16,
+                duration: 1000,
+                useNativeDriver: true,
+            }),
+            Animated.timing(fadeAnim, {
+                toValue: 1,
+                duration: 500,
+                useNativeDriver: true,
             })
-
-        });
-
+        ]).start();
     }, []);
 
 

@@ -28,7 +28,7 @@ export default function NotificationsScreen() {
     function onNotificationsPress(data) {
         switch (data.type) {
             case "comment":
-                navigation.navigate("Profile", {scrollToPing: data.parent_id})
+                navigation.navigate("Ping", {post_id: data.parent_id})
                 break
             case "announcement":
             case "event":

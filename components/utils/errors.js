@@ -25,3 +25,10 @@ export class CollegeNotFoundError extends NotFoundError {
         this.name = "CollegeNotFoundError"
     }
 }
+
+export class NotLoggedInError extends Error {
+    constructor(message) {
+        super(message)
+        this.name = "NotLoggedInError"
+    }
+}

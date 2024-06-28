@@ -115,30 +115,30 @@ export default function Profile({ route }) {
 
 
     async function fetchUser() {
+        setRefreshing(true)
         const fetchedUser = await getUser()
         setUser(fetchedUser)
+        setRefreshing(false)
     }
 
 
     async function fetchLoops() {
+        setRefreshing(true)
         const loops = await getJoinedLoops(4);
         setLoops(loops);
+        setRefreshing(false)
     } 
     
-  
-    const onRefresh = useCallback(async() => {
-      setRefreshing(true);
-      await fetchUser()
-      await fetchLoops()
-      setRefreshing(false)
-    }, []);
-
     useEffect(() => {
         fetchLoops();
         fetchUser();
-        console.log("Parent updated scroll ping", route.params?.scrollToPing)
-      }, [route.params]);
+      }, []);
     
+
+    const onRefresh = useCallback(async() => {
+      await fetchUser()
+      await fetchLoops()
+    }, []);
 
 
     
@@ -220,7 +220,7 @@ export default function Profile({ route }) {
             
             <View style={{flex: 1}}>
                 <Tab.Navigator screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)' }, tabBarLabelStyle: { color: "white", fontSize: 10 }}}>
-                    <Tab.Screen name="Pings" children={() =>  <UserPings scrollToPing={route.params?.scrollToPing} username={user.username}/>}/>
+                    <Tab.Screen name="Pings" children={() =>  <UserPings username={user.username}/>}/>
                     <Tab.Screen name="Events" component={UserEvents} />
                 </Tab.Navigator>
             </View>

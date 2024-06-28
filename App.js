@@ -6,12 +6,13 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import * as Notifications from 'expo-notifications';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { useState, useRef, useEffect } from "react";
-import { StatusBar, Text, View, Linking, TouchableOpacity, Platform } from "react-native";
+import { StatusBar, Text, View, TouchableOpacity, Platform } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import * as Linking from 'expo-linking';
 
 import { initializeApp, getApps, getApp } from 'firebase/app';
-import { initializeAuth, getReactNativePersistence } from "firebase/auth";
+import { initializeAuth, getReactNativePersistence, getAuth, onAuthStateChanged } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import AuthScreen from "./screens/auth/login";
@@ -50,6 +51,7 @@ import JoinRequests from './screens/joinrequests';
 import SearchUsers from './screens/searchusers';
 import Comments from './screens/comments';
 import SearchColleges from './screens/searchcolleges';
+import Ping from './screens/ping';
 
 
 const firebaseConfig = {
@@ -81,7 +83,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
-
+const prefix = Linking.createURL('/');
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -134,44 +136,45 @@ const FollowTabs = ({ route }) => {
 };
 
 function App() {
+  const [loggedIn, setLoggedIn] = useState(false)
 
+  const config = {
+    screens: {
+      Ping: 'ping/:post_id',  
+    },
+  };
 
+  const linking = {
+    prefixes: [prefix],
+    config
+  };
+
+  
+  React.useEffect(() => {
+    const auth = getAuth()
+    const unsubscribe = onAuthStateChanged(auth, user => {
+        setLoggedIn(user != null)
+    })
+
+    return () => unsubscribe()
+
+  }, []);
+
+  React.useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+      const url = response.notification.request.content.data.url;
+      console.log("Opening url", prefix, url)
+      Linking.openURL(prefix + url);
+    });
+    return () => subscription.remove();
+  }, []);
+
+  
   return (
     <GestureHandlerRootView>
     <SafeAreaProvider>
-    <NavigationContainer>
-    {/* // linking={{
-    //   async getInitialURL() {
-    //     const url = await Linking.getInitialURL();
-
-    //     if (url != null) {
-    //       return url;
-    //     }
-
-    //     const response = await Notifications.getLastNotificationResponseAsync();
-
-    //     return response?.notification.request.content.data.url;
-    //   },
-
-    //   subscribe(listener) {
-    //     const onReceiveURL = ({ url }) => listener(url);
-
-    //     // Listen to incoming links from deep linking
-    //     const eventListenerSubscription = Linking.addEventListener('url', onReceiveURL);
-
-    //     // Listen to expo push notifications
-    //     const subscription = Notifications.addNotificationResponseReceivedListener(response => {
-    //       const data = response.notification.content.data;
-          
-    //       listener(url);
-    //     });
-
-    //     return () => {
-    //       eventListenerSubscription.remove();
-    //       subscription.remove();
-    //     };
-    //   },
-    // }}> */}
+    <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
+    
     <StatusBar
         barStyle="light-content" 
         backgroundColor="rgb(22, 23, 24)" 
@@ -181,39 +184,48 @@ function App() {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
-        ),  headerShown: false, headerBackTitleVisible: false, headerTitleStyle: {color: "white"}, headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}, animation: (Platform.OS == "android") ? 'slide_from_bottom' : null})}>
-        <Stack.Screen name="Auth" component={AuthScreen}/>
-        <Stack.Screen name="SignUp" component={SignUpScreen} options={{headerShown: true}}/>
-        <Stack.Screen name="Home" options={{ gestureEnabled: false }} component={Tabs}/>
-        <Stack.Screen name="My Loops" component={MyLoops} options={{headerShown: true}}/>
-        <Stack.Screen name="Create" component={CreatePing} options={{presentation: "modal", gestureEnabled: true}} />
-        <Stack.Screen name="CreateLoop" component={CreateLoop} options={{presentation: "modal", gestureEnabled: true}} />
-        <Stack.Screen name="CreateEvent" component={CreateEvent} options={{presentation: "modal", gestureEnabled: true}} />
-        <Stack.Screen name="CreateAnnouncement" component={CreateAnnouncement} options={{presentation: "modal", gestureEnabled: true}} />
-        <Stack.Screen name="Loop" component={LoopsPage}/>
-        <Stack.Screen name="Comments" component={Comments} options={{presentation: "modal", gestureEnabled: true, headerShown: true, headerLeft: () => (<View />), headerBackVisible: false, headerTitleAlign: 'center'}}/>
-        <Stack.Screen name="LoopMembers" component={LoopMembers} options={{presentation: "modal", gestureEnabled: true, title: "Members", headerShown: true}}/>
-        <Stack.Screen name="DirectMessage" component={DirectMessage} options={ ({ route }) => ({headerShown: true, contentStyle: {borderTopColor: "gray", borderTopWidth: 1}, headerTitle: (props) => <DirectMessageHeader {...route} />})} />
-        <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.username })}/>
-        <Stack.Screen name="Settings" component={Settings} options={{headerShown: true}}/>
-        <Stack.Screen name="Your Account" component={YourAccountScreen} options={{headerShown: true}}/>
-        <Stack.Screen name="Accessibility" component={AccessibilityDisplay} options={{headerShown: true}}/>
-        <Stack.Screen name="Notifications" component={NotificationsScreen} options={{headerShown: true}}/>
-        <Stack.Screen name="Privacy and Safety" component={PrivacySafety} options={{headerShown: true}}/>
-        <Stack.Screen name="Security and Account Access" component={SecurityAccountAccess} options={{headerShown: true}}/>
-        <Stack.Screen name="AdditionalResources" component={AdditionalResources} options={{headerShown: true}}/>
-        <Stack.Screen name="Coming Soon" component={ComingSoon} options={{headerShown: true}}/>
-        <Stack.Screen name="Forgot Password" component={ForgotPassword} options={{headerShown: true}}/>
-        <Stack.Screen name="Verify Email" component={VerifyEmail} options={{headerShown: true}}/>
-        <Stack.Screen name="Reset Password" component={ResetPassword} options={{headerShown: true}}/>
-        <Stack.Screen name="Edit Profile" component={EditProfile} options={{headerShown: true}}/>
-        <Stack.Screen name="EditLoop" component={EditLoop} options={{headerShown: true}}/>
-        <Stack.Screen name="EditField" component={EditField}/>
-        <Stack.Screen name="UserProfile" component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })}/>
-        <Stack.Screen name="LoopChat" component={LoopChat} />
-        <Stack.Screen name="JoinRequests" component={JoinRequests} options={{headerShown: true}} />
-        <Stack.Screen name="Search Users" component={SearchUsers} options={{headerShown: true, presentation: "modal", headerLeft: () => (<View />)}} />
-        <Stack.Screen name="Search Colleges" component={SearchColleges} options={{headerShown: true, presentation: "modal", headerLeft: () => (<View />)}} />
+        ),  gestureEnabled: true, headerShown: false, headerBackTitleVisible: false, headerTitleStyle: {color: "white"}, headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}, animation: Platform.OS == "android" ? "slide_from_bottom" : null})}>
+
+          <>
+           {loggedIn ? (
+            <>
+            <Stack.Screen name="Home" options={{ gestureEnabled: false }} component={Tabs} />
+            <Stack.Screen name="My Loops" component={MyLoops} options={{ headerShown: true }} />
+            <Stack.Screen name="Create" component={CreatePing} options={{ presentation: "modal", gestureEnabled: true }} />
+            <Stack.Screen name="CreateLoop" component={CreateLoop} options={{ presentation: "modal", gestureEnabled: true }} />
+            <Stack.Screen name="CreateEvent" component={CreateEvent} options={{ presentation: "modal", gestureEnabled: true }} />
+            <Stack.Screen name="CreateAnnouncement" component={CreateAnnouncement} options={{ presentation: "modal", gestureEnabled: true }} />
+            <Stack.Screen name="Loop" component={LoopsPage} />
+            <Stack.Screen name="Comments" component={Comments} options={{ presentation: "modal", gestureEnabled: true, headerShown: true, headerLeft: () => (<View />), headerBackVisible: false, headerTitleAlign: 'center' }} />
+            <Stack.Screen name="LoopMembers" component={LoopMembers} options={{ presentation: "modal", gestureEnabled: true, title: "Members", headerShown: true }} />
+            <Stack.Screen name="DirectMessage" component={DirectMessage} options={({ route }) => ({ headerShown: true, contentStyle: { borderTopColor: "gray", borderTopWidth: 1 }, headerTitle: (props) => <DirectMessageHeader {...route} /> })} />
+            <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.username })} />
+            <Stack.Screen name="Settings" component={Settings} options={{ headerShown: true }} />
+            <Stack.Screen name="Your Account" component={YourAccountScreen} options={{ headerShown: true }} />
+            <Stack.Screen name="Accessibility" component={AccessibilityDisplay} options={{ headerShown: true }} />
+            <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: true, headerTitleAlign: "center" }} />
+            <Stack.Screen name="Privacy and Safety" component={PrivacySafety} options={{ headerShown: true }} />
+            <Stack.Screen name="Security and Account Access" component={SecurityAccountAccess} options={{ headerShown: true }} />
+            <Stack.Screen name="AdditionalResources" component={AdditionalResources} options={{ headerShown: true }} />
+            <Stack.Screen name="Coming Soon" component={ComingSoon} options={{ headerShown: true }} />
+            <Stack.Screen name="Forgot Password" component={ForgotPassword} options={{ headerShown: true }} />
+            <Stack.Screen name="Verify Email" component={VerifyEmail} options={{ headerShown: true }} />
+            <Stack.Screen name="Reset Password" component={ResetPassword} options={{ headerShown: true }} />
+            <Stack.Screen name="Edit Profile" component={EditProfile} options={{ headerShown: true }} />
+            <Stack.Screen name="EditLoop" component={EditLoop} options={{ headerShown: true }} />
+            <Stack.Screen name="EditField" component={EditField} />
+            <Stack.Screen name="UserProfile" component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })} />
+            <Stack.Screen name="LoopChat" component={LoopChat} />
+            <Stack.Screen name="Ping" component={Ping} options={{ headerShown: true, headerTitleAlign: "center" }} />
+            <Stack.Screen name="JoinRequests" component={JoinRequests} options={{ headerShown: true }} />
+            <Stack.Screen name="Search Users" component={SearchUsers} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} />
+            <Stack.Screen name="Search Colleges" component={SearchColleges} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} /></>
+          ) : (
+            <><Stack.Screen name="Auth" component={AuthScreen} /><Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: true }} /></>
+          )}
+          </>
+
+        
       </Stack.Navigator>
     </NavigationContainer>
     </SafeAreaProvider>

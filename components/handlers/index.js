@@ -1,12 +1,18 @@
 import { getAuth } from "firebase/auth";
 import { Share, Alert } from 'react-native'
 import { combineDateAndTime } from "../utils";
-import { AlreadyExistsError } from "../utils/errors";
+import { AlreadyExistsError, NotLoggedInError } from "../utils/errors";
 
 async function getToken() {
   const auth = getAuth()
-  const token = await auth.currentUser.getIdToken()
-  return token;
+
+  if (auth.currentUser) {
+    const token = await auth.currentUser.getIdToken()
+    return token;
+  } else {
+    throw new NotLoggedInError("User is not logged in")
+  }
+
 }
 
 
@@ -113,11 +119,36 @@ export async function getUserByUsername(username) {
  
 }
 
+export async function getPing(post_id) {
+  const token = await getToken()
+  
+  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/get/${post_id}`;
+  console.log(serverUrl)
+
+  const response = await fetch(serverUrl, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (response.status == 404) {
+    return null
+  }
+
+  if (!response.ok) {
+    throw new Error(`Error Getting Ping! Status: ${response.status}`);
+  }
+
+  const responseData = await response.json();
+  return (responseData)
+
+}
 
 export async function getPings(college) {
     const token = await getToken()
     
-    //if college is none, should fetch by location instead
     const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/college/${college}`;
     console.log(serverUrl)
     try {  

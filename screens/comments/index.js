@@ -23,14 +23,16 @@ export default function Comments({ route }) {
     }
 
     async function fetchComments() {
+      setRefreshing(true);
+
       const fetchedComments = await getComments(route.params?.post_id)
       setComments(fetchedComments)
+
+      setRefreshing(false)
     }
 
     const onRefresh = useCallback(async() => {
-      setRefreshing(true);
       await fetchComments()
-      setRefreshing(false)
     }, []);
 
 
@@ -46,7 +48,7 @@ export default function Comments({ route }) {
               <FlatList
                     data={comments}
                     renderItem={({ item }) => <SwipeableRow item={item} />}
-                    keyExtractor={(item) => item.comment_id.toString()}
+                    keyExtractor={(item) => item.comment_id}
                     refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} />}
                 />
 
@@ -56,7 +58,7 @@ export default function Comments({ route }) {
                   <TextInput 
                         multiline
                         placeholderTextColor="white" 
-                        style={styles.addCommentInput} 
+                        style={{ marginLeft: 20, color: "white", borderRadius: 10, borderWidth: 1, borderColor: "gray", width: "70%", padding: 10, minHeight: 30 }} 
                         onChangeText={text => onChangeCommentText(text.trim())} 
                         placeholder='Add a comment'
                         maxLength={255}

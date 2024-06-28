@@ -9,15 +9,19 @@ import { searchColleges } from "../../components/handlers/search";
 import { addCollege, removeCollege } from "../../components/handlers/colleges";
 
 
-export default function SearchColleges({ route, navigation }) {
+export default function SearchColleges({ }) {
   const [colleges, setColleges] = useState([]);
   const [search, setSearch] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
 
   async function fetchColleges() {
+    setRefreshing(true)
+
     const fetchedColleges = await searchColleges(search)
     console.log("Fetched", fetchedColleges.length, "colleges. First entry:", fetchedColleges[0])
     setColleges(fetchedColleges)
+
+    setRefreshing(false)
   }
 
   useEffect(() => {
@@ -25,9 +29,7 @@ export default function SearchColleges({ route, navigation }) {
   }, [search]);
 
   async function onRefresh() {
-      setRefreshing(true)
       await fetchColleges();
-      setRefreshing(false)
   };
 
   async function handleAdd(college_id) {
@@ -42,9 +44,8 @@ export default function SearchColleges({ route, navigation }) {
 
   const College = ({data}) => (
     <View style={{padding: 20, flexDirection: 'row', justifyContent: "space-between", alignItems: "center"}}>
-        <View style={{maxWidth: "90%"}}>
-              <Text style={{color: "white", fontWeight: "bold"}}>{data.name}</Text>
-              <Text style={{color: "white"}}>{data.state_province}</Text>
+        <View style={{maxWidth: "90%", alignItems: "center"}}>
+            <Text style={{color: "white", fontWeight: "bold"}}>{data.name}</Text>
         </View>
 
         { !data.isAdded && (

@@ -1,18 +1,20 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react";
-import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable, Alert, Modal, TouchableOpacity } from 'react-native'
+import { Text, View, SafeAreaView, Image, Share, FlatList, Pressable, Alert, Modal, TouchableOpacity } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import { useNavigation } from "@react-navigation/native";
+import * as Linking from 'expo-linking';
 
 import { handleLike, deletePost } from "../handlers";
 import { findTimeAgo } from "../utils";
 import styles from "./styles";
 
 
-export const Ping = ({data, openComment }) => {
+export const Ping = ({ data, openComment }) => {
     const navigation = useNavigation()
-    const [isLiked, setIsLiked] = useState(data.isLiked)
-    const [numOfLikes, setNumOfLikes] = useState(data.numberof_likes)
+    const [isLiked, setIsLiked] = useState(null)
+    const [numOfLikes, setNumOfLikes] = useState(null)
+
 
     async function handleLikePress() {
       if (isLiked) {
@@ -48,14 +50,27 @@ export const Ping = ({data, openComment }) => {
       ]);
     }
 
+    async function handleShare(data) {
+      const prefix = Linking.createURL('/');
+
+      await Share.share({
+        title: 'Shared Ping',
+        message: prefix + "ping/" + data.post_id, 
+        url: prefix + "ping/" + data.post_id
+       });
+    }
+
     useEffect(() => {
+      setIsLiked(data.isLiked)
+      setNumOfLikes(data.numberof_likes)
+
       if (openComment == data.post_id) {
         handleComment()
       }
-    }, [openComment])
+    }, [openComment, data])
 
     return (
-      <View style={{marginVertical: 10, width: "95%", flexDirection: "row", padding: 10, paddingHorizontal: 20}}>
+      <TouchableOpacity onPress={() => navigation.push("Ping", {post_id: data.post_id})} style={{marginVertical: 10, width: "95%", flexDirection: "row", padding: 10, paddingHorizontal: 20}}>
         <View style={{flexDirection: "col", flex: 1}}>
           <Image
             style={styles.tinyLogo}
@@ -102,11 +117,11 @@ export const Ping = ({data, openComment }) => {
             <Pressable onPress={handleComment}>
               <Ionicons style={styles.pingIcon} name="chatbubble-outline" size={20}></Ionicons>
             </Pressable>
-{/*     
-            <Pressable onPress={() => handleShare(data.postURL)}>
+    
+            <Pressable onPress={() => handleShare(data)}>
               <Ionicons style={styles.pingIcon} name="share-social-outline" size={20}></Ionicons>
             </Pressable>
-     */}
+    
             {/* <Pressable>
               <Ionicons style={styles.pingIcon} name="paper-plane-outline" size={20}></Ionicons>
             </Pressable> */}
@@ -124,7 +139,7 @@ export const Ping = ({data, openComment }) => {
                 setModalVisible={setCommentModalVisible}
                 modalRef={modalRef}
           /> */}
-      </View>
+      </TouchableOpacity>
   );
 }
   
