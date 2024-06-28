@@ -59,13 +59,15 @@ export default function NotificationsScreen() {
     async function fetchRequests() {
         const fetchedRequests = await getJoinRequests()
         console.log("Fetched", fetchedRequests.length, "requests. First entry:", fetchedRequests[0])
-        for (const request of fetchedRequests) {
-            setJoinRequests([
-                ...joinRequests,
-                request.username
-            ])
-        }
+        const usernames = []
+
+        fetchedRequests.forEach(request => {
+            usernames.push(request.username)
+        });
+
+        setJoinRequests(usernames)
     }
+    
     useEffect(() => {
         fetchNotifications()
         fetchRequests()
@@ -90,8 +92,12 @@ export default function NotificationsScreen() {
 
             <FlatList
                 data={notifications}
-                renderItem={({item}) => <Notification data={item} />}
-                ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+                renderItem={({ item }) => {
+                    if (item.type !== 'join') {
+                      return <Notification data={item} />;
+                    }
+                    return null;
+                  }}                ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
                 refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} tintColor={"white"} />}
                 keyExtractor={item => item.notification_id}
             />

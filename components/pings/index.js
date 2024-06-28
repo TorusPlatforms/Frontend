@@ -23,7 +23,7 @@ export const Ping = ({ data, openComment }) => {
         setNumOfLikes(numOfLikes + 1)
       }
 
-      setIsLiked(!isLiked)
+      setIsLiked(previousState => !previousState)
       await handleLike(data)
     }
 

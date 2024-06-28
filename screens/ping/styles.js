@@ -46,6 +46,12 @@ const styles = StyleSheet.create({
         marginTop: 8,
         marginLeft: 18
     },
+     
+    item_seperator: {
+        backgroundColor: 'gray',
+        height: 1,
+        width: "100%",
+      },
 })
 
 export default styles;

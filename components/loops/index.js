@@ -1,8 +1,22 @@
 
 import React, { useEffect, useState } from 'react';
-import { View, Image, Text,  TouchableOpacity } from "react-native";
+import { View, Image, Text,  TouchableOpacity, Pressable } from "react-native";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { starLoop, unstarLoop } from '../handlers';
 
 export const Loop = ({ data, goToLoop }) => {
+  const [starred, setStarred] = useState(data.isStarred)
+
+  async function handleStar() {
+    setStarred(previousState => !previousState)
+    
+    if (data.isStarred) {
+      await unstarLoop(data.loop_id)
+    } else {
+      await starLoop(data.loop_id)
+    }
+  }
+
 
   return (
     <TouchableOpacity onPress={() => goToLoop(data.loop_id)}>
@@ -14,9 +28,12 @@ export const Loop = ({ data, goToLoop }) => {
             <Text style={{ color: "white" }}>{data.description || data?.description}</Text>
           </View>
           
-          {/* { data.isStarred && (
-            <Ionicons name="star" size={24} color={'white'} />
-          )} */}
+          { data.isJoined && (
+            <Pressable onPress={handleStar}>
+              <Ionicons name={starred ? "star" : "star-outline"} size={24} color={'white'} />
+            </Pressable>
+          )}
+
       </View>
     </TouchableOpacity>
   );

@@ -17,9 +17,9 @@ import styles from "../styles";
 export default function SignUpScreen() {
     const navigation = useNavigation()
 
-    const [username, onChangeUsername] = useState("tanujks")
-    const [displayName, onChangeDisplayName] = useState("Tanuj Siripurapu")
-    const [email, onChangeEmail] = useState("tanujsiripurapu@gmail.com")
+    const [username, onChangeUsername] = useState("sirt7140")
+    const [displayName, onChangeDisplayName] = useState("Tanuj SChool")
+    const [email, onChangeEmail] = useState("sirt7140@lgsstudent.org")
     const [password, onChangePassword] = useState("abc123")
     const [confirmPassword, onChangeConfirmPassword] = useState("abc123")
     const [errorMessage, setErrorMessage] = useState()
@@ -145,8 +145,9 @@ export default function SignUpScreen() {
             if (result.success) {
                 setErrorMessage(null)
                 console.log("Successfully created user in Backend")
+                navigation.replace("Verify Email")
             } else {
-                throw new Error("Something went wrong!")
+                throw new Error("Something went wrong! Please contact support.")
             }
 
         } catch (error) {

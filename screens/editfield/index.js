@@ -15,7 +15,7 @@ export default function EditField({ route, navigation }) {
         if (type == "user") {
             await updateUser(endpoint, text);
         } else if (type == "loop") {
-            await updateLoop(loop.loop_id, endpoint, text)
+            await updateLoop({loop_id: loop.loop_id, endpoint: endpoint, value: text})
         } else {
             throw new Error("Type Not Defined")
         }

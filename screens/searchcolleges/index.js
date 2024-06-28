@@ -15,31 +15,36 @@ export default function SearchColleges({ }) {
   const [refreshing, setRefreshing] = useState(false);
 
   async function fetchColleges() {
-    setRefreshing(true)
 
     const fetchedColleges = await searchColleges(search)
     console.log("Fetched", fetchedColleges.length, "colleges. First entry:", fetchedColleges[0])
     setColleges(fetchedColleges)
 
-    setRefreshing(false)
   }
 
   useEffect(() => {
     fetchColleges();
   }, [search]);
 
+  //setRefreshing is not inside the fetchColleges function because otherwise it will buffer whenver you type
   async function onRefresh() {
+      setRefreshing(true)
       await fetchColleges();
+      setRefreshing(false)
   };
 
   async function handleAdd(college_id) {
+    setRefreshing(true)
     await addCollege(college_id)
     await fetchColleges()
+    setRefreshing(false)
   }
 
   async function handleRemove(college_id) {
+    setRefreshing(true)
     await removeCollege(college_id)
     await fetchColleges()
+    setRefreshing(false)
   }
 
   const College = ({data}) => (

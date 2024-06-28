@@ -18,7 +18,6 @@ export default function MyLoops({ route }) {
     const [scrollY] = useState(new Animated.Value(0));
     const [refreshing, setRefreshing] = useState(false);
     const navigation = useNavigation(); 
-    const loops_ref = useRef()
 
     const headerHeight = scrollY.interpolate({
         inputRange: [0, 70],
@@ -44,41 +43,15 @@ export default function MyLoops({ route }) {
     }, [search, loops]);
 
 
-    
-    function findIndexById(arr, id) {
-        return arr.findIndex(obj => parseInt(obj.loop_id) === parseInt(id));
-    }
-  
-    async function fetchLoops(loop_id) {
-        const loops = await getJoinedLoops(1000); //temporary fix
+    async function fetchLoops() {
+        const loops = await getJoinedLoops(); 
         setLoops(loops);
-
-        if (loop_id) {
-            const index = findIndexById(loops, loop_id)
-            console.log("INDEX", index)
-            setTimeout(() => {
-            if (loops_ref.current) {
-                loops_ref.current.scrollToIndex({ index: index, animated: true });
-            }
-            }, 1000);
-        }
-    };
-
-
-    const handleScrollToIndexFailed = (info) => {
-        const wait = new Promise(resolve => setTimeout(resolve, 500));
-        wait.then(() => {
-            if (loops_ref.current) {
-                loops_ref.current.scrollToIndex({ index: info.index, animated: true });
-            }
-        });
     };
 
 
     useEffect(() => {
-        console.log(route.params)
-        fetchLoops(route.params?.scrollToLoop);
-    }, [route.params]);
+        fetchLoops();
+    }, []);
 
     
     const onScroll = Animated.event(
@@ -112,9 +85,7 @@ export default function MyLoops({ route }) {
 
         <AnimatedFlatList
             style={{ paddingHorizontal: 20 }}
-            onScrollToIndexFailed={handleScrollToIndexFailed}
             data={filteredLoops}
-            ref={loops_ref}
             renderItem={({ item }) => <Loop data={item} goToLoop={goToLoop} />}
             ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
             onScroll={onScroll}

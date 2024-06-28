@@ -14,7 +14,7 @@ export default function AuthScreen() {
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
 
-    const moveLogoAnim = useRef(new Animated.Value(windowHeight / 2)).current
+    const moveLogoAnim = useRef(new Animated.Value(windowHeight / 2 - 200 )).current
     const fadeAnim = useRef(new Animated.Value(0)).current 
 
     const [email, onChangeEmail] = useState("")
@@ -41,13 +41,13 @@ export default function AuthScreen() {
     async function login() {
         try {
             const user = await signInWithEmailAndPassword(auth, email, password)
-            console.log(JSON.stringify(user))
-            if (user.user.emailVerified) {
-                navigation.replace("Home");
-            } else {
-                navigation.navigate("Verify Email");
+            console.log("Logged in with UID", user.user.uid)
+
+            if (!user.user.emailVerified) {
+                navigation.navigate("Verify Email")
             }
 
+            //navigating to home page is managed by React Native Navigation Auth Flow
         } catch(error) {
             alert(error.message)
         } 

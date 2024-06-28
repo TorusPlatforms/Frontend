@@ -75,8 +75,8 @@ export default function CreateAnnouncement({ route }) {
           <Text style={{ fontSize: 16, color: "white" }}>Cancel</Text>
         </TouchableOpacity>
 
-        <View style={{ alignItems: 'center', justifyContent: 'flex-start', marginTop: 20 }}>
-          <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>Send an Announcement</Text>
+        <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
+          <Text style={{ fontWeight: "bold", fontSize: 20, color: "white", textAlign: 'center' }}>Send an Announcement</Text>
         </View>
 
         <View style={{ flexDirection: "column", alignItems: "center"}}>

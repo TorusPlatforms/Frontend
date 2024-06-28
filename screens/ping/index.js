@@ -155,7 +155,7 @@ export default function Ping({ route }) {
 
         )}
 
-        <View style={{height: 20, justifyContent: 'space-between', flexDirection: "row", paddingHorizontal: 20}}>
+        <View style={{height: 20, justifyContent: 'space-between', flexDirection: "row", paddingHorizontal: 20, marginBottom: 15}}>
           <View style={{flexDirection: "row"}}>
             <Pressable onPress={handleLikePress}>
               <Ionicons style={[styles.pingIcon, {color: isLiked ? "red" : "white"}]} name={isLiked ? "heart" : "heart-outline"} size={20}></Ionicons>
@@ -166,11 +166,12 @@ export default function Ping({ route }) {
           <Text style={{color: "gray"}}>{findTimeAgo(post.created_at)}</Text>
         </View>
 
+        <View style={styles.item_seperator} />
       </View>
   )
   return (
     <SafeAreaView style={styles.container}>      
-            <FlatList
+            <FlatList 
                     data={comments}
                     renderItem={({ item }) => <SwipeableRow item={item} />}
                     keyExtractor={(item) => item.comment_id}

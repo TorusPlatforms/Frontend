@@ -20,7 +20,7 @@ export default function CreateEvent({ route }) {
   const [key, setKey] = useState(null)
 
   const [name, setName] = useState("");
-  const [message, setMessage] = useState("A hella cool fun event. All are welcoem!");
+  const [message, setMessage] = useState("An awesome event!");
   const [address, setAddress] = useState("");
 
   const [errorMessage, setErrorMessage] = useState(null)
@@ -143,7 +143,11 @@ export default function CreateEvent({ route }) {
 
 
   if (!user || !key) {
-    return <ActivityIndicator />
+    return (
+      <View style={{backgroundColor: "rgb(22, 23, 24)", flex: 1, justifyContent: 'center', alignItems: "center"}}>
+        <ActivityIndicator />
+      </View>
+    )
   }
 
 
@@ -278,7 +282,7 @@ export default function CreateEvent({ route }) {
 
             <View style={{alignItems: "center", flex: 0.35, justifyContent: "center"}}>
                 <Pressable
-                  style={{ backgroundColor: "rgb(54, 163, 107)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 25, marginTop: 20, width: "80%" }}
+                  style={{ backgroundColor: "rgb(47, 139, 128)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 25, marginTop: 20, width: "80%" }}
                   onPress={handlePost}
                 >
                     <Text style={{ color: "black", textAlign: "center" }}>Post</Text>

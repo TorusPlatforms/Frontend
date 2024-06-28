@@ -36,7 +36,6 @@ import SecurityAccountAccess from './screens/settings/Security and Account Acces
 import AdditionalResources from './screens/settings/Additional Resources';
 import ComingSoon from './screens/settings/Coming Soon';
 import ForgotPassword from './screens/auth/forgotpassword';
-import ResetPassword from './screens/settings/Your Account/Reset Password';
 import VerifyEmail from './screens/auth/verifyemail';
 import EditProfile from "./screens/editprofile";
 import EditField from "./screens/editfield";
@@ -52,6 +51,7 @@ import SearchUsers from './screens/searchusers';
 import Comments from './screens/comments';
 import SearchColleges from './screens/searchcolleges';
 import Ping from './screens/ping';
+import SplashScreen from './screens/splashscreen';
 
 
 const firebaseConfig = {
@@ -137,10 +137,13 @@ const FollowTabs = ({ route }) => {
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const config = {
     screens: {
       Ping: 'ping/:post_id',  
+      Loop: 'loop/:loop_id',
+      Notifications: 'notifications'
     },
   };
 
@@ -153,7 +156,14 @@ function App() {
   React.useEffect(() => {
     const auth = getAuth()
     const unsubscribe = onAuthStateChanged(auth, user => {
-        setLoggedIn(user != null)
+      console.log("state changed")
+        if (user && user.emailVerified) {
+          setLoggedIn(true)
+        } else {
+          setLoggedIn(false)
+        }
+
+        setLoading(false)
     })
 
     return () => unsubscribe()
@@ -169,16 +179,20 @@ function App() {
     return () => subscription.remove();
   }, []);
 
-  
+  if (loading) {
+    return <SplashScreen />
+  }
+
   return (
     <GestureHandlerRootView>
     <SafeAreaProvider>
-    <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
+    <NavigationContainer linking={linking} fallback={<SplashScreen />}>
     
-    <StatusBar
-        barStyle="light-content" 
-        backgroundColor="rgb(22, 23, 24)" 
+      <StatusBar
+          barStyle="light-content" 
+          backgroundColor="rgb(22, 23, 24)" 
       />
+
       <Stack.Navigator screenOptions={({ navigation }) => ({   
         headerLeft: () => (
           <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -186,8 +200,13 @@ function App() {
           </TouchableOpacity>
         ),  gestureEnabled: true, headerShown: false, headerBackTitleVisible: false, headerTitleStyle: {color: "white"}, headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}, animation: Platform.OS == "android" ? "slide_from_bottom" : null})}>
 
-          <>
-           {loggedIn ? (
+          {loading && (
+            <>
+            <Stack.Screen name="SplashScreen" component={SplashScreen} />
+            </>
+          )}
+
+          {loggedIn && (
             <>
             <Stack.Screen name="Home" options={{ gestureEnabled: false }} component={Tabs} />
             <Stack.Screen name="My Loops" component={MyLoops} options={{ headerShown: true }} />
@@ -208,9 +227,6 @@ function App() {
             <Stack.Screen name="Security and Account Access" component={SecurityAccountAccess} options={{ headerShown: true }} />
             <Stack.Screen name="AdditionalResources" component={AdditionalResources} options={{ headerShown: true }} />
             <Stack.Screen name="Coming Soon" component={ComingSoon} options={{ headerShown: true }} />
-            <Stack.Screen name="Forgot Password" component={ForgotPassword} options={{ headerShown: true }} />
-            <Stack.Screen name="Verify Email" component={VerifyEmail} options={{ headerShown: true }} />
-            <Stack.Screen name="Reset Password" component={ResetPassword} options={{ headerShown: true }} />
             <Stack.Screen name="Edit Profile" component={EditProfile} options={{ headerShown: true }} />
             <Stack.Screen name="EditLoop" component={EditLoop} options={{ headerShown: true }} />
             <Stack.Screen name="EditField" component={EditField} />
@@ -219,12 +235,19 @@ function App() {
             <Stack.Screen name="Ping" component={Ping} options={{ headerShown: true, headerTitleAlign: "center" }} />
             <Stack.Screen name="JoinRequests" component={JoinRequests} options={{ headerShown: true }} />
             <Stack.Screen name="Search Users" component={SearchUsers} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} />
-            <Stack.Screen name="Search Colleges" component={SearchColleges} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} /></>
-          ) : (
-            <><Stack.Screen name="Auth" component={AuthScreen} /><Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: true }} /></>
+            <Stack.Screen name="Search Colleges" component={SearchColleges} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} />
+            </>
           )}
-          </>
-
+         
+        {!loggedIn && (
+            <>
+            <Stack.Screen name="Auth" component={AuthScreen} />
+            <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: true }} />
+            <Stack.Screen name="Forgot Password" component={ForgotPassword} options={{ headerShown: true }} />
+            <Stack.Screen name="Verify Email" component={VerifyEmail} options={{ headerShown: true }} />
+            </>
+        )}
+         
         
       </Stack.Navigator>
     </NavigationContainer>

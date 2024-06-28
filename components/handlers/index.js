@@ -652,16 +652,15 @@ export async function updateUser(endpoint, content) {
   }
 }
 
-export async function updateLoop(loop_id, endpoint, content) {
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/update/${endpoint}`;
-  
-  const token = await getToken()
+export async function updateLoop({ loop_id, endpoint, value }) {
+    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/update/${endpoint}`;
+    
+    const token = await getToken()
 
-  const requestBody = {
-    value: content
-  };
-  
-  try {
+    const requestBody = {
+      value: value
+    };
+    
     const response = await fetch(serverUrl, {
       method: 'POST',
       headers: {
@@ -677,12 +676,51 @@ export async function updateLoop(loop_id, endpoint, content) {
 
     const responseData = await response.json();
     console.log('Updated succesfully. Server response:', responseData);
-
-  } catch (error) {
-    console.error('Error updating:', error.message);
-  }
 }
 
+export async function starLoop(loop_id ) {
+  const token = await getToken()
+
+  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/star`;
+    
+  const response = await fetch(serverUrl, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+
+  if (!response.ok) {
+    throw new Error(`Failed to update. Status: ${response.status}`);
+  }
+
+  const responseData = await response.json();
+  console.log('Updated succesfully. Server response:', responseData);
+}
+
+export async function unstarLoop(loop_id ) {
+  const token = await getToken()
+
+  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/unstar`;
+    
+  const response = await fetch(serverUrl, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  
+  if (!response.ok) {
+    throw new Error(`Failed to update. Status: ${response.status}`);
+  }
+
+  const responseData = await response.json();
+  console.log('Updated succesfully. Server response:', responseData);
+}
 
 export async function postComment(post_id, content) {
   const token = await getToken()
@@ -917,17 +955,17 @@ export async function createLoop({ name, image, description, isPublic}) {
       body: JSON.stringify(loopData)
     });
 
+
     const responseData = await response.json();
-    console.log('Response Data:', responseData);
-    
-    if (responseData.status === 403) {
+
+    if (response.status === 403) {
       throw new AlreadyExistsError(responseData.message);
     }
 
     if (!response.ok) {
       throw new Error(`Error Creating Loop! Status: ${response.status}`);
     }
-
+    
     return (responseData)
 
 }

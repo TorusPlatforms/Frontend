@@ -57,7 +57,7 @@ export default function CreateLoop() {
     async function fetchUser() {
       const user = await getUser()
       setUser(user)
-      setName(user.username + 's loop')
+      setName(user.username + "'s loop")
     }
 
     useEffect(() => {
@@ -122,7 +122,7 @@ export default function CreateLoop() {
                       </View>
                   )}
 
-                  <Ionicons name="add-circle" size={32} color="blue" style={{position: "absolute", top: -10, right: 0}}/>
+                  <Ionicons name="add-circle" size={32} color="rgb(47, 139, 128)" style={{position: "absolute", top: -10, right: 0}}/>
                 </Pressable>
               </View>
 
@@ -131,15 +131,16 @@ export default function CreateLoop() {
                   
                   <View style={{flexDirection: 'row'}}>
                       <TextInput 
+                          defaultValue={name}
                           onChangeText={setName}
-                          value={name}
                           style={{
-                            backgroundColor: "rgb(109, 116, 120)",
+                            backgroundColor: "rgb(62, 62, 62)",
                             width: "70%",
                             borderRadius: 10,
                             paddingLeft: 10,
                             height: 40,
-                            flex: 0.8
+                            flex: 0.8,
+                            color: "white"
                           }}
                         />
 
@@ -161,11 +162,10 @@ export default function CreateLoop() {
                   
                   <TextInput 
                       onChangeText={setDescription}
-                      value={description}
                       placeholder="A fun place to chill!"
-                      placeholderTextColor={"black"}
+                      placeholderTextColor={"white"}
                       style={{
-                        backgroundColor: "rgb(109, 116, 120)",
+                        backgroundColor: "rgb(62, 62, 62)",
                         width: "90%",
                         borderRadius: 10,
                         paddingLeft: 10,
@@ -175,7 +175,7 @@ export default function CreateLoop() {
               </View>
 
               <View style={{flex: 3, marginTop: 50, alignItems: "center"}}>
-                <Pressable onPress={handleCreateLoop} style={{backgroundColor: "blue", width: "90%", height: 40, justifyContent: "center", alignItems: "center", borderRadius: 20}}>
+                <Pressable onPress={handleCreateLoop} style={{backgroundColor: "rgb(47, 139, 128)", width: "90%", height: 40, justifyContent: "center", alignItems: "center", borderRadius: 20}}>
                   <Text style={{color: "white"}}>Create Loop</Text>
                 </Pressable>
               </View>

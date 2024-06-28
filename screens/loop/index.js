@@ -24,11 +24,16 @@ export default function LoopsPage({ route }) {
 
 
   async function fetchLoop() {
+    setRefreshing(true)
+
     const loop = await getLoop(loop_id)
-    if (!loop) {
+    if (loop) {
+      setLoop(loop)
+    } else {
       navigation.goBack()
     }
-    setLoop(loop)
+
+    setRefreshing(false)
   }
 
   async function handleJoinLoop() {
@@ -51,9 +56,7 @@ export default function LoopsPage({ route }) {
   }
 
   const onRefresh = useCallback(async() => {
-      setRefreshing(true);
       await fetchLoop()
-      setRefreshing(false)
   }, []);
 
 
@@ -62,7 +65,11 @@ export default function LoopsPage({ route }) {
   }, []);
 
   if (!loop) {
-    return <ActivityIndicator />
+      return (
+          <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", justifyContent: "center", alignItems: "center"}}>
+            <ActivityIndicator />
+          </View>
+      )
   }
 
 

@@ -128,6 +128,10 @@ export default function CreatePing({ route }) {
           <View style={{justifyContent: "center", alignItems: "center", flex: 0.5}}>
               <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>Send a Ping</Text>
 
+              {!route.params?.loop && (
+                <Text style={{color: "white", fontSize: 12, textAlign: "center"}}>Posting in {user.college}</Text>
+              )}
+
               {route.params?.loop && (
                 <Text style={{color: "white", fontSize: 12, textAlign: "center"}}>Posting {isPublic ? "as" : "in"} {route.params.loop.name}</Text>
               )}

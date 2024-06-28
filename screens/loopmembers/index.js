@@ -52,7 +52,7 @@ export default function LoopMembers({ route, navigation }) {
 
             { isOwner && (data.username != user.username) && (
                 <View style={{justifyContent: "center", marginRight: 30}}>
-                    <TouchableOpacity onPress={async() => handleKick(data.username)} style={{backgroundColor: "red", padding: 10, borderRadius: 50, paddingHorizontal: 20}}>
+                    <TouchableOpacity onPress={() => handleKick(data.username)} style={{backgroundColor: "rgb(208, 116, 127)", padding: 10, borderRadius: 50, paddingHorizontal: 20}}>
                         <Text>Remove</Text>
                     </TouchableOpacity>
                 </View>

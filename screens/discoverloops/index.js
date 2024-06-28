@@ -51,7 +51,7 @@ export default function Loops() {
   async function fetchLoops() {
       const fetchedLoops = await getLoops(search);
       setLoops(fetchedLoops);
-      console.log("LOOOPS", loops)
+      console.log("Fetched", fetchedLoops.length, "loops. First entry: ", fetchedLoops[0])
   };
 
   useEffect(() => {

@@ -19,6 +19,7 @@
       "backgroundColor": "#000000"
     },
     "ios": {
+      "associatedDomains": ["applinks:torusplatforms.com"],
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "This feature requires access to your camera",
@@ -27,11 +28,11 @@
       }
     },
     "android": {
-    "permissions": ["CAMERA", "AUDIO_RECORDING","READ_EXTERNAL_STORAGE"],
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+      "permissions": ["CAMERA", "AUDIO_RECORDING","READ_EXTERNAL_STORAGE"],
+        "adaptiveIcon": {
+          "foregroundImage": "./assets/adaptive-icon.png",
+          "backgroundColor": "#ffffff"
+        }
     },
     "web": {
       "favicon": "./assets/favicon.png"
