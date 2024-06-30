@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, ActivityIndicator, Pressable, TextInput} from 'react-native';
+import { View, Text, Image, TouchableOpacity, Pressable, TextInput} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { updateUser, updateLoop } from "../../components/handlers";
 import styles from './styles'
 
 export default function EditField({ route, navigation }) {
-    const { type, field, endpoint, user, loop} = route.params
-    const [text, setText] = useState("")
+    const { type, field, endpoint, user, loop, maxLength } = route.params
+
+    const [text, setText] = useState()
 
     console.log(route.params)
 
@@ -43,15 +44,16 @@ export default function EditField({ route, navigation }) {
 
                 <Text style={{color: "white"}}>{field}</Text>
 
-                <Pressable onPress={handleUpdate}>
+                <TouchableOpacity onPress={handleUpdate}>
                     <Text style={{ color: text ? 'rgb(47, 139, 128)' : 'grey' }}>Done</Text>
-                </Pressable>
+                </TouchableOpacity>
             </View>
 
             <View style={{flex: 1}}>
                 <TextInput 
+                    defaultValue={text}
                     onChangeText={setText}
-                    value={text}
+                    maxLength={maxLength ? maxLength : 200}
                     style={{borderTopWidth: 1, borderBottomWidth: 1, padding: 10, borderColor: "gray", color: "white"}}
                 />
             </View>

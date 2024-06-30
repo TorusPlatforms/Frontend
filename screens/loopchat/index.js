@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { ActivityIndicator, View, Text, TouchableOpacity, Image } from "react-native";
-import { GiftedChat, Bubble, InputToolbar, Avatar } from 'react-native-gifted-chat';
+import { GiftedChat } from 'react-native-gifted-chat';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from "@react-navigation/native";
-import { getFirestore, collection, getDocs, query, where, onSnapshot, doc } from "firebase/firestore"
+import { getFirestore, onSnapshot, doc } from "firebase/firestore"
 
 import styles from "./styles";
 import { ChatComponent } from '../../components/chat';
@@ -76,7 +76,7 @@ export default function LoopChat({ route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-         <View style={{paddingHorizontal: 20, flexDirection: "row", alignItems: "center", borderBottomWidth: 1, borderColor: "gray", paddingBottom: 10}}>
+         <View style={{paddingHorizontal: 20, flexDirection: "row", alignItems: "center", borderBottomWidth: 1, borderColor: "gray", padding: 10, marginBottom: 20}}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Ionicons name="arrow-back" size={24} color="white" />        
             </TouchableOpacity>

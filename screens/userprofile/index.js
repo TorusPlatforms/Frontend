@@ -62,52 +62,49 @@ export default function UserProfile({ route, navigation }) {
     }
     
     const header = (
-        <View>
-            <View style={styles.userInfoContainer}>
-                    <View style={styles.pfpContainer}>
-                        <Image style={styles.pfp} source={{uri: user.pfp_url}}/>
-                        <Text style={styles.displayName}>{user.display_name}</Text>
-                        <TouchableOpacity onPress={copyUsernameToClipboard}>
-                            <Text style={{color: "white"}}>@{user.username}</Text>
-                        </TouchableOpacity>
-                    
-                    </View>
-
-                    <View style={styles.userRelationsContainer}>
-                        <View style={styles.followCounts}>
-                            <Pressable onPress={() => navigation.push("MutualUserLists", {username: user.username, merge: true})}>
-                                <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.follower_count}</Text>
-                                <Text style={styles.text}>Followers</Text>
-                            </Pressable>
-                            
-
-                            <Pressable onPress={() => navigation.push("MutualUserLists", {username: user.username, merge: true})}>
-                                <Text style={[styles.text, {fontWeight: "bold", textAlign: "center"}]}>{user.following_count}</Text>
-                                <Text style={styles.text}>Following</Text>
-                            </Pressable>
-                        </View>
-
-                        <View style={styles.item_seperator}/>
-
-                        <View style={styles.userDescription}>
-                            <Text style={[styles.text, {textAlign: "center"}]}>{user.bio}</Text>
-                        </View>
-                        
-                    </View>
-                
+        <View style={{marginTop: 20}}>
+          <View style={{ flex: 1, flexDirection: 'row' }}>
+                <View style={{ flex: 1, alignItems: "center" }}>
+                    <Image style={{ width: 100, height: 100, borderRadius: 50 }} source={{uri: user.pfp_url}}/>
+             
+                    <Text style={{ color: "white", fontSize: 16, maxWidth: 150, textAlign: "center", marginVertical: 4, fontWeight: "bold" }}>{user.display_name}</Text>
+                    <TouchableOpacity onPress={copyUsernameToClipboard}>
+                        <Text style={{color: "white"}}>@{user.username}</Text>
+                    </TouchableOpacity>
                 </View>
 
-                <View style={{flexDirection: "row", justifyContent: "space-evenly", alignItems: "center", paddingVertical: 20}}>
-                    <Pressable onPress={toggleFollow} style={[styles.followButton, {backgroundColor: isFollowing ? 'rgb(62, 62, 62)' : 'rgb(47, 139, 128)', width: isFollowing ? 150 : 300}]}>
-                        <Text style={styles.followButtonText}>{isFollowing ? 'Following' : 'Follow'}</Text>
-                    </Pressable>
-
-                    {isFollowing && (
-                        <Pressable onPress={() => navigation.push("DirectMessage", {username: user.username})} style={[{backgroundColor: "rgb(47, 139, 128)"}, styles.followButton]}>
-                            <Text style={styles.followButtonText}>Message</Text>
+                <View style={{ flex: 1, paddingRight: 30 }}>
+                    <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                        <Pressable onPress={() => navigation.navigate("MutualUserLists", {username: user.username, initialScreen: "Followers"})}>
+                            <Text style={{fontWeight: "bold", textAlign: "center", color: "white"}}>{user.follower_count}</Text>
+                            <Text style={{color: "white"}}>Followers</Text>
                         </Pressable>
-                    )}
+
+                        <Pressable onPress={() => navigation.navigate("MutualUserLists", {username: user.username, initialScreen: "Following"})}>
+                            <Text style={{fontWeight: "bold", textAlign: "center", color: "white"}}>{user.following_count}</Text>
+                            <Text style={{color: "white"}}>Following</Text>
+                        </Pressable>
+                    </View>
+
+                    <View style={[styles.item_seperator, {marginVertical: 10}]}/>
+
+                    <Text style={{textAlign: "center", color: "white", fontSize: 12}}>{user.bio}</Text>
                 </View>
+            </View>
+
+            <View style={{flexDirection: "row", justifyContent: "space-evenly", alignItems: "center", paddingVertical: 20}}>
+                <Pressable onPress={toggleFollow} style={[styles.followButton, {backgroundColor: isFollowing ? 'rgb(62, 62, 62)' : 'rgb(47, 139, 128)', width: isFollowing ? 150 : 300}]}>
+                    <Text style={styles.followButtonText}>{isFollowing ? 'Following' : 'Follow'}</Text>
+                </Pressable>
+
+                {isFollowing && (
+                    <Pressable onPress={() => navigation.push("DirectMessage", {username: user.username})} style={[{backgroundColor: "rgb(47, 139, 128)"}, styles.followButton]}>
+                        <Text style={styles.followButtonText}>Message</Text>
+                    </Pressable>
+                )}
+            </View>
+
+            <View style={styles.item_seperator} />
         </View>
     )
 

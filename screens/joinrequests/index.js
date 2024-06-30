@@ -40,17 +40,13 @@ export default function JoinRequests({ navigation }) {
                 </View>
                 
                 <View style={{flex: 0.4, flexDirection: "row", justifyContent: "space-evenly"}}>
-                    <Pressable onPress={() => handleApprove(data)}>
-                        {({pressed}) => (
-                            <Ionicons name={"checkmark-circle"} size={32} color={pressed ? "gray" : "white"}/>
-                        )}
-                    </Pressable>
+                    <TouchableOpacity onPress={() => handleApprove(data)}>
+                        <Ionicons name={"checkmark-circle"} size={32} color={"rgb(47, 139, 128)"}/>
+                    </TouchableOpacity>
 
-                    <Pressable onPress={() => handleReject(data)}>
-                        {({pressed}) => (
-                            <Ionicons name={"close-circle"} size={32} color={pressed ? "gray" : "white"}/>
-                        )}
-                    </Pressable>
+                    <TouchableOpacity onPress={() => handleApprove(data)}>
+                        <Ionicons name={"close-circle"} size={32} color={"rgb(208, 116, 127)"}/>
+                    </TouchableOpacity>
                 </View>
             </View>
         </TouchableOpacity>

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 
-import { View, ActivityIndicator } from "react-native";
-import { GiftedChat, Bubble, InputToolbar, Avatar, MAX_COMPOSER_HEIGHT } from 'react-native-gifted-chat';
+import { View } from "react-native";
+import { GiftedChat, Bubble, InputToolbar,  } from 'react-native-gifted-chat';
 import styles from "./styles"
 
 
@@ -25,34 +25,19 @@ const CustomInputToolbar = props => {
         {...props}
         wrapperStyle={{
           left: {
-            marginLeft: 5,
-            marginBottom: 20,
+            marginBottom: 2
           },
         }}
       />
     );
   }
 
-  const renderAvatar = (props) => {
-    return (
-        <View style={{marginBottom:20}}>
-            <Avatar 
-            {...props}
-            containerStyle={{ marginLeft: 10, marginRight: 10 }} 
-            imageStyle={{ borderRadius: 20 }} 
-            />
-
-        </View>
-      
-    );
-  };
-
 
 export const ChatComponent = ({ messages, onSend, id }) => {
       return (
         <View style={[styles.container]}>
           <GiftedChat
-            listViewProps={{style: {marginBottom: 20, marginTop: 10}}}
+            listViewProps={{style: { marginBottom: 20 }}}
             textInputStyle={{
               backgroundColor: "rgb(50,50,50)",
               color: "white",
@@ -60,7 +45,6 @@ export const ChatComponent = ({ messages, onSend, id }) => {
               maxHeight: 200,
               maxLength: 100,
               borderRadius: 25,
-              marginBottom: 10,
               paddingHorizontal: 15,
               paddingVertical: 12
             }}
@@ -77,7 +61,6 @@ export const ChatComponent = ({ messages, onSend, id }) => {
               multiline: true,
               textAlignVertical: "top"
             }}
-            renderAvatar={renderAvatar}
             inverted={false}
           />
         </View>

@@ -32,7 +32,6 @@ export default function EditProfile() {
     async function logOut() {
       const auth = getAuth()
       await signOut(auth)
-      navigation.navigate("Auth")
     }
 
     const onRefresh = useCallback(async() => {
@@ -41,6 +40,7 @@ export default function EditProfile() {
         setRefreshing(false)
       }, []);
     
+
     async function fetchUser() {
         const user = await getUser()
         setUser(user)
@@ -53,8 +53,11 @@ export default function EditProfile() {
 
     
     if (!user) {
-      return <ActivityIndicator />
-    }
+      return (
+        <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", justifyContent: "center", alignItems: 'center'}}>
+          <ActivityIndicator />
+      </View>
+      )}
 
     return (
         <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
@@ -83,7 +86,7 @@ export default function EditProfile() {
               <Text style={{color: "white", flex: 1}}>@{user.username}</Text>
             </View>
 
-            <Pressable onPress={() => navigation.navigate("EditField", {field: "Display Name", endpoint: "display_name", user: user, type: "user"})} style={styles.updateField}>
+            <Pressable onPress={() => navigation.navigate("EditField", {field: "Display Name", endpoint: "display_name", user: user, type: "user", maxLength: 25})} style={styles.updateField}>
               <Text style={{color: "white", flex: 0.5}}>Name</Text>
               <Text style={{color: "white", flex: 1}}>{user.display_name}</Text>
             </Pressable>

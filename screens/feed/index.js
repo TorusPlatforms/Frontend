@@ -42,6 +42,7 @@ export default function Feed() {
         console.log("TYPE", feedType)
         switch (feedType) {
           case "friends":
+            console.log("frens")
             fetchedPings = await getFollowingPings()
             break;
           case "college":
@@ -49,6 +50,7 @@ export default function Feed() {
             fetchedPings = await getPings(user.college)
             break;
           default:
+            console.log("Defaut")
             fetchedPings = await getPings(feedType)
         }
   
@@ -61,11 +63,10 @@ export default function Feed() {
         const cleanedColleges = fetchedColleges.map(college => ({ label: college.nickname ? college.nickname : abbreviate(college.name), value: college.name }))
   
         console.log("Fetched", fetchedColleges.length, 'colleges. First entry:', fetchedColleges[0])
-        console.log(cleanedColleges)
   
           setDropdownData([
+            { label: user.college_nickname ? user.college_nickname : abbreviate(user.college), value: 'college' },
             { label: 'Friends', value: 'friends' },
-            { label: abbreviate(user.college), value: 'college' },
             ...cleanedColleges
           ])
     }

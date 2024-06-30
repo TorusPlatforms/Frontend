@@ -24,6 +24,7 @@ export default function AuthScreen() {
 
     useEffect(() => {
         Animated.sequence([
+            Animated.delay(500),
             Animated.timing(moveLogoAnim, {
                 toValue: windowHeight / 16,
                 duration: 1000,

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Image, Text, Pressable, Alert, TouchableOpacity } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-import { strfEventDate } from "../../components/utils";
+import { strfEventDate, strfEventTime } from "../../components/utils";
 import { deleteEvent, joinLeaveEvent } from "../../components/handlers";
 import * as Linking from 'expo-linking';
 
@@ -32,15 +32,41 @@ export const Event = ({ data, navigation }) => {
       Linking.openURL(`http://maps.google.com/?q=${data.address}`);
     }
 
-    function handleLoopPress() {
-      navigation.navigate("Loop", {loop_id: data.loop_id})
+    function openCalender() {
+      function convertTimestampToCustomFormat(timestamp) {
+        function convertTimestampToString(timestamp) {
+          const date = new Date(timestamp);
+          const isoString = date.toISOString().replace(/\.\d{3}/, '');
+          const customFormat = isoString.replace(/[-:]/g, '').replace('T', 'T').replace('Z', 'Z');
+          return customFormat
+        }
+
+        const date = new Date(timestamp)
+    
+        return convertTimestampToString(date) + "/" + convertTimestampToString(date.getTime() + (60 * 60 * 1000)); //makes the event 1 hour long
     }
+
+        Linking.openURL(`https://calendar.google.com/calendar/u/0/r/eventedit?text=${data.name}&dates=${convertTimestampToCustomFormat(data.time)}&details=${data.message}+\n\nLocation: ${data.address}&sf=true&output=xml`)
+    }
+
+    function handleLoopPress() {
+      navigation.push("Loop", {loop_id: data.loop_id})
+    }
+
+    function handleUserPress() {
+      navigation.push("UserProfile", {username: data.author})
+    }
+
 
     return (
         <View style={{ marginVertical: 20, width: "100%", flexDirection: "row", flex: 1, paddingBottom: 10 }}>
             <View style={{flex: 0.2, alignItems: "center"}}>
-              <Image style={{ width: 50, height: 50, borderRadius: 25 }} source={{ uri: data.pfp_url }} />
+              <Pressable onPress={handleUserPress}>
+                  <Image style={{ width: 50, height: 50, borderRadius: 25 }} source={{ uri: data.pfp_url }} />
+              </Pressable>
+
               <View style={{marginVertical: 12, width: 1, flex: 0.9, backgroundColor: "gray"}} />
+
               <View style={{alignItems: 'center'}}>
                 <Image style={{ left: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_pfp_urls[0] || data?.mutual_attendees_pfp_urls[0] || torus_default_url }} />
                 <Image style={{ right: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_pfp_urls[1] || data?.mutual_attendees_pfp_urls[1] || torus_default_url }} />
@@ -53,28 +79,37 @@ export const Event = ({ data, navigation }) => {
                       <View>
                         <View style={{flexDirection: 'row', justifyContent: "space-between"}}>
                           <Text style={{ color: "white", fontWeight: "bold", fontSize: 16, maxWidth: 150 }}>{data.name || data?.name}</Text>
+
                           {(data.public && data.loop_id) && (
                             <TouchableOpacity onPress={handleLoopPress}>
                                 <Text style={{ color: "white", fontSize: 12, textAlign: "right", maxWidth: 100 }}>[Hosted]</Text>
                             </TouchableOpacity>
                           )}
                         </View>
-                        <Text style={{ color: "white" }}>{strfEventDate(data.time) || data?.time}</Text>
-                        <Pressable onPress={(openMaps)}>
+
+                        <TouchableOpacity onPress={handleUserPress}>
+                            <Text style={{ color: "white", fontStyle: "italic" }}>@{data.author}</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={openCalender}>
+                            <Text style={{ color: "white" }}>{strfEventDate(data.time)} @ {strfEventTime(data.time)}</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={(openMaps)} style={{marginVertical: 4}}>
                           <Text style={{ color: "white", textDecorationLine: "underline", fontSize: 12 }}>{data.address || data?.address}</Text>
-                        </Pressable>
+                        </TouchableOpacity>
                       </View>
 
-                      <View style={{marginTop: 15}}>
-                          <Text style={{ color: "white" }}>{data.message || data?.message}</Text>
+                      <View style={{marginTop: 15, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" }}>
+                          <Text style={{ color: "white", maxWidth: 200 }}>{data.message || data?.message}</Text>
                           
                           {!data.image_url && data.isCreator && (
                             <TouchableOpacity onPress={handleDelete}>
                                 <Ionicons
                                     name="trash-outline"
                                     size={20}
-                                    color="gray"
-                                    style={{ position: 'absolute', top: -10, right: -12, opacity: 0.5 }}
+                                    color="white"
+                                    style={{ opacity: 0.5 }}
                                 />
                             </TouchableOpacity>
                           )}
@@ -112,11 +147,15 @@ export const Event = ({ data, navigation }) => {
                
                 <View style={{flexDirection: "row", justifyContent: data.mutual_usernames.length > 0 ? "space-between" : "flex-end", alignItems: "center", paddingTop: 20, paddingRight: 10}}>
                   {data.mutual_usernames.length == 1 && (
-                    <Text style={{color: "white", fontSize: 12}}> 1 other is attending</Text>
+                    <Text style={{color: "white", fontSize: 12}}>{data.mutual_usernames[0]} is attending</Text>
                   )}
 
-                  {data.mutual_usernames.length > 1 && (
-                    <Text style={{color: "white", fontSize: 12, maxWidth: 200}}> {data.mutual_usernames?.join(",")} & {data.mutual_usernames.length} others are attending</Text>
+                  {data.mutual_usernames.length == 2 && (
+                    <Text style={{color: "white", fontSize: 12, maxWidth: 150}}>{data.mutual_usernames.slice(0, 2)?.join(" & ")} are attending</Text>
+                  )}
+
+                  {data.mutual_usernames.length > 2 && (
+                    <Text style={{color: "white", fontSize: 12, maxWidth: 150}}>{data.mutual_usernames.slice(0, 2)?.join(", ")} & {data.mutual_usernames.length - 2} others are attending</Text>
                   )}
 
                   <Pressable onPress={handleJoinLeave} style={{borderRadius: 5, borderColor: "gray", borderWidth: 1, padding: 4, paddingHorizontal: 20, backgroundColor: isJoined ? "rgb(62, 62, 62)" : "rgb(47, 139, 128)"}}>

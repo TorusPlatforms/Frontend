@@ -50,7 +50,7 @@ export const Ping = ({ data, openComment }) => {
       ]);
     }
 
-    async function handleShare(data) {
+    async function handleShare() {
       const prefix = Linking.createURL('/');
 
       await Share.share({
@@ -87,11 +87,11 @@ export const Ping = ({ data, openComment }) => {
                       </Text>
                   </TouchableOpacity>
 
-                  { data.isAuthor && (
+                  {/* { data.isAuthor && (
                     <TouchableOpacity onPress={handleDeletePress}>
                       <Feather name="more-horizontal" size={16} color="white" />
                     </TouchableOpacity>
-                  )}
+                  )} */}
               </View>
       
 
@@ -118,10 +118,15 @@ export const Ping = ({ data, openComment }) => {
               <Ionicons style={styles.pingIcon} name="chatbubble-outline" size={20}></Ionicons>
             </Pressable>
     
-            <Pressable onPress={() => handleShare(data)}>
+            <Pressable onPress={handleShare}>
               <Ionicons style={styles.pingIcon} name="share-social-outline" size={20}></Ionicons>
             </Pressable>
     
+            {data.isAuthor && (
+                <Pressable onPress={handleDeletePress}>
+                  <Ionicons style={styles.pingIcon} name="trash-outline" size={20}></Ionicons>
+                </Pressable>
+            )}
             {/* <Pressable>
               <Ionicons style={styles.pingIcon} name="paper-plane-outline" size={20}></Ionicons>
             </Pressable> */}

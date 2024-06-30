@@ -54,8 +54,9 @@ export default function LoopEvents({ route }) {
   }
 
   useEffect(() => {
+    console.log("Loop", loop, loop.isOwner)
     fetchEvents()
-  }, []);
+  }, [route.params]);
 
 
 
@@ -80,7 +81,7 @@ export default function LoopEvents({ route }) {
         />
         
         
-        {loop.isOwner || loop.allowMembersToCreateEvents && (
+        {(loop.isOwner || loop.allowMembersToCreateEvents) && (
           <Animated.View style={{opacity: fadeAnim, width: 50, height: 50, borderRadius: 25, backgroundColor: "rgb(47, 139, 128)", position: "absolute", bottom: 50, right: 25, alignItems: "center", justifyContent: "center"}}>
             <Pressable onPress={() => navigation.navigate("CreateEvent", {loop: loop})}>
                 <Ionicons size={50} color={"white"} name="add" />

@@ -1,6 +1,6 @@
 
-import React, { useState, useEffect } from "react";
-import { View, Image, Text, Animated, Pressable, FlatList, SafeAreaView, RefreshControl, Keyboard } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import { View, Image, Text, Animated, Pressable, FlatList, SafeAreaView, RefreshControl, Keyboard, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-elements";
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -15,8 +15,6 @@ export default function Loops() {
 
   const [loops, setLoops] = useState([]);
 
-  
-  const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
   const [scrollY] = useState(new Animated.Value(0));
   const headerHeight = scrollY.interpolate({
     inputRange: [0, 70],
@@ -31,14 +29,11 @@ export default function Loops() {
   });
 
 
-
-  function onScrollLoops() {
-    Keyboard.dismiss()
+  const onScrollLoops = (
     Animated.event(
       [{ nativeEvent: { contentOffset: { y: scrollY } } }],
       { useNativeDriver: false }
-    )
-  }
+    ));
 
   const goToLoop = (loop_id) => {
     navigation.push('Loop', { loop_id: loop_id });
@@ -71,6 +66,14 @@ export default function Loops() {
         
   
 
+  if (!loops) {
+    return (
+      <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", justifyContent: "center", alignItems: "center"}}>
+        <ActivityIndicator />
+      </View>
+    )
+  }
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -93,7 +96,7 @@ export default function Loops() {
         </View>
       </Animated.View>
 
-      <AnimatedFlatList
+      <FlatList
         style={{ paddingHorizontal: 20 }}
         data={loops}
         renderItem={({ item }) => <Loop data={item} goToLoop={goToLoop} />}
@@ -106,13 +109,4 @@ export default function Loops() {
     </SafeAreaView>
   );
 };
-
-
-
-/*const exampleLoopData = {
-            pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
-            displayName: "Grant's Epic Group",
-            members: 120,
-            interests: ["Golfing", "Frolicking", "Hijinks"]
-        }   */     
 

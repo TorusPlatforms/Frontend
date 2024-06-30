@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Platform, View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Pressable, Alert } from "react-native";
+import { Platform, View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Pressable, Alert, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
@@ -9,14 +9,6 @@ import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } f
 import { getUser, createPost } from "../../components/handlers";
 import styles from "./styles";
 
-const exampleUserData = {
-  pfp: "https://cdn.discordapp.com/attachments/803748247402184714/822541056436207657/kobe_b.PNG?ex=658f138d&is=657c9e8d&hm=37b45449720e87fa714d5a991c90f7fac4abb55f6de14f63253cdbf2da0dd7a4&",
-  displayName: "Grant Hough",
-  username: "@granthough",
-  following: 128,
-  followers: 259,
-  description: "A pretty funny guy. Has a strong affinity for dogs. \n Stefan Murphy: 'The test is in'"
-}
 
 export default function CreatePing({ route }) {
   console.log("Navigated to CreatePing with params", route.params)
@@ -25,9 +17,6 @@ export default function CreatePing({ route }) {
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
   const [isPublic, setIsPublic] = useState(route.params?.loop ? false : true);
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
-
 
   async function fetchUser() {
       const fetchedUser = await getUser()
@@ -64,6 +53,7 @@ export default function CreatePing({ route }) {
   const handleImageSelect = (image) => {
     if (!image.canceled) {
       setImage(image);
+      setContent(content.substring(0, 250).trim())
     }
     console.log("Selected Image in CreatePing:", image);
   };
@@ -75,7 +65,7 @@ export default function CreatePing({ route }) {
   async function handlePost() {
     const postData = {
       author: (route.params?.loop && isPublic) ? route.params.loop.name : user.username, 
-      pfp_url: user.pfp_url, 
+      pfp_url: (route.params?.loop && isPublic) ? route.params.loop.pfp_url : user.pfp_url, 
       content: content, 
       // latitude: location?.coords.latitude, 
       // longitude: location?.coords.longitude, 
@@ -119,17 +109,17 @@ export default function CreatePing({ route }) {
   return (
     <TouchableWithoutFeedback onPress={handleBackgroundPress}>
       <SafeAreaView style={styles.container}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={{ paddingLeft: 20 }}>
+        {/* <TouchableOpacity onPress={() => navigation.goBack()} style={{ paddingLeft: 20 }}>
           <Text style={{ fontSize: 16, color: "white" }}>Cancel</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <View style={{flexDirection: "row"}}>
           <View style={{flex: 0.25}}/>
           <View style={{justifyContent: "center", alignItems: "center", flex: 0.5}}>
-              <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>Send a Ping</Text>
+              <Text style={{ fontWeight: "bold", fontSize: 20, color: "white", marginBottom: 4 }}>Send a Ping</Text>
 
               {!route.params?.loop && (
-                <Text style={{color: "white", fontSize: 12, textAlign: "center"}}>Posting in {user.college}</Text>
+                <Text style={{color: "white", fontSize: 12, textAlign: "center"}}>Posting to {user.college}</Text>
               )}
 
               {route.params?.loop && (
@@ -149,13 +139,13 @@ export default function CreatePing({ route }) {
 
         <View style={{ flexDirection: "column", alignItems: "center"}}>
           <View style={{ flexDirection: "row", alignItems: "flex-start", marginTop: Platform.OS === "ios" ? 20 : 0}}>
-            <Image style={styles.pfp} source={{ uri: user.pfp_url }} />
+            <Image style={styles.pfp} source={{ uri: (route.params?.loop && isPublic ? route.params.loop.pfp_url : user.pfp_url) }} />
             <TextInput
-              style={{marginLeft: 20, marginTop: 10, color: "white", fontSize: 18, width: 300, minHeight: 50, maxHeight: 300}}
+              style={{marginLeft: 20, marginTop: 10, color: "white", fontSize: 18, width: 300, minHeight: 50, maxHeight: 350, paddingRight: 20}}
               placeholder="Ping your campus and beyond"
               multiline
               numberOfLines={4}
-              maxLength={500}
+              maxLength={image ? 250 : 500}
               placeholderTextColor="gray"
               onChangeText={ text => setContent(text.trim())}
             />
@@ -189,10 +179,10 @@ export default function CreatePing({ route }) {
 
             
 
-          <TouchableOpacity style={{ backgroundColor: content.length > 0 ? "rgb(54, 163, 107)" : "gray", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop: 20 }} onPress={handlePost}>
-            <Text style={{ color: "black", textAlign: "center" }}>Post</Text>
+          <TouchableOpacity style={{ backgroundColor: content.length > 0 ? "rgb(47, 139, 128)" : "rgb(62, 62, 62)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 15, paddingHorizontal: 40, marginTop: 20 }} onPress={handlePost}>
+            <Text style={{ color: "white", textAlign: "center" }}>Post</Text>
           </TouchableOpacity>
-        </View>
+        </View>        
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );

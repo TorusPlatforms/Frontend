@@ -17,11 +17,11 @@ import styles from "../styles";
 export default function SignUpScreen() {
     const navigation = useNavigation()
 
-    const [username, onChangeUsername] = useState("sirt7140")
-    const [displayName, onChangeDisplayName] = useState("Tanuj SChool")
-    const [email, onChangeEmail] = useState("sirt7140@lgsstudent.org")
-    const [password, onChangePassword] = useState("abc123")
-    const [confirmPassword, onChangeConfirmPassword] = useState("abc123")
+    const [username, onChangeUsername] = useState("")
+    const [displayName, onChangeDisplayName] = useState("")
+    const [email, onChangeEmail] = useState("")
+    const [password, onChangePassword] = useState("")
+    const [confirmPassword, onChangeConfirmPassword] = useState("")
     const [errorMessage, setErrorMessage] = useState()
 
 
@@ -97,10 +97,8 @@ export default function SignUpScreen() {
     }
 
     async function signUp() {
-
+        setErrorMessage("")
         const auth = getAuth()
-        console.log(email, password)
-
     
         function isValidEmail(email) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -117,12 +115,12 @@ export default function SignUpScreen() {
                 throw new PasswordsDontMatch()
             }
 
-            if (username.length < 4 || username.length > 24) {
-                throw new InputError("Username must be between 4 and 24 characters")
+            if (username.length < 4 || username.length > 25) {
+                throw new InputError("Username must be between 4 and 25 characters")
             }
 
-            if (displayName.length < 4 || displayName.length > 50) {
-                throw new InputError("Display name must be between 4 and 50 characters long")
+            if (displayName.length < 4 || displayName.length > 25) {
+                throw new InputError("Display name must be between 4 and 25 characters long")
             }
 
             if ( password.length < 6) {
@@ -168,14 +166,15 @@ export default function SignUpScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <KeyboardAwareScrollView contentContainerStyle={[{paddingTop: 50}, Platform.OS == "ios" ? {flex: 1} : {flexGrow: 1}]} enableOnAndroid={true}>
+            <KeyboardAwareScrollView contentContainerStyle={Platform.OS == "ios" ? {flex: 1} : {flexGrow: 1}} enableOnAndroid={true}>
 
                 <View style={{flex: 1, justifyContent: "space-evenly", alignItems: "center"}}>
-                    <Text style={{color: "white", fontSize: 16, textAlign: "center"}}>Sign up to become connected</Text>
+                    <Text style={{color: "white", fontSize: 16, textAlign: "center", maxWidth: 250}}>Sign up to become connected. Your campus, your community, & beyond</Text>
 
                     <TextInput 
                         onChangeText={input => onChangeUsername(input.trim())} 
                         placeholder="Username"
+                        maxLength={25}
                         placeholderTextColor={"white"}
                         style={styles.submissionBox}
                     />
@@ -183,6 +182,7 @@ export default function SignUpScreen() {
                     <TextInput 
                         onChangeText={input => onChangeDisplayName(input.trim())} 
                         placeholder="Display Name"
+                        maxLength={25}
                         placeholderTextColor={"white"}
                         style={styles.submissionBox}
                     />
@@ -200,6 +200,7 @@ export default function SignUpScreen() {
                         placeholder="Password"
                         placeholderTextColor={"white"}
                         secureTextEntry={true}
+                        textContentType={'oneTimeCode'}
                         style={styles.submissionBox}
                     />
 
@@ -208,10 +209,11 @@ export default function SignUpScreen() {
                         placeholder="Confirm Password"
                         placeholderTextColor={"white"}
                         secureTextEntry={true}
+                        textContentType={'oneTimeCode'}
                         style={styles.submissionBox}
                     />
 
-                    <Text style={{color: "red", fontSize: 16}}>{errorMessage}</Text>
+                    <Text style={{color: "red", fontSize: 16, textAlign: "center", maxWidth: 300}}>{errorMessage}</Text>
                 </View>
 
 

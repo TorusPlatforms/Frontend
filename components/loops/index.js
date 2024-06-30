@@ -25,7 +25,8 @@ export const Loop = ({ data, goToLoop }) => {
           
           <View style={{ flex: 3, left: 20 }}>
             <Text style={{ color: "white", fontWeight: "bold" }}>{data.name || data?.name}</Text>
-            <Text style={{ color: "white" }}>{data.description || data?.description}</Text>
+            <Text style={{ color: "white", fontSize: 12, fontStyle: 'italic', marginTop: 2}}>{data.location || data?.location}</Text>
+            <Text style={{ color: "white", marginTop: 10 }}>{data.description || data?.description}</Text>
           </View>
           
           { data.isJoined && (

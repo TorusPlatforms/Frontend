@@ -80,7 +80,7 @@ export default function NotificationsScreen() {
                 <Pressable onPress={() => navigation.navigate("JoinRequests")} style={styles.followRequests}>
                     <View style={styles.followRequestText}>
                         <Text style={styles.text}>Join Requests</Text>
-                        <Text style={{color: "lightgrey"}}>{joinRequests.join(', ')}</Text>
+                        <Text style={{color: "lightgrey"}}>{joinRequests.slice(0, 2).join(', ')}...</Text>
                     </View>
                     <View style={{flex: 3, alignItems: "flex-end"}}>
                         <Ionicons name="arrow-forward-sharp" size={24} color="white" />

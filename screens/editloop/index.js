@@ -21,9 +21,31 @@ export default function EditLoop({ navigation, route }) {
     }
 
     async function togglePrivate() {
-      setIsPrivate(previousState => !previousState)
-      await updateLoop({ loop_id: loop.loop_id, endpoint: "public", value: !loop.public})
-      await fetchLoop()
+      let alertMessage, alertSubtitle;
+      if (!isPrivate) {
+        alertMessage = "Are you sure you want to make this loop private?"
+        alertSubtitle = "This means only verified members of your campus can see this loop, and you must approve all requests."
+      } else {
+        alertMessage = "Are you want you to make this loop public?"
+        alertSubtitle = "This means all verified members of your campus can join, and everyone can request to join."
+      }
+
+
+      Alert.alert(alertMessage, alertSubtitle, [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'OK', onPress: async() => {
+          setIsPrivate(previousState => !previousState)
+          await updateLoop({ loop_id: loop.loop_id, endpoint: "public", value: !loop.public})
+          await fetchLoop()
+          }
+        },
+      ]);
+
+     
     }
 
     async function handleImageSelect(image) {
@@ -75,7 +97,11 @@ export default function EditLoop({ navigation, route }) {
 
     
     if (!loop) {
-      return <ActivityIndicator />
+      return (
+        <View style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgb(22, 23, 24)"}}>
+          <ActivityIndicator />
+        </View>
+      )
     }
 
     return (
@@ -106,7 +132,7 @@ export default function EditLoop({ navigation, route }) {
               <Text style={{color: "white", flex: 1}}>{loop.name}</Text>
             </Pressable>
 
-            <Pressable onPress={() => navigation.navigate("EditField", {field: "Description", endpoint: "description", varName: "description", loop: loop, type: "loop"})} style={styles.updateField}>
+            <Pressable onPress={() => navigation.navigate("EditField", {field: "Description", endpoint: "description", varName: "description", loop: loop, type: "loop", previousState: loop.description})} style={styles.updateField}>
               <Text style={{color: "white", flex: 0.5}}>Description</Text>
               <Text style={{color: "white", flex: 1}}>{loop.description}</Text>
             </Pressable>

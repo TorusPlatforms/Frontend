@@ -1,16 +1,19 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { View, ActivityIndicator } from "react-native";
-import { GiftedChat, Bubble, InputToolbar, Avatar } from 'react-native-gifted-chat';
+import { ActivityIndicator, View, Text, TouchableOpacity, Image } from "react-native";
+import { GiftedChat } from 'react-native-gifted-chat';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { useNavigation } from "@react-navigation/native";
+import { getFirestore, onSnapshot, doc, query, collection, where, getDocs } from "firebase/firestore"
 
 import { getDM, sendMessage, getUser } from '../../components/handlers';
 import { ChatComponent } from '../../components/chat';
-import { getFirestore, collection, getDocs, query, where, onSnapshot, doc } from "firebase/firestore"
-
 import styles from "./styles"
 
 
 export default function DirectMessage({ route }) {
+    const navigation = useNavigation()
+
     const [messages, setMessages] = useState(null)
     const [user, setUser] = useState(null)
     const [unsubscribe, setUnsubscribe] = useState(null)
@@ -82,12 +85,30 @@ export default function DirectMessage({ route }) {
       }, [])
 
     if (!messages || !user) {
-      return <ActivityIndicator />
+      return (
+        <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", justifyContent: "center", alignItems: "center"}}>
+            <ActivityIndicator />
+        </View>
+      )
     }
     
     return (
       <SafeAreaView style={styles.container}>
-        <ChatComponent onSend={onSend} messages={messages} id={user.username}/>
-      </SafeAreaView>
+         <View style={{paddingHorizontal: 20, flexDirection: "row", alignItems: "center", borderBottomWidth: 1, borderColor: "gray", padding: 10, marginBottom: 20}}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Ionicons name="arrow-back" size={24} color="white" />        
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation.push("UserProfile", {username: route.params.username})} style={{marginLeft: 20}}>
+                <Text style={{color: 'white', fontSize: 16}}>{route.params.username}</Text>
+            </TouchableOpacity>
+        </View>
+
+        <ChatComponent
+          messages={messages}
+          onSend={messages => onSend(messages)}
+          id={user.username}
+        />
+    </SafeAreaView>
     )
 }

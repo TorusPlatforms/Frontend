@@ -9,19 +9,23 @@ export function findTimeAgo(timestamp) {
     const secondsDifference = Math.floor(timeDifference / 1000);
 
     let agoMessage;
+
     if (secondsDifference <= 0) {
       agoMessage = "Just Now";
     } else if (secondsDifference < 60) {
-        agoMessage = `${secondsDifference} seconds ago`;
+      agoMessage = `${secondsDifference} second${secondsDifference === 1 ? "" : "s"} ago`;
     } else if (secondsDifference < 3600) {
-        agoMessage = `${Math.floor(secondsDifference / 60)} minutes ago`;
+      const minutes = Math.floor(secondsDifference / 60);
+      agoMessage = `${minutes} minute${minutes === 1 ? "" : "s"} ago`;
     } else if (secondsDifference < 86400) {
-        agoMessage = `${Math.floor(secondsDifference / 3600)} hours ago`;
+      const hours = Math.floor(secondsDifference / 3600);
+      agoMessage = `${hours} hour${hours === 1 ? "" : "s"} ago`;
     } else {
-        agoMessage = `${Math.floor(secondsDifference / 86400)} days ago`;
+      const days = Math.floor(secondsDifference / 86400);
+      agoMessage = `${days} day${days === 1 ? "" : "s"} ago`;
     }
-
-    return agoMessage
+  
+    return agoMessage;
 }
 
 function addSuffix(num) {
@@ -56,6 +60,10 @@ export function strfEventTime(timestamp) {
     let minutes = date.getMinutes()
     if (minutes === 0) {
         minutes = "00"
+    }
+
+    if (0 < minutes && minutes < 10) {
+      minutes = "0" + minutes
     }
 
     let hours = date.getHours()

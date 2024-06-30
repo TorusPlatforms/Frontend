@@ -5,13 +5,14 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Input } from "react-native-elements";
 
 import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } from "../../components/imagepicker";
 import { getUser, createEvent, getGoogleMapsKey } from "../../components/handlers";
-import { strfEventDate, strfEventTime } from "../../components/utils";
+import { combineDateAndTime, strfEventDate, strfEventTime } from "../../components/utils";
+import { AlreadyExistsError, InputError } from "../../components/utils/errors";
+
 import styles from "./styles";
-import { Input } from "react-native-elements";
-import { AlreadyExistsError } from "../../components/utils/errors";
 
 
 export default function CreateEvent({ route }) {
@@ -29,7 +30,7 @@ export default function CreateEvent({ route }) {
   const [time, setTime] = useState(new Date())
   const [displayDate, setDisplayDate]= useState(Platform.OS === "android" ? strfEventDate(date) : "")
   const [displayTime, setDisplayTime] = useState(Platform.OS === "android" ? strfEventTime(time) : "")
-  const [isPublic, setIsPublic] = useState(true)
+  const [isPublic, setIsPublic] = useState()
 
   const [showCalendar, setShowCalendar] = useState(Platform.OS === "android" ? false : true);
   const [showClock, setShowClock] = useState(Platform.OS === "android" ? false : true);
@@ -37,32 +38,35 @@ export default function CreateEvent({ route }) {
   
   const [image, setImage] = useState(null);
 
+  async function fetchUser() {
+    const user = await getUser()
+    setUser(user)
+    setName(user.username + "'s event")
+
+    if ((route.params?.loop) && (route.params.loop.location != user.college)) {
+        setIsPublic(false)
+    } else {
+      setIsPublic(true)
+    }
+  }
+
+  async function fetchGoogleMapsKey() {
+    const key = await getGoogleMapsKey();
+    setKey(key)
+  }
+
   useEffect(() => {
-    async function fetchUser() {
-      const user = await getUser()
-      setUser(user)
-      setName(user.username + "'s event")
-    }
-
-    async function fetchGoogleMapsKey() {
-      const key = await getGoogleMapsKey();
-      setKey(key)
-    }
-
     fetchUser()
     fetchGoogleMapsKey()
 
     requestCameraPerms()
     requestPhotoLibraryPerms()
-    console.log(user, key)
+
+   
   }, []); 
 
-  const closeKeyboard = () => {
-    Keyboard.dismiss();
-  };
-
   const handleBackgroundPress = () => {
-    closeKeyboard();
+    Keyboard.dismiss();
   };
 
   const handleImageSelect = (image) => {
@@ -72,40 +76,69 @@ export default function CreateEvent({ route }) {
     console.log("Selected Image in CreateEvent:", image);
   };
 
+  function isToday(timestamp) {
+      const inputDate = new Date(timestamp);
+      const now = new Date();
 
+      return (
+          inputDate.getFullYear() === now.getFullYear() &&
+          inputDate.getMonth() === now.getMonth() &&
+          inputDate.getDate() === now.getDate()
+      );
+  }
+
+  function isLessThan10MinutesAfterNow(timestamp) {
+      const now = Date.now(); 
+      const tenMinutesInMilliseconds = 10 * 60 * 1000; 
+      const tenMinutesAfterNow = now + tenMinutesInMilliseconds;
+
+      return timestamp < tenMinutesAfterNow;
+  }
 
   async function handlePost() {
-    const eventData = {
-      name: name, 
-      address: address, 
-      day: date, 
-      time: time, 
-      message: message, 
-      image: image, 
-      isPublic: isPublic,
-      loop_id: route.params?.loop.loop_id
-    }
-
-    console.log("Event data", eventData)
-
     try {
-      await createEvent(eventData);
-      navigation.goBack()
+        const combinedDate = combineDateAndTime(date, time)
+
+        if (isToday(combinedDate.getTime()) && isLessThan10MinutesAfterNow(combinedDate.getTime())) {
+          throw new InputError("Cannot create an event starting in 10 minutes")
+        }
+
+        const eventData = {
+          name: name, 
+          address: address, 
+          date: combinedDate, 
+          message: message, 
+          image: image, 
+          isPublic: isPublic,
+          loop_id: route.params?.loop.loop_id
+        }
+
+        console.log("Event data", eventData)
+
+        await createEvent(eventData);
+        navigation.goBack()
     } catch(error) {
+
       if (error instanceof AlreadyExistsError) {
         setErrorMessage("That event name is taken!")
+      } else if (error instanceof InputError) {
+        setErrorMessage(error.message)
+      } else {
+        alert("Something went wrong!")
+        console.error(error)
       }
+
     }
   }
 
   function onChangeDate(event, selectedDate) {
-
     if (Platform.OS === "android") {
         setShowCalendar(false);
         setDate(selectedDate);
         setDisplayDate(strfEventDate(selectedDate))
     } else {
       setDate(selectedDate);
+      console.log("Date", date)
     }
     
   };
@@ -117,6 +150,7 @@ export default function CreateEvent({ route }) {
       setDisplayTime(strfEventTime(selectedTime))
     } else {
         setTime(selectedTime);
+        console.log("Time", time)
     }
   };
 
@@ -136,7 +170,7 @@ export default function CreateEvent({ route }) {
         onPress: () => console.log('Cancel Pressed'),
         style: 'cancel',
       },
-      {text: 'OK', onPress: () => setIsPublic(!isPublic)},
+      {text: 'OK', onPress: () => setIsPublic(previousState => !previousState)},
     ]);
 
   }
@@ -160,7 +194,7 @@ export default function CreateEvent({ route }) {
             </TouchableOpacity>
           </View>
     
-          <View style={{ alignItems: 'center', flex: 0.4}}>
+          <View style={{ alignItems: 'center', flex: 0.25}}>
             <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>Create Event</Text>
             <Text style={{ fontSize: 16, color: "white", textAlign: "center", marginTop: 5, paddingHorizontal: 25 }}>{route.params?.loop ? `Posting in ${route.params.loop.name}` : "Get together. Reunite. Connect."}</Text>
             <Text style={{ fontSize: 16, color: "red", textAlign: "center", marginTop: 5 }}>{errorMessage}</Text>
@@ -190,14 +224,10 @@ export default function CreateEvent({ route }) {
                                 placeholderTextColor={"gray"}
                               />
 
-                              {route.params?.loop && (
-                                <Pressable onPress={handleLockPress} style={{top: 5}} >
-                                   {({pressed}) => (
-                                      <Ionicons name={isPublic ? "lock-open" : "lock-closed"} size={24} color={pressed ? "gray" : "white"}/>
-                                  )}
-                                </Pressable>
-
-                                
+                              {route.params?.loop && (route.params?.loop?.location == user.college) && (
+                                <TouchableOpacity onPress={handleLockPress} style={{top: 5}} >
+                                    <Ionicons name={isPublic ? "lock-open" : "lock-closed"} size={24} color={"white"}/>
+                                </TouchableOpacity>
                               )}
                           </View>
 
@@ -215,9 +245,11 @@ export default function CreateEvent({ route }) {
                                 { showCalendar && (
                                   <View style={{marginLeft: -15}}>
                                     <DateTimePicker
+                                        minimumDate={new Date()}
                                         value={date}
                                         mode={'date'}
                                         onChange={onChangeDate}
+                                        accentColor="rgb(47, 139, 128)"
                                     />
                                   </View>
                                 )}
@@ -236,6 +268,7 @@ export default function CreateEvent({ route }) {
                                             value={time}
                                             mode={'time'}
                                             onChange={onChangeTime}
+                                            accentColor="rgb(47, 139, 128)"
                                         />
                                       </View>
                                     )}
@@ -248,7 +281,6 @@ export default function CreateEvent({ route }) {
                                   styles={{listView: {zIndex: 1, position: "absolute", height: 150, top: 50, borderRadius: 10, borderColor: "gray", borderWidth: 2}, description: {fontSize: 12, color: "white"}, row: {backgroundColor: "black"}}}
                                   placeholder={"Where is it happening?"}
                                   onPress={(data, details = null) => {
-                                    console.log(data, details);
                                     setAddress(data.description)
                                   }}
                                   query={{
@@ -260,6 +292,7 @@ export default function CreateEvent({ route }) {
 
                             <View style={{flex: 1}}>
                                 <TextInput
+                                  maxLength={200}
                                   multiline
                                   placeholderTextColor={"gray"}
                                   placeholder="Fun details"

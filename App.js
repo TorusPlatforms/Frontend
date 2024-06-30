@@ -127,8 +127,9 @@ const DiscoverTabs = ({ route }) => {
 }
 
 const FollowTabs = ({ route }) => {
+  console.log("navigaitng", route.params)
   return (
-    <TopTab.Navigator screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)'}, tabBarLabelStyle: { "color": "white" }}}>
+    <TopTab.Navigator initialRouteName={route.params.initialScreen} screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)'}, tabBarLabelStyle: { "color": "white" }}}>
       <TopTab.Screen name="Following" component={MutualsScreen} initialParams={{get: "following", username: route.params.username}} options={{headerShown: false}} />
       <TopTab.Screen name="Followers" component={MutualsScreen} initialParams={{get: "followers", username: route.params.username}} options={{headerShown: false}} />
     </TopTab.Navigator>
@@ -136,124 +137,125 @@ const FollowTabs = ({ route }) => {
 };
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false)
-  const [loading, setLoading] = useState(true)
+    const [loggedIn, setLoggedIn] = useState(false)
+    const [loading, setLoading] = useState(true)
 
-  const config = {
-    screens: {
-      Ping: 'ping/:post_id',  
-      Loop: 'loop/:loop_id',
-      Notifications: 'notifications'
-    },
-  };
+    const config = {
+      screens: {
+        Ping: 'ping/:post_id',  
+        Loop: 'loop/:loop_id',
+        Notifications: 'notifications'
+      },
+    };
 
-  const linking = {
-    prefixes: [prefix],
-    config
-  };
+    const linking = {
+      prefixes: [prefix],
+      config
+    };
 
-  
-  React.useEffect(() => {
-    const auth = getAuth()
-    const unsubscribe = onAuthStateChanged(auth, user => {
-      console.log("state changed")
-        if (user && user.emailVerified) {
-          setLoggedIn(true)
-        } else {
-          setLoggedIn(false)
-        }
-
-        setLoading(false)
-    })
-
-    return () => unsubscribe()
-
-  }, []);
-
-  React.useEffect(() => {
-    const subscription = Notifications.addNotificationResponseReceivedListener(response => {
-      const url = response.notification.request.content.data.url;
-      console.log("Opening url", prefix, url)
-      Linking.openURL(prefix + url);
-    });
-    return () => subscription.remove();
-  }, []);
-
-  if (loading) {
-    return <SplashScreen />
-  }
-
-  return (
-    <GestureHandlerRootView>
-    <SafeAreaProvider>
-    <NavigationContainer linking={linking} fallback={<SplashScreen />}>
     
-      <StatusBar
-          barStyle="light-content" 
-          backgroundColor="rgb(22, 23, 24)" 
-      />
+    useEffect(() => {
+      const auth = getAuth()
+      const unsubscribe = onAuthStateChanged(auth, user => {
+          console.log("State changed")
+  
+          if (user && user.emailVerified) {
+            setLoggedIn(true)
+          } else {
+            setLoggedIn(false)
+          }
 
-      <Stack.Navigator screenOptions={({ navigation }) => ({   
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={24} color="white" />
-          </TouchableOpacity>
-        ),  gestureEnabled: true, headerShown: false, headerBackTitleVisible: false, headerTitleStyle: {color: "white"}, headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}, animation: Platform.OS == "android" ? "slide_from_bottom" : null})}>
+          setTimeout(() => {
+            setLoading(false);
+          }, 1000); 
+      })
 
-          {loading && (
-            <>
-            <Stack.Screen name="SplashScreen" component={SplashScreen} />
-            </>
+      return () => unsubscribe()
+
+    }, []);
+
+    useEffect(() => {
+      const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+        const url = response.notification.request.content.data.url;
+        console.log("Opening url", prefix, url)
+        Linking.openURL(prefix + url);
+      });
+      return () => subscription.remove();
+    }, []);
+
+    if (loading) {
+      return <SplashScreen />
+    } else {
+
+    return (
+      <GestureHandlerRootView style={{backgroundColor: "rgb(22, 23, 24)", flex: 1}}>
+      <SafeAreaProvider>
+      <NavigationContainer linking={linking}>
+        <StatusBar barStyle="light-content" backgroundColor="rgb(22, 23, 24)" />
+
+        <Stack.Navigator screenOptions={({ navigation }) => ({   
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => {
+                  if (navigation.canGoBack()) {
+                    navigation.goBack()
+                  } else {
+                    navigation.navigate("Home")
+                  }
+                }}>
+                  <Ionicons name="arrow-back" size={24} color="white" />
+                </TouchableOpacity>
+              ),  
+              gestureEnabled: true, headerShown: false, headerBackTitleVisible: false, headerTitleStyle: {color: "white"}, 
+              headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}, animation: Platform.OS == "android" ? "slide_from_bottom" : null
+            })}>
+
+
+            {loggedIn ? (
+              <>
+                <Stack.Screen name="Home" options={{ gestureEnabled: false }} component={Tabs} />
+                <Stack.Screen name="My Loops" component={MyLoops} options={{ headerShown: true }} />
+                <Stack.Screen name="Create" component={CreatePing} options={{ presentation: "modal", gestureEnabled: true }} />
+                <Stack.Screen name="CreateLoop" component={CreateLoop} options={{ presentation: "modal", gestureEnabled: true }} />
+                <Stack.Screen name="CreateEvent" component={CreateEvent} options={{ presentation: "modal", gestureEnabled: true }} />
+                <Stack.Screen name="CreateAnnouncement" component={CreateAnnouncement} options={{ presentation: "modal", gestureEnabled: true }} />
+                <Stack.Screen name="Loop" component={LoopsPage} />
+                <Stack.Screen name="Comments" component={Comments} options={{ presentation: "modal", gestureEnabled: true, headerShown: true, headerLeft: () => (<View />), headerBackVisible: false, headerTitleAlign: 'center' }} />
+                <Stack.Screen name="LoopMembers" component={LoopMembers} options={{ presentation: "modal", gestureEnabled: true, title: "Members", headerShown: true }} />
+                <Stack.Screen name="DirectMessage" component={DirectMessage} />
+                <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.username })} />
+                <Stack.Screen name="Settings" component={Settings} options={{ headerShown: true }} />
+                <Stack.Screen name="Your Account" component={YourAccountScreen} options={{ headerShown: true }} />
+                <Stack.Screen name="Accessibility" component={AccessibilityDisplay} options={{ headerShown: true }} />
+                <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: true, headerTitleAlign: "center" }} />
+                <Stack.Screen name="Privacy and Safety" component={PrivacySafety} options={{ headerShown: true }} />
+                <Stack.Screen name="Security and Account Access" component={SecurityAccountAccess} options={{ headerShown: true }} />
+                <Stack.Screen name="AdditionalResources" component={AdditionalResources} options={{ headerShown: true }} />
+                <Stack.Screen name="Coming Soon" component={ComingSoon} options={{ headerShown: true }} />
+                <Stack.Screen name="Edit Profile" component={EditProfile} options={{ headerShown: true }} />
+                <Stack.Screen name="EditLoop" component={EditLoop} options={{ headerShown: true }} />
+                <Stack.Screen name="EditField" component={EditField} />
+                <Stack.Screen name="UserProfile" component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })} />
+                <Stack.Screen name="LoopChat" component={LoopChat} />
+                <Stack.Screen name="Ping" component={Ping} options={{ headerShown: true }} />
+                <Stack.Screen name="JoinRequests" component={JoinRequests} options={{ headerShown: true, headerTitle: "Join Requests" }} />
+                <Stack.Screen name="Search Users" component={SearchUsers} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} />
+                <Stack.Screen name="Search Colleges" component={SearchColleges} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} />
+              </>
+            ) : (
+              <>
+              <Stack.Screen name="Auth" component={AuthScreen} />
+              <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: true }} />
+              <Stack.Screen name="Forgot Password" component={ForgotPassword} options={{ headerShown: true }} />
+              <Stack.Screen name="Verify Email" component={VerifyEmail} options={{ headerShown: true }} />
+              </>
           )}
-
-          {loggedIn && (
-            <>
-            <Stack.Screen name="Home" options={{ gestureEnabled: false }} component={Tabs} />
-            <Stack.Screen name="My Loops" component={MyLoops} options={{ headerShown: true }} />
-            <Stack.Screen name="Create" component={CreatePing} options={{ presentation: "modal", gestureEnabled: true }} />
-            <Stack.Screen name="CreateLoop" component={CreateLoop} options={{ presentation: "modal", gestureEnabled: true }} />
-            <Stack.Screen name="CreateEvent" component={CreateEvent} options={{ presentation: "modal", gestureEnabled: true }} />
-            <Stack.Screen name="CreateAnnouncement" component={CreateAnnouncement} options={{ presentation: "modal", gestureEnabled: true }} />
-            <Stack.Screen name="Loop" component={LoopsPage} />
-            <Stack.Screen name="Comments" component={Comments} options={{ presentation: "modal", gestureEnabled: true, headerShown: true, headerLeft: () => (<View />), headerBackVisible: false, headerTitleAlign: 'center' }} />
-            <Stack.Screen name="LoopMembers" component={LoopMembers} options={{ presentation: "modal", gestureEnabled: true, title: "Members", headerShown: true }} />
-            <Stack.Screen name="DirectMessage" component={DirectMessage} options={({ route }) => ({ headerShown: true, contentStyle: { borderTopColor: "gray", borderTopWidth: 1 }, headerTitle: (props) => <DirectMessageHeader {...route} /> })} />
-            <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.username })} />
-            <Stack.Screen name="Settings" component={Settings} options={{ headerShown: true }} />
-            <Stack.Screen name="Your Account" component={YourAccountScreen} options={{ headerShown: true }} />
-            <Stack.Screen name="Accessibility" component={AccessibilityDisplay} options={{ headerShown: true }} />
-            <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: true, headerTitleAlign: "center" }} />
-            <Stack.Screen name="Privacy and Safety" component={PrivacySafety} options={{ headerShown: true }} />
-            <Stack.Screen name="Security and Account Access" component={SecurityAccountAccess} options={{ headerShown: true }} />
-            <Stack.Screen name="AdditionalResources" component={AdditionalResources} options={{ headerShown: true }} />
-            <Stack.Screen name="Coming Soon" component={ComingSoon} options={{ headerShown: true }} />
-            <Stack.Screen name="Edit Profile" component={EditProfile} options={{ headerShown: true }} />
-            <Stack.Screen name="EditLoop" component={EditLoop} options={{ headerShown: true }} />
-            <Stack.Screen name="EditField" component={EditField} />
-            <Stack.Screen name="UserProfile" component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })} />
-            <Stack.Screen name="LoopChat" component={LoopChat} />
-            <Stack.Screen name="Ping" component={Ping} options={{ headerShown: true, headerTitleAlign: "center" }} />
-            <Stack.Screen name="JoinRequests" component={JoinRequests} options={{ headerShown: true }} />
-            <Stack.Screen name="Search Users" component={SearchUsers} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} />
-            <Stack.Screen name="Search Colleges" component={SearchColleges} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} />
-            </>
-          )}
-         
-        {!loggedIn && (
-            <>
-            <Stack.Screen name="Auth" component={AuthScreen} />
-            <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: true }} />
-            <Stack.Screen name="Forgot Password" component={ForgotPassword} options={{ headerShown: true }} />
-            <Stack.Screen name="Verify Email" component={VerifyEmail} options={{ headerShown: true }} />
-            </>
-        )}
-         
-        
-      </Stack.Navigator>
-    </NavigationContainer>
-    </SafeAreaProvider>
-    </GestureHandlerRootView>
-  );
+          
+          
+        </Stack.Navigator>
+      </NavigationContainer>
+      </SafeAreaProvider>
+      </GestureHandlerRootView>
+    );}
 }
 
 export default App;

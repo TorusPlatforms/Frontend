@@ -4,9 +4,15 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "rgb(22, 23, 24)",
-        justifyContent: "center",
-        alignItems: "center"
     },
+
+    joinButton: {
+        padding: 10, 
+        width: 300,
+        borderRadius: 20, 
+        alignItems: "center",
+        alignSelf: "center"
+    }
 })
 
 export default styles;

@@ -68,10 +68,10 @@ export default function CreateLoop() {
       let alertTitle, alertMessage = ""
       if (isPublic) {
         alertTitle = "Are you sure you want to make this loop private?"
-        alertMessage = "This means members will have to request to join your loop. Only you can approve members to join."
+        alertMessage = "This means members from your campus will have to request to join your loop. Only you can approve members to join."
       } else {
         alertTitle = "Are you sure you want to make this loop public?"
-        alertMessage = "This means anyone from your college will be able to join this loop."
+        alertMessage = "This means anyone from your college will be able to join this loop. Anyone from other colleges will be able to request to join."
       }
   
       Alert.alert(alertTitle, alertMessage, [
@@ -101,9 +101,9 @@ export default function CreateLoop() {
               </View>
         
 
-              <View style={{flex: 1}}>
+              <View style={{flex: 1, alignItems: "center"}}>
                 <Text style={{color: "white", textAlign: "center", fontSize: 24}}>Create Your Loop</Text>
-                <Text style={{color: "white", textAlign: "center"}}>Your loop is where you can connect with your community, from your 10 friends to a hundred-member club</Text>
+                <Text style={{color: "white", textAlign: "center", maxWidth: 300}}>Build your community, from your 10 friends to a hundred-member club</Text>
               </View>
 
               <View style={{alignItems: "center", flex: 1}}>
@@ -163,13 +163,14 @@ export default function CreateLoop() {
                   <TextInput 
                       onChangeText={setDescription}
                       placeholder="A fun place to chill!"
-                      placeholderTextColor={"white"}
+                      placeholderTextColor={"gray"}
                       style={{
                         backgroundColor: "rgb(62, 62, 62)",
                         width: "90%",
                         borderRadius: 10,
                         paddingLeft: 10,
-                        height: 40
+                        height: 40,
+                        color:"white"
                       }}
                     />
               </View>

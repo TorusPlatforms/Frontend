@@ -5,22 +5,6 @@ const styles = StyleSheet.create({
         color: "white"
     },
 
-    commentContainer: {
-        marginVertical: 10, 
-        width: "95%", 
-        flexDirection: "row", 
-        paddingHorizontal: 10, 
-        minHeight: 60, 
-        flex: 1,
-        alignItems: "flex-start"
-    },
-
-    commentTextContainer: {
-        flexDirection: "column", 
-        marginLeft: 10,  
-        flex: 1,
-    },
-
     commentTime: {
         marginLeft: 7, 
         color: "gray", 
@@ -111,11 +95,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         backgroundColor: 'transparent',
         padding: 10,
-    },
-    rightAction: {
-        alignItems: 'center',
-        flex: 1,
-        justifyContent: 'center',
     },
     rectButton: {
         flex: 1,

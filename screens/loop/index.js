@@ -1,39 +1,37 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, TouchableOpacity, Image, Text, ScrollView, Alert, ActivityIndicator, RefreshControl } from "react-native";
+import { View, TouchableOpacity, Image, Text, ScrollView, Alert, ActivityIndicator, RefreshControl, Pressable, Share } from "react-native";
+import * as Linking from 'expo-linking';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 import { getLoop, joinLoop, leaveLoop } from "../../components/handlers";
 import LoopPings from "../looppings";
 import LoopEvents from "../loopevents";
 import LoopAnnouncements from '../loopannouncements';
 
-const Tab = createMaterialTopTabNavigator();
+import styles from "./styles"
 
-const torus_default_url = "https://cdn.torusplatform.com/5e17834c-989e-49a0-bbb6-0deae02ae5b5.jpg"
+
 
 
 export default function LoopsPage({ route }) {
   const navigation = useNavigation()
-  const [refreshing, setRefreshing] = useState(false)
+  const Tab = createMaterialTopTabNavigator();
+
   const { loop_id } = route.params
 
   const [loop, setLoop] = useState();
 
 
   async function fetchLoop() {
-    setRefreshing(true)
-
     const loop = await getLoop(loop_id)
     if (loop) {
       setLoop(loop)
     } else {
       navigation.goBack()
     }
-
-    setRefreshing(false)
   }
 
   async function handleJoinLoop() {
@@ -51,18 +49,27 @@ export default function LoopsPage({ route }) {
       {text: 'OK', onPress: async() => {
         console.log('OK Pressed')
         await leaveLoop(loop.loop_id)
+        navigation.navigate("Community")
       }},
     ]);
   }
 
-  const onRefresh = useCallback(async() => {
-      await fetchLoop()
-  }, []);
+  async function handleShare() {
+    const prefix = Linking.createURL('/');
 
+    await Share.share({
+      title: 'Someone invited you to checkout a Loop!',
+      message: `Come join ${loop.name}!`, 
+      url: prefix + "loop/" + loop.loop_id
+     });
+  }
+
+  const isFocused = useIsFocused()
 
   useEffect(() => {
     fetchLoop()
-  }, []);
+  }, [isFocused]);
+
 
   if (!loop) {
       return (
@@ -75,8 +82,8 @@ export default function LoopsPage({ route }) {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
-      <ScrollView style={{flex: 0.2}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        <View style={{paddingHorizontal: 20, flexDirection: "row", justifyContent: "space-between"}}>
+      <View style={{minHeight: 150 }}>
+        <View style={{paddingHorizontal: 20, marginTop: 10, flexDirection: "row", justifyContent: "space-between"}}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Ionicons name="arrow-back" size={24} color="white" />        
             </TouchableOpacity>
@@ -107,49 +114,67 @@ export default function LoopsPage({ route }) {
         </View>
 
 
-        <View style={{marginBottom: 20, alignItems: "center"}}>
-            {!loop.pfp_url && (
-                <View>
-                  <Image source={{uri: torus_default_url}}  style={{width: 150, height: 150, borderRadius: 75}} />
+        <View style={{ marginTop: 10, paddingHorizontal: 20 }}>
+            <View style={{flexDirection: "row" }}>
+                <Pressable style={{flex: 0.25}} onPress={handleShare}>
+                  <Image source={{uri: loop.pfp_url}}  style={{width: 80, height: 80, borderRadius: 40 }} />
+                  <Ionicons name="share" size={16} color="white" style={{position: "absolute", bottom: 10, right: 8}}/>
+                </Pressable>
+                
+                <View style={{flex: 0.7, flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
+                  <View>
+                    <Text style={{color: "white", fontSize: 18, maxWidth: 150}}>{loop.name}</Text>
+                    <Text style={{color: "white", fontSize: 12, marginTop: 5, fontStyle: "italic", maxWidth: 200}}>{loop.location}</Text>
+                  </View>
+                  
+                  <View style={{flexDirection: "row"}}>
+                    <Ionicons name="people" size={16} color="white"/>
+                    <Text style={{color: "white", fontSize: 12, fontStyle: "italic", marginLeft: 5}}>{loop.member_count}</Text>
+                  </View>
                 </View>
-            )}
+            </View>
 
-            {loop.pfp_url && (
-                <View>
-                  <Image source={{uri: loop.pfp_url}}  style={{width: 150, height: 150, borderRadius: 75}} />
-                </View>
-            )}
+            <View style={{marginLeft: 10, marginTop: 5}}>
+              <Text style={{color: "white", fontSize: 14, marginTop: 5 }}>{loop.description}</Text>
 
-            <Text style={{color: "white", fontSize: 24, marginTop: 10}}>{loop.name}</Text>
-            <Text style={{color: "white", fontSize: 14, marginTop: 5}}>{loop.description}</Text>
+            </View>
+            
+
         </View>
         
-      </ScrollView>
+      </View>
 
-      <View style={{flex: 2}}>
-        {loop.isJoined && (
+      <View style={{flex: 2.2, marginTop: 20 }}>
+        {loop.isJoined ? (
             <Tab.Navigator screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)' }, tabBarLabelStyle: { color: "white", fontSize: 10 }}}>
               <Tab.Screen name="Announcements" component={LoopAnnouncements} initialParams={{loop: loop}} />
               <Tab.Screen name="Pings" component={LoopPings} initialParams={{loop: loop}}/>
               <Tab.Screen name="Events" component={LoopEvents} initialParams={{loop: loop}} />
             </Tab.Navigator>
-        )}
+        ) :
+        (
+        <View style={{paddingHorizontal: 40, flex: 1 }}>
+            {!(loop.isJoined) && !(loop.joinPending) && (
+                  <TouchableOpacity onPress={handleJoinLoop} style={[styles.joinButton, {backgroundColor: "rgb(250, 250, 50)"}]}>
+                    <Text style={{color: "black", fontSize: 20}}>{(loop.public) ? "Join" : "Request to Join"}</Text>
+                  </TouchableOpacity>
+            )}
 
-        {!(loop.isJoined) && !(loop.joinPending) && (
-            <View style={{justifyContent: "center", alignItems: "center"}}>
-              <TouchableOpacity onPress={handleJoinLoop} style={{backgroundColor: "yellow", padding: 20, paddingHorizontal: 50, borderRadius: 20}}>
-                <Text style={{color: "black"}}>{loop.public ? "Join" : "Request to Join"}</Text>
-              </TouchableOpacity>
-            </View>
-        )}
+            {!(loop.isJoined) && (loop.joinPending) && (
+                  <TouchableOpacity onPress={handleJoinLoop} style={[styles.joinButton, {backgroundColor: "rgb(62, 62, 62)"}]}>
+                    <Text style={{color: "white", fontWeight: "bold", fontSize: 20}}>Request Pending</Text>
+                  </TouchableOpacity>
+            )}
 
-        {!(loop.isJoined) && (loop.joinPending) && (
-            <View style={{justifyContent: "center", alignItems: "center"}}>
-              <TouchableOpacity onPress={handleJoinLoop} style={{backgroundColor: "gray", padding: 20, paddingHorizontal: 50, borderRadius: 20}}>
-                <Text style={{color: "black"}}>Request Pending</Text>
-              </TouchableOpacity>
+            <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
+                <Ionicons name={loop.public ? "lock-open" : "lock-closed"} size={64} color="white"/>
+                <Text style={{color: "white", fontWeight: "bold", fontSize: 24, textAlign: "center", marginVertical: 15}}>This Loop is {loop.public ? "Public" : "Private"}</Text>
+                <Text style={{color: "gray", fontSize: 16, textAlign: "center"}}>{loop.public ? "Join" : "Request to join"} to see announcements, pings, and events. If you are not a student at this campus, you might have to request to join even if it is public.</Text>
             </View>
+
+        </View>
         )}
+       
       </View>
 
     </SafeAreaView>

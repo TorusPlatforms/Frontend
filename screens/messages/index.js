@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { View, Image, Text, Animated, Dimensions, Pressable, Modal, FlatList, RefreshControl, ActivityIndicator, Touchable } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Entypo from '@expo/vector-icons/Entypo';
 
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 
@@ -58,7 +59,7 @@ export default function Messages() {
                     </View>
 
                     <TouchableOpacity onPress={() => navigation.push("Search Users")}>
-                        <Ionicons name="search" size={24} color="white" />
+                        <Entypo name="new-message" size={24} color="white" />
                     </TouchableOpacity>
                 </View>
 

@@ -11,14 +11,12 @@ import styles from "./styles";
 
 
 export default function Events() {
-  const [events, setEvents] = useState([]);
-  const [search, setSearch] = useState(null);
-  const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation(); 
 
+  const [events, setEvents] = useState([]);
+  const [search, setSearch] = useState(null);
 
 
-  const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
   const [scrollY] = useState(new Animated.Value(0));
 
   const headerHeight = scrollY.interpolate({
@@ -34,15 +32,12 @@ export default function Events() {
   });
 
 
+  const [refreshing, setRefreshing] = useState(false);
 
-  const fetchEvents = async () => {
-    try {
-        const fetchedEvents = await getEvents(search)
-        console.log("Fetched", fetchedEvents.length, "events. First entry:", fetchedEvents[0])
-        setEvents(fetchedEvents);
-    } catch (error) {
-      console.error("Error fetching events:", error);
-    }
+  async function fetchEvents() {
+      const fetchedEvents = await getEvents(search)
+      console.log("Fetched", fetchedEvents.length, "events. First entry:", fetchedEvents[0])
+      setEvents(fetchedEvents);
   };
 
   useEffect(() => {
@@ -58,13 +53,12 @@ export default function Events() {
 
 
 
-  function onScrollEvents() {
-      Keyboard.dismiss()
+  const onScrollEvents = (
       Animated.event(
         [{ nativeEvent: { contentOffset: { y: scrollY } } }],
         { useNativeDriver: false }
       )
-  }
+  )
 
 
 
@@ -98,7 +92,7 @@ export default function Events() {
         </View>
       </Animated.View>
 
-      <AnimatedFlatList
+      <FlatList
         style={{ paddingHorizontal: 20 }}
         data={events}
         renderItem={({ item }) => <Event data={item} navigation={navigation}/>}

@@ -436,13 +436,10 @@ export async function deletePost(post_id) {
 }
 
 
-export async function createEvent({name, address, day, time, message, image, isPublic, loop_id}) {
+export async function createEvent({name, address, date, message, image, isPublic, loop_id}) {
   const token = await getToken()
   
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/create`;
-
-
-  const date = combineDateAndTime(day, time)
 
   const eventData = {
     name: name,
@@ -599,7 +596,6 @@ export async function getComments(post_id) {
     }
 
     const responseData = await response.json();
-    console.log('Opened comments successfully. Server response:', responseData);
 
     return responseData
 
@@ -779,11 +775,10 @@ export async function deleteComment(comment_id) {
 
 
 export async function getThreads() {
-  const token = await getToken()
+    const token = await getToken()
 
-  const serverUrl = 'https://hello-26ufgpn3sq-uc.a.run.app/api/messages/threads';
+    const serverUrl = 'https://hello-26ufgpn3sq-uc.a.run.app/api/messages/threads';
 
-  try {
     const response = await fetch(serverUrl, {
       method: 'GET',
       headers: {
@@ -792,22 +787,18 @@ export async function getThreads() {
       }
     })
 
-    const responseData = await response.json();
-    console.log('Fetched', responseData?.length, 'threads. First entry:', responseData[0]);
-
-    if (responseData.status === 204) {
+    if (response.status == 404) {
       return []
     }
-    
+
     if (!response.ok) {
       throw new Error(`Error getting threads! Status: ${response.status}`);
     }
 
+    const responseData = await response.json();
+    console.log('Fetched', responseData.length, 'threads. First entry:', responseData[0]);
 
     return responseData
-  } catch (error) {
-    console.error("Error getting threads", error.message)
-  }
 }
 
 

@@ -4,6 +4,7 @@ import { RectButton, Swipeable } from 'react-native-gesture-handler';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { deleteComment } from '../handlers';
+import { removeReply } from '../handlers/replies';
 
 export default class AppleRow extends Component {
     renderRightAction = (text, color, x, progress) => {
@@ -19,7 +20,16 @@ export default class AppleRow extends Component {
             onPress: () => console.log('Cancel Pressed'),
             style: 'cancel',
           },
-          {text: 'OK', onPress: async() => await deleteComment(this.props.comment_id)},
+          {text: 'OK', onPress: async() => {
+            if (this.props.comment_id) {
+              await deleteComment(this.props.comment_id)
+            } else if (this.props.reply_id) {
+              await removeReply(this.props.reply_id)
+            } else {
+              throw new Error("No ID supplied to delete in SwipeableRow")
+            }
+            }
+          },
         ]);
         
         this.close()
@@ -27,7 +37,7 @@ export default class AppleRow extends Component {
 
       return (
         <Animated.View style={{ flex: 1, transform: [{ translateX: trans }] }}>
-          <RectButton style={[styles.rightAction, { backgroundColor: color }]} onPress={pressHandler}>
+          <RectButton style={{ backgroundColor: color, justifyContent: 'center', alignItems: "center", flex: 1 }} onPress={pressHandler}>
               <Ionicons name={"trash"} color={"red"} size={20}></Ionicons>
           </RectButton>
         </Animated.View>
@@ -70,17 +80,3 @@ export default class AppleRow extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  actionText: {
-    color: 'white',
-    fontSize: 16,
-    backgroundColor: 'transparent',
-    padding: 10,
-  },
-  rightAction: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-  },
-});
