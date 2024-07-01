@@ -240,13 +240,14 @@ export default function CreateEvent({ route }) {
                         
 
                                 { showCalendar && (
-                                  <View style={{marginLeft: -15}}>
+                                  <View style={{marginLeft: -10}}>
                                     <DateTimePicker
                                         minimumDate={new Date()}
                                         value={date}
                                         mode={'date'}
                                         onChange={onChangeDate}
                                         accentColor="rgb(47, 139, 128)"
+                                        dateFormat="dayofweek day month"
                                     />
                                   </View>
                                 )}

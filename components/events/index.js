@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, Text, Pressable, Alert, TouchableOpacity } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Feather from '@expo/vector-icons/Feather';
 
 import { strfEventDate, strfEventTime } from "../../components/utils";
 import { deleteEvent, joinLeaveEvent } from "../../components/handlers";
@@ -105,8 +106,8 @@ export const Event = ({ data, navigation }) => {
                           
                           {!data.image_url && data.isCreator && (
                             <TouchableOpacity onPress={handleDelete}>
-                                <Ionicons
-                                    name="trash-outline"
+                                <Feather
+                                    name="trash"
                                     size={20}
                                     color="white"
                                     style={{ opacity: 0.5 }}

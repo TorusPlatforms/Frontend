@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, Image, Text, TouchableOpacity } from "react-native";
-import { findTimeAgo } from '../utils';
-import Ionicons from '@expo/vector-icons/Ionicons';
-
-import styles from "./styles"
-import { deleteAnnouncement } from '../handlers';
+import Feather from '@expo/vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
+
+import { deleteAnnouncement } from '../handlers';
+import { findTimeAgo } from '../utils';
+import styles from "./styles"
+
 
 export const Announcement = ({ data }) => {
   const navigation = useNavigation()
@@ -42,7 +43,7 @@ export const Announcement = ({ data }) => {
                 <Text style={styles.text}>{data.content}</Text>
 
                 <TouchableOpacity onPress={handleDeletePress}>
-                  <Ionicons style={styles.pingIcon} name="trash-outline" size={20}></Ionicons>
+                  <Feather style={styles.pingIcon} name="trash" size={18} />
                 </TouchableOpacity>
             </View>
             

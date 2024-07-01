@@ -11,7 +11,6 @@ import styles from "./styles";
 
 
 export default function CreatePing({ route }) {
-  console.log("Navigated to CreatePing with params", route.params)
   const navigation = useNavigation();
   const [user, setUser] = useState(null)
   const [content, setContent] = useState("");
@@ -103,7 +102,11 @@ export default function CreatePing({ route }) {
   }
 
   if (!user) {
-    return <ActivityIndicator />
+    return (
+      <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", justifyContent: "center", alignItems: "center"}}>
+          <ActivityIndicator />
+      </View>
+    )
   }
 
   return (
