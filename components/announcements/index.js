@@ -5,8 +5,11 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import styles from "./styles"
 import { deleteAnnouncement } from '../handlers';
+import { useNavigation } from '@react-navigation/native';
 
 export const Announcement = ({ data }) => {
+  const navigation = useNavigation()
+  
   function handleAuthorPress() {
       navigation.navigate("UserProfile", {username: data.author});
   }

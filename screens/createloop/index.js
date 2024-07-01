@@ -7,7 +7,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 import { pickImage } from '../../components/imagepicker';
 import { createLoop, getUser, joinLoop } from "../../components/handlers";
-import { AlreadyExistsError } from "../../components/utils/errors";
+import { AlreadyExistsError, InputError } from "../../components/utils/errors";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 
 
@@ -29,8 +29,12 @@ export default function CreateLoop() {
     };
 
     async function handleCreateLoop() {
-  
         try {
+
+          if (!name || name.length == 0) {
+            throw new InputError("Loop must have a name")
+          }
+
           const createdLoop = await createLoop({
             name: name, 
             description: description, 
@@ -47,6 +51,8 @@ export default function CreateLoop() {
         } catch (error) {
           if (error instanceof AlreadyExistsError) {
             setErrorMessage(error.message)
+          } else if  (error instanceof InputError) {
+            setErrorMessage(error.message)
           } else {
             console.error(error)
           }
@@ -57,6 +63,7 @@ export default function CreateLoop() {
     async function fetchUser() {
       const user = await getUser()
       setUser(user)
+      setName(user.username + "'s loop")
     }
 
     useEffect(() => {
@@ -131,7 +138,7 @@ export default function CreateLoop() {
                   <View style={{flexDirection: 'row'}}>
                       <TextInput 
                           defaultValue={user.username + "'s loop"}
-                          onChangeText={setName}
+                          onChangeText={text => setName(text.trim())}
                           style={{
                             backgroundColor: "rgb(62, 62, 62)",
                             width: "70%",

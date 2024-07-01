@@ -24,7 +24,7 @@ export const Loop = ({ data, goToLoop }) => {
           <Image style={{ width: 100, height: 100, borderRadius: 50 }} source={{ uri: data.pfp_url || data?.pfp_url  }} />
           
           <View style={{ flex: 3, left: 20 }}>
-            <Text style={{ color: "white", fontWeight: "bold" }}>{data.name || data?.name}</Text>
+            <Text style={{ color: "white", fontWeight: "bold", maxWidth: 150 }}>{data.name || data?.name}</Text>
             <Text style={{ color: "white", fontSize: 12, fontStyle: 'italic', marginTop: 2}}>{data.location || data?.location}</Text>
             <Text style={{ color: "white", marginTop: 10 }}>{data.description || data?.description}</Text>
           </View>

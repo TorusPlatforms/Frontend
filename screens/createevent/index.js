@@ -20,7 +20,7 @@ export default function CreateEvent({ route }) {
   const [user, setUser] = useState(null)
   const [key, setKey] = useState(null)
 
-  const [name, setName] = useState("");
+  const [name, setName] = useState();
   const [message, setMessage] = useState("An awesome event!");
   const [address, setAddress] = useState("");
 
@@ -30,7 +30,7 @@ export default function CreateEvent({ route }) {
   const [time, setTime] = useState(new Date())
   const [displayDate, setDisplayDate]= useState(Platform.OS === "android" ? strfEventDate(date) : "")
   const [displayTime, setDisplayTime] = useState(Platform.OS === "android" ? strfEventTime(time) : "")
-  const [isPublic, setIsPublic] = useState(false)
+  const [isPublic, setIsPublic] = useState(route.params?.loop ? false : true)
 
   const [showCalendar, setShowCalendar] = useState(Platform.OS === "android" ? false : true);
   const [showClock, setShowClock] = useState(Platform.OS === "android" ? false : true);
@@ -41,6 +41,7 @@ export default function CreateEvent({ route }) {
   async function fetchUser() {
     const user = await getUser()
     setUser(user)
+    setName(user.username + "'s event")
   }
 
   async function fetchGoogleMapsKey() {

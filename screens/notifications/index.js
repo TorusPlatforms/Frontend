@@ -31,8 +31,10 @@ export default function NotificationsScreen() {
                 navigation.navigate("Ping", {post_id: data.parent_id})
                 break
             case "announcement":
+                navigation.push("Loop", {loop_id: data.parent_id, initialScreen: "Announcements"})
+                break
             case "event":
-                navigation.push("Loop", {loop_id: data.parent_id})
+                navigation.push("Loop", {loop_id: data.parent_id, initialScreen: "Events"})
                 break
             }
     }

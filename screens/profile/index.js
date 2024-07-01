@@ -103,7 +103,7 @@ export default function Profile() {
                 })
             ]).start();
  
-    }, [])
+    }, [loops])
 
     // function renderNotification(item, index) {
     //     const unread = false
