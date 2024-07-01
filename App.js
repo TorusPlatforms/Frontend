@@ -89,12 +89,6 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const TopTab = createMaterialTopTabNavigator();
 
-const DirectMessageHeader = (props) => {
-  return (
-      <Text style={{color: "white", fontWeight: "bold", fontSize: 18, marginBottom: 5}}>{props.params.username}</Text>
-  );
-}
-
 
 const Tabs = () => {
   return (
@@ -148,7 +142,7 @@ function App() {
     };
 
     const linking = {
-      prefixes: [prefix],
+      prefixes: [prefix, "https://torusplatforms.com"],
       config
     };
 
