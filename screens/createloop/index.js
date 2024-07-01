@@ -57,7 +57,6 @@ export default function CreateLoop() {
     async function fetchUser() {
       const user = await getUser()
       setUser(user)
-      setName(user.username + "'s loop")
     }
 
     useEffect(() => {
@@ -131,7 +130,7 @@ export default function CreateLoop() {
                   
                   <View style={{flexDirection: 'row'}}>
                       <TextInput 
-                          defaultValue={name}
+                          defaultValue={user.username + "'s loop"}
                           onChangeText={setName}
                           style={{
                             backgroundColor: "rgb(62, 62, 62)",

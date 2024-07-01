@@ -6,7 +6,7 @@ import { strfEventDate, strfEventTime } from "../../components/utils";
 import { deleteEvent, joinLeaveEvent } from "../../components/handlers";
 import * as Linking from 'expo-linking';
 
-const torus_default_url = "https://cdn.torusplatform.com/5e17834c-989e-49a0-bbb6-0deae02ae5b5.jpg"
+const torus_default_url = "https://cdn.torusplatforms.com/torus_w_background.jpg"
 
 
 export const Event = ({ data, navigation }) => {

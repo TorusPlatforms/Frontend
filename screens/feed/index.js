@@ -36,13 +36,11 @@ export default function Feed() {
     }
 
     async function fetchPings(user) {
-  
-
         let fetchedPings = []
-        console.log("TYPE", feedType)
+
         switch (feedType) {
           case "friends":
-            console.log("frens")
+            console.log("Fetching friends")
             fetchedPings = await getFollowingPings()
             break;
           case "college":
@@ -50,7 +48,7 @@ export default function Feed() {
             fetchedPings = await getPings(user.college)
             break;
           default:
-            console.log("Defaut")
+            console.log("Fetching college", feedType)
             fetchedPings = await getPings(feedType)
         }
   
@@ -145,13 +143,13 @@ export default function Feed() {
 
                 </TouchableOpacity>
           </View>
-
       </View>
       )
 
       return (
         
           <SafeAreaView style={styles.container}>
+
               <FlatList
                     ListHeaderComponent={header}
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"}/>}

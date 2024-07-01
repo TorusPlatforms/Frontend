@@ -118,7 +118,7 @@ const FeedScreens = () => {
 }
 
 
-const DiscoverTabs = ({ route }) => {
+const DiscoverTabs = () => {
   return (
   <TopTab.Navigator screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)', paddingTop: 50}, tabBarLabelStyle: { "color": "white"}}}>
     <TopTab.Screen name="Loops" component={Loops} options={{headerShown: false}} />
@@ -127,9 +127,8 @@ const DiscoverTabs = ({ route }) => {
 }
 
 const FollowTabs = ({ route }) => {
-  console.log("navigaitng", route.params)
   return (
-    <TopTab.Navigator initialRouteName={route.params.initialScreen} screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)'}, tabBarLabelStyle: { "color": "white" }}}>
+    <TopTab.Navigator initialRouteName={route.params?.initialScreen} screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)'}, tabBarLabelStyle: { "color": "white" }}}>
       <TopTab.Screen name="Following" component={MutualsScreen} initialParams={{get: "following", username: route.params.username}} options={{headerShown: false}} />
       <TopTab.Screen name="Followers" component={MutualsScreen} initialParams={{get: "followers", username: route.params.username}} options={{headerShown: false}} />
     </TopTab.Navigator>

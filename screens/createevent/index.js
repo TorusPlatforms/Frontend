@@ -30,7 +30,7 @@ export default function CreateEvent({ route }) {
   const [time, setTime] = useState(new Date())
   const [displayDate, setDisplayDate]= useState(Platform.OS === "android" ? strfEventDate(date) : "")
   const [displayTime, setDisplayTime] = useState(Platform.OS === "android" ? strfEventTime(time) : "")
-  const [isPublic, setIsPublic] = useState()
+  const [isPublic, setIsPublic] = useState(false)
 
   const [showCalendar, setShowCalendar] = useState(Platform.OS === "android" ? false : true);
   const [showClock, setShowClock] = useState(Platform.OS === "android" ? false : true);
@@ -41,13 +41,6 @@ export default function CreateEvent({ route }) {
   async function fetchUser() {
     const user = await getUser()
     setUser(user)
-    setName(user.username + "'s event")
-
-    if ((route.params?.loop) && (route.params.loop.location != user.college)) {
-        setIsPublic(false)
-    } else {
-      setIsPublic(true)
-    }
   }
 
   async function fetchGoogleMapsKey() {
@@ -98,6 +91,10 @@ export default function CreateEvent({ route }) {
   async function handlePost() {
     try {
         const combinedDate = combineDateAndTime(date, time)
+
+        if (name.length == 0) {
+          throw new InputError("Event must have a name")
+        }
 
         if (isToday(combinedDate.getTime()) && isLessThan10MinutesAfterNow(combinedDate.getTime())) {
           throw new InputError("Cannot create an event starting in 10 minutes")
@@ -217,10 +214,9 @@ export default function CreateEvent({ route }) {
                       <View style={{flex: 1, padding: 20}}>
                           <View style={{justifyContent: 'space-between', flexDirection: "row", paddingRight: 25}}>
                               <Input 
-                                value={name}
-                                onChangeText={setName}
+                                onChangeText={text => setName(text.trim())}
                                 style={{color: 'white', fontSize: 16 }}
-                                placeholder={user.username + "'s event"}
+                                defaultValue={user.username + "'s event"}
                                 placeholderTextColor={"gray"}
                               />
 
@@ -269,6 +265,7 @@ export default function CreateEvent({ route }) {
                                             mode={'time'}
                                             onChange={onChangeTime}
                                             accentColor="rgb(47, 139, 128)"
+                                            minuteInterval={15}
                                         />
                                       </View>
                                     )}

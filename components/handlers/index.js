@@ -1332,21 +1332,20 @@ export async function getAnnouncements(loop_id) {
 
 
 export async function sendAnnouncement({loop_id, content, image}) {
-  const token = await getToken()
+    const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/createAnnouncement`;
+    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/announcement`;
 
-  const announcementData = {
-    content: content,
-  }
+    const announcementData = {
+      content: content,
+    }
 
-  if (image) {
-    const uploadedImage = await uploadToCDN(image)
-    announcementData.image_url = uploadedImage.url
-  }
+    if (image) {
+      const uploadedImage = await uploadToCDN(image)
+      announcementData.image_url = uploadedImage.url
+    }
 
-  console.log(announcementData)
-  try {
+    
     const response = await fetch(serverUrl, {
       method: 'POST',
       headers: {
@@ -1366,12 +1365,36 @@ export async function sendAnnouncement({loop_id, content, image}) {
     }
 
     return responseData
-
-  } catch(error) {
-    console.error("Error sending announcement", error.message)
-  }
 }
 
+export async function deleteAnnouncement({ loop_id, announcement_id }) {
+    const token = await getToken()
+
+    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/announcement`;
+
+    const announcementData = {
+      announcement_id: announcement_id,
+    }
+
+    const response = await fetch(serverUrl, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(announcementData)
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error cereating cannoucnemtn! Status: ${response.status, JSON.stringify(response)}`);
+    }
+
+    const responseData = await response.json();
+    console.log("Deleted announcement", responseData)
+
+   
+    return responseData
+}
 
 export async function getChats(loopId) {
   

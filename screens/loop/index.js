@@ -94,8 +94,13 @@ export default function LoopsPage({ route }) {
                       <Ionicons name="chatbubble-ellipses" size={24} color="white" />            
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => navigation.push("LoopMembers", {loop_id: loop.loop_id, isOwner: loop.isOwner})}>
-                      <Ionicons name="information-circle" size={24} color="white" />      
+                    <TouchableOpacity onPress={() => navigation.push("LoopMembers", {loop_id: loop.loop_id, isOwner: loop.isOwner, hasPendingRequests: loop.hasPendingRequests})}>
+
+                      <Ionicons name="information-circle" size={24} color="white" />
+                      { loop.hasPendingRequests && (
+                        <View style={{backgroundColor: "red", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
+                      )}
+
                     </TouchableOpacity>
 
                     {!loop.isOwner && (

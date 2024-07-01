@@ -21,10 +21,9 @@ export default function Profile() {
 
     const movingLine = useRef(new Animated.Value(0)).current;
 
-    const [loops, setLoops] = useState([])
+    const [loops, setLoops] = useState(null)
     const [user, setUser] = useState(null)
 
-    const [refreshing, setRefreshing] = useState(false)
 
     async function copyUsernameToClipboard() {
         await Clipboard.setStringAsync(user.username);
@@ -96,7 +95,7 @@ export default function Profile() {
      
     useEffect(() => {
         Animated.sequence([
-            Animated.delay(500),
+            Animated.delay(1000),
             Animated.timing(movingLine, {
                 toValue: 1,
                 duration: 1000,
@@ -116,20 +115,16 @@ export default function Profile() {
 
 
     async function fetchUser() {
-        setRefreshing(true)
         const fetchedUser = await getUser()
         setUser(fetchedUser)
-        setRefreshing(false)
     }
 
 
     async function fetchLoops() {
-        setRefreshing(true)
         const loops = await getJoinedLoops(4);
         setLoops(loops);
 
-        console.log("Fetched 4 loops. First entry:", loops[0])
-        setRefreshing(false)
+        console.log("Fetched", loops.length, "loops. First entry:", loops[0])
     } 
     
     const isFocused = useIsFocused()
@@ -206,12 +201,13 @@ export default function Profile() {
                         
 
                     )}
+
                     <LoopsSpiral />
 
-                    {loops.length === 0  && (
-                        <View style={{justifyContent: 'center', alignItems: "center"}}>
-                            <Text style={{color: "white", fontSize: 18}}>No Loops Found</Text>
-                        </View>
+                    {loops?.length === 0  && (
+                        <TouchableOpacity onPress={() => navigation.navigate("Community")} style={{justifyContent: 'center', alignItems: "center"}}>
+                            <Text style={{ color: "lightgrey", fontSize: 16, textAlign: "center", maxWidth: 270 }}>Looks like you haven't joined any loops! Discover some and build your community...</Text>
+                        </TouchableOpacity>
                     )}
                 </View>
             </View>

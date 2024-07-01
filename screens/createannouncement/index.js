@@ -65,16 +65,16 @@ export default function CreateAnnouncement({ route }) {
 
  
   if (!user) {
-    return <ActivityIndicator />
+    return (
+      <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", justifyContent: "center", alignItems: "center"}}>
+          <ActivityIndicator />
+      </View>
+    )
   }
 
   return (
     <TouchableWithoutFeedback onPress={handleBackgroundPress}>
       <SafeAreaView style={styles.container}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={{ paddingLeft: 20 }}>
-          <Text style={{ fontSize: 16, color: "white" }}>Cancel</Text>
-        </TouchableOpacity>
-
         <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 20 }}>
           <Text style={{ fontWeight: "bold", fontSize: 20, color: "white", textAlign: 'center' }}>Send an Announcement</Text>
         </View>
@@ -88,8 +88,8 @@ export default function CreateAnnouncement({ route }) {
               multiline
               numberOfLines={4}
               placeholderTextColor="gray"
-              value={content}
-              onChangeText={setContent}
+              maxLength={image ? 250 : 500}
+              onChangeText={text => setContent(text.trim())}
             />
           </View>
 

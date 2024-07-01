@@ -19,6 +19,8 @@ export default function EditProfile() {
     async function handleImageSelect(image) {
         console.log("Selected Image in CreatePing:", image);
 
+        setRefreshing(true)
+
         try {
             res = await uploadToCDN(image)
             console.log(res.url)
@@ -26,6 +28,8 @@ export default function EditProfile() {
             await fetchUser()
         } catch (error) {   
             console.error('Error uploading image:', error.message);
+        } finally {
+          setRefreshing(false)
         }
       };  
 
@@ -60,7 +64,7 @@ export default function EditProfile() {
       )}
 
     return (
-        <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"} />}>
           <View style={{alignItems: "center", justifyContent: "center", flex: 0.2}}>
             <Pressable onPress={() => pickImage(handleImageSelect)} style={{width: 100, height: 100, borderRadius: 50, borderWidth: 2, justifyContent: 'center', alignItems: "center", borderStyle: 'dashed', borderColor: "gray"}}>
                       {!image_url && (

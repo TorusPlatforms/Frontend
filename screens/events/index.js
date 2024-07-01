@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from "react";
-import { View, Image, Text, Animated, Pressable, FlatList, SafeAreaView, RefreshControl, Platform, ActivityIndicator, Keyboard} from "react-native";
+import { View, Image, Text, Animated, Pressable, FlatList, SafeAreaView, RefreshControl, Platform, ActivityIndicator, TouchableOpacity} from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { SearchBar } from "react-native-elements";
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -85,9 +85,9 @@ export default function Events() {
           </View> 
 
           <View style={{ flex: 0.1 }}>
-            <Pressable onPress={() => navigation.navigate("CreateEvent")}>
+            <TouchableOpacity onPress={() => navigation.navigate("CreateEvent")}>
               <Ionicons name="add" size={24} color="white" />
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </Animated.View>

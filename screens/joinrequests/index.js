@@ -6,7 +6,7 @@ import { getJoinRequests, approveRequest, rejectRequest } from "../../components
 import styles from "./styles";
 
 
-export default function JoinRequests({ navigation }) {
+export default function JoinRequests({ navigation, route }) {
     const [requests, setRequests] = useState([])
     const [refreshing, setRefreshing] = useState(false)
 
@@ -44,7 +44,7 @@ export default function JoinRequests({ navigation }) {
                         <Ionicons name={"checkmark-circle"} size={32} color={"rgb(47, 139, 128)"}/>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => handleApprove(data)}>
+                    <TouchableOpacity onPress={() => handleReject(data)}>
                         <Ionicons name={"close-circle"} size={32} color={"rgb(208, 116, 127)"}/>
                     </TouchableOpacity>
                 </View>
@@ -53,7 +53,7 @@ export default function JoinRequests({ navigation }) {
       );
         
     async function fetchRequests() {
-        const requests = await getJoinRequests()
+        const requests = await getJoinRequests(route.params?.loop_id)
         setRequests(requests)
     }
 
@@ -62,7 +62,11 @@ export default function JoinRequests({ navigation }) {
     }, []);
 
     if (!requests) {
-        return <ActivityIndicator />
+        return (
+            <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", justifyContent: "center", alignItems: "center"}}>
+                <ActivityIndicator />
+            </View>
+        )
     }
     
     return (

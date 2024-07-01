@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Image, Text, Animated, Pressable, FlatList, SafeAreaView, RefreshControl, Keyboard, ActivityIndicator } from "react-native";
+import { View, Image, Text, Animated, Pressable, FlatList, SafeAreaView, RefreshControl, Keyboard, ActivityIndicator, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-elements";
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -89,9 +89,9 @@ export default function Loops() {
           </View> 
 
           <View style={{ flex: 0.1 }}>
-            <Pressable onPress={() => navigation.navigate("CreateLoop")}>
+            <TouchableOpacity onPress={() => navigation.navigate("CreateLoop")}>
               <Ionicons name="add" size={24} color="white" />
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </Animated.View>

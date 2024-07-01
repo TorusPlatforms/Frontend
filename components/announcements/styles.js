@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     pingIcon: {
         color: "white",
-        marginRight: 10,
     },
 
     stats: {
@@ -27,7 +26,8 @@ const styles = StyleSheet.create({
     text: {
         color: "white",
         marginVertical: 5,
-        fontSize: 16
+        fontSize: 16,
+        maxWidth: 230
     },
     
     author: {
@@ -40,6 +40,11 @@ const styles = StyleSheet.create({
         backgroundColor: "gray",
         marginTop: 8,
         marginLeft: 18
+    },
+
+    pingIcon: {
+        color: "white",
+        marginTop: 10
     },
     
 })

@@ -50,6 +50,7 @@ export default function EditLoop({ navigation, route }) {
 
     async function handleImageSelect(image) {
         console.log("Selected Image in EditLoop:", image);
+        setRefreshing(true)
 
         try {
             res = await uploadToCDN(image)
@@ -57,6 +58,8 @@ export default function EditLoop({ navigation, route }) {
             await updateLoop({loop_id: loop_id, endpoint: "pfp_url", value: res.url})
         } catch (error) {   
             console.error('Error uploading image:', error.message);
+        } finally {
+          setRefreshing(false)
         }
 
         

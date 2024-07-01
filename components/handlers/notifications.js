@@ -37,31 +37,32 @@ export async function getNotifications() {
   }
 
 
-export async function getJoinRequests() {
+export async function getJoinRequests(loop_id) {
     const token = await getToken()
     
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/requests/get`;
+    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/requests/get`;
 
-    try {
-        const response = await fetch(serverUrl, {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-    
-        if (!response.ok) {
-          throw new Error(`Error Getting Requests! Status: ${response.status}`);
-        }
-    
-        const notifications = await response.json();
-        console.log('notifications :', notifications);
-    
-        return (notifications)
-    } catch (error) {
-        console.error(error.message)
-    }  
+    if (loop_id) {
+      serverUrl += "?loop_id=" + loop_id
+    }
+
+    const response = await fetch(serverUrl, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error Getting Requests! Status: ${response.status}`);
+    }
+
+    const notifications = await response.json();
+    console.log('notifications :', notifications);
+
+    return (notifications)
+
 }
 
 export async function approveRequest(data) {

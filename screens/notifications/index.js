@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { View, Image, Text, Animated, Dimensions, Pressable, TextInput, Modal, FlatList, Button, InputAccessoryView } from "react-native";
+import { View, Image, Text, Pressable, FlatList, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons'; 
 
@@ -53,7 +53,7 @@ export default function NotificationsScreen() {
     async function fetchNotifications() {
         const fetchedNotifications = (await getNotifications()).notifications
         console.log("Fetched", fetchedNotifications.length, "notifications. First entry:", fetchedNotifications[0])
-        setNotifications(fetchedNotifications)
+        setNotifications(fetchedNotifications.filter(obj => obj.type !== 'join'))
     }
 
     async function fetchRequests() {
@@ -77,7 +77,7 @@ export default function NotificationsScreen() {
     return (
         <View style={styles.container}>
            {joinRequests.length > 0 && (
-                <Pressable onPress={() => navigation.navigate("JoinRequests")} style={styles.followRequests}>
+                <TouchableOpacity onPress={() => navigation.navigate("JoinRequests")} style={styles.followRequests}>
                     <View style={styles.followRequestText}>
                         <Text style={styles.text}>Join Requests</Text>
                         <Text style={{color: "lightgrey"}}>{joinRequests.slice(0, 2).join(', ')}...</Text>
@@ -85,19 +85,13 @@ export default function NotificationsScreen() {
                     <View style={{flex: 3, alignItems: "flex-end"}}>
                         <Ionicons name="arrow-forward-sharp" size={24} color="white" />
                     </View>
-                </Pressable>
+                </TouchableOpacity>
             )}
             
-            <View style={styles.item_seperator} />
-
             <FlatList
                 data={notifications}
-                renderItem={({ item }) => {
-                    if (item.type !== 'join') {
-                      return <Notification data={item} />;
-                    }
-                    return null;
-                  }}                ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+                renderItem={({ item }) => (<Notification data={item} />)}
+                ItemSeparatorComponent={<View style={styles.item_seperator}/>}
                 refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} tintColor={"white"} />}
                 keyExtractor={item => item.notification_id}
             />

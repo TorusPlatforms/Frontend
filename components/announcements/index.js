@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, Text, TouchableOpacity } from "react-native";
 import { findTimeAgo } from '../utils';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 import styles from "./styles"
+import { deleteAnnouncement } from '../handlers';
 
 export const Announcement = ({ data }) => {
   function handleAuthorPress() {
       navigation.navigate("UserProfile", {username: data.author});
   }
 
+  async function handleDeletePress() {
+    await deleteAnnouncement({ loop_id: data.loop_id, announcement_id: data.announcement_id })
+  }
 
   return (
     <View style={{marginVertical: 10, width: "95%", flexDirection: "row", padding: 10}}>
@@ -29,8 +34,15 @@ export const Announcement = ({ data }) => {
                 <Text style={{color: "gray"}}>{findTimeAgo(data.created_at)}</Text>
 
             </View>
-  
-            <Text style={styles.text}>{data.content}</Text>
+
+            <View style={{flexDirection: "row", justifyContent: 'space-between' }}>
+                <Text style={styles.text}>{data.content}</Text>
+
+                <TouchableOpacity onPress={handleDeletePress}>
+                  <Ionicons style={styles.pingIcon} name="trash-outline" size={20}></Ionicons>
+                </TouchableOpacity>
+            </View>
+            
           </View>
         
           <View style={{flex: 2}}>

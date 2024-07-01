@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect, useCallback, useContext } from 'react';
-import { View, RefreshControl, Image, Text, FlatList, Animated, ActivityIndicator } from "react-native";
-import { useNavigation, useFocusEffect, useIsFocused } from '@react-navigation/native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 
 import { Ping } from '../../components/pings';
 import { getUserPings } from "../../components/handlers";
@@ -8,7 +8,9 @@ import styles from "./styles";
 
 
 export default function UserPings({ username }) {
-    const [pings, setPings] = useState([]);
+    const navigation = useNavigation()
+
+    const [pings, setPings] = useState(null);
 
     const pings_ref = useRef(null)
 
@@ -27,12 +29,22 @@ export default function UserPings({ username }) {
     
     
     if (!pings) {
-      return (<ActivityIndicator />)
+      return (
+        <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", justifyContent: "center", alignItems: "center"}}>
+            <ActivityIndicator />
+        </View>
+      )
     }
 
 
     return (
       <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
+          {pings.length == 0 && (
+            <TouchableOpacity onPress={() => navigation.navigate("Feed")} style={{justifyContent: 'center', alignItems: 'center', marginTop: 50}}>
+              <Text style={{color: "lightgrey", textAlign: "center", maxWidth: 270}}>Looks like you haven't posted any pings... Send one to your campus!</Text>
+            </TouchableOpacity>
+          )}
+
             <FlatList
                   ref={pings_ref}
                   data={pings}
