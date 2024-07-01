@@ -182,9 +182,9 @@ export default function CreateLoop() {
               </View>
 
               <View style={{flex: 3, marginTop: 50, alignItems: "center"}}>
-                <Pressable onPress={handleCreateLoop} style={{backgroundColor: "rgb(47, 139, 128)", width: "90%", height: 40, justifyContent: "center", alignItems: "center", borderRadius: 20}}>
+                <TouchableOpacity onPress={handleCreateLoop} style={{backgroundColor: "rgb(47, 139, 128)", width: "90%", height: 40, justifyContent: "center", alignItems: "center", borderRadius: 20}}>
                   <Text style={{color: "white"}}>Create Loop</Text>
-                </Pressable>
+                </TouchableOpacity>
               </View>
 
           </KeyboardAwareScrollView>

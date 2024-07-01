@@ -313,12 +313,12 @@ export default function CreateEvent({ route }) {
           
 
             <View style={{alignItems: "center", flex: 0.35, justifyContent: "center"}}>
-                <Pressable
+                <TouchableOpacity
                   style={{ backgroundColor: "rgb(47, 139, 128)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 25, marginTop: 20, width: "80%" }}
                   onPress={handlePost}
                 >
                     <Text style={{ color: "black", textAlign: "center" }}>Post</Text>
-                </Pressable>
+                </TouchableOpacity>
             </View>
       </SafeAreaView>
     </TouchableWithoutFeedback>

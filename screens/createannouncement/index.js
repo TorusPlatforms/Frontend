@@ -3,7 +3,6 @@ import { Platform, View, TouchableOpacity, Image, Text, TextInput, TouchableWith
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
-import * as Location from 'expo-location';
 
 import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } from "../../components/imagepicker";
 import { getUser, sendAnnouncement } from "../../components/handlers";

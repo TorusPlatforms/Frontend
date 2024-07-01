@@ -1,22 +1,22 @@
 {
   "expo": {
     "name": "Torus Platforms",
-    "scheme": "torus",
+    "scheme": "https://torusplatforms.com",
     "slug": "torus",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/torus_w_background.jpg",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/torus_w_background.jpg",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#161718"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "androidStatusBar": {
-      "backgroundColor": "#000000"
+      "backgroundColor": "#161718"
     },
     "ios": {
       "associatedDomains": ["applinks:torusplatforms.com"],
@@ -31,7 +31,7 @@
       "permissions": ["CAMERA", "AUDIO_RECORDING","READ_EXTERNAL_STORAGE"],
         "adaptiveIcon": {
           "foregroundImage": "./assets/adaptive-icon.png",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#161718"
         }
     },
     "web": {
