@@ -80,7 +80,7 @@ export const Event = ({ data, navigation }) => {
                         <View style={{flexDirection: 'row', justifyContent: "space-between"}}>
                           <Text style={{ color: "white", fontWeight: "bold", fontSize: 16, maxWidth: 150 }}>{data.name || data?.name}</Text>
 
-                          {(data.public && data.loop_id) && (
+                          {(data.loop_id) && (
                             <TouchableOpacity onPress={handleLoopPress}>
                                 <Text style={{ color: "white", fontSize: 12, textAlign: "right", maxWidth: 100 }}>[Hosted]</Text>
                             </TouchableOpacity>

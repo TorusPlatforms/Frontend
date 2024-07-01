@@ -6,7 +6,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 
-import { getLoop, joinLoop, leaveLoop } from "../../components/handlers";
+import { getLoop, getUser, joinLoop, leaveLoop } from "../../components/handlers";
 import LoopPings from "../looppings";
 import LoopEvents from "../loopevents";
 import LoopAnnouncements from '../loopannouncements';
@@ -23,7 +23,12 @@ export default function LoopsPage({ route }) {
   const { loop_id } = route.params
 
   const [loop, setLoop] = useState();
+  const [user, setUser] = useState()
 
+  async function fetchUser() {
+    const fetchedUser = await getUser()
+    setUser(fetchedUser)
+  }
 
   async function fetchLoop() {
     const loop = await getLoop(loop_id)
@@ -68,10 +73,11 @@ export default function LoopsPage({ route }) {
 
   useEffect(() => {
     fetchLoop()
+    fetchUser()
   }, [isFocused]);
 
 
-  if (!loop) {
+  if (!loop || !user) {
       return (
           <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", justifyContent: "center", alignItems: "center"}}>
             <ActivityIndicator />
@@ -159,7 +165,7 @@ export default function LoopsPage({ route }) {
         ) :
         (
         <View style={{paddingHorizontal: 40, flex: 1 }}>
-            {!(loop.isJoined) && !(loop.joinPending) && (
+            {!(loop.isJoined) && !(loop.joinPending) && (loop.location == user.college || loop.public) && (
                   <TouchableOpacity onPress={handleJoinLoop} style={[styles.joinButton, {backgroundColor: "rgb(250, 250, 50)"}]}>
                     <Text style={{color: "black", fontSize: 20}}>{(loop.public) ? "Join" : "Request to Join"}</Text>
                   </TouchableOpacity>

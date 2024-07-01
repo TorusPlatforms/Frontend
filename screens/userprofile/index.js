@@ -28,13 +28,13 @@ export default function UserProfile({ route, navigation }) {
     async function fetchUser() {
         const user = await getUserByUsername(route.params.username)
         setUser(user)
+        setIsFollowing(user.isFollowing)
 
         if (user.isSelf) {
             navigation.navigate("Profile")
         }
 
         const pings = await getUserPings(user.username)
-        setIsFollowing(user.isFollowing)
         setPings(pings)
     }
 

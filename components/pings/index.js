@@ -73,7 +73,9 @@ export const Ping = ({ data, openComment }) => {
         <View style={{flexDirection: "col", flex: 1}}>
           <Image
             style={styles.tinyLogo}
-            source={{uri: data.pfp_url}}
+            source={{
+              uri: data.pfp_url,
+            }}
           />
         </View>
     
