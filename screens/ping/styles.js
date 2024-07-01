@@ -13,6 +13,8 @@ const styles = StyleSheet.create({
 
     stats: {
         color: "gray",
+        marginLeft: 20,
+        paddingBottom: 15
     },
 
     attatchment: {

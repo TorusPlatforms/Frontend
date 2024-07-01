@@ -125,7 +125,7 @@ export default function LoopMembers({ route, navigation }) {
                 data={members}
                 renderItem={({item}) => <User data={item} />}
                 ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"}/>}
                 keyExtractor={item => item.username}
             />
         </SafeAreaView>

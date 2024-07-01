@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react";
 import { Text, View, SafeAreaView, Image, Share, FlatList, Pressable, Alert, Modal, TouchableOpacity } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Feather from "@expo/vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
 import * as Linking from 'expo-linking';
 
@@ -125,7 +126,7 @@ export const Ping = ({ data, openComment }) => {
     
             {data.isAuthor && (
                 <TouchableOpacity onPress={handleDeletePress}>
-                  <Ionicons style={styles.pingIcon} name="trash-outline" size={20}></Ionicons>
+                  <Feather style={styles.pingIcon} name="trash" size={20}></Feather>
                 </TouchableOpacity>
             )}
             {/* <Pressable>

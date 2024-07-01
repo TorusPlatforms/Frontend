@@ -218,18 +218,11 @@ function App() {
                 <Stack.Screen name="CreateEvent" component={CreateEvent} options={{ presentation: "modal", gestureEnabled: true }} />
                 <Stack.Screen name="CreateAnnouncement" component={CreateAnnouncement} options={{ presentation: "modal", gestureEnabled: true }} />
                 <Stack.Screen name="Loop" component={LoopsPage} />
+                <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: true, headerTitleAlign: "center" }} />
                 <Stack.Screen name="Comments" component={Comments} options={{ presentation: "modal", gestureEnabled: true, headerShown: true, headerLeft: () => (<View />), headerBackVisible: false, headerTitleAlign: 'center' }} />
                 <Stack.Screen name="LoopMembers" component={LoopMembers} options={{ presentation: "modal", gestureEnabled: true, title: "Members", headerShown: true }} />
                 <Stack.Screen name="DirectMessage" component={DirectMessage} />
                 <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.username })} />
-                <Stack.Screen name="Settings" component={Settings} options={{ headerShown: true }} />
-                <Stack.Screen name="Your Account" component={YourAccountScreen} options={{ headerShown: true }} />
-                <Stack.Screen name="Accessibility" component={AccessibilityDisplay} options={{ headerShown: true }} />
-                <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: true, headerTitleAlign: "center" }} />
-                <Stack.Screen name="Privacy and Safety" component={PrivacySafety} options={{ headerShown: true }} />
-                <Stack.Screen name="Security and Account Access" component={SecurityAccountAccess} options={{ headerShown: true }} />
-                <Stack.Screen name="AdditionalResources" component={AdditionalResources} options={{ headerShown: true }} />
-                <Stack.Screen name="Coming Soon" component={ComingSoon} options={{ headerShown: true }} />
                 <Stack.Screen name="Edit Profile" component={EditProfile} options={{ headerShown: true }} />
                 <Stack.Screen name="EditLoop" component={EditLoop} options={{ headerShown: true }} />
                 <Stack.Screen name="EditField" component={EditField} />
@@ -239,6 +232,14 @@ function App() {
                 <Stack.Screen name="JoinRequests" component={JoinRequests} options={{ headerShown: true, headerTitle: "Join Requests" }} />
                 <Stack.Screen name="Search Users" component={SearchUsers} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} />
                 <Stack.Screen name="Search Colleges" component={SearchColleges} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} />
+
+                 {/* <Stack.Screen name="Settings" component={Settings} options={{ headerShown: true }} />
+                <Stack.Screen name="Your Account" component={YourAccountScreen} options={{ headerShown: true }} />
+                <Stack.Screen name="Accessibility" component={AccessibilityDisplay} options={{ headerShown: true }} />
+                <Stack.Screen name="Privacy and Safety" component={PrivacySafety} options={{ headerShown: true }} />
+                <Stack.Screen name="Security and Account Access" component={SecurityAccountAccess} options={{ headerShown: true }} />
+                <Stack.Screen name="AdditionalResources" component={AdditionalResources} options={{ headerShown: true }} />
+                <Stack.Screen name="Coming Soon" component={ComingSoon} options={{ headerShown: true }} /> */}
               </>
             ) : (
               <>

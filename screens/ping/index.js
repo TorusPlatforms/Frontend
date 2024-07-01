@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { View, TouchableOpacity, Image, Text, Pressable, Alert, ActivityIndicator, RefreshControl, FlatList, KeyboardAvoidingView, Platform, TextInput, Keyboard } from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, TouchableOpacity, Image, Text, Pressable, Alert, ActivityIndicator, RefreshControl, FlatList, KeyboardAvoidingView, Platform, TextInput, Keyboard, Share } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
+import * as Linking from "expo-linking";
 
 import { findTimeAgo } from '../../components/utils';
 import { getPing, deletePost, handleLike, postComment, getComments } from "../../components/handlers";
@@ -108,6 +108,15 @@ export default function Ping({ route }) {
     ]);
   }
 
+  async function handleShare() {
+    const prefix = Linking.createURL('/');
+
+    await Share.share({
+      title: 'Shared Ping',
+      message: prefix + "ping/" + post.post_id, 
+      url: prefix + "ping/" + post.post_id
+     });
+  }
 
   const onRefresh = useCallback(async() => {
       await fetchPost()
@@ -146,11 +155,7 @@ export default function Ping({ route }) {
                             </Text>
                         </TouchableOpacity>
 
-                        { post.isAuthor && (
-                          <TouchableOpacity onPress={handleDeletePress}>
-                            <Feather name="more-horizontal" size={16} color="white" />
-                          </TouchableOpacity>
-                        )}
+                        
                     </View>
             
 
@@ -171,18 +176,36 @@ export default function Ping({ route }) {
 
         )}
 
-        <View style={{height: 20, justifyContent: 'space-between', flexDirection: "row", paddingHorizontal: 20, marginBottom: 15}}>
-          <View style={{flexDirection: "row"}}>
-            <Pressable onPress={handleLikePress}>
-              <Ionicons style={[styles.pingIcon, {color: isLiked ? "red" : "white"}]} name={isLiked ? "heart" : "heart-outline"} size={20}></Ionicons>
-            </Pressable>
-            <Text style={styles.stats}>{numOfLikes} Likes • {post.numberof_comments} Comments</Text>
-          </View>
-          
-          <Text style={{color: "gray"}}>{findTimeAgo(post.created_at)}</Text>
+        <View style={{height: 50, justifyContent: 'space-between', flexDirection: "col", paddingHorizontal: 20, marginBottom: 15}}>
+            <View style={{flexDirection: "row", marginLeft: 20}}>
+              <Pressable onPress={handleLikePress}>
+                <Ionicons style={[styles.pingIcon, {color: isLiked ? "red" : "white"}]} name={isLiked ? "heart" : "heart-outline"} size={20}></Ionicons>
+              </Pressable>
+
+              <TouchableOpacity onPress={handleShare}>
+                <Ionicons style={[styles.pingIcon, {color: "white"}]} name={"share-social"} size={20}></Ionicons>
+              </TouchableOpacity>
+
+              { post.isAuthor && (
+                <TouchableOpacity onPress={handleDeletePress} style={styles.pingIcon}>
+                  <Feather name="trash" size={20} color="white" />
+                </TouchableOpacity>
+              )}
+        
+            </View>
+            
+            <View style={{flexDirection: 'row', justifyContent: "space-between", paddingVertical: 15}}>
+                <Text style={styles.stats}>{numOfLikes} Likes • {post.numberof_comments} Comments</Text>
+
+                <Text style={{color: "gray"}}>{findTimeAgo(post.created_at)}</Text>
+
+            </View>
+
         </View>
 
         <View style={styles.item_seperator} />
+
+
       </View>
   )
   
@@ -192,7 +215,7 @@ export default function Ping({ route }) {
                 data={comments}
                 renderItem={({ item }) => <SwipeableRow item={item} setParentCommentID={setParentCommentID} addCommentRef={addCommentRef} />}
                 keyExtractor={(item) => item.comment_id}
-                refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} />}
+                refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} tintColor={"white"} />}
                 ListHeaderComponent={header}
             />
 

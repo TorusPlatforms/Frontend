@@ -79,7 +79,7 @@ export default function Messages() {
         <SafeAreaView style={styles.container}>
             <FlatList
                 ListHeaderComponent={header}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"} />}
                 data={DMs}
                 renderItem={({item}) => <DirectMessage data={item} />}
                 ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
