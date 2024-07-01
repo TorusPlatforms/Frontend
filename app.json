@@ -1,9 +1,9 @@
 {
   "expo": {
     "name": "Torus Platforms",
-    "scheme": "https://torusplatforms.com",
+    "scheme": "torus",
     "slug": "torus",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/torus_w_background.jpg",
     "userInterfaceStyle": "light",
@@ -19,20 +19,27 @@
       "backgroundColor": "#161718"
     },
     "ios": {
-      "associatedDomains": ["applinks:torusplatforms.com"],
+      "associatedDomains": [
+        "applinks:torusplatforms.com"
+      ],
       "supportsTablet": true,
       "infoPlist": {
         "NSCameraUsageDescription": "This feature requires access to your camera",
         "NSMicrophoneUsageDescription": "This feature requires access to your microphone",
         "NSPhotoLibraryUsageDescription": "This feature requires access to your camera roll"
-      }
+      },
+      "bundleIdentifier": "com.torusplatforms.torus"
     },
     "android": {
-      "permissions": ["CAMERA", "AUDIO_RECORDING","READ_EXTERNAL_STORAGE"],
-        "adaptiveIcon": {
-          "foregroundImage": "./assets/adaptive-icon.png",
-          "backgroundColor": "#161718"
-        }
+      "permissions": [
+        "CAMERA",
+        "AUDIO_RECORDING",
+        "READ_EXTERNAL_STORAGE"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#161718"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
