@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, Dimensions, Pressable, TextInput, Platform, TouchableOpacity } from "react-native";
+import { View, Text, RefreshControl, TextInput, Platform, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { getAuth, createUserWithEmailAndPassword, deleteUser, onAuthStateChanged, updateProfile } from "firebase/auth"
+import { getAuth, createUserWithEmailAndPassword, deleteUser } from "firebase/auth"
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { registerUserBackend } from "../../../components/handlers";
@@ -21,6 +21,7 @@ export default function SignUpScreen() {
     const [confirmPassword, onChangeConfirmPassword] = useState("")
     const [errorMessage, setErrorMessage] = useState()
 
+    const [refreshing, setRefreshing] = useState()
     
     class InputError extends Error {
         constructor(message) {
@@ -37,6 +38,8 @@ export default function SignUpScreen() {
     }
 
     async function signUp() {
+        setRefreshing(true)
+
         setErrorMessage("")
         const auth = getAuth()
     
@@ -78,8 +81,10 @@ export default function SignUpScreen() {
 
             await createUserWithEmailAndPassword(auth, email, password);
             console.log("Created in Firebase")
+            
             const result = await registerUserBackend({username: username, email: email, display_name: displayName, expo_notification_id: expoPushToken})
             console.log("RESULT", JSON.stringify(result))
+
             if (result.success) {
                 setErrorMessage(null)
                 console.log("Successfully created user in Backend")
@@ -101,12 +106,14 @@ export default function SignUpScreen() {
                     deleteUser(auth.currentUser)
                 }
             }
+        } finally {
+            setRefreshing(false)
         }
     }
 
     return (
         <SafeAreaView style={styles.container}>
-            <KeyboardAwareScrollView contentContainerStyle={Platform.OS == "ios" ? {flex: 1} : {flexGrow: 1}} enableOnAndroid={true}>
+            <KeyboardAwareScrollView refreshControl={<RefreshControl refreshing={refreshing} tintColor={"white"}/>} contentContainerStyle={Platform.OS == "ios" ? {flex: 1} : {flexGrow: 1}} enableOnAndroid={true}>
 
                 <View style={{flex: 1, justifyContent: "space-evenly", alignItems: "center"}}>
                     <Text style={{color: "white", fontSize: 16, textAlign: "center", maxWidth: 250}}>Sign up to become connected. Your campus, your community, & beyond</Text>
