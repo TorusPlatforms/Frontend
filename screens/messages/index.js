@@ -48,6 +48,17 @@ export default function Messages() {
 
     async function fetchThreads() {
         const threads = await getThreads();
+
+        threads.sort((a, b) => {
+            if (a.unread === true && b.unread !== true) {
+                return -1;
+            }
+            if (a.unread !== true && b.unread === true) {
+                return 1;
+            }
+            return 0;
+        });
+        
         setDMs(threads);
     }
 

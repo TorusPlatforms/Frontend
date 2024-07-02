@@ -27,14 +27,7 @@ import LoopsPage from './screens/loop'; //this is the view for a single loop
 import CreateLoop from "./screens/createloop";
 import Messages from "./screens/messages" 
 import DirectMessage from "./screens/directmessage";
-import Settings from "./screens/settings";
-import YourAccountScreen from './screens/settings/Your Account';
-import AccessibilityDisplay from './screens/settings/Accessibility, Display, and Languages';
 import NotificationsScreen from './screens/notifications';
-import PrivacySafety from './screens/settings/Privacy and Safety';
-import SecurityAccountAccess from './screens/settings/Security and Account Access';
-import AdditionalResources from './screens/settings/Additional Resources';
-import ComingSoon from './screens/settings/Coming Soon';
 import ForgotPassword from './screens/auth/forgotpassword';
 import VerifyEmail from './screens/auth/verifyemail';
 import EditProfile from "./screens/editprofile";
@@ -76,12 +69,15 @@ if (getApps().length) {
 }
 
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
+  handleNotification: async (notification) => {
+    return {
+      shouldShowAlert: notification?.request?.content?.data?.url != "messages",
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    };
+  },
 });
+
 
 const prefix = Linking.createURL('/');
 
@@ -139,7 +135,6 @@ function App() {
         Loop: 'loop/:loop_id',
         UserProfile: 'user/:username',
         Notifications: 'notifications',
-        Messages: 'messages'
       },
     };
 
@@ -173,7 +168,7 @@ function App() {
       const subscription = Notifications.addNotificationResponseReceivedListener(response => {
         const url = response.notification.request.content.data.url;
         console.log("Opening URL", prefix, url)
-        Linking.openURL(prefix + url);
+        Linking.openURL(prefix.trim() + url.trim());
       });
       return () => subscription.remove();
     }, []);
