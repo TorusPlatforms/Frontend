@@ -262,7 +262,6 @@ export default function CreateEvent({ route }) {
                                             mode={'time'}
                                             onChange={onChangeTime}
                                             accentColor="rgb(47, 139, 128)"
-                                            minuteInterval={15}
                                         />
                                       </View>
                                     )}
