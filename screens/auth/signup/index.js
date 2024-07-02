@@ -82,7 +82,7 @@ export default function SignUpScreen() {
             await createUserWithEmailAndPassword(auth, email, password);
             console.log("Created in Firebase")
             
-            const result = await registerUserBackend({username: username, email: email, display_name: displayName, expo_notification_id: expoPushToken})
+            const result = await registerUserBackend({username: username, email: email, display_name: displayName })
             console.log("RESULT", JSON.stringify(result))
 
             if (result.success) {
