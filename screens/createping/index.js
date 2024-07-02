@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Platform, View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Pressable, Alert, ScrollView } from "react-native";
+import { Platform, View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Pressable, Alert, ScrollView, RefreshControl } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
@@ -16,7 +16,8 @@ export default function CreatePing({ route }) {
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
   const [isPublic, setIsPublic] = useState(route.params?.loop ? false : true);
-
+  const [refreshing, setRefreshing] = useState(false)
+  
   async function fetchUser() {
       const fetchedUser = await getUser()
       setUser(fetchedUser)
@@ -29,32 +30,23 @@ export default function CreatePing({ route }) {
     requestPhotoLibraryPerms()
   }, [route.params]); 
 
-  // useEffect(() => {
-  //   (async () => {
-      
-  //     let { status } = await Location.requestForegroundPermissionsAsync();
-  //     if (status !== 'granted') {
-  //       setErrorMsg('Permission to access location was denied');
-  //       return;
-  //     }
-
-  //     let location = await Location.getCurrentPositionAsync({});
-  //     setLocation(location);
-  //     console.log("Fetched location:", location)
-  //   })();
-  // }, []);
-
 
   const handleBackgroundPress = () => {
       Keyboard.dismiss();
   };
 
-  const handleImageSelect = (image) => {
-    if (!image.canceled) {
-      setImage(image);
-      setContent(content.substring(0, 250).trim())
+  const handleImageSelect = (fetchedImage) => {
+    if (!fetchedImage.canceled) {
+
+      console.log("Made it here too!", fetchedImage)
+      setImage(fetchedImage);
+
+      if (content) {
+        setContent(content.substring(0, 250).trim())
+      }
     }
-    console.log("Selected Image in CreatePing:", image);
+
+    console.log("Selected Image in CreatePing: yes here actually", image);
   };
 
   const removeImage = () => {
@@ -62,6 +54,7 @@ export default function CreatePing({ route }) {
   };
 
   async function handlePost() {
+    setRefreshing(true)
     const postData = {
       author: (route.params?.loop && isPublic) ? route.params.loop.name : user.username, 
       pfp_url: (route.params?.loop && isPublic) ? route.params.loop.pfp_url : user.pfp_url, 
@@ -76,6 +69,7 @@ export default function CreatePing({ route }) {
     console.log("Creating post with data:", postData)
     await createPost(postData)
     
+    setRefreshing(false)
     navigation.goBack()
   }
 
@@ -110,8 +104,9 @@ export default function CreatePing({ route }) {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={handleBackgroundPress}>
       <SafeAreaView style={styles.container}>
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} tintColor={"white"}/>}>
+
         {/* <TouchableOpacity onPress={() => navigation.goBack()} style={{ paddingLeft: 20 }}>
           <Text style={{ fontSize: 16, color: "white" }}>Cancel</Text>
         </TouchableOpacity> */}
@@ -148,7 +143,7 @@ export default function CreatePing({ route }) {
               placeholder="Ping your campus and beyond"
               multiline
               numberOfLines={4}
-              maxLength={image ? 250 : 500}
+              maxLength={500}
               placeholderTextColor="gray"
               onChangeText={ text => setContent(text.trim())}
             />
@@ -157,7 +152,7 @@ export default function CreatePing({ route }) {
 
             {image && (
               <View style={{marginTop: 10}}>
-                <Image source={{ uri: image.assets[0].uri }} style={{ width: 250, height: 300, borderRadius: 20, marginLeft: 20}} />
+                <Image source={{ uri: image.uri || image.assets[0].uri }} style={{ width: 250, height: 300, borderRadius: 20, marginLeft: 20}} />
                 
                 <Pressable onPress={removeImage} style={{position: "absolute", right: -10, top: -10}} >
                   <MaterialIcons name="cancel" size={32} color="gray" />
@@ -186,8 +181,9 @@ export default function CreatePing({ route }) {
             <Text style={{ color: "white", textAlign: "center" }}>Post</Text>
           </TouchableOpacity>
         </View>        
+        </ScrollView>
+
       </SafeAreaView>
-    </TouchableWithoutFeedback>
   );
 };
 

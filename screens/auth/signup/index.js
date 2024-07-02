@@ -4,9 +4,6 @@ import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getAuth, createUserWithEmailAndPassword, deleteUser, onAuthStateChanged, updateProfile } from "firebase/auth"
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
 
 import { registerUserBackend } from "../../../components/handlers";
 
@@ -24,63 +21,6 @@ export default function SignUpScreen() {
     const [confirmPassword, onChangeConfirmPassword] = useState("")
     const [errorMessage, setErrorMessage] = useState()
 
-
-    const [expoPushToken, setExpoPushToken] = useState('');
-
-    function handleRegistrationError(errorMessage) {
-        alert(errorMessage);
-        throw new Error(errorMessage);
-    }
-
-    async function registerForPushNotificationsAsync() {
-        if (Platform.OS === 'android') {
-            Notifications.setNotificationChannelAsync('default', {
-            name: 'default',
-            importance: Notifications.AndroidImportance.MAX,
-            vibrationPattern: [0, 250, 250, 250],
-            lightColor: '#FF231F7C',
-            });
-        }
-        
-        if (Device.isDevice) {
-            const { status: existingStatus } = await Notifications.getPermissionsAsync();
-            let finalStatus = existingStatus;
-            if (existingStatus !== 'granted') {
-            const { status } = await Notifications.requestPermissionsAsync();
-            finalStatus = status;
-            }
-            if (finalStatus !== 'granted') {
-            handleRegistrationError('Permission not granted to get push token for push notification!');
-            return;
-            }
-            const projectId =
-            Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
-            if (!projectId) {
-            handleRegistrationError('Project ID not found');
-            }
-            try {
-                const pushTokenString = (
-                    await Notifications.getExpoPushTokenAsync({
-                    projectId,
-                    })
-                ).data;
-                console.log("Found Expo Push Token:", pushTokenString);
-                return pushTokenString;
-            } catch (e) {
-                handleRegistrationError(`${e}`);
-            }
-        } else {
-            handleRegistrationError('Must use physical device for push notifications');
-            setExpoPushToken("")
-        }
-    }
-   
-    useEffect(() => {
-        registerForPushNotificationsAsync()
-          .then(token => setExpoPushToken(token ?? ''))
-          .catch((error) => setExpoPushToken(`${error}`));
-      }, []);
-      
     
     class InputError extends Error {
         constructor(message) {

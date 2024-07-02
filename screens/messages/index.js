@@ -22,11 +22,17 @@ export default function Messages() {
             <View style={{flex: 0.4, justifyContent: "center", alignItems: "center"}}>
                 <Image style={{width: 50, height: 50, borderRadius: 50}} source={{uri: data.pfp_url}}/>
             </View>
+
             <View style={{marginLeft: 10, flexDirection: 'col', alignItems: "flex-start", flex: 1}}>
                 <Text style={{color: "white", fontWeight: "bold"}}>{data.username}</Text>
-                <Text style={{color: "lightgrey"}}>{data.lastMessageObj.lastMessage.substring(0, 35)}...</Text>
+                <Text style={{color: "white", fontWeight: (data.unread ? "bold" : null)}}>{data.lastMessageObj.lastMessage.substring(0, 35)}...</Text>
             </View>
-            <View style={{flex: 1, alignItems: "flex-end"}}>
+
+            <View style={{flex: 1, justifyContent: "flex-end", flexDirection: 'row', alignItems: "center"}}>
+                {data.unread && (
+                    <View style={{width: 10, height: 10, borderRadius: 5, backgroundColor: "rgb(208, 116, 127)"}}/>
+                )}
+
                 <Text style={{color: "lightgrey", marginLeft: 10}}>{findTimeAgo(data.lastMessageObj.created_at)}</Text>
             </View>
         </Pressable>

@@ -24,9 +24,16 @@ export default function NotificationsScreen() {
       }, []);
   
   
-
     function onNotificationsPress(data) {
         switch (data.type) {
+            case "follow":
+                navigation.navigate("UserProfile", {username: data.author})
+                break
+            case "message":
+                navigation.navigate("Messages")
+                break
+            case "reply":
+            case "like":
             case "comment":
                 navigation.navigate("Ping", {post_id: data.parent_id})
                 break

@@ -5,7 +5,12 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from '@react-navigation/native';
 import Popover from 'react-native-popover-view';
-import { getUser, getPings, getFollowingPings } from "../../components/handlers";
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
+import _ from 'lodash';
+
+import { getUser, getPings, getFollowingPings, updateUser } from "../../components/handlers";
 import { abbreviate } from '../../components/utils';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
@@ -22,12 +27,72 @@ export default function Feed() {
     const [user, setUser] = useState(null)
     const [pings, setPings] = useState(null)
 
+    
+    function handleRegistrationError(errorMessage) {
+        alert(errorMessage);
+        throw new Error(errorMessage);
+    }
 
+    async function registerForPushNotificationsAsync() {
+        if (Platform.OS === 'android') {
+            Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+            });
+        }
+        
+        if (Device.isDevice) {
+            const { status: existingStatus } = await Notifications.getPermissionsAsync();
+            let finalStatus = existingStatus;
+            if (existingStatus !== 'granted') {
+              const { status } = await Notifications.requestPermissionsAsync();
+              finalStatus = status;
+            }
+
+            if (finalStatus !== 'granted') {
+              handleRegistrationError('Permission not granted to get push token for push notification!');
+              return;
+            }
+
+            const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+
+            if (!projectId) {
+              handleRegistrationError('Project ID not found');
+            }
+            
+            try {
+                const pushTokenString = (
+                    await Notifications.getExpoPushTokenAsync({
+                    projectId,
+                    })
+                ).data;
+
+                console.log("Found Expo Push Token:", pushTokenString);
+                return pushTokenString;
+            } catch (e) {
+                handleRegistrationError(`${e}`);
+            }
+        } else {
+            handleRegistrationError('Must use physical device for push notifications');
+        }
+    }
+      
+    
     async function fetchPingsAndColleges() {
         setRefreshing(true)
 
         const fetchedUser = await getUser()
         setUser(fetchedUser)
+
+        const token = await registerForPushNotificationsAsync()
+        if (token != fetchedUser.expo_notification_id) {
+            console.log("Token has changed! Updating...")
+            await updateUser("expo_notification_id", token)
+        } else {
+          console.log("Token is the same! Doing nothing...")
+        }
         
         await fetchPings(fetchedUser)
         await fetchColleges(fetchedUser)
@@ -58,15 +123,14 @@ export default function Feed() {
 
     async function fetchColleges(user) {
         const fetchedColleges = await getColleges()
-        const cleanedColleges = fetchedColleges.map(college => ({ label: college.nickname ? college.nickname : abbreviate(college.name), value: college.name }))
-  
+        const cleanedColleges = fetchedColleges.map(college => ({ label: college.nickname ?? abbreviate(college.name), value: college.name }))
         console.log("Fetched", fetchedColleges.length, 'colleges. First entry:', fetchedColleges[0])
-  
-          setDropdownData([
-            { label: user.college_nickname ? user.college_nickname : abbreviate(user.college), value: 'college' },
-            { label: 'Friends', value: 'friends' },
-            ...cleanedColleges
-          ])
+
+        setDropdownData([
+          { label: user.college_nickname ?? abbreviate(user.college), value: 'college' },
+          { label: 'Following', value: 'friends' },
+          ...cleanedColleges
+        ])
     }
 
     useEffect(() => {
@@ -76,10 +140,8 @@ export default function Feed() {
 
   
     const onRefresh = useCallback(async() => {
-      setFeedType('college')
-      fetchPingsAndColleges()
-      setFeedType('college')
-    }, []);
+      await fetchPingsAndColleges()
+    }, [feedType]);
 
 
  

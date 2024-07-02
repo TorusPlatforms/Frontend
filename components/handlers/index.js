@@ -452,6 +452,7 @@ export async function createEvent({name, address, date, message, image, isPublic
 
   
   if (image) {
+    console.log("Uploading to CDN")
     const uploadedImage = await uploadToCDN(image)
     const image_url = uploadedImage.url
     eventData.image_url = image_url
@@ -508,16 +509,18 @@ export async function deleteEvent(event_id) {
 
 
 export async function uploadToCDN(image) {
-  const serverUrl = 'https://hello-26ufgpn3sq-uc.a.run.app/api/upload';
-  
-  const formData = new FormData();
-  formData.append('image', {
-    uri: image.assets[0].uri,
-    type: 'image/png', // Adjust the type based on the actual image type
-    name: image.assets[0].fileName,
-  });
 
-  try {
+    const serverUrl = 'https://hello-26ufgpn3sq-uc.a.run.app/api/upload';
+    console.warn("Preparnig to upload", image)
+    const uri = image.uri || image.assets[0].uri
+
+    const formData = new FormData();
+      formData.append('image', {
+        uri: uri,
+        type: "image/jpeg",
+        name: uri.split('/').pop() || 'newpic.jpg',
+    });
+
     const response = await fetch(serverUrl, {
       method: 'POST',
       body: formData,
@@ -525,18 +528,14 @@ export async function uploadToCDN(image) {
         'Content-Type': 'multipart/form-data',
       },
     });
-  
+
     if (!response.ok) {
       throw new Error(`Failed to upload image. Status: ${response.status}`);
     }
-  
+
     const responseData = await response.json();
     console.log('Upload successful. Server response:', responseData);
     return (responseData)
-  } catch (error) {
-    console.error('Failed to upload image:', error.message)
-  }
-  
 }
 
 

@@ -1,5 +1,5 @@
 import * as ImagePicker from 'expo-image-picker';
-import { launchCamera } from 'react-native-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
 
 
 export async function requestPhotoLibraryPerms() {
@@ -37,38 +37,26 @@ export async function pickImage(handleImage) {
 };
 
 export async function openCamera(handleImage) {
-try {
-  let result = await ImagePicker.launchCameraAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    allowsEditing: true,
-    quality: 1,
-  });
+    try {
+      let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
+      });
 
-  if (!result.canceled) {
-    console.log('Selected Image from Camera:', result);
-    handleImage(result);
-  }
-} catch (error) {
-  console.error('Error opening the camera', error);
-}
-
-
-launchCamera((response) => {
-    console.log('Camera response:', response);
-    if (response.didCancel) {
-      console.log('User cancelled image picker');
-    } else if (response.error) {
-      console.log('ImagePicker Error: ', response.error);
-    } else {
-      // Handle the selected image (response.uri)
-      console.log('Image URI: ', response.uri);
-      const selectedImage = {
-        uri: response.uri,
-        type: response.type,
-        name: response.fileName,
-      };
-      handleImage(selectedImage);
+      if (!result.canceled) {
+        console.log('Selected Image from Camera:', result);
+        console.log(result.assets[0].uri)
+        const compressedImage = await ImageManipulator.manipulateAsync(
+          result.assets[0].uri,
+          [],
+          { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // Adjust the compression level as needed
+        );
+        console.log("made it!", compressedImage)
+        handleImage(compressedImage);
+      }
+    } catch (error) {
+      console.error('Error opening the camera', error);
     }
-  });
 };
 

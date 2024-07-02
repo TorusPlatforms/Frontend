@@ -137,12 +137,14 @@ function App() {
       screens: {
         Ping: 'ping/:post_id',  
         Loop: 'loop/:loop_id',
-        Notifications: 'notifications'
+        UserProfile: 'user/:username',
+        Notifications: 'notifications',
+        Messages: 'messages'
       },
     };
 
     const linking = {
-      prefixes: [prefix, "https://torusplatforms.com"],
+      prefixes: [prefix],
       config
     };
 
@@ -150,7 +152,7 @@ function App() {
     useEffect(() => {
       const auth = getAuth()
       const unsubscribe = onAuthStateChanged(auth, user => {
-          console.log("State changed")
+          console.log("User State Changed")
   
           if (user && user.emailVerified) {
             setLoggedIn(true)
@@ -170,7 +172,7 @@ function App() {
     useEffect(() => {
       const subscription = Notifications.addNotificationResponseReceivedListener(response => {
         const url = response.notification.request.content.data.url;
-        console.log("Opening url", prefix, url)
+        console.log("Opening URL", prefix, url)
         Linking.openURL(prefix + url);
       });
       return () => subscription.remove();

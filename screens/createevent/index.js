@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Pressable, Platform, Alert, ScrollView } from "react-native";
+import { View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Pressable, Platform, Alert, ScrollView, RefreshControl } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -35,6 +35,7 @@ export default function CreateEvent({ route }) {
   const [showCalendar, setShowCalendar] = useState(Platform.OS === "android" ? false : true);
   const [showClock, setShowClock] = useState(Platform.OS === "android" ? false : true);
 
+  const [refreshing, setRefreshing] = useState()
   
   const [image, setImage] = useState(null);
 
@@ -184,13 +185,8 @@ export default function CreateEvent({ route }) {
 
 
   return (
-    <TouchableWithoutFeedback style={{backgroundColor: "rgb(22, 23, 24)"}} onPress={handleBackgroundPress}>
       <SafeAreaView style={styles.container}>
-          <View style={{flex: 0.1}}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={{ paddingHorizontal: 10 }}>
-              <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} tintColor={"white"}/>} contentContainerStyle={{flex: 1}}>
     
           <View style={{ alignItems: 'center', flex: 0.25}}>
             <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>Create Event</Text>
@@ -247,7 +243,6 @@ export default function CreateEvent({ route }) {
                                         mode={'date'}
                                         onChange={onChangeDate}
                                         accentColor="rgb(47, 139, 128)"
-                                        dateFormat="dayofweek day month"
                                     />
                                   </View>
                                 )}
@@ -320,8 +315,10 @@ export default function CreateEvent({ route }) {
                     <Text style={{ color: "black", textAlign: "center" }}>Post</Text>
                 </TouchableOpacity>
             </View>
+
+            </ScrollView>
+
       </SafeAreaView>
-    </TouchableWithoutFeedback>
   );
 }
 

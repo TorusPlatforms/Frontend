@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, TouchableOpacity, Text, TextInput, Image, Alert, Pressable, ActivityIndicator } from "react-native";
+import { View, TouchableOpacity, Text, TextInput, Image, Alert, Pressable, ActivityIndicator, RefreshControl } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,8 +8,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { pickImage } from '../../components/imagepicker';
 import { createLoop, getUser, joinLoop } from "../../components/handlers";
 import { AlreadyExistsError, InputError } from "../../components/utils/errors";
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-
 
 
 
@@ -21,7 +19,9 @@ export default function CreateLoop() {
     const [isPublic, setIsPublic] = useState(true)
     const [description, setDescription] = useState();
     const [errorMessage, setErrorMessage] = useState(null)
-    
+    const [refreshing, setRefreshing] = useState()
+
+
     async function handleImageSelect(image) {
       if (!image.canceled) {
         setImage(image)
@@ -29,6 +29,8 @@ export default function CreateLoop() {
     };
 
     async function handleCreateLoop() {
+        setRefreshing(true)
+
         try {
 
           if (!name || name.length == 0) {
@@ -56,6 +58,8 @@ export default function CreateLoop() {
           } else {
             console.error(error)
           }
+        } finally {
+          setRefreshing(false)
         }
         
     }
@@ -93,19 +97,16 @@ export default function CreateLoop() {
    
     
     if (!user) {
-      return <ActivityIndicator />
+      return (
+        <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", justifyContent: 'center', alignItems: "center"}}>
+            <ActivityIndicator />
+        </View>
+      )
     }
         
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
-          <KeyboardAwareScrollView contentContainerStyle={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
-
-              <View style={{flex: 0.5}}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 10 }}>
-                  <Text style={{ fontSize: 16, color: "white", paddingLeft: 10 }}>Cancel</Text>
-                </TouchableOpacity>
-              </View>
-        
+          <KeyboardAwareScrollView refreshControl={<RefreshControl refreshing={refreshing} tintColor={"white"}/>} contentContainerStyle={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
 
               <View style={{flex: 1, alignItems: "center"}}>
                 <Text style={{color: "white", textAlign: "center", fontSize: 24}}>Create Your Loop</Text>

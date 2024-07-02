@@ -61,6 +61,7 @@ export const Ping = ({ data, openComment }) => {
     }
 
     useEffect(() => {
+
       setIsLiked(data.isLiked)
       setNumOfLikes(data.numberof_likes)
 
@@ -68,6 +69,7 @@ export const Ping = ({ data, openComment }) => {
         handleComment()
       }
     }, [openComment, data])
+
 
     return (
       <TouchableOpacity onPress={() => navigation.push("Ping", {post_id: data.post_id})} style={{marginVertical: 10, width: "95%", flexDirection: "row", padding: 10, paddingHorizontal: 20}}>
@@ -103,7 +105,7 @@ export const Ping = ({ data, openComment }) => {
           <View style={{flex: 2}}>
             { data.image_url && (
               <Image
-                style={styles.attatchment}
+                style={[styles.attatchment]}
                 source={{uri: data.image_url}}
                 resizeMode='cover'
               />
