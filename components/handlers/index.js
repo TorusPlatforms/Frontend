@@ -511,7 +511,7 @@ export async function deleteEvent(event_id) {
 export async function uploadToCDN(image) {
 
     const serverUrl = 'https://hello-26ufgpn3sq-uc.a.run.app/api/upload';
-    console.warn("Preparnig to upload", image)
+
     const uri = image.uri || image.assets[0].uri
 
     const formData = new FormData();
