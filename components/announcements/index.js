@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, Text, TouchableOpacity } from "react-native";
+import { View, Image, Text, TouchableOpacity, Alert } from "react-native";
 import Feather from '@expo/vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 
@@ -16,7 +16,17 @@ export const Announcement = ({ data }) => {
   }
 
   async function handleDeletePress() {
-    await deleteAnnouncement({ loop_id: data.loop_id, announcement_id: data.announcement_id })
+    Alert.alert("Are you sure you want to delete this announcement?", "This is a permanent action that cannot be undone.", [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'OK', 
+        onPress: async() => await deleteAnnouncement({ loop_id: data.loop_id, announcement_id: data.announcement_id })
+      },
+    ]);
   }
 
   return (
