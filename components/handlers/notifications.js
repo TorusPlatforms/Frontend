@@ -59,7 +59,6 @@ export async function getJoinRequests(loop_id) {
     }
 
     const notifications = await response.json();
-    console.log('notifications :', notifications);
 
     return (notifications)
 

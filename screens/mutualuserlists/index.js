@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { View, Image, Text, SafeAreaView, FlatList, ActivityIndicator, TouchableOpacity, RefreshControl } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 
 import { getFollowings } from "../../components/handlers";
 import styles from "./styles";
@@ -40,7 +39,11 @@ export default function MutualsScreen({ route, navigation }) {
     }, []);
 
     if (!users) {
-        return <ActivityIndicator />
+        return (
+            <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", justifyContent: "center", alignItems: "center"}}>
+                <ActivityIndicator />
+            </View>
+        )
     }
     
     return (

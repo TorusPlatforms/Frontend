@@ -15,7 +15,6 @@ export default function Messages() {
     const navigation = useNavigation()
     const [DMs, setDMs] = useState([])
     const [refreshing, setRefreshing] = useState(false)
-    const isFocused = useIsFocused()
 
     const DirectMessage = ({data}) => (
         <Pressable onPress={() => navigation.navigate("DirectMessage", {username: data.username})} style={{marginVertical: 20, flex: 1, width: "100%", flexDirection: "row", paddingHorizontal: 20, alignItems: "center", justifyContent: 'space-between'}}>
@@ -62,11 +61,12 @@ export default function Messages() {
         setDMs(threads);
     }
 
+    const isFocused = useIsFocused()
 
     useEffect(() => {
-        console.log("Messages screen refocused...")
         fetchThreads()
       }, [isFocused]);
+      
       
     const header = () => (
         <View>

@@ -32,10 +32,10 @@ export default function UserProfile({ route, navigation }) {
 
         if (user.isSelf) {
             navigation.navigate("Profile")
+        } else {
+            const pings = await getUserPings(user.username)
+            setPings(pings)
         }
-
-        const pings = await getUserPings(user.username)
-        setPings(pings)
     }
 
     async function copyUsernameToClipboard() {

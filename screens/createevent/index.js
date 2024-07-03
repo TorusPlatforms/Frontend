@@ -21,7 +21,7 @@ export default function CreateEvent({ route }) {
   const [key, setKey] = useState(null)
 
   const [name, setName] = useState();
-  const [message, setMessage] = useState("An awesome event!");
+  const [message, setMessage] = useState();
   const [address, setAddress] = useState("");
 
   const [errorMessage, setErrorMessage] = useState(null)
@@ -34,10 +34,9 @@ export default function CreateEvent({ route }) {
 
   const [showCalendar, setShowCalendar] = useState(Platform.OS === "android" ? false : true);
   const [showClock, setShowClock] = useState(Platform.OS === "android" ? false : true);
-
-  const [refreshing, setRefreshing] = useState()
   
   const [image, setImage] = useState(null);
+
 
   async function fetchUser() {
     const user = await getUser()
@@ -56,8 +55,6 @@ export default function CreateEvent({ route }) {
 
     requestCameraPerms()
     requestPhotoLibraryPerms()
-
-   
   }, []); 
 
   const handleBackgroundPress = () => {
@@ -185,9 +182,10 @@ export default function CreateEvent({ route }) {
 
 
   return (
+    <TouchableWithoutFeedback onPress={handleBackgroundPress}>
+
       <SafeAreaView style={styles.container}>
-        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} tintColor={"white"}/>} contentContainerStyle={{flex: 1}}>
-    
+
           <View style={{ alignItems: 'center', flex: 0.25}}>
             <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>Create Event</Text>
             <Text style={{ fontSize: 16, color: "white", textAlign: "center", marginTop: 5, paddingHorizontal: 25 }}>{route.params?.loop ? `Posting in ${route.params.loop.name}` : "Get together. Reunite. Connect."}</Text>
@@ -315,9 +313,9 @@ export default function CreateEvent({ route }) {
                 </TouchableOpacity>
             </View>
 
-            </ScrollView>
-
       </SafeAreaView>
+      </TouchableWithoutFeedback>
+
   );
 }
 

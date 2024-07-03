@@ -132,8 +132,8 @@ export const Event = ({ data, navigation }) => {
 
                           { data.isCreator && (
                             <TouchableOpacity onPress={handleDelete}>
-                                <Ionicons
-                                    name="trash-outline"
+                                <Feather
+                                    name="trash"
                                     size={24}
                                     color="black"
                                     style={{ position: 'absolute', bottom: 10, right: 10 }}

@@ -175,7 +175,7 @@ function App() {
 
     if (loading) {
       return <SplashScreen />
-    } else {
+    }
 
     return (
       <GestureHandlerRootView style={{backgroundColor: "rgb(22, 23, 24)", flex: 1}}>
@@ -246,7 +246,7 @@ function App() {
       </NavigationContainer>
       </SafeAreaProvider>
       </GestureHandlerRootView>
-    );}
+    );
 }
 
 export default App;
