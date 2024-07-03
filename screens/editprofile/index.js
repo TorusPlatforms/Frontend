@@ -95,7 +95,7 @@ export default function EditProfile() {
               <Text style={{color: "white", flex: 1}}>{user.display_name}</Text>
             </Pressable>
 
-            <Pressable onPress={() => navigation.navigate("EditField", {field: "Bio", endpoint: "bio", user: user, type: "user"})} style={styles.updateField}>
+            <Pressable onPress={() => navigation.navigate("EditField", {field: "Bio", endpoint: "bio", user: user, type: "user", maxLength: 150})} style={styles.updateField}>
               <Text style={{color: "white", flex: 0.5}}>Bio</Text>
               <Text style={{color: "white", flex: 1}}>{user.bio}</Text>
             </Pressable>

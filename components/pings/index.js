@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, forwardRef } from "react";
-import { Text, View, SafeAreaView, Image, Share, FlatList, Pressable, Alert, Modal, TouchableOpacity } from 'react-native'
+import { Text, View, SafeAreaView, Image, Share, TextInput, Pressable, Alert, Modal, TouchableOpacity } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from "@expo/vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
@@ -99,8 +99,8 @@ export const Ping = ({ data, openComment }) => {
               </View>
       
 
-            <Text style={styles.text}>{data.content}</Text>
-          </View>
+              <TextInput multiline editable={false} style={[styles.text, {padding: 2}]} value={data.content}></TextInput>
+            </View>
         
           <View style={{flex: 2}}>
             { data.image_url && (

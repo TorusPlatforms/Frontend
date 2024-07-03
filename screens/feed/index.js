@@ -3,7 +3,7 @@ import { Text, View, TextInput, Pressable, FlatList, Image, TouchableOpacity, Mo
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Dropdown } from 'react-native-element-dropdown';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import Popover from 'react-native-popover-view';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
@@ -133,9 +133,10 @@ export default function Feed() {
         ])
     }
 
+    const isFocused = useIsFocused()
     useEffect(() => {
       fetchPingsAndColleges()
-    }, [feedType]); 
+    }, [feedType, isFocused]); 
     
 
   

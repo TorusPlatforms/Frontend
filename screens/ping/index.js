@@ -159,7 +159,7 @@ export default function Ping({ route }) {
                     </View>
             
 
-                  <Text style={styles.text}>{post.content}</Text>
+                    <TextInput multiline editable={false} style={[styles.text, {padding: 2}]} value={post.content}></TextInput>
               </View>
         </View>
 

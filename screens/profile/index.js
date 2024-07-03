@@ -157,7 +157,7 @@ export default function Profile() {
                 </Pressable>
             </View> */}
         
-            <View style={{ flex: 1, flexDirection: 'row' }}>
+            <View style={{ flex: 0.8, flexDirection: 'row' }}>
                 <View style={{ flex: 1, alignItems: "center" }}>
                     <Pressable onPress={() => navigation.navigate("Edit Profile")}>
                         <Image style={{ width: 100, height: 100, borderRadius: 50 }} source={{uri: user.pfp_url}}/>
@@ -192,7 +192,7 @@ export default function Profile() {
             </View>
                     
         
-            <View style={{ alignItems: "center", flex: 0.75 }}>
+            <View style={{ alignItems: "center", flex: 0.8 }}>
                 <View style={{ width: 250, height: 250, borderRadius: 125 }}>
                     {loops?.length > 0 && (
                         <Pressable onPress={() => navigation.navigate("My Loops")} style={{ width: 80, height: 80, borderRadius: 40, alignSelf: "center", top: 85, zIndex: 1, justifyContent: "center", alignItems: "center" }}>

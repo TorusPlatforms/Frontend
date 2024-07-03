@@ -86,7 +86,6 @@ export default function MyLoops() {
         </Animated.View>
 
         <FlatList
-            style={{ paddingHorizontal: 20 }}
             data={filteredLoops}
             renderItem={({ item }) => <Loop data={item} goToLoop={goToLoop} />}
             ItemSeparatorComponent={() => <View style={styles.item_seperator} />}

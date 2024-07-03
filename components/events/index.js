@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Image, Text, Pressable, Alert, TouchableOpacity } from "react-native";
+import { View, Image, Text, Pressable, Alert, TouchableOpacity, TextInput } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 
@@ -102,8 +102,8 @@ export const Event = ({ data, navigation }) => {
                       </View>
 
                       <View style={{marginTop: 15, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" }}>
-                          <Text style={{ color: "white", maxWidth: 200 }}>{data.message || data?.message}</Text>
-                          
+                          <TextInput multiline editable={false} style={{ color: "white", maxWidth: 200, padding: 2 }} value={data.message}></TextInput>
+
                           {!data.image_url && data.isCreator && (
                             <TouchableOpacity onPress={handleDelete}>
                                 <Feather

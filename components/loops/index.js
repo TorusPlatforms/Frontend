@@ -20,14 +20,17 @@ export const Loop = ({ data, goToLoop }) => {
 
   return (
     <TouchableOpacity onPress={() => goToLoop(data.loop_id)}>
-      <View style={{ marginVertical: 20, width: "100%", flexDirection: "row", paddingHorizontal: 20 }}>
-          <Image style={{ width: 100, height: 100, borderRadius: 50 }} source={{ uri: data.pfp_url || data?.pfp_url  }} />
+      <View style={{ marginVertical: 20, width: "100%", flexDirection: "row", paddingHorizontal: 20, justifyContent: "space-between" }}>
+        <View style={{flexDirection: "row", flex: 1}}>
+            <Image style={{ width: 100, height: 100, borderRadius: 50 }} source={{ uri: data.pfp_url || data?.pfp_url  }} />
+            
+            <View style={{ flex: 3, left: 20, maxWidth: 200 }}>
+              <Text style={{ color: "white", fontWeight: "bold"}}>{data.name || data?.name}</Text>
+              <Text style={{ color: "white", fontSize: 12, fontStyle: 'italic', marginTop: 2}}>{data.location || data?.location}</Text>
+              <Text style={{ color: "white", marginTop: 10 }}>{data.description || data?.description}</Text>
+            </View>
+        </View>
           
-          <View style={{ flex: 3, left: 20 }}>
-            <Text style={{ color: "white", fontWeight: "bold", maxWidth: 150 }}>{data.name || data?.name}</Text>
-            <Text style={{ color: "white", fontSize: 12, fontStyle: 'italic', marginTop: 2}}>{data.location || data?.location}</Text>
-            <Text style={{ color: "white", marginTop: 10 }}>{data.description || data?.description}</Text>
-          </View>
           
           { data.isJoined && (
             <Pressable onPress={handleStar}>

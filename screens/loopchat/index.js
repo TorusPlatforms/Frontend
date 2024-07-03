@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { ActivityIndicator, View, Text, TouchableOpacity, Image } from "react-native";
 import { GiftedChat } from 'react-native-gifted-chat';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from "@react-navigation/native";
 import { getFirestore, onSnapshot, doc } from "firebase/firestore"
@@ -13,6 +13,7 @@ import { getChats, sendChat, getUser} from '../../components/handlers';
 
 export default function LoopChat({ route }) {
   const navigation = useNavigation()
+  const insets = useSafeAreaInsets();
 
   const [messages, setMessages] = useState([])
   const [user, setUser] = useState();
@@ -20,7 +21,7 @@ export default function LoopChat({ route }) {
   const [unsubscribe, setUnsubscribe] = useState(null)
   const db = getFirestore();
   
-  const { loop } = route.params;
+  const { loop, fullScreen } = route.params;
 
 
   useEffect(() => {
@@ -61,6 +62,7 @@ export default function LoopChat({ route }) {
 
 
   const onSend = useCallback(async (messages = []) => {
+    navigation.navigate("LoopChat", {loop: loop, fullScreen: true})
     await sendChat(loop.loop_id, messages[0].text);
     setMessages(previousMessages =>
       GiftedChat.append(messages, previousMessages),
@@ -70,13 +72,25 @@ export default function LoopChat({ route }) {
 
 
   if (!user || !messages) {
-    return <ActivityIndicator />
+    return (
+      <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", justifyContent: "center", alignItems: "center"}}>
+          <ActivityIndicator />
+      </View>
+    )
   }
 
 
   return (
-    <SafeAreaView style={styles.container}>
-         <View style={{paddingHorizontal: 20, flexDirection: "row", alignItems: "center", borderBottomWidth: 1, borderColor: "gray", padding: 10, marginBottom: 20}}>
+    <View style={[styles.container, {
+      paddingLeft: insets.left,
+      paddingRight: insets.right,
+      paddingTop: fullScreen ? insets.top : 25,
+      paddingBottom: fullScreen ? insets.bottom : 0,
+
+    }]}>
+
+      {fullScreen && (
+        <View style={{paddingHorizontal: 20, flexDirection: "row", alignItems: "center", borderBottomWidth: 1, borderColor: "gray", padding: 10, marginBottom: 20}}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Ionicons name="arrow-back" size={24} color="white" />        
             </TouchableOpacity>
@@ -85,12 +99,15 @@ export default function LoopChat({ route }) {
 
             <Text style={{color: 'white', fontSize: 16}}>{loop.name}</Text>
         </View>
+      )}
+         
 
         <ChatComponent
           messages={messages}
           onSend={messages => onSend(messages)}
           id={user.username}
         />
-    </SafeAreaView>
+
+    </View>
   );
 }
