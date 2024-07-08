@@ -1,20 +1,35 @@
 import React from 'react';
 import { View, Image, Text, TouchableOpacity, Alert } from "react-native";
 import Feather from '@expo/vector-icons/Feather';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
 
 import { deleteAnnouncement } from '../handlers';
 import { findTimeAgo } from '../utils';
 import styles from "./styles"
+import { resendAnnouncement } from '../handlers/notifications';
 
 
-export const Announcement = ({ data }) => {
+export const Announcement = ({ data, isOwner }) => {
   const navigation = useNavigation()
   
   function handleAuthorPress() {
       navigation.navigate("UserProfile", {username: data.author});
   }
 
+  async function handleResendPress() {
+    Alert.alert("Are you sure you want to resend this announcement?", "This will re-notify everyone in the loop.", [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'OK', 
+        onPress: async () => await resendAnnouncement({announcement_id: data.announcement_id, loop_id: data.loop_id})
+      },
+    ]);
+  }
   async function handleDeletePress() {
     Alert.alert("Are you sure you want to delete this announcement?", "This is a permanent action that cannot be undone.", [
       {
@@ -52,9 +67,18 @@ export const Announcement = ({ data }) => {
             <View style={{flexDirection: "row", justifyContent: 'space-between' }}>
                 <Text style={styles.text}>{data.content}</Text>
 
-                <TouchableOpacity onPress={handleDeletePress}>
-                  <Feather style={styles.pingIcon} name="trash" size={18} />
-                </TouchableOpacity>
+                {isOwner && (
+                    <View style={{flexDirection: "row"}}>
+                      <TouchableOpacity onPress={handleResendPress}>
+                        <MaterialCommunityIcons style={[styles.pingIcon, {marginRight: 10}]} name="bell-ring" size={18} color="white" />                  
+                      </TouchableOpacity>
+
+                      <TouchableOpacity onPress={handleDeletePress}>
+                        <Feather style={styles.pingIcon} name="trash" size={18} />
+                      </TouchableOpacity>
+                    </View>
+                )}
+                
             </View>
             
           </View>

@@ -11,7 +11,7 @@ import styles from "./styles";
 export default function LoopAnnouncements({ route }) {
   const navigation = useNavigation()
 
-  const { loop } = route.params;
+  const { loop_id, isOwner } = route.params;
   
   const [announcements, setAnnouncements] = useState([]);
 
@@ -47,19 +47,24 @@ export default function LoopAnnouncements({ route }) {
 
 
   async function fetchAnnouncements() {
-    const announcements = await getAnnouncements(loop.loop_id)
+    const announcements = await getAnnouncements(loop_id)
     console.log(announcements)
     setAnnouncements(announcements)
   }
 
   useEffect(() => {
+    console.log(route.params)
     fetchAnnouncements()
   }, []);
 
 
 
   if (!announcements) {
-    return <ActivityIndicator />
+    return (
+      <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", justifyContent: "center", alignItems: "center"}}>
+          <ActivityIndicator />
+      </View>
+    )
   }
 
 
@@ -71,16 +76,16 @@ export default function LoopAnnouncements({ route }) {
             data={announcements}
             renderItem={
               ({item}) => 
-                <Announcement data={item} />
+                <Announcement data={item} isOwner={isOwner}/>
             }
             ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
             onMomentumScrollBegin={handleScrollBegin}
             onMomentumScrollEnd={handleScrollEnd}
         />
         
-        {loop.isOwner && (
+        {isOwner && (
           <Animated.View style={{opacity: fadeAnim, width: 50, height: 50, borderRadius: 25, backgroundColor: "rgb(47, 139, 128)", position: "absolute", bottom: 50, right: 25, alignItems: "center", justifyContent: "center"}}>
-              <Pressable onPress={() => navigation.navigate("CreateAnnouncement", {loop: loop})}>
+              <Pressable onPress={() => navigation.navigate("CreateAnnouncement", {loop_id: loop_id})}>
                   <Ionicons size={50} color={"white"} name="add" />
               </Pressable>
           </Animated.View>

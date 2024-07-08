@@ -106,6 +106,7 @@ export default function LoopChat({ route }) {
           messages={messages}
           onSend={messages => onSend(messages)}
           id={user.username}
+          loop={loop}
         />
 
     </View>

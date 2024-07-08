@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { View, Image, Text, Animated, Dimensions, Pressable, Modal, FlatList, RefreshControl, ActivityIndicator, Touchable } from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Entypo from '@expo/vector-icons/Entypo';
 
@@ -15,6 +15,7 @@ export default function Messages() {
     const navigation = useNavigation()
     const [DMs, setDMs] = useState([])
     const [refreshing, setRefreshing] = useState(false)
+    const insets = useSafeAreaInsets()
 
     const DirectMessage = ({data}) => (
         <Pressable onPress={() => navigation.navigate("DirectMessage", {username: data.username})} style={{marginVertical: 20, flex: 1, width: "100%", flexDirection: "row", paddingHorizontal: 20, alignItems: "center", justifyContent: 'space-between'}}>
@@ -93,7 +94,7 @@ export default function Messages() {
     
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={[styles.container, {paddingLeft: insets.left, paddingRight: insets.right}]}>
             <FlatList
                 ListHeaderComponent={header}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"} />}
@@ -101,6 +102,6 @@ export default function Messages() {
                 renderItem={({item}) => <DirectMessage data={item} />}
                 ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
             />
-        </SafeAreaView>
+        </View>
     )
 }

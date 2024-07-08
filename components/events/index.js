@@ -50,14 +50,14 @@ export const Event = ({ data, navigation }) => {
         Linking.openURL(`https://calendar.google.com/calendar/u/0/r/eventedit?text=${data.name}&dates=${convertTimestampToCustomFormat(data.time)}&details=${data.message}+\n\nLocation: ${data.address}&sf=true&output=xml`)
     }
 
-    function handleLoopPress() {
-      navigation.push("Loop", {loop_id: data.loop_id})
-    }
 
     function handleUserPress() {
-      navigation.push("UserProfile", {username: data.author})
+      if (data.loop_id) {
+        navigation.push("Loop", {loop_id: data.loop_id})
+      } else {
+        navigation.push("UserProfile", {username: data.author})
+      }
     }
-
 
     return (
         <View style={{ marginVertical: 20, width: "100%", flexDirection: "row", flex: 1, paddingBottom: 10 }}>
@@ -78,19 +78,19 @@ export const Event = ({ data, navigation }) => {
               <View style={{borderRadius: 20, borderWidth: 2, borderColor: "gray"}}>
                 <View style={{ justifyContent: "space-between", padding: 20, minHeight: 150}}>
                       <View>
-                        <View style={{flexDirection: 'row', justifyContent: "space-between"}}>
+                          <TouchableOpacity onPress={handleUserPress}>
+                              <Text style={{ color: "lightgray", fontSize: 12 }}>{(data.loop_id && data.public) ? "[LOOP] " : ""}{data.author}</Text>
+                          </TouchableOpacity>
+
+                        <View style={{flexDirection: 'row', justifyContent: "space-between", marginVertical: 4}}>
                           <Text style={{ color: "white", fontWeight: "bold", fontSize: 16, maxWidth: 150 }}>{data.name || data?.name}</Text>
 
-                          {(data.loop_id) && (
+                          {/* {(data.loop_id) && (
                             <TouchableOpacity onPress={handleLoopPress}>
                                 <Text style={{ color: "white", fontSize: 12, textAlign: "right", maxWidth: 100 }}>[Hosted]</Text>
                             </TouchableOpacity>
-                          )}
+                          )} */}
                         </View>
-
-                        <TouchableOpacity onPress={handleUserPress}>
-                            <Text style={{ color: "white", fontStyle: "italic" }}>@{data.author}</Text>
-                        </TouchableOpacity>
 
                         <TouchableOpacity onPress={openCalender}>
                             <Text style={{ color: "white" }}>{strfEventDate(data.time)} @ {strfEventTime(data.time)}</Text>

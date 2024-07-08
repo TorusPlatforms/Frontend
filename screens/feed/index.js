@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback, useMemo, forwardRef } from 'react'
-import { Text, View, TextInput, Pressable, FlatList, Image, TouchableOpacity, Modal, Platform, RefreshControl, Share, Alert, ActivityIndicator } from 'react-native'
+import { Text, View, Animated, Pressable, FlatList, Image, TouchableOpacity, Modal, Platform, RefreshControl, Share, Alert, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Feather from '@expo/vector-icons/Feather';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import Popover from 'react-native-popover-view';
@@ -27,10 +28,43 @@ export default function Feed() {
     const [user, setUser] = useState(null)
     const [pings, setPings] = useState(null)
 
-    
+    const flatListRef = useRef(0);
+    const currentScrollPosition = useRef()
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+
+
+    const scrollToTop = () => {
+      if (flatListRef.current) {
+        flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+      }
+    };
+
+    onScroll = (event) => {
+      currentScrollPosition.current = event.nativeEvent.contentOffset.y
+    }
+
+    const handleScrollEnd = () => {
+      if (currentScrollPosition.current && currentScrollPosition.current > 1000) {
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 1500,
+          useNativeDriver: true,
+        }).start();
+      } 
+    };
+  
+    const handleScrollBegin = () => {
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 100,
+        useNativeDriver: true,
+      }).start();
+    };
+  
+
     function handleRegistrationError(errorMessage) {
-        alert(errorMessage);
-        throw new Error(errorMessage);
+        console.error(errorMessage);
+        //throw new Error(errorMessage);
     }
 
     async function registerForPushNotificationsAsync() {
@@ -87,7 +121,7 @@ export default function Feed() {
         setUser(fetchedUser)
 
         const token = await registerForPushNotificationsAsync()
-        if (token != fetchedUser.expo_notification_id) {
+        if (token && token != fetchedUser.expo_notification_id) {
             console.log("Token has changed! Updating...")
             await updateUser("expo_notification_id", token)
         } else {
@@ -102,7 +136,7 @@ export default function Feed() {
 
     async function fetchPings(user) {
         let fetchedPings = []
-
+        console.log("Getting feed for type:", feedType)
         switch (feedType) {
           case "friends":
             console.log("Fetching friends")
@@ -135,7 +169,9 @@ export default function Feed() {
 
     const isFocused = useIsFocused()
     useEffect(() => {
-      fetchPingsAndColleges()
+      if (isFocused) {
+        fetchPingsAndColleges()
+      }
     }, [feedType, isFocused]); 
     
 
@@ -184,24 +220,22 @@ export default function Feed() {
                 <TouchableOpacity onPress={() => navigation.navigate("Search Colleges")}>
                     <Ionicons name="school" size={24} color="white" />
                 </TouchableOpacity>
+           
+                <TouchableOpacity onPress={() => navigation.navigate("Messages")}>
+                    <Ionicons name="chatbubble-ellipses" size={24} color="white" />
 
-                <Popover
-                    from={(
-                      <TouchableOpacity>
-                          <Ionicons name="information-circle" size={24} color="white" />
-                      </TouchableOpacity>
-                    )}>
-
-                    <View style={{backgroundColor: "rgb(22, 23, 24)", padding: 20}}>
-                      <Text style={{color: "white"}}>Your account has been registered to: {user.college}</Text>
-                    </View>
-                </Popover>
+                    { user.hasUnreadMessages && (
+                        <View style={{backgroundColor: "red", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
+                    )}
+                </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => navigation.navigate("Notifications")}>
                     <Ionicons name="notifications-outline" size={24} color="white" />
                     
-                    { user.hasUnreadNotifications && (
-                        <View style={{backgroundColor: "red", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
+                    { user.notifications > 0 && (
+                        <View style={{backgroundColor: "red", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute", justifyContent: "center", alignItems: "center"}}>
+                            <Text style={{color: "white", fontSize: 10}}>{user.notifications}</Text>
+                        </View>
                     )}
 
                 </TouchableOpacity>
@@ -214,13 +248,26 @@ export default function Feed() {
           <SafeAreaView style={styles.container}>
 
               <FlatList
+                    ref={flatListRef}
                     ListHeaderComponent={header}
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"}/>}
                     data={pings}
                     renderItem={({item}) => (<Ping data={item} />)}
                     ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
                     keyExtractor={(item) => item.post_id}
+                    scrollEventThrottle={16}
+                    onMomentumScrollBegin={handleScrollBegin}
+                    onMomentumScrollEnd={handleScrollEnd}
+                    onScroll={onScroll}
                 />                 
+
+              <Animated.View style={{opacity: fadeAnim, width: 50, height: 50, borderRadius: 25, backgroundColor: "white", position: "absolute", top: 100, right: 25, alignItems: "center", justifyContent: "center"}}>
+                  <Pressable onPress={scrollToTop}>
+                      <Feather name="arrow-up" size={24} color="black" />                  
+                  </Pressable>
+              </Animated.View>
+      
+
             </SafeAreaView>
         )
     }

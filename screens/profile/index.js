@@ -130,8 +130,10 @@ export default function Profile() {
     const isFocused = useIsFocused()
 
     useEffect(() => {
-        fetchLoops();
-        fetchUser();
+        if (isFocused) {
+            fetchLoops();
+            fetchUser();
+        }
       }, [isFocused]);
     
 
@@ -192,14 +194,15 @@ export default function Profile() {
             </View>
                     
         
-            <View style={{ alignItems: "center", flex: 0.8 }}>
+            <View style={{ alignItems: "center", flex: 0.7 }}>
                 <View style={{ width: 250, height: 250, borderRadius: 125 }}>
                     {loops?.length > 0 && (
-                        <Pressable onPress={() => navigation.navigate("My Loops")} style={{ width: 80, height: 80, borderRadius: 40, alignSelf: "center", top: 85, zIndex: 1, justifyContent: "center", alignItems: "center" }}>
-                            <MaterialCommunityIcons name="google-circles-communities" color={"gray"} size={60}/>
-                        </Pressable>
-                        
-
+                        <View style={{ width: 80, height: 80, borderRadius: 40, alignSelf: "center", top: 85, zIndex: 1, justifyContent: "center", alignItems: "center" }}>
+                            <Image 
+                                source={require('../assets/torus.png')}
+                                style={{height: 75, width: 75}}
+                            />
+                        </View>
                     )}
 
                     <LoopsSpiral />

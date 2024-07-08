@@ -122,3 +122,29 @@ export async function rejectRequest(data) {
       console.error(error.message)
   }  
 }
+
+export async function resendAnnouncement({announcement_id, loop_id}) {
+  const token = await getToken()
+  
+  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/announcements/${announcement_id}/resend`;
+
+  try {
+      const response = await fetch(serverUrl, {
+          method: "POST",
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+          },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Resending ANnouncement! Status: ${response.status}`);
+      }
+  
+      const status = await response.json();
+  
+      return (status)
+  } catch (error) {
+      console.error(error.message)
+  }  
+}

@@ -61,7 +61,12 @@ export const Ping = ({ data, openComment }) => {
     }
 
     useEffect(() => {
-
+    //   Image.getSize(data.image_url, (width, height) => {
+    //     console.log({ width, height });
+    // }, error => {
+    //     console.error('Error getting image size:', error);
+    // });
+    
       setIsLiked(data.isLiked)
       setNumOfLikes(data.numberof_likes)
 

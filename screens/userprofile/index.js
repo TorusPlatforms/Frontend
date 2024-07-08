@@ -75,12 +75,12 @@ export default function UserProfile({ route, navigation }) {
 
                 <View style={{ flex: 1, paddingRight: 30 }}>
                     <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                        <Pressable onPress={() => navigation.navigate("MutualUserLists", {username: user.username, initialScreen: "Followers"})}>
+                        <Pressable onPress={() => navigation.push("MutualUserLists", {username: user.username, initialScreen: "Followers"})}>
                             <Text style={{fontWeight: "bold", textAlign: "center", color: "white"}}>{user.follower_count}</Text>
                             <Text style={{color: "white"}}>Followers</Text>
                         </Pressable>
 
-                        <Pressable onPress={() => navigation.navigate("MutualUserLists", {username: user.username, initialScreen: "Following"})}>
+                        <Pressable onPress={() => navigation.push("MutualUserLists", {username: user.username, initialScreen: "Following"})}>
                             <Text style={{fontWeight: "bold", textAlign: "center", color: "white"}}>{user.following_count}</Text>
                             <Text style={{color: "white"}}>Following</Text>
                         </Pressable>

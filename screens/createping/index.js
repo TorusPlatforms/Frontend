@@ -57,10 +57,7 @@ export default function CreatePing({ route }) {
     setRefreshing(true)
     const postData = {
       author: (route.params?.loop && isPublic) ? route.params.loop.name : user.username, 
-      pfp_url: (route.params?.loop && isPublic) ? route.params.loop.pfp_url : user.pfp_url, 
       content: content, 
-      // latitude: location?.coords.latitude, 
-      // longitude: location?.coords.longitude, 
       college: user.college, 
       image: image, 
       loop_id: route.params?.loop?.loop_id,

@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 
 import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } from "../../components/imagepicker";
-import { getUser, sendAnnouncement } from "../../components/handlers";
+import { getLoop, getUser, sendAnnouncement } from "../../components/handlers";
 import styles from "./styles";
 
 
@@ -13,20 +13,26 @@ export default function CreateAnnouncement({ route }) {
   const navigation = useNavigation();
 
   const [user, setUser] = useState(null)
+  const[loop, setLoop] = useState(null)
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
   const [refreshing, setRefreshing] = useState()
-  const { loop } = route.params
+  const { loop_id } = route.params
 
 
   async function fetchUser() {
       const user = await getUser()
       setUser(user)
   }
+
+  async function fetchLoop() {
+    const fetchedLoop = await getLoop(loop_id)
+    setLoop(fetchedLoop)
+  }
   
   useEffect(() => {
     fetchUser()
-
+    fetchLoop()
     requestCameraPerms()
     requestPhotoLibraryPerms()
   }, []); 

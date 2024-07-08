@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { View, Animated, SafeAreaView, RefreshControl, FlatList } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-elements";
 
 import { getJoinedLoops } from "../../components/handlers";
@@ -46,14 +46,42 @@ export default function MyLoops() {
 
 
     async function fetchLoops() {
-        const loops = await getJoinedLoops(); 
-        setLoops(loops);
+        const fetchedLoops = await getJoinedLoops(); 
+
+        fetchedLoops.sort((a, b) => {
+            if (a.isStarred === true && b.isStarred !== true) {
+                return -1;
+            }
+            if (a.isStarred !== true && b.isStarred === true) {
+                return 1;
+            }
+
+            if (a.hasUnreadAnnouncements === true && b.hasUnreadAnnouncements !== true) {
+                return -1;
+            }
+            if (a.hasUnreadAnnouncements !== true && b.hasUnreadAnnouncements === true) {
+                return 1;
+            }
+
+            if (a.hasUnreadMessages === true && b.hasUnreadMessages !== true) {
+                return -1;
+            }
+            if (a.hasUnreadMessages !== true && b.hasUnreadMessages === true) {
+                return 1;
+            }
+            return 0;
+        })
+
+        setLoops(fetchedLoops);
     };
 
+    const isFocused = useIsFocused()
 
     useEffect(() => {
-        fetchLoops();
-    }, []);
+        if (isFocused) {
+            fetchLoops();
+        }
+    }, [isFocused]);
 
     
     const onScroll = Animated.event(

@@ -3,13 +3,13 @@ import { View, TouchableOpacity, Image, Text, ScrollView, Alert, ActivityIndicat
 import * as Linking from 'expo-linking';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import Entypo from '@expo/vector-icons/Entypo';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 import { getLoop, getUser, joinLoop, leaveLoop } from "../../components/handlers";
 import LoopPings from "../looppings";
 import LoopEvents from "../loopevents";
-import LoopAnnouncements from '../loopannouncements';
 import LoopChat from '../loopchat';
 
 import styles from "./styles"
@@ -43,21 +43,6 @@ export default function LoopsPage({ route }) {
   async function handleJoinLoop() {
     await joinLoop(loop_id);
     navigation.replace("Loop", {loop_id: loop_id})
-  }
-
-  async function handleLeave() {
-    Alert.alert(`Are you sure you want to leave ${loop.name}`, 'You will be able to rejoin or request to rejoin at any time.', [
-      {
-        text: 'Cancel',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      {text: 'OK', onPress: async() => {
-        console.log('OK Pressed')
-        await leaveLoop(loop.loop_id)
-        navigation.navigate("Community")
-      }},
-    ]);
   }
 
   async function handleShare() {
@@ -97,30 +82,27 @@ export default function LoopsPage({ route }) {
 
             {loop.isJoined && (
                 <View style={{flexDirection: "row", justifyContent: "space-between", width: 90}}>
-                    <TouchableOpacity onPress={() => navigation.push("LoopChat", {loop: loop})}>
-                      <Ionicons name="chatbubble-ellipses" size={24} color="white" />            
+                    <TouchableOpacity onPress={() => navigation.push("LoopAnnouncements", {loop_id: loop.loop_id, isOwner: loop.isOwner})}>
+                      <Entypo name="megaphone" size={24} color="white" /> 
+
+                      { loop.hasUnreadAnnouncements && (
+                        <View style={{backgroundColor: "red", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
+                      )}
+                    
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => navigation.push("LoopMembers", {loop_id: loop.loop_id, isOwner: loop.isOwner, hasPendingRequests: loop.hasPendingRequests})}>
 
                       <Ionicons name="information-circle" size={24} color="white" />
-                      { loop.hasPendingRequests && (
+                      { loop.hasPendingRequests && loop.isOwner && (
                         <View style={{backgroundColor: "red", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
                       )}
 
                     </TouchableOpacity>
 
-                    {!loop.isOwner && (
-                        <TouchableOpacity onPress={handleLeave}>
-                          <Ionicons name="exit" size={24} color="white" />      
-                        </TouchableOpacity>
-                    )}
-                    
-                    {loop.isOwner && (
-                      <TouchableOpacity onPress={() => navigation.push("EditLoop", {loop_id: loop_id})}>
-                          <Ionicons name="settings" size={24} color="white" />                    
-                      </TouchableOpacity>
-                    )}
+                    <TouchableOpacity onPress={() => navigation.push("EditLoop", {loop_id: loop_id})}>
+                        <Ionicons name="settings" size={24} color="white" />                    
+                    </TouchableOpacity>
                 </View>
             )}
         </View>

@@ -1,12 +1,13 @@
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import * as Notifications from 'expo-notifications';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import React, { useState, useRef, useEffect } from "react";
-import { StatusBar, Text, View, TouchableOpacity, Platform } from "react-native";
+import { StatusBar, Image, View, TouchableOpacity, Platform } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as Linking from 'expo-linking';
@@ -45,6 +46,7 @@ import Comments from './screens/comments';
 import SearchColleges from './screens/searchcolleges';
 import Ping from './screens/ping';
 import SplashScreen from './screens/splashscreen';
+import LoopAnnouncements from './screens/loopannouncements';
 
 
 const firebaseConfig = {
@@ -71,13 +73,15 @@ if (getApps().length) {
 Notifications.setNotificationHandler({
   handleNotification: async (notification) => {
     return {
-      shouldShowAlert: notification?.request?.content?.data?.url != "messages",
+      shouldShowAlert: !(['messages', 'loop_message'].includes(notification?.request?.content?.data?.type)),
       shouldPlaySound: false,
       shouldSetBadge: false,
     };
   },
 });
 
+
+Notifications.setBadgeCountAsync(0)
 
 const prefix = Linking.createURL('/');
 
@@ -92,7 +96,7 @@ const Tabs = () => {
       <Tab.Screen name="Feed" component={FeedScreens} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "home" : "home-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="Community" component={DiscoverTabs} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "search" : "search-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="CreateContainer" listeners={({ navigation }) => ({tabPress: (e) => {e.preventDefault(); navigation.navigate("Create")}})} component={CreatePing} options={{ presentation: "modal", tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "add-circle" : "add-circle-outline"} color={"white"} size={size}/>)}} />
-      <Tab.Screen name="Messages" component={Messages} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "chatbox" : "chatbox-outline"} color={"white"} size={size}/>)}}/>
+      <Tab.Screen name="MyLoops" component={MyLoops} options={{tabBarIcon: ({ focused, size }) => (<MaterialCommunityIcons name={focused ? "account-group" : "account-group-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="Profile" component={Profile} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "person" : "person-outline"} color={"white"} size={size}/>)}}/>
     </Tab.Navigator>
   )
@@ -173,8 +177,12 @@ function App() {
       return () => subscription.remove();
     }, []);
 
+
+
     if (loading) {
-      return <SplashScreen />
+      return (
+          <SplashScreen />
+      )
     }
 
     return (
@@ -212,13 +220,15 @@ function App() {
                 <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: true, headerTitleAlign: "center" }} />
                 <Stack.Screen name="Comments" component={Comments} options={{ presentation: "modal", gestureEnabled: true, headerShown: true, headerLeft: () => (<View />), headerBackVisible: false, headerTitleAlign: 'center' }} />
                 <Stack.Screen name="LoopMembers" component={LoopMembers} options={{ presentation: "modal", gestureEnabled: true, title: "Members", headerShown: true }} />
+                <Stack.Screen name="LoopAnnouncements" component={LoopAnnouncements} options={{ presentation: "modal", gestureEnabled: true, title: "Announcements", headerShown: true }} />
                 <Stack.Screen name="DirectMessage" component={DirectMessage} />
                 <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.username })} />
                 <Stack.Screen name="Edit Profile" component={EditProfile} options={{ headerShown: true }} />
-                <Stack.Screen name="EditLoop" component={EditLoop} options={{ headerShown: true }} />
+                <Stack.Screen name="EditLoop" component={EditLoop} options={{ headerShown: true, headerTitle: "Edit Loop"}} />
                 <Stack.Screen name="EditField" component={EditField} />
                 <Stack.Screen name="UserProfile" component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })} />
                 <Stack.Screen name="LoopChat" component={LoopChat} />
+                <Stack.Screen name="Messages" component={Messages} options={{ headerShown: true }} />
                 <Stack.Screen name="Ping" component={Ping} options={{ headerShown: true }} />
                 <Stack.Screen name="JoinRequests" component={JoinRequests} options={{ headerShown: true, headerTitle: "Join Requests" }} />
                 <Stack.Screen name="Search Users" component={SearchUsers} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} />

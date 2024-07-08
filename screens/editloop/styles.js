@@ -17,6 +17,18 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1, 
         padding: 15, 
         flexDirection: "row", 
+    },
+
+    updateToggle: { 
+        marginHorizontal: 15, 
+        borderColor: "white", 
+        borderWidth: 1, 
+        padding: 15, 
+        flexDirection: "row", 
+        justifyContent: "space-between", 
+        alignItems: "center",
+        borderRadius: 20, 
+        marginTop: 20
     }
 })
 

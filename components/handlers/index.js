@@ -360,7 +360,7 @@ export async function joinLeaveEvent(event) {
 }
 
 
-export async function createPost({ content, author, pfp_url, latitude, longitude, college, loop_id, image, isPublic }) {
+export async function createPost({ content, author, college, loop_id, image, isPublic }) {
     const token = await getToken()
     
     const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/add`;
@@ -368,9 +368,6 @@ export async function createPost({ content, author, pfp_url, latitude, longitude
     const postData = {
       content: content,
       author: author,
-      pfp_url: pfp_url,
-      latitude: latitude,
-      longitude: longitude,
       college: college,
       loop_id: loop_id,
       public: isPublic
@@ -673,49 +670,31 @@ export async function updateLoop({ loop_id, endpoint, value }) {
     console.log('Updated succesfully. Server response:', responseData);
 }
 
-export async function starLoop(loop_id ) {
-  const token = await getToken()
-
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/star`;
+export async function updateMember({ loop_id, endpoint, value }) {
+    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/member/update/${endpoint}`;
     
-  const response = await fetch(serverUrl, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
+    const token = await getToken()
 
-
-  if (!response.ok) {
-    throw new Error(`Failed to update. Status: ${response.status}`);
-  }
-
-  const responseData = await response.json();
-  console.log('Updated succesfully. Server response:', responseData);
-}
-
-export async function unstarLoop(loop_id ) {
-  const token = await getToken()
-
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/unstar`;
+    const requestBody = {
+      value: value
+    };
     
-  const response = await fetch(serverUrl, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
 
-  
-  if (!response.ok) {
-    throw new Error(`Failed to update. Status: ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`Failed to update. Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('Updated succesfully. Server response:', responseData);
   }
-
-  const responseData = await response.json();
-  console.log('Updated succesfully. Server response:', responseData);
-}
 
 export async function postComment(post_id, content) {
   const token = await getToken()

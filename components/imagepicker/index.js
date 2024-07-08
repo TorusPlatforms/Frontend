@@ -14,7 +14,6 @@ export async function requestCameraPerms() {
   const { status } = await ImagePicker.requestCameraPermissionsAsync();
   if (status !== 'granted') {
     console.error('Permission to access camera was denied');
-    Alert.alert('Permission Denied', 'Please grant camera permission to use this feature.');
   }
 }
 

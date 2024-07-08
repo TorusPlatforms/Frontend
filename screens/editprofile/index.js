@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, Image, ActivityIndicator, Pressable, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, Image, ActivityIndicator, Pressable, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
 import { getAuth, signOut } from 'firebase/auth';
@@ -86,23 +86,28 @@ export default function EditProfile() {
             
           <View style={{alignContent: "flex-start", flex: 1, marginTop: 20}}>
             <View style={[styles.updateField, {borderTopWidth: 1}]}>
-              <Text style={{color: "white", flex: 0.5}}>Username</Text>
-              <Text style={{color: "white", flex: 1}}>@{user.username}</Text>
+              <Text style={{color: "gray", flex: 0.5}}>Username</Text>
+              <Text style={{color: "gray", flex: 1}}>@{user.username}</Text>
             </View>
 
-            <Pressable onPress={() => navigation.navigate("EditField", {field: "Display Name", endpoint: "display_name", user: user, type: "user", maxLength: 25})} style={styles.updateField}>
+            <View style={[styles.updateField]}>
+              <Text style={{color: "gray", flex: 0.5}}>College</Text>
+              <Text style={{color: "gray", flex: 1}}>{user.college}</Text>
+            </View>
+
+            <TouchableOpacity onPress={() => navigation.navigate("EditField", {field: "Display Name", endpoint: "display_name", user: user, type: "user", maxLength: 25})} style={styles.updateField}>
               <Text style={{color: "white", flex: 0.5}}>Name</Text>
               <Text style={{color: "white", flex: 1}}>{user.display_name}</Text>
-            </Pressable>
+            </TouchableOpacity>
 
-            <Pressable onPress={() => navigation.navigate("EditField", {field: "Bio", endpoint: "bio", user: user, type: "user", maxLength: 150})} style={styles.updateField}>
+            <TouchableOpacity onPress={() => navigation.navigate("EditField", {field: "Bio", endpoint: "bio", user: user, type: "user", maxLength: 150})} style={styles.updateField}>
               <Text style={{color: "white", flex: 0.5}}>Bio</Text>
               <Text style={{color: "white", flex: 1}}>{user.bio}</Text>
-            </Pressable>
+            </TouchableOpacity>
 
-            <Pressable onPress={logOut} style={styles.updateField}>
+            <TouchableOpacity onPress={logOut} style={styles.updateField}>
               <Text style={{color: "red", flex: 0.5}}>Log Out</Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </ScrollView>
     )

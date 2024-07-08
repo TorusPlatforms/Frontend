@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { View, Image, Text, Pressable, FlatList, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons'; 
-
+import * as Notifications from "expo-notifications"
 import { getJoinRequests, getNotifications } from "../../components/handlers/notifications";
 import styles from "./styles";
 import { RefreshControl } from "react-native-gesture-handler";
@@ -26,6 +26,9 @@ export default function NotificationsScreen() {
   
     function onNotificationsPress(data) {
         switch (data.type) {
+            case "post":
+                navigation.navigate("Ping", {post_id: data.source_id})
+                break
             case "follow":
                 navigation.navigate("UserProfile", {username: data.author})
                 break
@@ -52,7 +55,7 @@ export default function NotificationsScreen() {
             <View style={{marginLeft: 20, maxWidth: "80%"}}>
                 <Text>
                     <Text style={styles.text}>{data.author}</Text>
-                    <Text style={{color: "lightgrey"}}>{" " + data.message}</Text>
+                    <Text style={{color: "lightgrey", fontWeight: data.unread ? "800" : "400"}}>{" " + data.message}</Text>
                 </Text>
             </View>
         </Pressable>
@@ -78,6 +81,7 @@ export default function NotificationsScreen() {
     }
     
     useEffect(() => {
+        Notifications.setBadgeCountAsync(0)
         fetchNotifications()
         fetchRequests()
       }, []);

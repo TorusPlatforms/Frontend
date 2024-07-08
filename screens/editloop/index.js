@@ -3,7 +3,7 @@ import { View, Text, Image, ActivityIndicator, Pressable, ScrollView, RefreshCon
 import { Ionicons } from '@expo/vector-icons';
 
 import { pickImage } from '../../components/imagepicker';
-import { getLoop, uploadToCDN, updateLoop, deleteLoop } from "../../components/handlers";
+import { getLoop, uploadToCDN, updateLoop, deleteLoop, leaveLoop, updateMember } from "../../components/handlers";
 import styles from './styles'
 
 export default function EditLoop({ navigation, route }) {
@@ -14,10 +14,24 @@ export default function EditLoop({ navigation, route }) {
 
     const [membersAllowed, setMembersAllowed] = useState();
     const [isPrivate, setIsPrivate] = useState()
-
+    const [pingsMuted, setPingsMuted] = useState()
+    const [chatMuted, setChatMuted] = useState()
+    
     async function toggleSwitch() {
       setMembersAllowed(previousState => !previousState)
       await updateLoop({ loop_id: loop.loop_id, endpoint: "allowMembersToCreateEvents", value: !loop.allowMembersToCreateEvents})
+    }
+    
+    async function toggleChatMute() {
+      const newChatMuted = !chatMuted
+      setChatMuted(previousState => !previousState)
+      await updateMember({ loop_id: loop.loop_id, endpoint: "chatMuted", value: newChatMuted})
+    }
+
+    async function togglePingsMuted() {
+      const newPingMuted = !pingsMuted
+      setPingsMuted(previousState => !previousState)
+      await updateMember({ loop_id: loop.loop_id, endpoint: "pingsMuted", value: newPingMuted })
     }
 
     async function togglePrivate() {
@@ -38,9 +52,9 @@ export default function EditLoop({ navigation, route }) {
           style: 'cancel',
         },
         {text: 'OK', onPress: async() => {
+          const newPrivate = !isPrivate
           setIsPrivate(previousState => !previousState)
-          await updateLoop({ loop_id: loop.loop_id, endpoint: "public", value: !loop.public})
-          await fetchLoop()
+          await updateLoop({ loop_id: loop.loop_id, endpoint: "public", value: newPrivate})
           }
         },
       ]);
@@ -72,19 +86,42 @@ export default function EditLoop({ navigation, route }) {
       }, []);
     
     
-    async function handleDelete() {
-      Alert.alert("Are you sure you want to delete this Loop?", "This is a permanent action that cannot be undone.", [
+    async function handleRedPress() {
+        if (loop.isOwner) {
+          handleDelete(loop.loop_id)
+        } else {
+          handleLeave(loop.loop_id)
+        }
+    }
+
+    async function handleLeave(loop_id) {
+      Alert.alert(`Are you sure you want to leave ${loop.name}`, 'You will be able to rejoin or request to rejoin at any time.', [
         {
           text: 'Cancel',
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
         {text: 'OK', onPress: async() => {
-            await deleteLoop(loop_id)
-            navigation.navigate("Community")}
-        },
+          console.log('OK Pressed')
+          await leaveLoop(loop_id)
+          navigation.navigate("Community")
+        }},
       ]);
     }
+    
+    async function handleDelete(loop_id) {
+        Alert.alert("Are you sure you want to delete this Loop?", "This is a permanent action that cannot be undone.", [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
+          },
+          {text: 'OK', onPress: async() => {
+              await deleteLoop(loop_id)
+              navigation.navigate("Community")}
+          },
+        ]);
+      }
 
     async function fetchLoop() {
       const loop = await getLoop(loop_id)
@@ -111,7 +148,7 @@ export default function EditLoop({ navigation, route }) {
         <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
           <View style={{alignItems: "center", justifyContent: "center", flex: 0.2}}>
 
-            <TouchableOpacity onPress={() => pickImage(handleImageSelect)} style={{width: 100, height: 100, borderRadius: 50, borderWidth: 2, justifyContent: 'center', alignItems: "center", borderStyle: 'dashed', borderColor: "gray"}}>
+            <TouchableOpacity disabled={!loop.isOwner} onPress={() => pickImage(handleImageSelect)} style={{width: 100, height: 100, borderRadius: 50, borderWidth: 2, justifyContent: 'center', alignItems: "center", borderStyle: 'dashed', borderColor: "gray"}}>
                 {!image_url && (
                     <View style={{justifyContent: "center", alignItems: "center"}}>
                       <Ionicons name="camera" size={24} color="gray" />
@@ -125,51 +162,72 @@ export default function EditLoop({ navigation, route }) {
                     </View>
                 )}
 
-                <Ionicons name="add-circle" size={32} color="rgb(47, 139, 128)" style={{position: "absolute", top: 0, right: 0}}/>
+                {loop.isOwner && (
+                  <Ionicons name="add-circle" size={32} color="rgb(47, 139, 128)" style={{position: "absolute", top: 0, right: 0}}/>
+                )}
+
               </TouchableOpacity>
           </View>
             
           <View style={{alignContent: "flex-start", flex: 1, marginTop: 20}}>
-            <Pressable onPress={() => navigation.navigate("EditField", {field: "Name", endpoint: "name", varName: "name", loop: loop, type: "loop"})} style={styles.updateField}>
-              <Text style={{color: "white", flex: 0.5}}>Name</Text>
-              <Text style={{color: "white", flex: 1}}>{loop.name}</Text>
-            </Pressable>
+            <TouchableOpacity disabled={!loop.isOwner} onPress={() => navigation.navigate("EditField", {field: "Name", endpoint: "name", varName: "name", loop: loop, type: "loop"})} style={styles.updateField}>
+              <Text style={{color: loop.isOwner ? "white" : "gray", flex: 0.5}}>Name</Text>
+              <Text style={{color: loop.isOwner ? "white" : "gray", flex: 1}}>{loop.name}</Text>
+            </TouchableOpacity>
 
-            <Pressable onPress={() => navigation.navigate("EditField", {field: "Description", endpoint: "description", varName: "description", loop: loop, type: "loop", previousState: loop.description})} style={styles.updateField}>
-              <Text style={{color: "white", flex: 0.5}}>Description</Text>
-              <Text style={{color: "white", flex: 1}}>{loop.description}</Text>
-            </Pressable>
+            <TouchableOpacity disabled={!loop.isOwner} onPress={() => navigation.navigate("EditField", {field: "Description", endpoint: "description", varName: "description", loop: loop, type: "loop", previousState: loop.description})} style={styles.updateField}>
+              <Text style={{color: loop.isOwner ? "white" : "gray", flex: 0.5}}>Description</Text>
+              <Text style={{color: loop.isOwner ? "white" : "gray", flex: 1}}>{loop.description}</Text>
+            </TouchableOpacity>
 
-            <TouchableOpacity onPress={handleDelete} style={styles.updateField}>
-              <Text style={{color: "red", flex: 0.5}}>Delete Loop</Text>
+            <TouchableOpacity onPress={handleRedPress} style={styles.updateField}>
+              <Text style={{color: "red", flex: 0.5}}>{loop.isOwner ? "Delete Loop" : "Leave Loop"}</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={{paddingHorizontal: 15}}>
-              <View style={{ borderColor: "white", borderWidth: 1, padding: 15, flexDirection: "row", justifyContent: "space-between", borderRadius: 20, marginTop: 20}}>
-                <Text style={{color: "white", width: 150}}>Allow all members to create events</Text>
+          <View style={styles.updateToggle}>
+              <Text style={{color: "white", width: 150}}>Allow all members to create events</Text>
 
-                <Switch
-                    trackColor={{true: 'rgb(47, 139, 128)'}}
-                    onValueChange={toggleSwitch}
-                    value={membersAllowed}
-                    />
-              </View>
+              <Switch
+                  disabled={!loop.isOwner}
+                  trackColor={{true: 'rgb(47, 139, 128)'}}
+                  onValueChange={toggleSwitch}
+                  value={membersAllowed}
+                  />
           </View>
 
-          <View style={{paddingHorizontal: 15}}>
-              <View style={{ borderColor: "white", borderWidth: 1, padding: 15, flexDirection: "row", justifyContent: "space-between", borderRadius: 20, marginTop: 20}}>
-                <View>
-                  <Text style={{color: "white"}}>Private Loop</Text>
-                  <Text style={{color: "gray", fontSize: 10, width: 200, marginTop: 2}}>When your Loop is private, members have to request to join and only you can approve their request.</Text>
-                </View>
-                
-                <Switch
-                    trackColor={{true: 'rgb(47, 139, 128)'}}
-                    onValueChange={togglePrivate}
-                    value={isPrivate}
-                    />
+          <View style={styles.updateToggle}>
+              <View>
+                <Text style={{color: "white"}}>Private Loop</Text>
+                <Text style={{color: "lightgray", fontSize: 10, width: 200, marginTop: 2}}>When a Loop is private, only students at your campus can see your loop. Members have to request to join and only the owner can approve their request.</Text>
               </View>
+              
+              <Switch
+                  disabled={!loop.isOwner}
+                  trackColor={{true: 'rgb(47, 139, 128)'}}
+                  onValueChange={togglePrivate}
+                  value={isPrivate}
+                  />
+          </View>
+
+          <View style={styles.updateToggle}>
+              <Text style={{color: "white"}}>Mute Pings</Text>
+              
+              <Switch
+                  trackColor={{true: 'rgb(47, 139, 128)'}}
+                  value={pingsMuted}
+                  onValueChange={togglePingsMuted}
+                  />
+          </View>
+
+          <View style={styles.updateToggle}>
+              <Text style={{color: "white"}}>Mute Chat</Text>
+              
+              <Switch
+                  trackColor={{true: 'rgb(47, 139, 128)'}}
+                  value={chatMuted}
+                  onValueChange={toggleChatMute}
+                  />
           </View>
         </ScrollView>
     )

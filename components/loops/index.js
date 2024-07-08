@@ -2,19 +2,17 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, Text,  TouchableOpacity, Pressable } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { starLoop, unstarLoop } from '../handlers';
+import Entypo from "@expo/vector-icons/Entypo"
+
+import { updateMember } from '../handlers';
 
 export const Loop = ({ data, goToLoop }) => {
   const [starred, setStarred] = useState(data.isStarred)
 
   async function handleStar() {
-    setStarred(previousState => !previousState)
-    
-    if (data.isStarred) {
-      await unstarLoop(data.loop_id)
-    } else {
-      await starLoop(data.loop_id)
-    }
+    const newStarred = (!starred)
+    setStarred(previousValue => !previousValue)
+    await updateMember({loop_id: data.loop_id, endpoint: "isStarred", value: newStarred})
   }
 
 
@@ -33,9 +31,28 @@ export const Loop = ({ data, goToLoop }) => {
           
           
           { data.isJoined && (
-            <Pressable onPress={handleStar}>
-              <Ionicons name={starred ? "star" : "star-outline"} size={24} color={'white'} />
-            </Pressable>
+            <View style={{justifyContent: "space-between"}}>
+
+                <Pressable onPress={handleStar}>
+                  <Ionicons name={starred ? "star" : "star-outline"} size={24} color={'white'} />
+                </Pressable>
+                
+                {data.hasUnreadMessages && (
+                  <View>
+                    <Ionicons name={"chatbubble-ellipses"} size={24} color={'white'} />
+                    <View style={{backgroundColor: "red", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
+                  </View>
+                )}
+                
+
+                {data.hasUnreadAnnouncements && (
+                  <View>
+                      <Entypo name="megaphone" size={24} color="white" /> 
+                      <View style={{backgroundColor: "red", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
+                  </View>
+                )}
+
+            </View>
           )}
 
       </View>
