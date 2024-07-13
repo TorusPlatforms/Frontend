@@ -109,7 +109,7 @@ export default function Feed() {
                 handleRegistrationError(`${e}`);
             }
         } else {
-            handleRegistrationError('Must use physical device for push notifications');
+            console.log('Must use physical device for push notifications');
         }
     }
       

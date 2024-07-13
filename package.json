@@ -18,7 +18,7 @@
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.14",
     "@react-navigation/stack": "^6.3.29",
-    "expo": "~51.0.17",
+    "expo": "~51.0.20",
     "expo-clipboard": "~6.0.3",
     "expo-constants": "~16.0.2",
     "expo-device": "~6.0.2",

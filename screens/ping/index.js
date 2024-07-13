@@ -85,8 +85,9 @@ export default function Ping({ route }) {
         setNumOfLikes(numOfLikes + 1)
       }
 
-      setIsLiked(!isLiked)
-      await handleLike(post)
+      const newLiked = (!isLiked)
+      setIsLiked(previousState => !previousState)
+      await handleLike({post_id: post_id, endpoint: newLiked ? "like" : "unlike"})
   }
 
   function handleAuthorPress() {

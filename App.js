@@ -81,7 +81,6 @@ Notifications.setNotificationHandler({
 });
 
 
-Notifications.setBadgeCountAsync(0)
 
 const prefix = Linking.createURL('/');
 
@@ -96,7 +95,7 @@ const Tabs = () => {
       <Tab.Screen name="Feed" component={FeedScreens} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "home" : "home-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="Community" component={DiscoverTabs} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "search" : "search-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="CreateContainer" listeners={({ navigation }) => ({tabPress: (e) => {e.preventDefault(); navigation.navigate("Create")}})} component={CreatePing} options={{ presentation: "modal", tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "add-circle" : "add-circle-outline"} color={"white"} size={size}/>)}} />
-      <Tab.Screen name="MyLoops" component={MyLoops} options={{tabBarIcon: ({ focused, size }) => (<MaterialCommunityIcons name={focused ? "account-group" : "account-group-outline"} color={"white"} size={size}/>)}}/>
+      <Tab.Screen name="My Loops" component={MyLoops} options={{headerShown: true, tabBarIcon: ({ focused, size }) => (<MaterialCommunityIcons name={focused ? "account-group" : "account-group-outline"} color={"white"} size={size}/>)}}/>
       <Tab.Screen name="Profile" component={Profile} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "person" : "person-outline"} color={"white"} size={size}/>)}}/>
     </Tab.Navigator>
   )
@@ -211,7 +210,6 @@ function App() {
             {loggedIn ? (
               <>
                 <Stack.Screen name="Home" options={{ gestureEnabled: false }} component={Tabs} />
-                <Stack.Screen name="My Loops" component={MyLoops} options={{ headerShown: true }} />
                 <Stack.Screen name="Create" component={CreatePing} options={{ presentation: "modal", gestureEnabled: true }} />
                 <Stack.Screen name="CreateLoop" component={CreateLoop} options={{ presentation: "modal", gestureEnabled: true }} />
                 <Stack.Screen name="CreateEvent" component={CreateEvent} options={{ presentation: "modal", gestureEnabled: true }} />

@@ -89,6 +89,8 @@ export default function CreateEvent({ route }) {
 
   async function handlePost() {
     try {
+        setErrorMessage("")
+        
         const combinedDate = combineDateAndTime(date, time)
 
         if (name.length == 0) {

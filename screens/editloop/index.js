@@ -18,8 +18,9 @@ export default function EditLoop({ navigation, route }) {
     const [chatMuted, setChatMuted] = useState()
     
     async function toggleSwitch() {
+      const newAllowed = !membersAllowed
       setMembersAllowed(previousState => !previousState)
-      await updateLoop({ loop_id: loop.loop_id, endpoint: "allowMembersToCreateEvents", value: !loop.allowMembersToCreateEvents})
+      await updateLoop({ loop_id: loop.loop_id, endpoint: "allowMembersToCreateEvents", value: newAllowed})
     }
     
     async function toggleChatMute() {
@@ -52,8 +53,9 @@ export default function EditLoop({ navigation, route }) {
           style: 'cancel',
         },
         {text: 'OK', onPress: async() => {
-          const newPrivate = !isPrivate
+          const newPrivate = isPrivate
           setIsPrivate(previousState => !previousState)
+          console.log("SETTING TO", newPrivate)
           await updateLoop({ loop_id: loop.loop_id, endpoint: "public", value: newPrivate})
           }
         },
@@ -124,11 +126,11 @@ export default function EditLoop({ navigation, route }) {
       }
 
     async function fetchLoop() {
-      const loop = await getLoop(loop_id)
-      setLoop(loop)
-      setImageURL(loop.pfp_url)
-      setMembersAllowed(loop.allowMembersToCreateEvents)
-      setIsPrivate(!loop.public)
+      const fetchedLoop = await getLoop(loop_id)
+      setLoop(fetchedLoop)
+      setImageURL(fetchedLoop.pfp_url)
+      setMembersAllowed(fetchedLoop.allowMembersToCreateEvents)
+      setIsPrivate(!fetchedLoop.public)
     }
     
     useEffect(() => {
@@ -170,12 +172,12 @@ export default function EditLoop({ navigation, route }) {
           </View>
             
           <View style={{alignContent: "flex-start", flex: 1, marginTop: 20}}>
-            <TouchableOpacity disabled={!loop.isOwner} onPress={() => navigation.navigate("EditField", {field: "Name", endpoint: "name", varName: "name", loop: loop, type: "loop"})} style={styles.updateField}>
+            <TouchableOpacity disabled={!loop.isOwner} onPress={() => navigation.push("EditField", {field: "Name", endpoint: "name", varName: "name", loop: loop, type: "loop", maxLength: 50})} style={styles.updateField}>
               <Text style={{color: loop.isOwner ? "white" : "gray", flex: 0.5}}>Name</Text>
               <Text style={{color: loop.isOwner ? "white" : "gray", flex: 1}}>{loop.name}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity disabled={!loop.isOwner} onPress={() => navigation.navigate("EditField", {field: "Description", endpoint: "description", varName: "description", loop: loop, type: "loop", previousState: loop.description})} style={styles.updateField}>
+            <TouchableOpacity disabled={!loop.isOwner} onPress={() => navigation.push("EditField", {field: "Description", endpoint: "description", varName: "description", loop: loop, type: "loop", previousState: loop.description})} style={styles.updateField}>
               <Text style={{color: loop.isOwner ? "white" : "gray", flex: 0.5}}>Description</Text>
               <Text style={{color: loop.isOwner ? "white" : "gray", flex: 1}}>{loop.description}</Text>
             </TouchableOpacity>

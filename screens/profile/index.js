@@ -74,7 +74,7 @@ export default function Profile() {
           <TouchableOpacity
             key={index}
             style={[iconStyles[index], { justifyContent: "center", alignItems: "center", position: "absolute" }]}
-            onPress={async () => navigation.navigate('Loop', { loop_id: item.loop_id })}
+            onPress={async () => navigation.push('Loop', { loop_id: item.loop_id })}
           >
             <Image
               style={{
@@ -194,7 +194,7 @@ export default function Profile() {
             </View>
                     
         
-            <View style={{ alignItems: "center", flex: 0.7 }}>
+            <View style={{ alignItems: "center", flex: 0.7   }}>
                 <View style={{ width: 250, height: 250, borderRadius: 125 }}>
                     {loops?.length > 0 && (
                         <View style={{ width: 80, height: 80, borderRadius: 40, alignSelf: "center", top: 85, zIndex: 1, justifyContent: "center", alignItems: "center" }}>

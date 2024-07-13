@@ -324,17 +324,10 @@ export async function getEvents(query) {
 }
 
 
-export async function joinLeaveEvent(event) {
+export async function joinLeaveEvent({ event_id, endpoint }) {
     const token = await getToken()
 
-    let endpoint;
-    if (event.isJoined) {
-      endpoint = "leave"
-    } else {
-      endpoint = "join"
-    }
-
-    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/${event.event_id}/${endpoint}`
+    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/${event_id}/${endpoint}`
 
     try {
       const response = await fetch(serverUrl, {
@@ -536,15 +529,8 @@ export async function uploadToCDN(image) {
 }
 
 
-export async function handleLike(post) {
+export async function handleLike({post_id, endpoint}) {
   const token = await getToken()
-
-  let endpoint;
-  if (post.isLiked) {
-    endpoint = "unlike"
-  } else {
-    endpoint = "like"
-  }
 
   let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/${endpoint}`
 
@@ -556,7 +542,7 @@ export async function handleLike(post) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        post_id: post.post_id,
+        post_id: post_id,
       }),
     });
 
@@ -667,7 +653,7 @@ export async function updateLoop({ loop_id, endpoint, value }) {
     }
 
     const responseData = await response.json();
-    console.log('Updated succesfully. Server response:', responseData);
+    console.log('Updated succesfully. Server response:', serverUrl, requestBody, responseData);
 }
 
 export async function updateMember({ loop_id, endpoint, value }) {

@@ -35,16 +35,16 @@ export default function LoopChat({ route }) {
 
 
   async function fetchChats() {
-    const chat = await getChats(loop.loop_id);
+    const messages = await getChats(loop.loop_id);
 
-    if (chat.messages) {
-        setMessages(chat.messages)
+    if (messages) {
+        setMessages(messages)
 
         const unsub = onSnapshot(doc(db, "loops", String(loop.loop_id)), (snapshot) => {
             console.log("Loop chat was updated")
             const data = snapshot.data()
             if (data && data?.messages) {
-              setMessages(data.messages);
+              setMessages(data.messages.reverse());
             }
           })
         
@@ -62,10 +62,13 @@ export default function LoopChat({ route }) {
 
 
   const onSend = useCallback(async (messages = []) => {
-    navigation.navigate("LoopChat", {loop: loop, fullScreen: true})
+    if (route.name != "LoopChat") {
+      navigation.navigate("LoopChat", {loop: loop, fullScreen: true})
+    }
     await sendChat(loop.loop_id, messages[0].text);
+    
     setMessages(previousMessages =>
-      GiftedChat.append(messages, previousMessages),
+      GiftedChat.append(previousMessages, messages),
     )
 
   }, [])
@@ -104,7 +107,7 @@ export default function LoopChat({ route }) {
 
         <ChatComponent
           messages={messages}
-          onSend={messages => onSend(messages)}
+          onSend={onSend}
           id={user.username}
           loop={loop}
         />

@@ -27,7 +27,14 @@ export async function pickImage(handleImage) {
 
     if (!result.canceled) {
       console.log("Selected Image in ImagePicker:", result);
-      handleImage(result);
+
+      const compressedImage = await ImageManipulator.manipulateAsync(
+        result.assets[0].uri,
+        [],
+        { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG }
+      );
+      
+      handleImage(compressedImage);
     }
   } catch (error) {
     console.error("Error picking an image", error);
@@ -45,13 +52,13 @@ export async function openCamera(handleImage) {
 
       if (!result.canceled) {
         console.log('Selected Image from Camera:', result);
-        console.log(result.assets[0].uri)
+
         const compressedImage = await ImageManipulator.manipulateAsync(
           result.assets[0].uri,
           [],
           { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // Adjust the compression level as needed
         );
-        console.log("made it!", compressedImage)
+
         handleImage(compressedImage);
       }
     } catch (error) {

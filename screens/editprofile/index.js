@@ -95,12 +95,12 @@ export default function EditProfile() {
               <Text style={{color: "gray", flex: 1}}>{user.college}</Text>
             </View>
 
-            <TouchableOpacity onPress={() => navigation.navigate("EditField", {field: "Display Name", endpoint: "display_name", user: user, type: "user", maxLength: 25})} style={styles.updateField}>
+            <TouchableOpacity onPress={() => navigation.push("EditField", {field: "Display Name", endpoint: "display_name", user: user, type: "user", maxLength: 25})} style={styles.updateField}>
               <Text style={{color: "white", flex: 0.5}}>Name</Text>
               <Text style={{color: "white", flex: 1}}>{user.display_name}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => navigation.navigate("EditField", {field: "Bio", endpoint: "bio", user: user, type: "user", maxLength: 150})} style={styles.updateField}>
+            <TouchableOpacity onPress={() => navigation.push("EditField", {field: "Bio", endpoint: "bio", user: user, type: "user", maxLength: 150})} style={styles.updateField}>
               <Text style={{color: "white", flex: 0.5}}>Bio</Text>
               <Text style={{color: "white", flex: 1}}>{user.bio}</Text>
             </TouchableOpacity>

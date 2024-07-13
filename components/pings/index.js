@@ -22,9 +22,10 @@ export const Ping = ({ data, openComment }) => {
       } else {
         setNumOfLikes(numOfLikes + 1)
       }
-
+      
+      const newLiked = (!isLiked)
       setIsLiked(previousState => !previousState)
-      await handleLike(data)
+      await handleLike({post_id: data.post_id, endpoint: newLiked ? "like" : "unlike"})
     }
 
     function handleAuthorPress() {

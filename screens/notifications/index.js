@@ -43,6 +43,7 @@ export default function NotificationsScreen() {
             case "announcement":
                 navigation.push("Loop", {loop_id: data.parent_id, initialScreen: "Announcements"})
                 break
+            case "event_join":
             case "event":
                 navigation.push("Loop", {loop_id: data.parent_id, initialScreen: "Events"})
                 break
@@ -54,7 +55,7 @@ export default function NotificationsScreen() {
             <Image style={styles.pfp} source={{uri: data.pfp_url || torus_default_url}}/>
             <View style={{marginLeft: 20, maxWidth: "80%"}}>
                 <Text>
-                    <Text style={styles.text}>{data.author}</Text>
+                    <Text style={{color: "white", fontWeight: data.unread ? "800" : "500"}}>{data.author}</Text>
                     <Text style={{color: "lightgrey", fontWeight: data.unread ? "800" : "400"}}>{" " + data.message}</Text>
                 </Text>
             </View>

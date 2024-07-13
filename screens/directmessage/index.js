@@ -61,7 +61,7 @@ export default function DirectMessage({ route }) {
                 console.log("Chat was updated")
                 const data = snapshot.data()
                 if (data && data?.messages) {
-                  setMessages(data.messages);
+                  setMessages(data.messages.reverse());
                 }
               })
             

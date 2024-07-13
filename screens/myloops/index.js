@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from "react";
-import { View, Animated, SafeAreaView, RefreshControl, FlatList } from "react-native";
+import { View, Animated, SafeAreaView, RefreshControl, FlatList, TouchableOpacity } from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons"
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-elements";
 
@@ -110,6 +111,12 @@ export default function MyLoops() {
                 value={search}
                 />
             </View> 
+
+            <View style={{ flex: 0.1 }}>
+            <TouchableOpacity onPress={() => navigation.navigate("CreateLoop")}>
+              <Ionicons name="add" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
             </View>
         </Animated.View>
 

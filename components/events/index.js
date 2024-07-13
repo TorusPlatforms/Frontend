@@ -25,8 +25,9 @@ export const Event = ({ data, navigation }) => {
     }
 
     async function handleJoinLeave() {
-      setIsJoined(!isJoined)
-      await joinLeaveEvent(data)
+      const newJoined = (!isJoined)
+      setIsJoined(newJoined)
+      await joinLeaveEvent({event_id: data.event_id, endpoint: newJoined ? "join" : "leave"})
     }
 
     function openMaps() {
@@ -52,7 +53,7 @@ export const Event = ({ data, navigation }) => {
 
 
     function handleUserPress() {
-      if (data.loop_id) {
+      if (data.loop_id && data.public) {
         navigation.push("Loop", {loop_id: data.loop_id})
       } else {
         navigation.push("UserProfile", {username: data.author})
@@ -83,13 +84,7 @@ export const Event = ({ data, navigation }) => {
                           </TouchableOpacity>
 
                         <View style={{flexDirection: 'row', justifyContent: "space-between", marginVertical: 4}}>
-                          <Text style={{ color: "white", fontWeight: "bold", fontSize: 16, maxWidth: 150 }}>{data.name || data?.name}</Text>
-
-                          {/* {(data.loop_id) && (
-                            <TouchableOpacity onPress={handleLoopPress}>
-                                <Text style={{ color: "white", fontSize: 12, textAlign: "right", maxWidth: 100 }}>[Hosted]</Text>
-                            </TouchableOpacity>
-                          )} */}
+                          <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>{data.name || data?.name}</Text>
                         </View>
 
                         <TouchableOpacity onPress={openCalender}>
@@ -134,9 +129,9 @@ export const Event = ({ data, navigation }) => {
                             <TouchableOpacity onPress={handleDelete}>
                                 <Feather
                                     name="trash"
-                                    size={24}
-                                    color="black"
-                                    style={{ position: 'absolute', bottom: 10, right: 10 }}
+                                    size={20}
+                                    color="white"
+                                    style={{ position: 'absolute', bottom: 10, right: 10, opacity: 0.5 }}
                                 />
                             </TouchableOpacity>
                             
