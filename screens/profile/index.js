@@ -18,8 +18,6 @@ export default function Profile() {
 
     const navigation = useNavigation()
 
-    const movingLine = useRef(new Animated.Value(0)).current;
-
     const [loops, setLoops] = useState(null)
     const [user, setUser] = useState(null)
 
