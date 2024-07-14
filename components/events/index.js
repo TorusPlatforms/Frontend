@@ -142,11 +142,18 @@ export const Event = ({ data, navigation }) => {
                
                 <View style={{flexDirection: "row", justifyContent: data.mutual_usernames.length > 0 ? "space-between" : "flex-end", alignItems: "center", paddingTop: 20, paddingRight: 10}}>
                   {data.mutual_usernames.length == 1 && (
-                    <Text style={{color: "white", fontSize: 12}}>{data.mutual_usernames[0]} is attending</Text>
+                    <Text style={{color: "white", fontSize: 12, maxWidth: 160}}>
+                      <Text onPress={() => navigation.push("UserProfile", {username: data.mutual_usernames[0]})}>{data.mutual_usernames[0]} </Text>
+                      is attending
+                    </Text>
                   )}
 
                   {data.mutual_usernames.length == 2 && (
-                    <Text style={{color: "white", fontSize: 12, maxWidth: 150}}>{data.mutual_usernames.slice(0, 2)?.join(" & ")} are attending</Text>
+                    <Text style={{color: "white", fontSize: 12, maxWidth: 160}}>
+                      <Text onPress={() => navigation.push("UserProfile", {username: data.mutual_usernames[0]})}>{data.mutual_usernames[0]} & </Text>
+                      <Text onPress={() => navigation.push("UserProfile", {username: data.mutual_usernames[1]})}>{data.mutual_usernames[1]} </Text>
+                      are attending
+                    </Text>
                   )}
 
                   {data.mutual_usernames.length > 2 && (

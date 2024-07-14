@@ -5,7 +5,6 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
-import Popover from 'react-native-popover-view';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';

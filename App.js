@@ -73,7 +73,7 @@ if (getApps().length) {
 Notifications.setNotificationHandler({
   handleNotification: async (notification) => {
     return {
-      shouldShowAlert: !(['messages', 'loop_message'].includes(notification?.request?.content?.data?.type)),
+      shouldShowAlert: true,
       shouldPlaySound: false,
       shouldSetBadge: false,
     };
@@ -136,6 +136,7 @@ function App() {
       screens: {
         Ping: 'ping/:post_id',  
         Loop: 'loop/:loop_id',
+        Messages: 'messages',
         UserProfile: 'user/:username',
         Notifications: 'notifications',
       },

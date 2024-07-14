@@ -55,13 +55,16 @@ export default function NotificationsScreen() {
   
       const Notification = ({ data }) => (
         <Pressable onPress={() => onNotificationsPress(data)} style={styles.notificationContainer}>
-          <Image style={styles.pfp} source={{ uri: data.pfp_url || torus_default_url }} />
-          <View style={{ marginLeft: 20, maxWidth: 250, flex: 1, flexDirection: 'row'}}>
-            <Text style={[{color: "lightgrey", maxWidth: 250, fontWeight: data.unread ? "600" : "400"}]}>
-                <Text style={{color: 'white'}} onPress={() => navigation.navigate("UserProfile", {username: data.author})}>{data.author}</Text>
-                {" " + data.message}
-            </Text>
-          </View>
+            <Pressable onPress={() => navigation.navigate("UserProfile", {username: data.author})}>
+                <Image style={styles.pfp} source={{ uri: data.pfp_url || torus_default_url }} />
+            </Pressable>
+
+            <View style={{ marginLeft: 20, maxWidth: 250, flex: 1, flexDirection: 'row'}}>
+                <Text style={[{color: "lightgrey", maxWidth: 250, fontWeight: data.unread ? "600" : "400"}]}>
+                    <Text style={{color: 'white'}} onPress={() => navigation.navigate("UserProfile", {username: data.author})}>{data.author}</Text>
+                    {" " + data.message}
+                </Text>
+            </View>
         </Pressable>
       );
     

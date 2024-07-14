@@ -118,7 +118,6 @@ export default function CreateEvent({ route }) {
         console.log("Event data", eventData)
 
         await createEvent(eventData);
-        navigation.goBack()
     } catch(error) {
 
       if (error instanceof AlreadyExistsError) {
@@ -128,8 +127,9 @@ export default function CreateEvent({ route }) {
       } else {
         alert("Something went wrong!")
         console.error(error)
-      }
-
+      } 
+    } finally {
+      navigation.goBack()
     }
   }
 

@@ -5,7 +5,6 @@ import { GiftedChat, Bubble, InputToolbar , Avatar} from 'react-native-gifted-ch
 import styles from "./styles"
 
 
-
 export const ChatComponent = ({ messages, onSend, id, loop }) => {
       const navigation = useNavigation()
 
@@ -17,14 +16,16 @@ export const ChatComponent = ({ messages, onSend, id, loop }) => {
           return (
             <InputToolbar
               {...props}
-              containerStyle={{
+              containerStyle={[props.containerStyle, {
                 backgroundColor: 'transparent', 
                 borderTopWidth: 0, 
-              }}
+              }]}
             />
           );
         };
-      
+        
+    
+
       const renderBubble = (props) => {
           return (
             <View>
@@ -77,12 +78,13 @@ export const ChatComponent = ({ messages, onSend, id, loop }) => {
             textInputStyle={{
               backgroundColor: "rgb(50,50,50)",
               color: "white",
-              minHeight: 40,
+              minHeight: 50,
               maxHeight: 200,
               maxLength: 100,
               borderRadius: 25,
-              paddingHorizontal: 15,
-              paddingVertical: 12
+              lineHeight: 20,
+              paddingHorizontal: 20,
+              paddingTop: 15,
             }}
             placeholder='Send a message'
             messages={messages}

@@ -9,13 +9,16 @@ async function getToken() {
   return token;
 }
 
-export async function searchUsers(query) {
+export async function searchUsers(query, limit = null) {
     const token = await getToken()
   
     let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/users`;
 
     if (query) {
       serverUrl += "?query=" + query
+      if (limit) {
+        serverUrl += "&limit=" + limit
+      }
     }
 
     const response = await fetch(serverUrl, {

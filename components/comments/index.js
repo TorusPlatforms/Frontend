@@ -194,9 +194,9 @@ export const Comments = ({ headerComponent, post_id }) => {
         return null;
       }
       
-      const fetchedUsers = await searchUsers(keyword)
+      const fetchedUsers = await searchUsers(keyword, 5)
   
-      const suggestions = fetchedUsers.map(user => {
+      const suggestions = fetchedUsers.slice(0, 5).map(user => {
         const { username, ...rest } = user;
         return { id: "!", name: username, ...rest };
       });
