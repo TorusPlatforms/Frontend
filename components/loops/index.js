@@ -7,14 +7,18 @@ import Entypo from "@expo/vector-icons/Entypo"
 import { updateMember } from '../handlers';
 
 export const Loop = ({ data, goToLoop }) => {
-  const [starred, setStarred] = useState(data.isStarred)
+  const [starred, setStarred] = useState()
 
-  async function handleStar() {
+  async function handleStar(data) {
+    console.log("Starring")
     const newStarred = (!starred)
     setStarred(previousValue => !previousValue)
     await updateMember({loop_id: data.loop_id, endpoint: "isStarred", value: newStarred})
   }
 
+  useEffect(() => {
+    setStarred(data.isStarred)
+  }, [data])
 
   return (
     <TouchableOpacity onPress={() => goToLoop(data.loop_id)}>
@@ -32,7 +36,7 @@ export const Loop = ({ data, goToLoop }) => {
           { data.isJoined ? (
             <View style={{justifyContent: "space-between"}}>
 
-                <Pressable onPress={handleStar}>
+                <Pressable onPress={() => handleStar(data)}>
                   <Ionicons name={starred ? "star" : "star-outline"} size={24} color={'white'} />
                 </Pressable>
                 

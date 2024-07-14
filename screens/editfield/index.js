@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, Pressable, TextInput} from 'react-native';
+import { View, Text, Image, TouchableOpacity, Pressable, TextInput, ActivityIndicator} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { updateUser, updateLoop } from "../../components/handlers";
@@ -7,10 +7,8 @@ import styles from './styles'
 
 export default function EditField({ route, navigation }) {
     const { type, field, endpoint, user, loop, maxLength } = route.params
-
-    const [text, setText] = useState()
-
-    console.log(route.params)
+    const [defaultValue, setDefaultValue] = useState()
+    const [text, setText] = useState();
 
     async function handleUpdate() {
         if (type == "user") {
@@ -26,15 +24,26 @@ export default function EditField({ route, navigation }) {
 
     
     useEffect(() => {
+        let defaultValue
         if (type == "user") {
-            setText(user[endpoint])
+            defaultValue = (user[endpoint])
         } else if (type == "loop") {
-            setText(loop[endpoint])
+            defaultValue = (loop[endpoint])
         } else {
             throw new Error("Type Not Defined")
         }
+
+        setDefaultValue(defaultValue)
+        setText(defaultValue)
       }, []);
   
+    if (!defaultValue) {
+        return (
+            <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", justifyContent: "center", alignItems: 'center'}}>
+                <ActivityIndicator />
+            </View>
+        )
+    }
     return (
         <View style={styles.container}>
             <View style={{alignItems: 'center', flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 20, flex: 0.1}}>
@@ -51,7 +60,7 @@ export default function EditField({ route, navigation }) {
 
             <View style={{flex: 1}}>
                 <TextInput 
-                    defaultValue={text}
+                    defaultValue={defaultValue}
                     onChangeText={setText}
                     maxLength={maxLength ? maxLength : 200}
                     style={{borderTopWidth: 1, borderBottomWidth: 1, padding: 10, borderColor: "gray", color: "white"}}

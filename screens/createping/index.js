@@ -3,7 +3,6 @@ import { Platform, View, TouchableOpacity, Image, Text, TextInput, TouchableWith
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
-import * as Location from 'expo-location';
 
 import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } from "../../components/imagepicker";
 import { getUser, createPost } from "../../components/handlers";
@@ -30,10 +29,6 @@ export default function CreatePing({ route }) {
     requestPhotoLibraryPerms()
   }, [route.params]); 
 
-
-  const handleBackgroundPress = () => {
-      Keyboard.dismiss();
-  };
 
   const handleImageSelect = (fetchedImage) => {
     if (!fetchedImage.canceled) {
@@ -104,9 +99,9 @@ export default function CreatePing({ route }) {
       <SafeAreaView style={styles.container}>
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} tintColor={"white"}/>}>
 
-        {/* <TouchableOpacity onPress={() => navigation.goBack()} style={{ paddingLeft: 20 }}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={{ paddingLeft: 20 }}>
           <Text style={{ fontSize: 16, color: "white" }}>Cancel</Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
 
         <View style={{flexDirection: "row"}}>
           <View style={{flex: 0.25}}/>
@@ -123,11 +118,9 @@ export default function CreatePing({ route }) {
           </View>
           <View style={{flex: 0.25, justifyContent: "center", alignItems: "flex-end"}}>
               {route.params?.loop && route.params?.loop?.isOwner && (
-                <Pressable onPress={handleLockPress} style={{marginRight: 30}} >
-                    {({pressed}) => (
-                      <Ionicons name={isPublic ? "lock-open" : "lock-closed"} size={24} color={pressed ? "gray" : "white"}/>
-                  )}
-                </Pressable>                
+                <TouchableOpacity onPress={handleLockPress} style={{marginRight: 30}} >
+                    <Ionicons name={isPublic ? "lock-open" : "lock-closed"} size={24} color={"white"}/>
+                </TouchableOpacity>                
               )}
           </View>
         </View>
@@ -137,7 +130,7 @@ export default function CreatePing({ route }) {
             <Image style={styles.pfp} source={{ uri: (route.params?.loop && isPublic ? route.params.loop.pfp_url : user.pfp_url) }} />
             <TextInput
               style={{marginLeft: 20, marginTop: 10, color: "white", fontSize: 18, width: 300, minHeight: 50, maxHeight: 350, paddingRight: 20}}
-              placeholder="Ping your campus and beyond"
+              placeholder="Ping your campus..."
               multiline
               numberOfLines={4}
               maxLength={500}

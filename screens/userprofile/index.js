@@ -26,16 +26,19 @@ export default function UserProfile({ route, navigation }) {
     };
 
     async function fetchUser() {
-        const user = await getUserByUsername(route.params.username)
-        setUser(user)
-        setIsFollowing(user.isFollowing)
+        const fetchedUser = await getUserByUsername(route.params.username)
 
-        if (user.isSelf) {
+        if (!fetchedUser) {
+            navigation.goBack()
+        } else if (fetchedUser.isSelf) {
             navigation.navigate("Profile")
-        } else {
-            const pings = await getUserPings(user.username)
-            setPings(pings)
         }
+
+        setUser(fetchedUser)
+        setIsFollowing(fetchedUser.isFollowing)
+
+        const pings = await getUserPings(fetchedUser.username)
+        setPings(pings)
     }
 
     async function copyUsernameToClipboard() {

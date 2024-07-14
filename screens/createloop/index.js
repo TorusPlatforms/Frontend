@@ -22,9 +22,9 @@ export default function CreateLoop() {
     const [refreshing, setRefreshing] = useState()
 
 
-    async function handleImageSelect(image) {
-      if (!image.canceled) {
-        setImage(image)
+    const handleImageSelect = (fetchedImage) => {
+      if (!fetchedImage.canceled) {
+        setImage(fetchedImage)
       }
     };
 
@@ -122,7 +122,7 @@ export default function CreateLoop() {
                   
                   {image && (
                       <View style={{justifyContent: "center", alignItems: "center"}}>
-                        <Image style={{width: 100, height: 100, borderRadius: 50}} source={{uri:  image.assets[0].uri}}/>
+                        <Image style={{width: 100, height: 100, borderRadius: 50}} source={{uri: image.uri || image.assets[0].uri}}/>
                       </View>
                   )}
 
@@ -172,10 +172,11 @@ export default function CreateLoop() {
                         backgroundColor: "rgb(62, 62, 62)",
                         width: "90%",
                         borderRadius: 10,
-                        paddingLeft: 10,
+                        paddingHorizontal: 10,
                         height: 40,
                         color:"white"
                       }}
+                      maxLength={250}
                     />
               </View>
 

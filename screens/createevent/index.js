@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Image, Text, TextInput, TouchableWithoutFeedbac
 import { useNavigation } from "@react-navigation/native";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Input } from "react-native-elements";
 
@@ -30,7 +30,7 @@ export default function CreateEvent({ route }) {
   const [time, setTime] = useState(new Date())
   const [displayDate, setDisplayDate]= useState(Platform.OS === "android" ? strfEventDate(date) : "")
   const [displayTime, setDisplayTime] = useState(Platform.OS === "android" ? strfEventTime(time) : "")
-  const [isPublic, setIsPublic] = useState(route.params?.loop ? false : true)
+  const [isPublic, setIsPublic] = useState(!(route.params?.loop))
 
   const [showCalendar, setShowCalendar] = useState(Platform.OS === "android" ? false : true);
   const [showClock, setShowClock] = useState(Platform.OS === "android" ? false : true);
@@ -61,11 +61,15 @@ export default function CreateEvent({ route }) {
     Keyboard.dismiss();
   };
 
-  const handleImageSelect = (image) => {
-    if (!image.canceled) {
-      setImage(image);
+  function removeImage() {
+    setImage(null)
+  }
+
+  const handleImageSelect = (fetchedImage) => {
+    if (!fetchedImage.canceled) {
+      setImage(fetchedImage);
     }
-    console.log("Selected Image in CreateEvent:", image);
+    console.log("Selected Image in CreateEvent:", fetchedImage);
   };
 
   function isToday(timestamp) {
@@ -190,7 +194,7 @@ export default function CreateEvent({ route }) {
 
           <View style={{ alignItems: 'center', flex: 0.25}}>
             <Text style={{ fontWeight: "bold", fontSize: 20, color: "white" }}>Create Event</Text>
-            <Text style={{ fontSize: 16, color: "white", textAlign: "center", marginTop: 5, paddingHorizontal: 25 }}>{route.params?.loop ? `Posting in ${route.params.loop.name}` : "Get together. Reunite. Connect."}</Text>
+            <Text style={{ fontSize: 16, color: "white", textAlign: "center", marginTop: 5, paddingHorizontal: 25 }}>{route.params?.loop ? `Posting ${isPublic ? "as" : "in"} ${route.params.loop.name}` : "Get together. Reunite. Connect."}</Text>
             <Text style={{ fontSize: 16, color: "red", textAlign: "center", marginTop: 5 }}>{errorMessage}</Text>
           </View>     
 
@@ -285,7 +289,7 @@ export default function CreateEvent({ route }) {
 
                             <View style={{flex: 1}}>
                                 <TextInput
-                                  maxLength={200}
+                                  maxLength={245}
                                   multiline
                                   placeholderTextColor={"gray"}
                                   placeholder="Fun details"
@@ -298,7 +302,13 @@ export default function CreateEvent({ route }) {
                       
 
                       <Pressable style={{flex: 0.6}} onPress={() => pickImage(handleImageSelect)}>
-                        <Image style={{width: "100%", height: "100%", resizeMode: "cover", borderBottomLeftRadius: 20, borderBottomRightRadius: 20, bottom: image?.assets[0] ? 0 : 20}} source={{ uri: image?.assets[0].uri || "https://static.thenounproject.com/png/4974686-200.png" }} />
+                        <Image style={{width: "100%", height: "100%", resizeMode: "cover", borderBottomLeftRadius: 20, borderBottomRightRadius: 20, bottom: image?.uri ? 0 : 20}} source={{ uri: image?.uri || "https://static.thenounproject.com/png/4974686-200.png" }} />
+                        {image?.uri && (
+                          <Pressable onPress={removeImage} style={{position: "absolute", right: -10, top: -10}} >
+                              <MaterialIcons name="cancel" size={32} color="gray" />
+                          </Pressable>
+
+                        )}
                       </Pressable>
                   </View>
               </View>

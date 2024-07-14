@@ -42,7 +42,7 @@ import LoopMembers from './screens/loopmembers';
 import EditLoop from './screens/editloop';
 import JoinRequests from './screens/joinrequests';
 import SearchUsers from './screens/searchusers';
-import Comments from './screens/comments';
+import CommentsScreen from './screens/comments';
 import SearchColleges from './screens/searchcolleges';
 import Ping from './screens/ping';
 import SplashScreen from './screens/splashscreen';
@@ -216,7 +216,7 @@ function App() {
                 <Stack.Screen name="CreateAnnouncement" component={CreateAnnouncement} options={{ presentation: "modal", gestureEnabled: true }} />
                 <Stack.Screen name="Loop" component={LoopsPage} />
                 <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: true, headerTitleAlign: "center" }} />
-                <Stack.Screen name="Comments" component={Comments} options={{ presentation: "modal", gestureEnabled: true, headerShown: true, headerLeft: () => (<View />), headerBackVisible: false, headerTitleAlign: 'center' }} />
+                <Stack.Screen name="Comments" component={CommentsScreen} options={{ presentation: "modal", gestureEnabled: true, headerShown: true, headerLeft: () => (<View />), headerBackVisible: false, headerTitleAlign: 'center' }} />
                 <Stack.Screen name="LoopMembers" component={LoopMembers} options={{ presentation: "modal", gestureEnabled: true, title: "Members", headerShown: true }} />
                 <Stack.Screen name="LoopAnnouncements" component={LoopAnnouncements} options={{ presentation: "modal", gestureEnabled: true, title: "Announcements", headerShown: true }} />
                 <Stack.Screen name="DirectMessage" component={DirectMessage} />
@@ -226,7 +226,7 @@ function App() {
                 <Stack.Screen name="EditField" component={EditField} />
                 <Stack.Screen name="UserProfile" component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })} />
                 <Stack.Screen name="LoopChat" component={LoopChat} />
-                <Stack.Screen name="Messages" component={Messages} options={{ headerShown: true }} />
+                <Stack.Screen name="Messages" component={Messages} />
                 <Stack.Screen name="Ping" component={Ping} options={{ headerShown: true }} />
                 <Stack.Screen name="JoinRequests" component={JoinRequests} options={{ headerShown: true, headerTitle: "Join Requests" }} />
                 <Stack.Screen name="Search Users" component={SearchUsers} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} />

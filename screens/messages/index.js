@@ -73,6 +73,10 @@ export default function Messages() {
         <View>
             <View style={{flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 20, alignItems: "center", paddingBottom: 20, marginTop: 10}}>
                     <View style={{flexDirection: "row", alignItems: "center"}}>
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <Ionicons name="arrow-back" size={24} color="white" />
+                        </TouchableOpacity>
+
                         <Text style={{color: "white", fontSize: 18, fontWeight: "bold", marginLeft: 10}}>Direct Messages</Text>
                     </View>
 
@@ -94,7 +98,7 @@ export default function Messages() {
     
 
     return (
-        <View style={[styles.container, {paddingLeft: insets.left, paddingRight: insets.right}]}>
+        <SafeAreaView style={[styles.container, {paddingLeft: insets.left, paddingRight: insets.right}]}>
             <FlatList
                 ListHeaderComponent={header}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"} />}
@@ -102,6 +106,6 @@ export default function Messages() {
                 renderItem={({item}) => <DirectMessage data={item} />}
                 ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
             />
-        </View>
+        </SafeAreaView>
     )
 }

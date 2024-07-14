@@ -147,7 +147,7 @@ export default function EditLoop({ navigation, route }) {
     }
 
     return (
-        <ScrollView style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+        <ScrollView contentContainerStyle={{paddingBottom: 250}} style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"}/>}>
           <View style={{alignItems: "center", justifyContent: "center", flex: 0.2}}>
 
             <TouchableOpacity disabled={!loop.isOwner} onPress={() => pickImage(handleImageSelect)} style={{width: 100, height: 100, borderRadius: 50, borderWidth: 2, justifyContent: 'center', alignItems: "center", borderStyle: 'dashed', borderColor: "gray"}}>

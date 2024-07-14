@@ -657,6 +657,7 @@ export async function updateLoop({ loop_id, endpoint, value }) {
 }
 
 export async function updateMember({ loop_id, endpoint, value }) {
+    console.error("UPDATING LOOP", loop_id, endpoint, value)
     const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/member/update/${endpoint}`;
     
     const token = await getToken()

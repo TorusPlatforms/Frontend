@@ -13,9 +13,9 @@ import styles from "./styles";
 export default function MyLoops() {
     const navigation = useNavigation(); 
 
-    const [loops, setLoops] = useState([]);
+    const [loops, setLoops] = useState();
     const [search, setSearch] = useState("");
-    const [filteredLoops, setFilteredLoops] = useState([]);
+    const [filteredLoops, setFilteredLoops] = useState();
 
     const [refreshing, setRefreshing] = useState(false);
 
@@ -40,15 +40,18 @@ export default function MyLoops() {
     };
 
     useEffect(() => {
-        // Filter loops based on the search term
-        const filtered = loops.filter((loop) => loop.name.toLowerCase().includes(search.toLowerCase()));
-        setFilteredLoops(filtered);
-    }, [search, loops]);
+        if (search) {
+            const filtered = loops.filter((loop) => loop.name.toLowerCase().includes(search.toLowerCase()));
+            setFilteredLoops(filtered);
+        } else {
+            setFilteredLoops(loops)
+        }
+    }, [search]);
 
 
     async function fetchLoops() {
         const fetchedLoops = await getJoinedLoops(); 
-
+        console.log("Fetched", fetchedLoops.length, "loops. First entry: ", fetchedLoops[0])
         fetchedLoops.sort((a, b) => {
             if (a.isStarred === true && b.isStarred !== true) {
                 return -1;
@@ -72,8 +75,9 @@ export default function MyLoops() {
             }
             return 0;
         })
-
+        console.log("Sorted first: ", fetchedLoops)
         setLoops(fetchedLoops);
+        setFilteredLoops(fetchedLoops)
     };
 
     const isFocused = useIsFocused()

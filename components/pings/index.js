@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, forwardRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, View, SafeAreaView, Image, Share, TextInput, Pressable, Alert, Modal, TouchableOpacity } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from "@expo/vector-icons/Feather";
@@ -88,7 +88,7 @@ export const Ping = ({ data, openComment }) => {
           />
         </View>
     
-        <View style={{marginLeft: 20, flex: 6}}>
+        <View style={{marginLeft: 10, flex: 6}}>
           <View style={{flex: 1}}>
               <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
                   <TouchableOpacity onPress={handleAuthorPress}>
@@ -96,16 +96,10 @@ export const Ping = ({ data, openComment }) => {
                         {(data.loop_id && data.public) ? `[LOOP] ${data.author}` : data.author}
                       </Text>
                   </TouchableOpacity>
-
-                  {/* { data.isAuthor && (
-                    <TouchableOpacity onPress={handleDeletePress}>
-                      <Feather name="more-horizontal" size={16} color="white" />
-                    </TouchableOpacity>
-                  )} */}
               </View>
       
 
-              <TextInput multiline editable={false} style={[styles.text, {padding: 2}]} value={data.content}></TextInput>
+              <TextInput multiline scrollEnabled={false} editable={false} style={[styles.text, {padding: 2}]} value={data.content}></TextInput>
             </View>
         
           <View style={{flex: 2}}>

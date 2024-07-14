@@ -116,9 +116,7 @@ export default function Feed() {
     
     async function fetchPingsAndColleges() {
         setRefreshing(true)
-
-        const fetchedUser = await getUser()
-        setUser(fetchedUser)
+        const fetchedUser = await fetchUser()
 
         const token = await registerForPushNotificationsAsync()
         if (token && token != fetchedUser.expo_notification_id) {
@@ -132,6 +130,12 @@ export default function Feed() {
         await fetchColleges(fetchedUser)
 
         setRefreshing(false)
+    }
+
+    async function fetchUser() {
+      const fetchedUser = await getUser()
+      setUser(fetchedUser)
+      return fetchedUser
     }
 
     async function fetchPings(user) {
@@ -170,10 +174,13 @@ export default function Feed() {
     const isFocused = useIsFocused()
     useEffect(() => {
       if (isFocused) {
-        fetchPingsAndColleges()
+        fetchUser()
       }
     }, [feedType, isFocused]); 
     
+    useEffect(() => {
+      fetchPingsAndColleges()
+    }, [feedType]); 
 
   
     const onRefresh = useCallback(async() => {

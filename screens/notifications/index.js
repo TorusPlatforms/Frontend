@@ -27,20 +27,22 @@ export default function NotificationsScreen() {
     function onNotificationsPress(data) {
         switch (data.type) {
             case "post":
-                navigation.navigate("Ping", {post_id: data.source_id})
+                navigation.push("Ping", {post_id: data.source_id})
                 break
             case "follow":
-                navigation.navigate("UserProfile", {username: data.author})
+                navigation.push("UserProfile", {username: data.author})
                 break
             case "message":
                 navigation.navigate("Messages")
                 break
             case "reply":
+            case "mention":
             case "like":
             case "comment":
-                navigation.navigate("Ping", {post_id: data.parent_id})
+                navigation.push("Ping", {post_id: data.parent_id})
                 break
             case "announcement":
+            case "join_request":
                 navigation.push("Loop", {loop_id: data.parent_id, initialScreen: "Announcements"})
                 break
             case "event_join":
@@ -50,15 +52,16 @@ export default function NotificationsScreen() {
             }
     }
 
-    const Notification = ({data}) => (
+  
+      const Notification = ({ data }) => (
         <Pressable onPress={() => onNotificationsPress(data)} style={styles.notificationContainer}>
-            <Image style={styles.pfp} source={{uri: data.pfp_url || torus_default_url}}/>
-            <View style={{marginLeft: 20, maxWidth: "80%"}}>
-                <Text>
-                    <Text style={{color: "white", fontWeight: data.unread ? "800" : "500"}}>{data.author}</Text>
-                    <Text style={{color: "lightgrey", fontWeight: data.unread ? "800" : "400"}}>{" " + data.message}</Text>
-                </Text>
-            </View>
+          <Image style={styles.pfp} source={{ uri: data.pfp_url || torus_default_url }} />
+          <View style={{ marginLeft: 20, maxWidth: 250, flex: 1, flexDirection: 'row'}}>
+            <Text style={[{color: "lightgrey", maxWidth: 250, fontWeight: data.unread ? "600" : "400"}]}>
+                <Text style={{color: 'white'}} onPress={() => navigation.navigate("UserProfile", {username: data.author})}>{data.author}</Text>
+                {" " + data.message}
+            </Text>
+          </View>
         </Pressable>
       );
     
@@ -72,12 +75,8 @@ export default function NotificationsScreen() {
     async function fetchRequests() {
         const fetchedRequests = await getJoinRequests()
         console.log("Fetched", fetchedRequests.length, "requests. First entry:", fetchedRequests[0])
-        const usernames = []
 
-        fetchedRequests.forEach(request => {
-            usernames.push(request.username)
-        });
-
+        const usernames = fetchedRequests.map(request => request.username)
         setJoinRequests(usernames)
     }
     

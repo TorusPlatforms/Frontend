@@ -104,8 +104,7 @@ export const Event = ({ data, navigation }) => {
                                 <Feather
                                     name="trash"
                                     size={20}
-                                    color="white"
-                                    style={{ opacity: 0.5 }}
+                                    color="gray"
                                 />
                             </TouchableOpacity>
                           )}
@@ -130,8 +129,8 @@ export const Event = ({ data, navigation }) => {
                                 <Feather
                                     name="trash"
                                     size={20}
-                                    color="white"
-                                    style={{ position: 'absolute', bottom: 10, right: 10, opacity: 0.5 }}
+                                    color="gray"
+                                    style={{ position: 'absolute', bottom: 10, right: 10, opacity: 0.8 }}
                                 />
                             </TouchableOpacity>
                             

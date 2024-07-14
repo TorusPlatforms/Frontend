@@ -11,7 +11,7 @@ import styles from "./styles";
 export default function LoopPings({ route }) {
   const navigation = useNavigation()
   
-  const loop = route.params.loop
+  const { loop } = route.params
   
   const [pings, setPings] = useState([]);
 
@@ -61,7 +61,11 @@ export default function LoopPings({ route }) {
 
 
   if (!pings) {
-    return <ActivityIndicator />
+    return (
+      <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", justifyContent: "center", alignItems: "center"}}>
+          <ActivityIndicator />
+      </View>
+    )
   }
 
 
@@ -77,9 +81,9 @@ export default function LoopPings({ route }) {
             onMomentumScrollEnd={handleScrollEnd}
         />
         
-        <Animated.View style={{opacity: fadeAnim, width: 50, height: 50, borderRadius: 25, backgroundColor: "rgb(47, 139, 128)", position: "absolute", bottom: 50, right: 25, alignItems: "center", justifyContent: "center"}}>
+        <Animated.View style={{opacity: fadeAnim, width: 40, height: 40, borderRadius: 20, backgroundColor: "rgb(47, 139, 128)", position: "absolute", bottom: 50, right: 25, alignItems: "center", justifyContent: "center"}}>
             <Pressable onPress={() => navigation.navigate("Create", {loop: loop})}>
-                <Ionicons size={50} color={"white"} name="add" />
+                <Ionicons size={35} color={"white"} name="add" />
             </Pressable>
         </Animated.View>
  

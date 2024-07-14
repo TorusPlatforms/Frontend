@@ -5,6 +5,12 @@ const styles = StyleSheet.create({
         color: "white"
     },
 
+    item_seperator: {
+        backgroundColor: 'gray',
+        height: 1,
+        width: "100%",
+      },
+
     commentTime: {
         marginLeft: 7, 
         color: "gray", 

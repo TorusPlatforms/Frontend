@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback} from 'react'
 import { Text, View, Image, Animated, TouchableOpacity, FlatList, Pressable, RefreshControl, ActivityIndicator, ScrollView, Platform } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import * as Clipboard from 'expo-clipboard';
 import { useIsFocused, useNavigation, useScrollToTop } from "@react-navigation/native";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -10,7 +9,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import UserEvents from "../userevents"
 import UserPings from '../userpings';
 
-import { getUser, getUserEvents, getJoinedLoops } from "../../components/handlers";
+import { getUser, getJoinedLoops } from "../../components/handlers";
 import styles from "./styles";
 
 
@@ -159,7 +158,7 @@ export default function Profile() {
                 </Pressable>
             </View> */}
         
-            <View style={{ flex: 0.8, flexDirection: 'row' }}>
+            <View style={{ flex: 0.7, flexDirection: 'row', paddingTop: 10 }}>
                 <View style={{ flex: 1, alignItems: "center" }}>
                     <Pressable onPress={() => navigation.navigate("Edit Profile")}>
                         <Image style={{ width: 100, height: 100, borderRadius: 50 }} source={{uri: user.pfp_url}}/>
@@ -194,7 +193,7 @@ export default function Profile() {
             </View>
                     
         
-            <View style={{ alignItems: "center", flex: 0.7   }}>
+            {/* <View style={{ alignItems: "center", flex: 0.7   }}>
                 <View style={{ width: 250, height: 250, borderRadius: 125 }}>
                     {loops?.length > 0 && (
                         <View style={{ width: 80, height: 80, borderRadius: 40, alignSelf: "center", top: 85, zIndex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -213,9 +212,9 @@ export default function Profile() {
                         </TouchableOpacity>
                     )}
                 </View>
-            </View>
+            </View> */}
             
-            <View style={{flex: 1.5}}>
+            <View style={{flex: 2}}>
                 <Tab.Navigator screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)' }, tabBarLabelStyle: { color: "white", fontSize: 10 }}}>
                     <Tab.Screen name="Pings" children={() =>  <UserPings username={user.username}/>}/>
                     <Tab.Screen name="Events" component={UserEvents} />

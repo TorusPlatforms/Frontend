@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
         width: 250,
         height: 300,
         borderRadius: 20,
-        marginBottom: 20
+        marginBottom: 20,
+        marginTop: 10
     },
 
     tinyLogo: {
