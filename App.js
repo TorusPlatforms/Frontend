@@ -75,7 +75,7 @@ if (getApps().length) {
 Notifications.setNotificationHandler({
   handleNotification: async (notification) => {
     return {
-      shouldShowAlert: !(['messages', 'loop_message'].includes(notification?.request?.content?.data?.type)),
+      shouldShowAlert: true,
       shouldPlaySound: false,
       shouldSetBadge: false,
     };
@@ -186,6 +186,7 @@ function App() {
         },    
         Loop: {
           path: 'loop/:loop_id/:initialScreen?',
+        Messages: 'messages',
           parse: {
             loop_id: Number,
           },

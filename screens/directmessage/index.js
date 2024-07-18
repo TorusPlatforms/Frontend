@@ -3,8 +3,9 @@ import { ActivityIndicator, View, Text, TouchableOpacity, Image } from "react-na
 import { GiftedChat } from 'react-native-gifted-chat';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { getFirestore, onSnapshot, doc, query, collection, where, getDocs } from "firebase/firestore"
+import * as Notifications from 'expo-notifications';
 
 import { getDM, sendMessage, getUser } from '../../components/handlers';
 import { ChatComponent } from '../../components/chat';
@@ -12,6 +13,8 @@ import styles from "./styles"
 
 
 export default function DirectMessage({ route }) {
+
+
     const navigation = useNavigation()
 
     const [messages, setMessages] = useState(null)
@@ -37,11 +40,41 @@ export default function DirectMessage({ route }) {
       return null; 
     }
 
+    const isFocused = useIsFocused()
+    useEffect(() => {
+        Notifications.setNotificationHandler({
+          handleNotification: async (notification) => {
+            return {
+              shouldShowAlert: (notification?.request?.content?.data?.type) != "message",
+              shouldPlaySound: false,
+              shouldSetBadge: false,
+            };
+          },
+        });
+
+        return () => {
+          Notifications.setNotificationHandler({
+            handleNotification: async (notification) => {
+              return {
+                shouldShowAlert: true,
+                shouldPlaySound: false,
+                shouldSetBadge: false,
+              };
+            },
+          });
+        }
+  
+        
+    }, [isFocused])
+
+
     useEffect(() => {
       fetchDM();
         
       if (unsubscribe) {
-        return () => unsubscribe();
+        return () => {
+          unsubscribe()
+        };
       }
     }, [route.params])
 

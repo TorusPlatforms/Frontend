@@ -175,13 +175,13 @@ export const ChatComponent = ({ messages, onSend, id, loop, route }) => {
             textInputStyle={{
               backgroundColor: "rgb(50,50,50)",
               color: "white",
-              minHeight: 40,
+              minHeight: 50,
               maxHeight: 200,
               maxLength: 100,
               borderRadius: 25,
-              paddingHorizontal: 15,
-              paddingVertical: 12,
-
+              lineHeight: 20,
+              paddingHorizontal: 20,
+              paddingTop: 15,
             }}
             placeholder='Send a message'
             messages={messages}

@@ -15,7 +15,10 @@ export async function searchUsers(query, limit = 20) {
     let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/users?limit=${limit}`;
 
     if (query) {
-      serverUrl += "&query=" + query
+      serverUrl += "?query=" + query
+      if (limit) {
+        serverUrl += "&limit=" + limit
+      }
     }
 
     const response = await fetch(serverUrl, {

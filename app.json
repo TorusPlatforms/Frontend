@@ -3,20 +3,20 @@
     "name": "Torus Platforms",
     "scheme": "torus",
     "slug": "torus",
-    "version": "1.0.5",
+    "version": "1.0.8",
     "orientation": "portrait",
-    "icon": "./assets/torus_w_background.jpg",
+    "icon": "./assets/torus_zoomed_in.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/torus_w_background.jpg",
+      "image": "./assets/torus_w_background.png",
       "resizeMode": "contain",
-      "backgroundColor": "rgb(13, 17, 26)"
+      "backgroundColor": "#161718"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "androidStatusBar": {
-      "backgroundColor": "rgb(22, 23, 24)"
+      "backgroundColor": "#161718"
     },
     "ios": {
       "associatedDomains": [

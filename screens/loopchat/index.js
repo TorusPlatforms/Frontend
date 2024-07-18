@@ -3,8 +3,9 @@ import { ActivityIndicator, View, Text, TouchableOpacity, Image } from "react-na
 import { GiftedChat } from 'react-native-gifted-chat';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { getFirestore, onSnapshot, doc } from "firebase/firestore"
+import * as Notifications from 'expo-notifications';
 
 import styles from "./styles";
 import { ChatComponent } from '../../components/chat';
@@ -33,6 +34,32 @@ export default function LoopChat({ route }) {
     }
   }, [route.params])
 
+  const isFocused = useIsFocused()
+  useEffect(() => {
+      Notifications.setNotificationHandler({
+        handleNotification: async (notification) => {
+          return {
+            shouldShowAlert: (notification?.request?.content?.data?.type) != "loop_message",
+            shouldPlaySound: false,
+            shouldSetBadge: false,
+          };
+        },
+      });
+
+      return () => {
+        Notifications.setNotificationHandler({
+          handleNotification: async (notification) => {
+            return {
+              shouldShowAlert: true,
+              shouldPlaySound: false,
+              shouldSetBadge: false,
+            };
+          },
+        });
+      }
+
+      
+  }, [isFocused])
 
   async function fetchChats() {
     const messages = await getChats(loop.loop_id);

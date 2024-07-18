@@ -101,6 +101,7 @@ export default function Profile() {
                 </View>
             </View>
                     
+    
             
             <View style={{flex: 2}}>
                 <Tab.Navigator screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)' }, tabBarLabelStyle: { color: "white", fontSize: 10 }}}>
