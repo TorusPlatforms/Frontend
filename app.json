@@ -3,7 +3,7 @@
     "name": "Torus Platforms",
     "scheme": "torus",
     "slug": "torus",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "orientation": "portrait",
     "icon": "./assets/torus_zoomed_in.png",
     "userInterfaceStyle": "light",

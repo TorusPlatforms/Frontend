@@ -105,7 +105,7 @@ export default function EditLoop({ navigation, route }) {
         {text: 'OK', onPress: async() => {
           console.log('OK Pressed')
           await leaveLoop(loop_id)
-          navigation.navigate("Community")
+          navigation.navigate("Discover")
         }},
       ]);
     }
@@ -119,7 +119,7 @@ export default function EditLoop({ navigation, route }) {
           },
           {text: 'OK', onPress: async() => {
               await deleteLoop(loop_id)
-              navigation.navigate("Community")}
+              navigation.navigate("Discover")}
           },
         ]);
       }
