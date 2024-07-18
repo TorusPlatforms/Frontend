@@ -186,11 +186,11 @@ function App() {
         },    
         Loop: {
           path: 'loop/:loop_id/:initialScreen?',
-        Messages: 'messages',
           parse: {
             loop_id: Number,
           },
         },    
+        Messages: 'messages',
         UserProfile: 'user/:username',
         Notifications: 'notifications',
       },
