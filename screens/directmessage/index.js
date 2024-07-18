@@ -13,8 +13,6 @@ import styles from "./styles"
 
 
 export default function DirectMessage({ route }) {
-
-
     const navigation = useNavigation()
 
     const [messages, setMessages] = useState(null)
@@ -30,7 +28,6 @@ export default function DirectMessage({ route }) {
       const querySnapshot = await getDocs(q);
       
       for (const doc of querySnapshot.docs) {
-        console.log(doc.id, doc.data().members);
         const members = doc.data().members;
         if (members.hasOwnProperty(username_2)) {
           return doc; 
@@ -44,8 +41,11 @@ export default function DirectMessage({ route }) {
     useEffect(() => {
         Notifications.setNotificationHandler({
           handleNotification: async (notification) => {
+            const data = notification?.request?.content?.data
+
             return {
-              shouldShowAlert: (notification?.request?.content?.data?.type) != "message",
+              //The alert should be shown if it is 1) not a direct message OR 2) if it is a direct message from a different user 
+              shouldShowAlert: (data.type) != "message" || !(data.url.endsWith(route.params.username)),
               shouldPlaySound: false,
               shouldSetBadge: false,
             };
@@ -94,7 +94,6 @@ export default function DirectMessage({ route }) {
 
           if (messageDoc) {
               const unsub = onSnapshot(doc(db, "messages", messageDoc.id), (snapshot) => {
-                console.log("Chat was updated")
                 const data = snapshot.data()
                 if (data && data?.messages) {
                   setMessages(data.messages.reverse());
@@ -120,8 +119,13 @@ export default function DirectMessage({ route }) {
         await sendMessage(route.params.username, messages[0].text)
       }, [])
 
-
-
+    function handleGoBack() {
+      if (navigation.canGoBack()) {
+        navigation.goBack()
+      } else {
+        navigation.navigate("Messages")
+      }
+    }
 
     if (!messages || !user) {
       return (
@@ -134,13 +138,15 @@ export default function DirectMessage({ route }) {
     return (
       <SafeAreaView style={styles.container}>
           <View style={{paddingHorizontal: 20, flexDirection: "row", alignItems: "center", borderBottomWidth: 1, borderColor: "gray", padding: 10, marginBottom: 20}}>
-              <TouchableOpacity onPress={() => navigation.goBack()}>
+              <TouchableOpacity onPress={handleGoBack}>
                 <Ionicons name="arrow-back" size={24} color="white" />        
               </TouchableOpacity>
 
               <Image source={{uri: pfp_url}} style={{width: 40, height: 40, borderRadius: 20, marginHorizontal: 10}}/>
-
-              <Text style={{color: 'white', fontSize: 16}}>{route.params.username}</Text>
+              
+              <TouchableOpacity onPress={() => navigation.push("UserProfile", {username: route.params.username})}>
+                <Text style={{color: 'white', fontSize: 16}}>{route.params.username}</Text>
+              </TouchableOpacity>
           </View>
 
           <ChatComponent

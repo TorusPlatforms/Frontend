@@ -56,9 +56,9 @@ export const ChatComponent = ({ messages, onSend, id, loop, route }) => {
         }
       }, [image]);
 
-      async function handleAttatchment() {
+      async function handleAttatchment({ defaultMessage }) {
         if (loop && route?.name != "LoopChat") {
-          navigation.navigate("LoopChat", {loop: loop, fullScreen: true})
+          navigation.navigate("LoopChat", {loop: loop, fullScreen: true, defaultMessage: defaultMessage})
         } else {
           pickImage(handleImageSelect, false)
         }
@@ -66,8 +66,8 @@ export const ChatComponent = ({ messages, onSend, id, loop, route }) => {
 
       const renderSend = (props) => {
         return (
-            <View style={{ flexDirection: 'row', alignItems: "center", marginBottom: 2 }}>
-              <TouchableOpacity onPress={handleAttatchment}>
+            <View style={{ flexDirection: 'row', alignItems: "center", marginBottom: 6 }}>
+              <TouchableOpacity onPress={() => handleAttatchment({ defaultMessage: props.text })}>
                 <FontAwesome
                     name="image"
                     style={{
@@ -133,7 +133,7 @@ export const ChatComponent = ({ messages, onSend, id, loop, route }) => {
                   {...props} 
                   containerStyle={{
                     left: {
-                      marginBottom: 20
+                      marginBottom: props.currentMessage.image ? 300 : 20
                     },
                   }}
               />
@@ -199,7 +199,9 @@ export const ChatComponent = ({ messages, onSend, id, loop, route }) => {
               keyboardAppearance: 'dark',
               placeholderTextColor: 'gray',
               multiline: true,
-              textAlignVertical: "top"
+              textAlignVertical: "top",
+              value: undefined,
+              defaultValue: route?.params?.defaultMessage,
             }}
           />
       );

@@ -184,13 +184,8 @@ function App() {
             post_id: Number,
           },
         },    
-        Loop: {
-          path: 'loop/:loop_id/:initialScreen?',
-          parse: {
-            loop_id: Number,
-          },
-        },    
-        Messages: 'messages',
+        Loop: 'loop/:loop_id/:initialScreen?',    
+        DirectMessage: 'messages/:username',
         UserProfile: 'user/:username',
         Notifications: 'notifications',
       },
@@ -269,17 +264,17 @@ function App() {
                 <Stack.Screen name="CreateLoop" component={CreateLoop} options={{ presentation: "modal", gestureEnabled: true }} />
                 <Stack.Screen name="CreateEvent" component={CreateEvent} options={{ presentation: "modal", gestureEnabled: true }} />
                 <Stack.Screen name="CreateAnnouncement" component={CreateAnnouncement} options={{ presentation: "modal", gestureEnabled: true }} />
-                <Stack.Screen name="Loop" component={LoopsPage} />
+                <Stack.Screen name="Loop" getId={({ params }) => params.loop_id} component={LoopsPage} />
                 <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: true, headerTitleAlign: "center" }} />
                 <Stack.Screen name="Comments" component={CommentsScreen} options={{ presentation: "modal", gestureEnabled: true, headerShown: true, headerLeft: () => (<View />), headerBackVisible: false, headerTitleAlign: 'center' }} />
                 <Stack.Screen name="LoopMembers" component={LoopMembers} options={{ presentation: "modal", gestureEnabled: true, title: "Members", headerShown: true }} />
                 <Stack.Screen name="LoopAnnouncements" component={LoopAnnouncements} options={{ presentation: "modal", gestureEnabled: true, title: "Announcements", headerShown: true }} />
-                <Stack.Screen name="DirectMessage" component={DirectMessage} />
+                <Stack.Screen name="DirectMessage" getId={({ params }) => params.username} component={DirectMessage} />
                 <Stack.Screen name="MutualUserLists" component={FollowTabs} options={({ route }) => ({ headerShown: true, title: route.params.username })} />
                 <Stack.Screen name="Edit Profile" component={EditProfile} options={{ headerShown: true }} />
                 <Stack.Screen name="EditLoop" component={EditLoop} options={{ headerShown: true, headerTitle: "Edit Loop"}} />
                 <Stack.Screen name="EditField" component={EditField} />
-                <Stack.Screen name="UserProfile" component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })} />
+                <Stack.Screen name="UserProfile" getId={({ params }) => params.username} component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })} />
                 <Stack.Screen name="LoopChat" component={LoopChat} />
                 <Stack.Screen name="Messages" component={Messages} />
                 <Stack.Screen name="Ping" component={Ping} options={{ headerShown: true }} />

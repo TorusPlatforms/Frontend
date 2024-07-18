@@ -22,7 +22,7 @@ export default function LoopChat({ route }) {
   const [unsubscribe, setUnsubscribe] = useState(null)
   const db = getFirestore();
   
-  const { loop, fullScreen } = route.params;
+  const { loop, fullScreen, defaultMessage } = route.params;
 
 
   useEffect(() => {
@@ -38,10 +38,12 @@ export default function LoopChat({ route }) {
   useEffect(() => {
       Notifications.setNotificationHandler({
         handleNotification: async (notification) => {
+          const data = notification?.request?.content?.data
           return {
-            shouldShowAlert: (notification?.request?.content?.data?.type) != "loop_message",
-            shouldPlaySound: false,
-            shouldSetBadge: false,
+              //The alert should be shown if it is 1) not a loop message OR 2) if it is a loop message from a different loop 
+              shouldShowAlert: (data.type) != "loop_message" || !(data.url.endsWith(loop.loop_id)),
+              shouldPlaySound: false,
+              shouldSetBadge: false,
           };
         },
       });
@@ -68,7 +70,6 @@ export default function LoopChat({ route }) {
         setMessages(messages)
 
         const unsub = onSnapshot(doc(db, "loops", String(loop.loop_id)), (snapshot) => {
-            console.log("Loop chat was updated")
             const data = snapshot.data()
             if (data && data?.messages) {
               setMessages(data.messages.reverse());
@@ -83,7 +84,6 @@ export default function LoopChat({ route }) {
 
   async function fetchUser() {
     const user = await getUser()
-    console.log(user)
     setUser(user)
   }
 
@@ -138,6 +138,7 @@ export default function LoopChat({ route }) {
           onSend={onSend}
           id={user.username}
           loop={loop}
+          defaultMessage={defaultMessage}
         />
 
     </View>

@@ -101,8 +101,8 @@ export const Event = ({ data }) => {
                         </TouchableOpacity>
                       </View>
 
-                      <View style={{marginTop: 15, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" }}>
-                          <TextInput multiline editable={false} style={{ color: "white", maxWidth: 200, padding: 2 }} value={data.message}></TextInput>
+                      <View style={{marginTop: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" }}>
+                          <TextInput multiline editable={false} style={{ color: "white", padding: 2 }} value={data.message}></TextInput>
 
                           {!data.image_url && data.isCreator && (
                             <TouchableOpacity onPress={handleDelete}>

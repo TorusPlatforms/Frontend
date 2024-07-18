@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/torus_w_background.png",
       "resizeMode": "contain",
-      "backgroundColor": "#161718"
+      "backgroundColor": "#0d111a"
     },
     "assetBundlePatterns": [
       "**/*"

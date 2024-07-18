@@ -1403,7 +1403,6 @@ export async function getChats(loopId) {
     }
 
     const responseData = await response.json();
-    console.log('chats:', responseData);
     return responseData;
 
   } catch (error) {
