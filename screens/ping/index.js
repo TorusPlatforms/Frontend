@@ -4,6 +4,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import * as Linking from "expo-linking";
+import Lightbox from 'react-native-lightbox-v2';
 
 import { findTimeAgo } from '../../components/utils';
 import { getPing, deletePost, handleLike, postComment, getComments } from "../../components/handlers";
@@ -13,7 +14,7 @@ import styles from "./styles"
 
 export default function Ping({ route }) {
   const navigation = useNavigation()
-  const { post_id } = route.params
+  const { post_id, scrollToComment } = route.params
 
   const [post, setPost] = useState();
   const [isLiked, setIsLiked] = useState()
@@ -28,6 +29,7 @@ export default function Ping({ route }) {
       setPost(fetchedPost)
       setIsLiked(fetchedPost.isLiked)
       setNumOfLikes(fetchedPost.numberof_likes)
+      
     } else {
       navigation.goBack()
     }
@@ -113,11 +115,13 @@ export default function Ping({ route }) {
                     <TextInput multiline editable={false} style={[styles.text, {padding: 2}]} value={post.content}></TextInput>
 
                     { post.image_url && (
-                        <Image
-                          style={styles.attatchment}
-                          source={{uri: post.image_url}}
-                          resizeMode='cover'
-                        />
+                      <Lightbox navigator={navigation} activeProps={{style: styles.fullscreenImage}}>
+
+                          <Image
+                            style={styles.attatchment}
+                            source={{uri: post.image_url}}
+                          />
+                      </Lightbox>
                     )}
               </View>
         </View>
@@ -160,6 +164,7 @@ export default function Ping({ route }) {
         <Comments 
           post_id={post_id}
           headerComponent={header}
+          scrollToCommentID={scrollToComment}
         />
 
     </View>

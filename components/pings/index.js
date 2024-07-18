@@ -4,13 +4,12 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from "@expo/vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
 import * as Linking from 'expo-linking';
-
 import { handleLike, deletePost } from "../handlers";
 import { findTimeAgo } from "../utils";
 import styles from "./styles";
 
 
-export const Ping = ({ data, openComment }) => {
+export const Ping = ({ data }) => {
     const navigation = useNavigation()
     const [isLiked, setIsLiked] = useState(null)
     const [numOfLikes, setNumOfLikes] = useState(null)
@@ -62,19 +61,9 @@ export const Ping = ({ data, openComment }) => {
     }
 
     useEffect(() => {
-    //   Image.getSize(data.image_url, (width, height) => {
-    //     console.log({ width, height });
-    // }, error => {
-    //     console.error('Error getting image size:', error);
-    // });
-    
       setIsLiked(data.isLiked)
       setNumOfLikes(data.numberof_likes)
-
-      if (openComment == data.post_id) {
-        handleComment()
-      }
-    }, [openComment, data])
+    }, [data])
 
 
     return (
@@ -99,7 +88,7 @@ export const Ping = ({ data, openComment }) => {
               </View>
       
 
-              <TextInput multiline scrollEnabled={false} editable={false} style={[styles.text, {padding: 2}]} value={data.content}></TextInput>
+              <TextInput multiline scrollEnabled={false} editable={false} style={[styles.text, {paddingVertical: 2}]} value={data.content}></TextInput>
             </View>
         
           <View style={{flex: 2}}>
@@ -109,7 +98,7 @@ export const Ping = ({ data, openComment }) => {
                 source={{uri: data.image_url}}
                 resizeMode='cover'
               />
-            )}
+           )}
           </View>
         
     

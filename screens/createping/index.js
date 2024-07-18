@@ -3,6 +3,7 @@ import { Platform, View, TouchableOpacity, Image, Text, TextInput, TouchableWith
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import Lightbox from 'react-native-lightbox-v2';
 
 import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } from "../../components/imagepicker";
 import { getUser, createPost } from "../../components/handlers";
@@ -142,11 +143,13 @@ export default function CreatePing({ route }) {
 
             {image && (
               <View style={{marginTop: 10}}>
-                <Image source={{ uri: image.uri || image.assets[0].uri }} style={{ width: 250, height: 300, borderRadius: 20, marginLeft: 20}} />
+                  <Lightbox navigator={navigation} activeProps={{style: styles.fullscreenImage}}>
+                      <Image source={{ uri: image.uri || image.assets[0].uri }} style={{ width: 250, height: 300, borderRadius: 20, marginLeft: 20}} />
+                  </Lightbox>
                 
-                <Pressable onPress={removeImage} style={{position: "absolute", right: -10, top: -10}} >
-                  <MaterialIcons name="cancel" size={32} color="gray" />
-                </Pressable>
+                  <Pressable onPress={removeImage} style={{position: "absolute", right: -10, top: -10}} >
+                    <MaterialIcons name="cancel" size={32} color="gray" />
+                  </Pressable>
 
               </View>
             )}
@@ -168,7 +171,7 @@ export default function CreatePing({ route }) {
             
 
           <TouchableOpacity style={{ backgroundColor: content.length > 0 ? "rgb(47, 139, 128)" : "rgb(62, 62, 62)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 15, paddingHorizontal: 40, marginTop: 20 }} onPress={handlePost}>
-            <Text style={{ color: "white", textAlign: "center" }}>Post</Text>
+            <Text style={{ color: "white", textAlign: "center", fontWeight: "bold" }}>Post</Text>
           </TouchableOpacity>
         </View>        
         </ScrollView>

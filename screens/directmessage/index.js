@@ -16,6 +16,7 @@ export default function DirectMessage({ route }) {
 
     const [messages, setMessages] = useState(null)
     const [user, setUser] = useState(null)
+    const [pfp_url, setPFP_URL] = useState(null)
     const [unsubscribe, setUnsubscribe] = useState(null)
     const db = getFirestore();
 
@@ -49,6 +50,8 @@ export default function DirectMessage({ route }) {
         setUser(user)
 
         const dm = await getDM(route.params.username);
+        setPFP_URL(dm?.pfp_url)
+
         if (dm?.messages) {
           setMessages(dm.messages);
           console.log("Fetched DMs between: ", user.username, route.params.username)
@@ -74,15 +77,18 @@ export default function DirectMessage({ route }) {
     }
   
 
-    const onSend = useCallback(async (messages = []) => { //
-        if (messages) {
-          await sendMessage(route.params.username, messages[0].text)
-        }
+    const onSend = useCallback(async (messages = [], image_url = null) => {
+        console.log("Sending URL", image_url)
 
-        setMessages(previousMessages =>
-          GiftedChat.append(messages, previousMessages),
-        )
+        if (image_url) {
+          await sendMessage(route.params.username, null, image_url)
+        }
+        
+        await sendMessage(route.params.username, messages[0].text)
       }, [])
+
+
+
 
     if (!messages || !user) {
       return (
@@ -94,21 +100,21 @@ export default function DirectMessage({ route }) {
     
     return (
       <SafeAreaView style={styles.container}>
-         <View style={{paddingHorizontal: 20, flexDirection: "row", alignItems: "center", borderBottomWidth: 1, borderColor: "gray", padding: 10, marginBottom: 20}}>
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+          <View style={{paddingHorizontal: 20, flexDirection: "row", alignItems: "center", borderBottomWidth: 1, borderColor: "gray", padding: 10, marginBottom: 20}}>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Ionicons name="arrow-back" size={24} color="white" />        
-            </TouchableOpacity>
+              </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => navigation.push("UserProfile", {username: route.params.username})} style={{marginLeft: 20}}>
-                <Text style={{color: 'white', fontSize: 16}}>{route.params.username}</Text>
-            </TouchableOpacity>
-        </View>
+              <Image source={{uri: pfp_url}} style={{width: 40, height: 40, borderRadius: 20, marginHorizontal: 10}}/>
 
-        <ChatComponent
-          messages={messages}
-          onSend={messages => onSend(messages)}
-          id={user.username}
-        />
+              <Text style={{color: 'white', fontSize: 16}}>{route.params.username}</Text>
+          </View>
+
+          <ChatComponent
+            messages={messages}
+            onSend={onSend}
+            id={user.username}
+          />
     </SafeAreaView>
     )
 }

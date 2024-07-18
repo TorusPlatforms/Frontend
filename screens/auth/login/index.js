@@ -57,13 +57,13 @@ export default function AuthScreen() {
     return (
         <SafeAreaView style={styles.container}>
         <KeyboardAwareScrollView contentContainerStyle={Platform.OS == "ios" ? (styles.container) : {flexGrow: 1}}>
-                <Animated.View style={{transform: [{translateY: moveLogoAnim}], flex: 0.8, alignItems: "center"}}>
+                <Animated.View style={{transform: [{translateY: moveLogoAnim}], flex: 0.7, alignItems: "center"}}>
                     <Image style={{width: 250, height: 250, resizeMode: "cover"}} source={require('../../../assets/torus.png')}></Image>
                 </Animated.View>
                 
                 <Animated.View style={{opacity: fadeAnim, flex: 1, justifyContent: "space-between"}}>
                     <View style={{flex: 0.5, alignItems: "center"}}>
-                        <Text style={{color: "white", fontSize: 24 }}>Login to Torus</Text>
+                        <Text style={{color: "white", fontSize: 24, fontWeight: "bold", textAlign: "center"}}>Welcome Back to Torus</Text>
 
                         <TextInput 
                             onChangeText={text => onChangeEmail(text.trim())} 
@@ -71,6 +71,7 @@ export default function AuthScreen() {
                             placeholderTextColor={"white"}
                             autoCapitalize="none"
                             style={styles.submissionBox}
+                            keyboardAppearance="dark"
                         />
                     
                         <TextInput 
@@ -79,6 +80,7 @@ export default function AuthScreen() {
                             placeholder="Password"
                             placeholderTextColor={"white"}
                             style={styles.submissionBox}
+                            keyboardAppearance="dark"
                         />
 
                         <TouchableOpacity style={{marginTop: 10, marginLeft: 45, alignSelf: "flex-start"}} onPress={() => navigation.navigate('Forgot Password')}>
@@ -88,7 +90,7 @@ export default function AuthScreen() {
                 
                     <View style={{alignItems: "center", flex: 0.4}}>
                         <TouchableOpacity onPress={login} style={[styles.submissionBox, {alignItems: "center", width: 300, height: 60, justifyContent: "center"}]}>
-                            <Text style={{color: 'white', fontSize: 16}}>Welcome Back</Text>
+                            <Text style={{color: 'white', fontSize: 24, fontWeight: 'bold'}}>Login</Text>
                         </TouchableOpacity>
 
                         <View style={{paddingVertical: 10, alignItems: "center", justifyContent: "center", flexDirection: "row"}}>

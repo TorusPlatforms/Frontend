@@ -3,6 +3,7 @@ import { Platform, View, TouchableOpacity, Image, Text, TextInput, TouchableWith
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import Lightbox from 'react-native-lightbox-v2';
 
 import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } from "../../components/imagepicker";
 import { getLoop, getUser, sendAnnouncement } from "../../components/handlers";
@@ -98,11 +99,13 @@ export default function CreateAnnouncement({ route }) {
 
               {image && (
                 <View style={{marginTop: 10}}>
-                  <Image source={{ uri: image.uri || image.assets[0].uri }} style={{ width: 250, height: 300, borderRadius: 20, marginLeft: 20}} />
-                  
-                  <Pressable onPress={removeImage} style={{position: "absolute", right: -10, top: -10}} >
-                    <MaterialIcons name="cancel" size={32} color="gray" />
-                  </Pressable>
+                    <Lightbox navigator={navigation} activeProps={{style: styles.fullscreenImage}}>
+                        <Image source={{ uri: image.uri || image.assets[0].uri }} style={{ width: 250, height: 300, borderRadius: 20, marginLeft: 20}} />
+                    </Lightbox>
+
+                    <Pressable onPress={removeImage} style={{position: "absolute", right: -10, top: -10}} >
+                        <MaterialIcons name="cancel" size={32} color="gray" />
+                    </Pressable>
 
                 </View>
               )}

@@ -6,6 +6,7 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Input } from "react-native-elements";
+import Lightbox from 'react-native-lightbox-v2';
 
 import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } from "../../components/imagepicker";
 import { getUser, createEvent, getGoogleMapsKey } from "../../components/handlers";
@@ -37,6 +38,7 @@ export default function CreateEvent({ route }) {
   
   const [image, setImage] = useState(null);
 
+  const [postEnabled, setPostEnabled] = useState(true)
 
   async function fetchUser() {
     const user = await getUser()
@@ -93,6 +95,8 @@ export default function CreateEvent({ route }) {
 
   async function handlePost() {
     try {
+        setPostEnabled(false)
+
         setErrorMessage("")
         
         const combinedDate = combineDateAndTime(date, time)
@@ -122,14 +126,16 @@ export default function CreateEvent({ route }) {
     } catch(error) {
 
       if (error instanceof AlreadyExistsError) {
-        setErrorMessage("That event name is taken!")
+          setErrorMessage("That event name is taken!")
       } else if (error instanceof InputError) {
-        setErrorMessage(error.message)
+          setErrorMessage(error.message)
       } else {
-        alert("Something went wrong!")
-        console.error(error)
+          alert("Something went wrong!")
+          console.error(error)
       }
 
+    } finally {
+        setPostEnabled(true)
     }
   }
 
@@ -292,7 +298,7 @@ export default function CreateEvent({ route }) {
                                   maxLength={245}
                                   multiline
                                   placeholderTextColor={"gray"}
-                                  placeholder="Fun details"
+                                  placeholder="Event Details..."
                                   style={{color: "white", fontSize: 14, width: "100%"}}
                                   value={message}
                                   onChangeText={setMessage}
@@ -300,16 +306,25 @@ export default function CreateEvent({ route }) {
                             </View>
                       </View>
                       
+                      {image?.uri ? (
+                        <View style={{flex: 0.6}}>
+                            <Lightbox navigator={navigation} activeProps={{style: styles.fullscreenImage}}>
+                              <Image style={{width: "100%", height: "100%", resizeMode: "cover", borderBottomLeftRadius: 20, borderBottomRightRadius: 20, bottom: image?.uri ? 0 : 20}} source={{ uri: image?.uri || "https://static.thenounproject.com/png/4974686-200.png" }} />
+                            </Lightbox>
 
-                      <Pressable style={{flex: 0.6}} onPress={() => pickImage(handleImageSelect)}>
-                        <Image style={{width: "100%", height: "100%", resizeMode: "cover", borderBottomLeftRadius: 20, borderBottomRightRadius: 20, bottom: image?.uri ? 0 : 20}} source={{ uri: image?.uri || "https://static.thenounproject.com/png/4974686-200.png" }} />
-                        {image?.uri && (
-                          <Pressable onPress={removeImage} style={{position: "absolute", right: -10, top: -10}} >
-                              <MaterialIcons name="cancel" size={32} color="gray" />
-                          </Pressable>
+                            <Pressable onPress={removeImage} style={{position: "absolute", right: -10, top: -10}} >
+                                <MaterialIcons name="cancel" size={32} color="gray" />
+                            </Pressable>
+                        </View>
+                  
 
-                        )}
-                      </Pressable>
+                      ) : (
+                        <Pressable style={{flex: 0.6}} onPress={() => pickImage(handleImageSelect)}>
+                          <Image style={{width: "100%", height: "100%", resizeMode: "cover", borderBottomLeftRadius: 20, borderBottomRightRadius: 20, bottom: 20}} source={{ uri: "https://static.thenounproject.com/png/4974686-200.png" }} />
+                        </Pressable>
+                      )}
+                     
+
                   </View>
               </View>
           </View>
@@ -318,10 +333,11 @@ export default function CreateEvent({ route }) {
 
             <View style={{alignItems: "center", flex: 0.35, justifyContent: "center"}}>
                 <TouchableOpacity
-                  style={{ backgroundColor: "rgb(47, 139, 128)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 25, marginTop: 20, width: "80%" }}
+                  style={{ backgroundColor: postEnabled ? "rgb(47, 139, 128)" : "gray", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 25, marginTop: 20, width: "80%" }}
                   onPress={handlePost}
+                  disabled={!postEnabled}
                 >
-                    <Text style={{ color: "black", textAlign: "center" }}>Post</Text>
+                    <Text style={{ color: "white", textAlign: "center", fontWeight: "bold" }}>Post</Text>
                 </TouchableOpacity>
             </View>
 

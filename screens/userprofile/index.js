@@ -5,10 +5,11 @@ import * as Clipboard from 'expo-clipboard';
 import { getUserByUsername, getUserPings, follow, unfollow } from "../../components/handlers";
 import { Ping } from "../../components/pings";
 import styles from "./styles";
+import { abbreviate } from '../../components/utils';
 
 
 export default function UserProfile({ route, navigation }) {
-    const [pings, setPings] = useState([])
+    const [pings, setPings] = useState()
     const [user, setUser] = useState(null)
     const [refreshing, setRefreshing] = useState(false)
 
@@ -32,13 +33,13 @@ export default function UserProfile({ route, navigation }) {
             navigation.goBack()
         } else if (fetchedUser.isSelf) {
             navigation.navigate("Profile")
+        } else {
+            setUser(fetchedUser)
+            setIsFollowing(fetchedUser?.isFollowing)
+    
+            const pings = await getUserPings(fetchedUser.username)
+            setPings(pings)
         }
-
-        setUser(fetchedUser)
-        setIsFollowing(fetchedUser.isFollowing)
-
-        const pings = await getUserPings(fetchedUser.username)
-        setPings(pings)
     }
 
     async function copyUsernameToClipboard() {
@@ -64,38 +65,50 @@ export default function UserProfile({ route, navigation }) {
         )
     }
     
-    const header = (
-        <View style={{marginTop: 20}}>
-          <View style={{ flex: 1, flexDirection: 'row' }}>
+    const Header = () => (
+        <View style={{marginTop: 20, flex: 1}}>
+            <View style={{ flex: 0.8, flexDirection: 'row', paddingTop: 10, minHeight: 175 }}>
                 <View style={{ flex: 1, alignItems: "center" }}>
-                    <Image style={{ width: 100, height: 100, borderRadius: 50 }} source={{uri: user.pfp_url}}/>
-             
+                    <View>
+                        <Image style={{ width: 100, height: 100, borderRadius: 50 }} source={{uri: user.pfp_url}}/>
+                    </View>
+                    
                     <Text style={{ color: "white", fontSize: 16, maxWidth: 150, textAlign: "center", marginVertical: 4, fontWeight: "bold" }}>{user.display_name}</Text>
                     <TouchableOpacity onPress={copyUsernameToClipboard}>
                         <Text style={{color: "white"}}>@{user.username}</Text>
                     </TouchableOpacity>
+
+                    <Text style={{textAlign: "center", color: "lightgray", fontSize: 12, fontStyle: "italic", marginVertical: 5 }}>{user.college_nickname || (user.college.length < 25 ? user.college : abbreviate(user.college))}</Text>
+
                 </View>
 
                 <View style={{ flex: 1, paddingRight: 30 }}>
-                    <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
-                        <Pressable onPress={() => navigation.push("MutualUserLists", {username: user.username, initialScreen: "Followers"})}>
-                            <Text style={{fontWeight: "bold", textAlign: "center", color: "white"}}>{user.follower_count}</Text>
-                            <Text style={{color: "white"}}>Followers</Text>
-                        </Pressable>
+                    <View>
+                        <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+                            <Pressable onPress={() => navigation.push("MutualUserLists", {username: user.username, initialScreen: "Followers"})}>
+                                <Text style={{fontWeight: "bold", textAlign: "center", color: "white"}}>{user.follower_count}</Text>
+                                <Text style={{color: "white"}}>Followers</Text>
+                            </Pressable>
 
-                        <Pressable onPress={() => navigation.push("MutualUserLists", {username: user.username, initialScreen: "Following"})}>
-                            <Text style={{fontWeight: "bold", textAlign: "center", color: "white"}}>{user.following_count}</Text>
-                            <Text style={{color: "white"}}>Following</Text>
-                        </Pressable>
+                            <Pressable onPress={() => navigation.push("MutualUserLists", {username: user.username, initialScreen: "Following"})}>
+                                <Text style={{fontWeight: "bold", textAlign: "center", color: "white"}}>{user.following_count}</Text>
+                                <Text style={{color: "white"}}>Following</Text>
+                            </Pressable>
+                        </View>
+
+                        <View style={styles.item_seperator}/>
+
                     </View>
+                   
 
-                    <View style={[styles.item_seperator, {marginVertical: 10}]}/>
 
-                    <Text style={{textAlign: "center", color: "white", fontSize: 12}}>{user.bio}</Text>
+                    <View style={{marginTop: 10}}>
+                        <Text style={{textAlign: "center", color: "white", fontSize: 12}}>{user.bio}</Text>
+                    </View>
                 </View>
             </View>
 
-            <View style={{flexDirection: "row", justifyContent: "space-evenly", alignItems: "center", paddingVertical: 20}}>
+            <View style={{ flexDirection: "row", justifyContent: "space-evenly", alignItems: "center", paddingVertical: 20 }}>
                 <Pressable onPress={toggleFollow} style={[styles.followButton, {backgroundColor: isFollowing ? 'rgb(62, 62, 62)' : 'rgb(47, 139, 128)', width: isFollowing ? 150 : 300}]}>
                     <Text style={styles.followButtonText}>{isFollowing ? 'Following' : 'Follow'}</Text>
                 </Pressable>
@@ -113,14 +126,26 @@ export default function UserProfile({ route, navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
-    
-                <FlatList
-                    ListHeaderComponent={header}
+            {pings.length > 0 ? (
+                 <FlatList
+                    ListHeaderComponent={Header}
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                     data={pings}
                     renderItem={({item}) => <Ping data={item} />}
                     ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
                 />
+            ) : (
+                <View style={{flex: 1}}>
+                    <View style={{flex: 0.45}}>
+                        <Header />
+                    </View>
+
+                    <View style={{alignItems: 'center', flex: 0.7}}>
+                        <Text style={{color: 'gray', textAlign: "center", maxWidth: 250, marginTop: 50 }}>Looks like they haven't posted any pings...Maybe they are the aloof type?</Text>
+                    </View>
+                </View>
+            )}
+            
 
         </SafeAreaView>
     )

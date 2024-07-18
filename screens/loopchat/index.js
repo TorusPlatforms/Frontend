@@ -61,16 +61,16 @@ export default function LoopChat({ route }) {
   }
 
 
-  const onSend = useCallback(async (messages = []) => {
+  const onSend = useCallback(async (messages = [], image_url = null) => {
     if (route.name != "LoopChat") {
       navigation.navigate("LoopChat", {loop: loop, fullScreen: true})
     }
-    await sendChat(loop.loop_id, messages[0].text);
-    
-    setMessages(previousMessages =>
-      GiftedChat.append(previousMessages, messages),
-    )
 
+    if (image_url) {
+      await sendChat(loop.loop_id, null, image_url);
+    }
+
+    await sendChat(loop.loop_id, messages[0].text);
   }, [])
 
 
@@ -106,6 +106,7 @@ export default function LoopChat({ route }) {
          
 
         <ChatComponent
+          route={route}
           messages={messages}
           onSend={onSend}
           id={user.username}

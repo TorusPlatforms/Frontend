@@ -16,7 +16,12 @@ const styles = StyleSheet.create({
         width: "100%",
         backgroundColor: "gray",
         height: 2,
-    }
+    },
+
+    fullscreenImage: {
+        flex: 1,
+        resizeMode: "contain"
+    },
 })
 
 export default styles;

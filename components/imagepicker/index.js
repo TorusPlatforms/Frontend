@@ -17,11 +17,11 @@ export async function requestCameraPerms() {
   }
 }
 
-export async function pickImage(handleImage) {
+export async function pickImage(handleImage, allowsEditing = true) {
   try {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
+      aspect: [4, 3],
       quality: 1,
     });
 
@@ -46,7 +46,6 @@ export async function openCamera(handleImage) {
     try {
       let result = await ImagePicker.launchCameraAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
         quality: 1,
       });
 

@@ -55,7 +55,6 @@ export default function EditLoop({ navigation, route }) {
         {text: 'OK', onPress: async() => {
           const newPrivate = isPrivate
           setIsPrivate(previousState => !previousState)
-          console.log("SETTING TO", newPrivate)
           await updateLoop({ loop_id: loop.loop_id, endpoint: "public", value: newPrivate})
           }
         },

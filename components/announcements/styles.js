@@ -13,7 +13,13 @@ const styles = StyleSheet.create({
         width: 250,
         height: 300,
         marginVertical: 10,
-        borderRadius: 20
+        borderRadius: 20,
+        resizeMode: "cover"
+    },
+
+    fullscreenImage: {
+        flex: 1,
+        resizeMode: "contain"
     },
 
     tinyLogo: {
@@ -25,9 +31,9 @@ const styles = StyleSheet.create({
 
     text: {
         color: "white",
-        marginVertical: 5,
+        marginVertical: 12,
         fontSize: 16,
-        maxWidth: 230
+        maxWidth: 250
     },
     
     author: {

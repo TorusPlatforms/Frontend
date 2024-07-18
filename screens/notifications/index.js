@@ -1,113 +1,152 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { View, Image, Text, Pressable, FlatList, TouchableOpacity } from "react-native";
+import { View, Image, Text, Pressable, SectionList, TouchableOpacity, ActivityIndicator } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons'; 
 import * as Notifications from "expo-notifications"
 import { getJoinRequests, getNotifications } from "../../components/handlers/notifications";
-import styles from "./styles";
 import { RefreshControl } from "react-native-gesture-handler";
+import moment from "moment";
+import { useLinkTo } from '@react-navigation/native';
 
-const torus_default_url = "https://cdn.torusplatform.com/5e17834c-989e-49a0-bbb6-0deae02ae5b5.jpg"
+import styles from "./styles";
+
+
+const torus_default_url = "https://cdn.torusplatforms.com/torus_w_background.jpg"
 
 
 export default function NotificationsScreen() {
-    const navigation = useNavigation()
-    const [notifications, setNotifications] = useState([])
-    const [joinRequests, setJoinRequests] = useState([])
-    const [refreshing, setRefreshing] = useState(false)
+    const navigation = useNavigation();
+    const linkTo = useLinkTo();
+    const [notifications, setNotifications] = useState([]);
+    const [joinRequests, setJoinRequests] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
 
-
-    const onRefresh = useCallback(async() => {
+    const onRefresh = useCallback(async () => {
         setRefreshing(true);
-        await fetchNotifications()
-        setRefreshing(false)
-      }, []);
-  
-  
+        await fetchNotifications();
+        setRefreshing(false);
+    }, []);
+
+
     function onNotificationsPress(data) {
-        switch (data.type) {
-            case "post":
-                navigation.push("Ping", {post_id: data.source_id})
-                break
-            case "follow":
-                navigation.push("UserProfile", {username: data.author})
-                break
-            case "message":
-                navigation.navigate("Messages")
-                break
-            case "reply":
-            case "mention":
-            case "like":
-            case "comment":
-                navigation.push("Ping", {post_id: data.parent_id})
-                break
-            case "announcement":
-            case "join_request":
-                navigation.push("Loop", {loop_id: data.parent_id, initialScreen: "Announcements"})
-                break
-            case "event_join":
-            case "event":
-                navigation.push("Loop", {loop_id: data.parent_id, initialScreen: "Events"})
-                break
-            }
+        linkTo("/" + data.url)
+    }
+    
+    function handleAuthorPress(data) {  
+        if (data?.extraData?.public) {
+            //takes care of both public events and public pings
+            navigation.push("Loop", { loop_id: data.parent_id })
+        } else {
+            navigation.push("UserProfile", { username: data.author })
+        }
     }
 
-  
-      const Notification = ({ data }) => (
+    const Notification = ({ data }) => (
         <Pressable onPress={() => onNotificationsPress(data)} style={styles.notificationContainer}>
-          <Image style={styles.pfp} source={{ uri: data.pfp_url || torus_default_url }} />
-          <View style={{ marginLeft: 20, maxWidth: 250, flex: 1, flexDirection: 'row'}}>
-            <Text style={[{color: "lightgrey", maxWidth: 250, fontWeight: data.unread ? "600" : "400"}]}>
-                <Text style={{color: 'white'}} onPress={() => navigation.navigate("UserProfile", {username: data.author})}>{data.author}</Text>
-                {" " + data.message}
-            </Text>
-          </View>
+            <Image style={styles.pfp} source={{ uri: data.pfp_url || torus_default_url }} />
+            <View style={{ marginLeft: 20, maxWidth: 250, flex: 1, flexDirection: 'row' }}>
+                <Text style={[{ color: "lightgrey", maxWidth: 250, fontWeight: data.unread ? "600" : "400" }]}>
+                    <Text style={{ color: 'white' }} onPress={() => handleAuthorPress(data)}>{data.author}</Text>
+                    {" " + data.message}
+                </Text>
+            </View>
         </Pressable>
-      );
-    
+    );
+
+    function groupNotificationsByDate(raw_notifications) {
+        const today = moment().startOf('day');
+        const yesterday = moment().subtract(1, 'days').startOf('day');
+        const lastWeek = moment().subtract(7, 'days').startOf('day');
+
+        const grouped = {
+            'Today': [],
+            'Yesterday': [],
+            'Last 7 Days': [],
+        };
+
+        for (const index in raw_notifications) {
+            if (index > 50) {
+                break
+            }
+            
+            const notification = raw_notifications[index]
+            const notificationDate = moment(notification.created_at);
+
+            if (notificationDate.isSame(today, 'day')) {
+                grouped['Today'].push(notification);
+            } else if (notificationDate.isSame(yesterday, 'day')) {
+                grouped['Yesterday'].push(notification);
+            } else if (notificationDate.isAfter(lastWeek)) {
+                grouped['Last 7 Days'].push(notification);
+            }
+        }
+
+        return Object.keys(grouped).map(key => ({
+            title: key,
+            data: grouped[key]
+        }));
+    }
 
     async function fetchNotifications() {
-        const fetchedNotifications = (await getNotifications()).notifications
-        console.log("Fetched", fetchedNotifications.length, "notifications. First entry:", fetchedNotifications[0])
-        setNotifications(fetchedNotifications.filter(obj => obj.type !== 'join'))
+        const fetchedNotifications = (await getNotifications()).notifications;
+        console.log("Fetched", fetchedNotifications.length, "notifications. First entry:", fetchedNotifications[0]);
+
+        const groupedNotifications = groupNotificationsByDate(
+            fetchedNotifications.filter(obj => obj.type !== 'join')
+        )
+
+        setNotifications(groupedNotifications)
     }
 
     async function fetchRequests() {
-        const fetchedRequests = await getJoinRequests()
-        console.log("Fetched", fetchedRequests.length, "requests. First entry:", fetchedRequests[0])
+        const fetchedRequests = await getJoinRequests();
+        console.log("Fetched", fetchedRequests.length, "requests. First entry:", fetchedRequests[0]);
 
-        const usernames = fetchedRequests.map(request => request.username)
-        setJoinRequests(usernames)
+        const usernames = fetchedRequests.map(request => request.username);
+        setJoinRequests(usernames);
     }
-    
+
     useEffect(() => {
-        Notifications.setBadgeCountAsync(0)
-        fetchNotifications()
-        fetchRequests()
-      }, []);
+        Notifications.setBadgeCountAsync(0);
+        fetchNotifications();
+        fetchRequests();
+    }, []);
 
 
+    if (!notifications) {
+        return (
+            <View style={{flex: 1, backgroundColor: 'rgb(22, 23, 24)', justifyContent: "center", alignItems: "center"}}>
+                <ActivityIndicator />
+            </View>
+        )
+    }
     return (
         <View style={styles.container}>
-           {joinRequests.length > 0 && (
+            {joinRequests.length > 0 && (
                 <TouchableOpacity onPress={() => navigation.navigate("JoinRequests")} style={styles.followRequests}>
                     <View style={styles.followRequestText}>
                         <Text style={styles.text}>Join Requests</Text>
-                        <Text style={{color: "lightgrey"}}>{joinRequests.slice(0, 2).join(', ')}...</Text>
+                        <Text style={{ color: "lightgrey" }}>{joinRequests.slice(0, 2).join(', ')}...</Text>
                     </View>
-                    <View style={{flex: 3, alignItems: "flex-end"}}>
+                    <View style={{ flex: 3, alignItems: "flex-end" }}>
                         <Ionicons name="arrow-forward-sharp" size={24} color="white" />
                     </View>
                 </TouchableOpacity>
             )}
-            
-            <FlatList
-                data={notifications}
-                renderItem={({ item }) => (<Notification data={item} />)}
-                ItemSeparatorComponent={<View style={styles.item_seperator}/>}
+
+            <SectionList
+                sections={notifications}
+                renderItem={({ item }) => <Notification data={item} />}
+                renderSectionHeader={({ section: { title } }) => (
+                    <View style={{ padding: 10, paddingLeft: 20, backgroundColor: "rgb(22, 23, 24)" }}>
+                        <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>{title}</Text>
+                    </View>
+                )}
+                initialNumToRender={50}
+                ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
                 refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} tintColor={"white"} />}
                 keyExtractor={item => item.notification_id}
             />
         </View>
-    )
+    );
 }

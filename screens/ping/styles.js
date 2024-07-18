@@ -16,13 +16,19 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         paddingBottom: 15
     },
+        
+    fullscreenImage: {
+        flex: 1,
+        resizeMode: "contain"
+    },
 
     attatchment: {
         width: 250,
         height: 300,
         borderRadius: 20,
         marginBottom: 20,
-        marginTop: 10
+        marginTop: 10,
+        resizeMode: "cover"
     },
 
     tinyLogo: {

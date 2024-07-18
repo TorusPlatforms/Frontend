@@ -5,12 +5,25 @@ const styles = StyleSheet.create({
         color: "white"
     },
 
+    attatchment: {
+        width: 150,
+        height: 150,
+        marginVertical: 10,
+        borderRadius: 20,
+        resizeMode: 'cover'
+    },
+
     item_seperator: {
         backgroundColor: 'gray',
         height: 1,
         width: "100%",
       },
-
+    
+    fullscreenImage: {
+        flex: 1,
+        resizeMode: "contain"
+    },
+    
     commentTime: {
         marginLeft: 7, 
         color: "gray", 

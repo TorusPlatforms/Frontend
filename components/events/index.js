@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, Text, Pressable, Alert, TouchableOpacity, TextInput } from "react-native";
-import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
+import Lightbox from 'react-native-lightbox-v2';
+import { useNavigation } from '@react-navigation/native';
+import * as Linking from 'expo-linking';
 
 import { strfEventDate, strfEventTime } from "../../components/utils";
 import { deleteEvent, joinLeaveEvent } from "../../components/handlers";
-import * as Linking from 'expo-linking';
+import styles from "./styles"
 
 const torus_default_url = "https://cdn.torusplatforms.com/torus_w_background.jpg"
 
 
-export const Event = ({ data, navigation }) => {
+export const Event = ({ data }) => {
+    const navigation = useNavigation()
     const [isJoined, setIsJoined] = useState(data.isJoined)
 
     async function handleDelete() {
@@ -52,9 +55,11 @@ export const Event = ({ data, navigation }) => {
     }
 
 
-    function handleUserPress() {
-      if (data.loop_id && data.public) {
-        navigation.push("Loop", {loop_id: data.loop_id})
+    function handleUserPress({ prioritizeUser }) {
+      //When we click on the PFP we ALWAYS want to go to the users profile even if its a loop event
+      console.log(prioritizeUser)
+      if (data.loop_id && !prioritizeUser) {
+        navigation.push("Loop", {loop_id: data.loop_id, initialScreen: "Events"})
       } else {
         navigation.push("UserProfile", {username: data.author})
       }
@@ -63,7 +68,7 @@ export const Event = ({ data, navigation }) => {
     return (
         <View style={{ marginVertical: 20, width: "100%", flexDirection: "row", flex: 1, paddingBottom: 10 }}>
             <View style={{flex: 0.2, alignItems: "center"}}>
-              <Pressable onPress={handleUserPress}>
+              <Pressable onPress={() => handleUserPress({prioritizeUser: true})}>
                   <Image style={{ width: 50, height: 50, borderRadius: 25 }} source={{ uri: data.pfp_url }} />
               </Pressable>
 
@@ -80,7 +85,7 @@ export const Event = ({ data, navigation }) => {
                 <View style={{ justifyContent: "space-between", padding: 20, minHeight: 150}}>
                       <View>
                           <TouchableOpacity onPress={handleUserPress}>
-                              <Text style={{ color: "lightgray", fontSize: 12 }}>{(data.loop_id && data.public) ? "[LOOP] " : ""}{data.author}</Text>
+                              <Text style={{ color: "lightgray", fontSize: 12 }}>{data.author} { (data.loop_id && !data.public) ? `(${data.loop_name})` : "" }</Text>
                           </TouchableOpacity>
 
                         <View style={{flexDirection: 'row', justifyContent: "space-between", marginVertical: 4}}>
@@ -113,16 +118,20 @@ export const Event = ({ data, navigation }) => {
 
                   {data.image_url && (
                       <View style={{ position: 'relative' }}>
-                          <Image
-                              style={{
-                                  width: "100%",
-                                  height: 150,
-                                  resizeMode: "cover",
-                                  borderBottomLeftRadius: 20,
-                                  borderBottomRightRadius: 20
-                              }}
-                              source={{ uri: data.image_url || data?.image_url }}
-                          />
+                          <Lightbox navigator={navigation} activeProps={{style: styles.fullscreenImage}}>
+
+                              <Image
+                                  style={{
+                                      width: "100%",
+                                      height: 150,
+                                      resizeMode: "cover",
+                                      borderBottomLeftRadius: 20,
+                                      borderBottomRightRadius: 20
+                                  }}
+                                  source={{ uri: data.image_url || data?.image_url }}
+                              />
+
+                          </Lightbox>
 
                           { data.isCreator && (
                             <TouchableOpacity onPress={handleDelete}>

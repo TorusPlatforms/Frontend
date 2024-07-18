@@ -11,7 +11,12 @@ const styles = StyleSheet.create({
         height: 50, 
         marginLeft: 20, 
         borderRadius: 25 
-    }
+    },
+
+    fullscreenImage: {
+        flex: 1,
+        resizeMode: "contain"
+    },
 })
 
 export default styles;

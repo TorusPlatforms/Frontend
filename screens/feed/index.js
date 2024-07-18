@@ -4,8 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import { Dropdown } from 'react-native-element-dropdown';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
-import Popover from 'react-native-popover-view';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
@@ -113,19 +112,21 @@ export default function Feed() {
         }
     }
       
-    
+    async function updateToken() {
+      const fetchedUser = await fetchUser()
+      const token = await registerForPushNotificationsAsync()
+      if (token && token != fetchedUser.expo_notification_id) {
+          console.log("Token has changed! Updating...")
+          await updateUser("expo_notification_id", token)
+      } else {
+        console.log("Token is the same! Doing nothing...")
+      }
+    }  
+
     async function fetchPingsAndColleges() {
         setRefreshing(true)
         const fetchedUser = await fetchUser()
 
-        const token = await registerForPushNotificationsAsync()
-        if (token && token != fetchedUser.expo_notification_id) {
-            console.log("Token has changed! Updating...")
-            await updateUser("expo_notification_id", token)
-        } else {
-          console.log("Token is the same! Doing nothing...")
-        }
-        
         await fetchPings(fetchedUser)
         await fetchColleges(fetchedUser)
 
@@ -170,25 +171,26 @@ export default function Feed() {
           ...cleanedColleges
         ])
     }
-
-    const isFocused = useIsFocused()
-    useEffect(() => {
-      if (isFocused) {
-        fetchUser()
-      }
-    }, [feedType, isFocused]); 
     
+    useFocusEffect(
+      useCallback(() => {
+        fetchUser()
+      }, [])
+    );
+  
     useEffect(() => {
+      updateToken()
+    }, []); 
+
+     useEffect(() => {
       fetchPingsAndColleges()
     }, [feedType]); 
 
-  
+
     const onRefresh = useCallback(async() => {
       await fetchPingsAndColleges()
     }, [feedType]);
 
-
- 
 
  
     if (!user || !pings) {
@@ -211,8 +213,8 @@ export default function Feed() {
                   selectedTextStyle={[styles.text, {fontWeight: "bold"}]}
                   activeColor='rgb(22, 23, 24)'
                   data={dropdownData}
-                  placeholder='Torus'
-                  placeholderStyle={[styles.text, {fontWeight: "bold", fontSize: 24}]}
+                  placeholder={user.college_nickname ?? abbreviate(user.college)}
+                  placeholderStyle={styles.text}
                   maxHeight={300}
                   labelField="label"
                   valueField="value"
@@ -232,15 +234,15 @@ export default function Feed() {
                     <Ionicons name="chatbubble-ellipses" size={24} color="white" />
 
                     { user.hasUnreadMessages && (
-                        <View style={{backgroundColor: "red", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
+                        <View style={{backgroundColor: "rgb(241, 67, 67)", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
                     )}
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => navigation.navigate("Notifications")}>
-                    <Ionicons name="notifications-outline" size={24} color="white" />
+                    <Ionicons name="notifications" size={24} color="white" />
                     
                     { user.notifications > 0 && (
-                        <View style={{backgroundColor: "red", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute", justifyContent: "center", alignItems: "center"}}>
+                        <View style={{backgroundColor: "rgb(241, 67, 67)", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute", justifyContent: "center", alignItems: "center"}}>
                             <Text style={{color: "white", fontSize: 10}}>{user.notifications}</Text>
                         </View>
                     )}

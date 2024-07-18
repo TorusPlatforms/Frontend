@@ -1,8 +1,8 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Animated, SafeAreaView, RefreshControl, FlatList, TouchableOpacity } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons"
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-elements";
 
 import { getJoinedLoops } from "../../components/handlers";
@@ -43,8 +43,6 @@ export default function MyLoops() {
         if (search) {
             const filtered = loops.filter((loop) => loop.name.toLowerCase().includes(search.toLowerCase()));
             setFilteredLoops(filtered);
-        } else {
-            setFilteredLoops(loops)
         }
     }, [search]);
 
@@ -80,13 +78,11 @@ export default function MyLoops() {
         setFilteredLoops(fetchedLoops)
     };
 
-    const isFocused = useIsFocused()
-
-    useEffect(() => {
-        if (isFocused) {
-            fetchLoops();
-        }
-    }, [isFocused]);
+    useFocusEffect(
+        useCallback(() => {
+          fetchLoops()
+        }, [])
+      );
 
     
     const onScroll = Animated.event(

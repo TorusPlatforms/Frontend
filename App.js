@@ -1,16 +1,18 @@
-import { NavigationContainer, useRoute } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import * as Notifications from 'expo-notifications';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import React, { useState, useRef, useEffect } from "react";
-import { StatusBar, Image, View, TouchableOpacity, Platform } from "react-native";
+import { StatusBar, StyleSheet, View, TouchableOpacity, Platform, Text, Dimensions, Animated, Easing } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+import { NavigationContainer, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+
+import * as Notifications from 'expo-notifications';
 import * as Linking from 'expo-linking';
+
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { initializeAuth, getReactNativePersistence, getAuth, onAuthStateChanged } from "firebase/auth";
@@ -22,8 +24,7 @@ import Feed from "./screens/feed"
 import Profile from "./screens/profile"
 import MutualsScreen from './screens/mutualuserlists';
 import CreatePing from './screens/createping';
-import Loops from "./screens/discoverloops";
-import Events from "./screens/events";
+import Discover from "./screens/discoverloops";
 import LoopsPage from './screens/loop'; //this is the view for a single loop
 import CreateLoop from "./screens/createloop";
 import Messages from "./screens/messages" 
@@ -47,6 +48,7 @@ import SearchColleges from './screens/searchcolleges';
 import Ping from './screens/ping';
 import SplashScreen from './screens/splashscreen';
 import LoopAnnouncements from './screens/loopannouncements';
+import CreatePill from "./screens/createpill";
 
 
 const firebaseConfig = {
@@ -80,6 +82,9 @@ Notifications.setNotificationHandler({
   },
 });
 
+const DummyView = () => (
+  <View />
+)
 
 
 const prefix = Linking.createURL('/');
@@ -90,15 +95,62 @@ const TopTab = createMaterialTopTabNavigator();
 
 
 const Tabs = () => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const navigation = useNavigation()
+
+
   return (
-    <Tab.Navigator screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)'}, headerShown: false, tabBarShowLabel: false, headerStyle: { backgroundColor: 'rgb(22, 23, 24)'}, headerTitleStyle: { "color": "white" }}}>
-      <Tab.Screen name="Feed" component={FeedScreens} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "home" : "home-outline"} color={"white"} size={size}/>)}}/>
-      <Tab.Screen name="Community" component={DiscoverTabs} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "search" : "search-outline"} color={"white"} size={size}/>)}}/>
-      <Tab.Screen name="CreateContainer" listeners={({ navigation }) => ({tabPress: (e) => {e.preventDefault(); navigation.navigate("Create")}})} component={CreatePing} options={{ presentation: "modal", tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "add-circle" : "add-circle-outline"} color={"white"} size={size}/>)}} />
-      <Tab.Screen name="My Loops" component={MyLoops} options={{headerShown: true, tabBarIcon: ({ focused, size }) => (<MaterialCommunityIcons name={focused ? "account-group" : "account-group-outline"} color={"white"} size={size}/>)}}/>
-      <Tab.Screen name="Profile" component={Profile} options={{tabBarIcon: ({ focused, size }) => (<Ionicons name={focused ? "person" : "person-outline"} color={"white"} size={size}/>)}}/>
-    </Tab.Navigator>
-  )
+    <View style={{ flex: 1 }}>
+      <Tab.Navigator
+        screenOptions={{
+          tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)' },
+          headerShown: false,
+          tabBarShowLabel: false,
+          headerStyle: { backgroundColor: 'rgb(22, 23, 24)' },
+          headerTitleStyle: { color: 'white' }
+        }}
+      >
+        <Tab.Screen name="Feed" component={FeedScreens} options={{
+          tabBarIcon: ({ focused, size }) => (
+            <Ionicons name={focused ? 'home' : 'home-outline'} color={'white'} size={size} />
+          )
+        }} />
+        <Tab.Screen name="Discover" component={Discover} options={{
+          tabBarIcon: ({ focused, size }) => (
+            <Ionicons name={focused ? 'search' : 'search-outline'} color={'white'} size={size} />
+          )
+        }} />
+        <Tab.Screen
+          name="CreateContainer"
+          listeners={({ navigation }) => ({
+            tabPress: (e) => {
+              e.preventDefault();
+              setModalVisible(!modalVisible);
+            },
+          })}
+          component={DummyView}
+          options={{
+            tabBarIcon: ({ focused, size }) => (
+              <Ionicons name={focused ? 'add-circle' : 'add-circle-outline'} color={'white'} size={size} />
+            )
+          }}
+        />
+        <Tab.Screen name="My Loops" component={MyLoops} options={{
+          headerShown: true,
+          tabBarIcon: ({ focused, size }) => (
+            <MaterialCommunityIcons name={focused ? 'account-group' : 'account-group-outline'} color={'white'} size={size} />
+          )
+        }} />
+        <Tab.Screen name="Profile" component={Profile} options={{
+          tabBarIcon: ({ focused, size }) => (
+            <Ionicons name={focused ? 'person' : 'person-outline'} color={'white'} size={size} />
+          )
+        }} />
+      </Tab.Navigator>
+
+      {modalVisible && <CreatePill setModalVisible={setModalVisible} navigation={navigation} />}
+    </View>
+  );
 };
 
 const FeedScreens = () => {
@@ -110,14 +162,6 @@ const FeedScreens = () => {
   )
 }
 
-
-const DiscoverTabs = () => {
-  return (
-  <TopTab.Navigator screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)', paddingTop: 50}, tabBarLabelStyle: { "color": "white"}}}>
-    <TopTab.Screen name="Loops" component={Loops} options={{headerShown: false}} />
-    <TopTab.Screen name="Events" component={Events} options={{headerShown: false}} />
-  </TopTab.Navigator>)
-}
 
 const FollowTabs = ({ route }) => {
   return (
@@ -134,8 +178,18 @@ function App() {
 
     const config = {
       screens: {
-        Ping: 'ping/:post_id',  
-        Loop: 'loop/:loop_id',
+        Ping: {
+          path: 'ping/:post_id',
+          parse: {
+            post_id: Number,
+          },
+        },    
+        Loop: {
+          path: 'loop/:loop_id/:initialScreen?',
+          parse: {
+            loop_id: Number,
+          },
+        },    
         UserProfile: 'user/:username',
         Notifications: 'notifications',
       },

@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
-import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { useNavigation, useFocusEffect, useIsFocused } from '@react-navigation/native';
 
 import { Ping } from '../../components/pings';
 import { getUserPings } from "../../components/handlers";
@@ -21,12 +21,16 @@ export default function UserPings({ username }) {
         setPings(pings)
     }   
 
-    const isFocused = useIsFocused()
+    // useFocusEffect(
+    //   useCallback(() => {
+    //     fetchUserPings()
+    //   }, [])
+    // );
 
+    const isFocused = useIsFocused()
     useEffect(() => {
       fetchUserPings()
-    }, [isFocused]);
-    
+    }, [isFocused])
     
     if (!pings) {
       return (

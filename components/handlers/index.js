@@ -657,7 +657,6 @@ export async function updateLoop({ loop_id, endpoint, value }) {
 }
 
 export async function updateMember({ loop_id, endpoint, value }) {
-    console.error("UPDATING LOOP", loop_id, endpoint, value)
     const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/member/update/${endpoint}`;
     
     const token = await getToken()
@@ -683,7 +682,7 @@ export async function updateMember({ loop_id, endpoint, value }) {
     console.log('Updated succesfully. Server response:', responseData);
   }
 
-export async function postComment(post_id, content) {
+export async function postComment(post_id, content, image_url = null) {
   const token = await getToken()
   
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/add`;
@@ -697,7 +696,8 @@ export async function postComment(post_id, content) {
       },
       body: JSON.stringify({
         post_id: post_id,
-        content: content
+        content: content,
+        image_url: image_url
       }),
     });
 
@@ -712,6 +712,28 @@ export async function postComment(post_id, content) {
   } catch (error) {
     console.error('Error posting comment:', error.message);
   }
+}
+
+export async function handleCommentLike({comment_id, endpoint}) {
+    const token = await getToken()
+    
+    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/${comment_id}/${endpoint}`;
+
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error posting comment! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log('Posted Comment:', responseData);
+    return responseData
 }
 
 
@@ -790,7 +812,7 @@ export async function getDM(username) {
 }
 
 
-export async function sendMessage(username, content) {
+export async function sendMessage(username, content, image_url = null) {
   const token = await getToken()
 
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/messages/add`;
@@ -804,7 +826,8 @@ export async function sendMessage(username, content) {
       },
       body: JSON.stringify({
         receiver_username: username, 
-        content: content
+        content: content,
+        image_url: image_url
       })
     })
 
@@ -829,7 +852,6 @@ export async function getLoops(query) {
     if (query) {
       serverUrl += `?query=${encodeURIComponent(query)}`;
     }
-    console.log("fetching...", serverUrl)
 
     const response = await fetch(serverUrl, {
       method: 'GET',
@@ -1390,7 +1412,7 @@ export async function getChats(loopId) {
 }
 
 
-export async function sendChat(loopId, content) {
+export async function sendChat(loopId, content, image_url = null) {
   const token = await getToken()
 
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/createMessage`;
@@ -1404,7 +1426,8 @@ export async function sendChat(loopId, content) {
       },
       body: JSON.stringify({
         loop_id: loopId, 
-        content: content
+        content: content,
+        image_url: image_url
       })
     })
 

@@ -1,20 +1,22 @@
 import React from 'react';
-import { View, Image, Text, TouchableOpacity, Alert } from "react-native";
+import { View, Image, Text, TouchableOpacity, Alert, Pressable } from "react-native";
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
+import Lightbox from 'react-native-lightbox-v2';
 
 import { deleteAnnouncement } from '../handlers';
 import { findTimeAgo } from '../utils';
-import styles from "./styles"
 import { resendAnnouncement } from '../handlers/notifications';
+import styles from "./styles"
 
 
 export const Announcement = ({ data, isOwner }) => {
   const navigation = useNavigation()
   
   function handleAuthorPress() {
-      navigation.navigate("UserProfile", {username: data.author});
+      navigation.goBack()
+      navigation.push("UserProfile", {username: data.author});
   }
 
   async function handleResendPress() {
@@ -46,12 +48,12 @@ export const Announcement = ({ data, isOwner }) => {
 
   return (
     <View style={{marginVertical: 10, width: "95%", flexDirection: "row", padding: 10}}>
-        <View style={{flexDirection: "col", flex: 1}}>
+        <Pressable style={{flexDirection: "col", flex: 1}} onPress={handleAuthorPress}>
           <Image
             style={styles.tinyLogo}
             source={{uri: data.pfp_url}}
           />
-        </View>
+        </Pressable>
     
         <View style={{marginLeft: 20, flex: 6}}>
           <View style={{flex: 1}}>
@@ -85,11 +87,15 @@ export const Announcement = ({ data, isOwner }) => {
         
           <View style={{flex: 2}}>
             { data.image_url && (
-              <Image
-                style={styles.attatchment}
-                source={{uri: data.image_url}}
-                resizeMode='cover'
-              />
+              <Lightbox navigator={navigation} activeProps={{style: styles.fullscreenImage}}>
+
+                  <Image
+                    style={styles.attatchment}
+                    source={{uri: data.image_url}}
+                    resizeMode='cover'
+                  />
+                  
+              </Lightbox>
             )}
           </View>
 

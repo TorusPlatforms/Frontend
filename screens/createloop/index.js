@@ -106,8 +106,8 @@ export default function CreateLoop() {
           <KeyboardAwareScrollView refreshControl={<RefreshControl refreshing={refreshing} tintColor={"white"}/>} contentContainerStyle={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
 
               <View style={{flex: 1, alignItems: "center"}}>
-                <Text style={{color: "white", textAlign: "center", fontSize: 24}}>Create Your Loop</Text>
-                <Text style={{color: "white", textAlign: "center", maxWidth: 300}}>Build your community, from your 10 friends to a hundred-member club</Text>
+                <Text style={{color: "white", textAlign: "center", fontSize: 20, fontWeight: "bold"}}>Create Your Loop</Text>
+                <Text style={{color: "white", textAlign: "center", maxWidth: 300, marginTop: 8}}>Build your community, from your 10 friends to a hundred-member club</Text>
               </View>
 
               <View style={{alignItems: "center", flex: 1}}>
@@ -137,6 +137,7 @@ export default function CreateLoop() {
                       <TextInput 
                           defaultValue={user.username + "'s loop"}
                           onChangeText={text => setName(text.trim())}
+                          maxLength={50}
                           style={{
                             backgroundColor: "rgb(62, 62, 62)",
                             width: "70%",
@@ -182,7 +183,7 @@ export default function CreateLoop() {
 
               <View style={{flex: 3, marginTop: 50, alignItems: "center"}}>
                 <TouchableOpacity onPress={handleCreateLoop} style={{backgroundColor: "rgb(47, 139, 128)", width: "90%", height: 40, justifyContent: "center", alignItems: "center", borderRadius: 20}}>
-                  <Text style={{color: "white"}}>Create Loop</Text>
+                  <Text style={{color: "white", fontWeight: "bold"}}>Create Loop</Text>
                 </TouchableOpacity>
               </View>
 

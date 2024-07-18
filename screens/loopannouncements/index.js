@@ -71,7 +71,7 @@ export default function LoopAnnouncements({ route }) {
   return (
     <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
         <FlatList
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"} />}
             style={{paddingHorizontal: 5}}
             data={announcements}
             renderItem={

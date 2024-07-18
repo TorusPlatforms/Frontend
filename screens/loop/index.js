@@ -86,7 +86,7 @@ export default function LoopsPage({ route }) {
                       <Entypo name="megaphone" size={24} color="white" /> 
 
                       { loop.hasUnreadAnnouncements && (
-                        <View style={{backgroundColor: "red", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
+                        <View style={{backgroundColor: "rgb(241, 67, 67)", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
                       )}
                     
                     </TouchableOpacity>

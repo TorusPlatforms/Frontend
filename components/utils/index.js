@@ -28,6 +28,36 @@ export function findTimeAgo(timestamp) {
     return agoMessage;
 }
 
+export function findTimeAgoShort(timestamp) {
+  const now = new Date();
+
+
+  const date = new Date(timestamp)
+
+  const timeDifference = now - date;
+
+  const secondsDifference = Math.floor(timeDifference / 1000);
+
+  let agoMessage;
+
+  if (secondsDifference <= 0) {
+    agoMessage = "Now";
+  } else if (secondsDifference < 60) {
+    agoMessage = `${secondsDifference}s`;
+  } else if (secondsDifference < 3600) {
+    const minutes = Math.floor(secondsDifference / 60);
+    agoMessage = `${minutes}m`;
+  } else if (secondsDifference < 86400) {
+    const hours = Math.floor(secondsDifference / 3600);
+    agoMessage = `${hours}h`;
+  } else {
+    const days = Math.floor(secondsDifference / 86400);
+    agoMessage = `${days}d`;
+  }
+
+  return agoMessage;
+}
+
 function addSuffix(num) {
   // Check if the number is between 11 and 13, as they have special suffixes
   if (num % 100 >= 11 && num % 100 <= 13) {

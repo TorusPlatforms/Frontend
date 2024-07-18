@@ -5,9 +5,11 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Entypo from "@expo/vector-icons/Entypo"
 
 import { updateMember } from '../handlers';
+import { useNavigation } from '@react-navigation/native';
 
-export const Loop = ({ data, goToLoop }) => {
+export const Loop = ({ data }) => {
   const [starred, setStarred] = useState()
+  const navigation = useNavigation()
 
   async function handleStar(data) {
     console.log("Starring")
@@ -21,7 +23,7 @@ export const Loop = ({ data, goToLoop }) => {
   }, [data])
 
   return (
-    <TouchableOpacity onPress={() => goToLoop(data.loop_id)}>
+    <TouchableOpacity onPress={() => navigation.push('Loop', { loop_id: data.loop_id })}>
       <View style={{ marginVertical: 20, width: "100%", flexDirection: "row", paddingHorizontal: 20, justifyContent: "space-between" }}>
         <View style={{flexDirection: "row", flex: 1}}>
             <Image style={{ width: 100, height: 100, borderRadius: 50 }} source={{ uri: data.pfp_url || data?.pfp_url  }} />
@@ -43,7 +45,7 @@ export const Loop = ({ data, goToLoop }) => {
                 {data.hasUnreadMessages && (
                   <View>
                     <Ionicons name={"chatbubble-ellipses"} size={24} color={'white'} />
-                    <View style={{backgroundColor: "red", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
+                    <View style={{backgroundColor: "rgb(241, 67, 67)", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
                   </View>
                 )}
                 
@@ -51,7 +53,7 @@ export const Loop = ({ data, goToLoop }) => {
                 {data.hasUnreadAnnouncements && (
                   <View>
                       <Entypo name="megaphone" size={24} color="white" /> 
-                      <View style={{backgroundColor: "red", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
+                      <View style={{backgroundColor: "rgb(241, 67, 67)", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
                   </View>
                 )}
 
