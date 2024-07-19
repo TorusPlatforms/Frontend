@@ -3,7 +3,7 @@
     "name": "Torus Platforms",
     "scheme": "torus",
     "slug": "torus",
-    "version": "1.0.11",
+    "version": "1.0.10",
     "orientation": "portrait",
     "icon": "./assets/torus_zoomed_in.png",
     "userInterfaceStyle": "light",
@@ -28,7 +28,8 @@
         "NSMicrophoneUsageDescription": "This feature requires access to your microphone",
         "NSPhotoLibraryUsageDescription": "This feature requires access to your camera roll"
       },
-      "bundleIdentifier": "com.torusplatforms.torus"
+      "bundleIdentifier": "com.torusplatforms.torus",
+      "buildNumber": "3"
     },
     "android": {
       "permissions": [
