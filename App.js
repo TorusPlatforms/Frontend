@@ -3,7 +3,7 @@ import { StatusBar, StyleSheet, View, TouchableOpacity, Platform, Text, Dimensio
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { NavigationContainer, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native';
+import { NavigationContainer, useFocusEffect, useLinkTo, useNavigation, useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -87,17 +87,15 @@ const DummyView = () => (
 )
 
 
-const prefix = Linking.createURL('/');
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const TopTab = createMaterialTopTabNavigator();
 
 
-const Tabs = () => {
+const Tabs = ({ route }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation()
-
 
   return (
     <View style={{ flex: 1 }}>
@@ -176,6 +174,8 @@ function App() {
     const [loggedIn, setLoggedIn] = useState(false)
     const [loading, setLoading] = useState(true)
 
+    const prefix = Linking.createURL('/');
+
     const config = {
       screens: {
         Ping: {
@@ -191,22 +191,17 @@ function App() {
       },
     };
 
-    const linking = {
-      prefixes: [prefix],
-      config
-    };
-
     // const lastNotificationResponse = Notifications.useLastNotificationResponse();
+
     // useEffect(() => {
-    //     console.log("BACKGROUND NOTIFICATION DETECTED", lastNotificationResponse?.notification?.request?.content)
-    //     if (
-    //       lastNotificationResponse &&
-    //       lastNotificationResponse.notification.request.content.data.url &&
-    //       lastNotificationResponse.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER
-    //     ) {
-    //       const url = lastNotificationResponse.notification.request.content.data.url
-    //       Linking.openURL(prefix.trim() + url.trim())
-    //     }
+    //   if (
+    //     lastNotificationResponse &&
+    //     lastNotificationResponse?.notification?.request?.content?.data?.url
+    //   ) {
+    //     const url = lastNotificationResponse.notification.request.content.data.url
+    //     console.log("BACKGROUND NOTIFICATION DETECTED IN HOME. URL", url)
+    //     Linking.openURL(prefix + url.trim())
+    //   }
     // }, [lastNotificationResponse]);
     
     useEffect(() => {
@@ -223,6 +218,7 @@ function App() {
           setTimeout(() => {
             setLoading(false);
           }, 1000); 
+
       })
 
       return () => unsubscribe()
@@ -253,33 +249,7 @@ function App() {
       <SafeAreaProvider>
       <NavigationContainer linking={{
         prefixes: [prefix],
-        config: config,
-        async getInitialURL() {
-          const url = await Linking.getInitialURL();
-
-          if (url != null) {
-            return url;
-          }
-
-          const response = await Notifications.getLastNotificationResponseAsync();
-
-          return response?.notification.request.content.data.url;
-        },
-        subscribe(listener) {
-          const onReceiveURL = ({ url }) => listener(url);
-          const eventListenerSubscription = Linking.addEventListener('url', onReceiveURL);
-
-          const subscription = Notifications.addNotificationResponseReceivedListener(response => {
-            const url = response.notification.request.content.data.url;
-            console.log("Opening URL", prefix.trim() + url.trim())
-            listener(prefix.trim() + url.trim());
-          });
-
-          return () => {
-            eventListenerSubscription.remove();
-            subscription.remove();
-          };
-        },
+        config: config
       }}
       >
         <StatusBar barStyle="light-content" backgroundColor="rgb(22, 23, 24)" />
@@ -303,7 +273,7 @@ function App() {
 
             {loggedIn ? (
               <>
-                <Stack.Screen name="Home" options={{ gestureEnabled: false }} component={Tabs} />
+                <Stack.Screen name="Home" options={{ gestureEnabled: false }} component={Tabs}/>
                 <Stack.Screen name="Create" component={CreatePing} options={{ presentation: "modal", gestureEnabled: true }} />
                 <Stack.Screen name="CreateLoop" component={CreateLoop} options={{ presentation: "modal", gestureEnabled: true }} />
                 <Stack.Screen name="CreateEvent" component={CreateEvent} options={{ presentation: "modal", gestureEnabled: true }} />

@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import { Dropdown } from 'react-native-element-dropdown';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useLinkBuilder, useLinkTo, useNavigation } from '@react-navigation/native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
@@ -31,6 +31,19 @@ export default function Feed() {
     const currentScrollPosition = useRef()
     const fadeAnim = useRef(new Animated.Value(0)).current;
 
+    const lastNotificationResponse = Notifications.useLastNotificationResponse();
+    const linkTo = useLinkTo()
+
+    useEffect(() => {
+      if (
+        lastNotificationResponse &&
+        lastNotificationResponse?.notification?.request?.content?.data?.url
+      ) {
+        const url = lastNotificationResponse.notification.request.content.data.url
+        console.log("BACKGROUND NOTIFICATION DETECTED IN FEED. URL", url)
+        linkTo("/" + url)
+      }
+    }, [lastNotificationResponse]);
 
     const scrollToTop = () => {
       if (flatListRef.current) {

@@ -3,7 +3,7 @@
     "name": "Torus Platforms",
     "scheme": "torus",
     "slug": "torus",
-    "version": "1.0.10",
+    "version": "1.0.11",
     "orientation": "portrait",
     "icon": "./assets/torus_zoomed_in.png",
     "userInterfaceStyle": "light",
@@ -32,14 +32,18 @@
     },
     "android": {
       "permissions": [
-        "CAMERA",
-        "AUDIO_RECORDING",
-        "READ_EXTERNAL_STORAGE"
+        "android.permission.CAMERA",
+        "android.permission.AUDIO_RECORDING",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#161718"
-      }
+      },
+      "package": "com.torusplatforms.torus"
     },
     "web": {
       "favicon": "./assets/favicon.png"

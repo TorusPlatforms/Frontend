@@ -52,7 +52,6 @@ export default function LoopChat({ route }) {
       return () => {
         Notifications.setNotificationHandler({
           handleNotification: async (notification) => {
-            console.log("Notification Recieved. Showing...")
             return {
               shouldShowAlert: true,
               shouldPlaySound: false,
