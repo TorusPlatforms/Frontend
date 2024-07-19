@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { View, RefreshControl, Image, Text, FlatList, Animated, ActivityIndicator, Pressable } from "react-native";
+import { View, RefreshControl, ScrollView, Text, FlatList, Animated, ActivityIndicator, Pressable } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
@@ -12,13 +12,11 @@ export default function LoopEvents({ route }) {
   const navigation = useNavigation()
 
   const { loop } = route.params;
-  const [events, setEvents] = useState([]);
-
+  const [events, setEvents] = useState();
 
   const [refreshing, setRefreshing] = useState(false)
 
   const fadeAnim = useRef(new Animated.Value(1)).current;
-
 
 
   const handleScrollEnd = () => {
@@ -30,7 +28,6 @@ export default function LoopEvents({ route }) {
   };
 
   const handleScrollBegin = () => {
-    // Will change fadeAnim value to 0 in 3 seconds
     Animated.timing(fadeAnim, {
       toValue: 0,
       duration: 100,
@@ -48,13 +45,12 @@ export default function LoopEvents({ route }) {
 
 
   async function fetchEvents() {
-    const events = await getLoopEvents(loop.loop_id)
-    console.log(events)
-    setEvents(events)
+    const fetchedEvents = await getLoopEvents(loop.loop_id)
+    console.log("Fetched", fetchedEvents.length, "events. First entry:", fetchedEvents[0])
+    setEvents(fetchedEvents)
   }
 
   useEffect(() => {
-    console.log("Loop", loop, loop.isOwner)
     fetchEvents()
   }, [route.params]);
 
@@ -71,22 +67,34 @@ export default function LoopEvents({ route }) {
 
   return (
     <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
-        <FlatList
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            style={{paddingHorizontal: 5}}
-            data={events}
-            renderItem={
-              ({item}) => 
-                <Event data={item} navigation={navigation} />
-            }
-            ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+        {events.length > 0 ? (
+          <FlatList
+              refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"}/>}
+              style={{paddingHorizontal: 5}}
+              data={events}
+              renderItem={
+                ({item}) => 
+                  <Event data={item} />
+              }
+              ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+              onMomentumScrollBegin={handleScrollBegin}
+              onMomentumScrollEnd={handleScrollEnd}
+          />
+        ) : (
+          <ScrollView 
+            contentContainerStyle={{justifyContent: 'center', alignItems: 'center', marginTop: 50}}   
             onMomentumScrollBegin={handleScrollBegin}
             onMomentumScrollEnd={handleScrollEnd}
-        />
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"}/>}
+            >
+              <Text style={{color: "lightgrey", textAlign: "center", maxWidth: 270}}>Looks like nobody has scheduled any events... Make one in this loop!</Text>
+          </ScrollView>
+        )}
+      
         
         
         {(loop.isOwner || loop.allowMembersToCreateEvents) && (
-          <Animated.View style={{opacity: fadeAnim, width: 40, height: 40, borderRadius: 20, backgroundColor: "rgb(47, 139, 128)", position: "absolute", bottom: 50, right: 25, alignItems: "center", justifyContent: "center"}}>
+          <Animated.View style={{opacity: events.length > 0 ? fadeAnim : 1, width: 40, height: 40, borderRadius: 20, backgroundColor: "rgb(47, 139, 128)", position: "absolute", bottom: 40, right: 40, alignItems: "center", justifyContent: "center"}}>
             <Pressable onPress={() => navigation.navigate("CreateEvent", {loop: loop})}>
                 <Ionicons size={35} color={"white"} name="add" />
             </Pressable>

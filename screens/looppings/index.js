@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { View, RefreshControl, Image, Text, FlatList, Animated, ActivityIndicator, Pressable } from "react-native";
+import { View, RefreshControl, Image, Text, FlatList, Animated, ActivityIndicator, Pressable, ScrollView } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
@@ -13,7 +13,7 @@ export default function LoopPings({ route }) {
   
   const { loop } = route.params
   
-  const [pings, setPings] = useState([]);
+  const [pings, setPings] = useState();
 
   const [refreshing, setRefreshing] = useState(false)
 
@@ -30,7 +30,6 @@ export default function LoopPings({ route }) {
   };
 
   const handleScrollBegin = () => {
-    // Will change fadeAnim value to 0 in 3 seconds
     Animated.timing(fadeAnim, {
       toValue: 0,
       duration: 100,
@@ -49,9 +48,9 @@ export default function LoopPings({ route }) {
 
 
   async function fetchPings() {
-    const pings = await getLoopPings(loop.loop_id)
-    console.log(pings)
-    setPings(pings)
+    const fetchedPings = await getLoopPings(loop.loop_id)
+    console.log("Fetched", fetchedPings.length, "pings. First entry:", fetchedPings[0])
+    setPings(fetchedPings)
   }
 
   useEffect(() => {
@@ -71,17 +70,28 @@ export default function LoopPings({ route }) {
 
   return (
     <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
-        <FlatList
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            style={{paddingHorizontal: 5}}
-            data={pings}
-            renderItem={({item}) => <Ping data={item} />}
-            ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+        {pings.length > 0 ? (
+            <FlatList
+              refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"}/>}
+              style={{paddingHorizontal: 5}}
+              data={pings}
+              renderItem={({item}) => <Ping data={item} />}
+              ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+              onMomentumScrollBegin={handleScrollBegin}
+              onMomentumScrollEnd={handleScrollEnd}
+            />
+        ) : (
+          <ScrollView 
+            contentContainerStyle={{justifyContent: 'center', alignItems: 'center', marginTop: 50}}   
             onMomentumScrollBegin={handleScrollBegin}
             onMomentumScrollEnd={handleScrollEnd}
-        />
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"}/>}
+            >
+              <Text style={{color: "lightgrey", textAlign: "center", maxWidth: 270}}>Looks like nobody has posted any pings... Send one to this loop!</Text>
+          </ScrollView>
+        )}
         
-        <Animated.View style={{opacity: fadeAnim, width: 40, height: 40, borderRadius: 20, backgroundColor: "rgb(47, 139, 128)", position: "absolute", bottom: 50, right: 25, alignItems: "center", justifyContent: "center"}}>
+        <Animated.View style={{opacity: pings.length > 0 ? fadeAnim : 1, width: 40, height: 40, borderRadius: 20, backgroundColor: "rgb(47, 139, 128)", position: "absolute", bottom: 40, right: 40, alignItems: "center", justifyContent: "center"}}>
             <Pressable onPress={() => navigation.navigate("Create", {loop: loop})}>
                 <Ionicons size={35} color={"white"} name="add" />
             </Pressable>

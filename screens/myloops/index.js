@@ -73,7 +73,6 @@ export default function MyLoops() {
             }
             return 0;
         })
-        console.log("Sorted first: ", fetchedLoops)
         setLoops(fetchedLoops);
         setFilteredLoops(fetchedLoops)
     };

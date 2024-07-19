@@ -110,9 +110,8 @@ export default function DirectMessage({ route }) {
   
 
     const onSend = useCallback(async (messages = [], image_url = null) => {
-        console.log("Sending URL", image_url)
-
         if (image_url) {
+          console.log("Sending URL", image_url)
           await sendMessage(route.params.username, null, image_url)
         }
         

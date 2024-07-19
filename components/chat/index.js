@@ -66,7 +66,7 @@ export const ChatComponent = ({ messages, onSend, id, loop, route }) => {
 
       const renderSend = (props) => {
         return (
-            <View style={{ flexDirection: 'row', alignItems: "center", marginBottom: 6 }}>
+            <View style={{ flexDirection: 'row', alignItems: "center", marginBottom: 2 }}>
               <TouchableOpacity onPress={() => handleAttatchment({ defaultMessage: props.text })}>
                 <FontAwesome
                     name="image"
@@ -103,11 +103,9 @@ export const ChatComponent = ({ messages, onSend, id, loop, route }) => {
                   wrapperStyle={{
                     left: {
                       backgroundColor: 'rgb(40, 40, 40)',
-                      padding: 2
                     },
                     right: {
                       backgroundColor: props.currentMessage.image ? 'rgb(22, 23, 24)' : '#0084ff',
-                      padding: 2
                     }
                   }}         
                   textStyle={{left: {color: "white"}}}       
@@ -175,13 +173,13 @@ export const ChatComponent = ({ messages, onSend, id, loop, route }) => {
             textInputStyle={{
               backgroundColor: "rgb(50,50,50)",
               color: "white",
-              minHeight: 50,
+              minHeight: 40,
               maxHeight: 200,
               maxLength: 100,
               borderRadius: 25,
               lineHeight: 20,
               paddingHorizontal: 20,
-              paddingTop: 15,
+              paddingTop: 10,
             }}
             placeholder='Send a message'
             messages={messages}

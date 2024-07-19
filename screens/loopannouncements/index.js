@@ -13,7 +13,7 @@ export default function LoopAnnouncements({ route }) {
 
   const { loop_id, isOwner } = route.params;
   
-  const [announcements, setAnnouncements] = useState([]);
+  const [announcements, setAnnouncements] = useState();
 
   const [refreshing, setRefreshing] = useState(false)
 
@@ -45,15 +45,13 @@ export default function LoopAnnouncements({ route }) {
   }, []);
 
 
-
   async function fetchAnnouncements() {
-    const announcements = await getAnnouncements(loop_id)
-    console.log(announcements)
-    setAnnouncements(announcements)
+    const fetchedAnnouncements = await getAnnouncements(loop_id)
+    console.log("Fetched", fetchedAnnouncements.length, "announcements. First entry:", fetchedAnnouncements[0])
+    setAnnouncements(fetchedAnnouncements)
   }
 
   useEffect(() => {
-    console.log(route.params)
     fetchAnnouncements()
   }, []);
 
@@ -84,9 +82,9 @@ export default function LoopAnnouncements({ route }) {
         />
         
         {isOwner && (
-          <Animated.View style={{opacity: fadeAnim, width: 50, height: 50, borderRadius: 25, backgroundColor: "rgb(47, 139, 128)", position: "absolute", bottom: 50, right: 25, alignItems: "center", justifyContent: "center"}}>
+          <Animated.View style={{opacity: announcements.length > 0 ? fadeAnim : 1, width: 40, height: 40, borderRadius: 20, backgroundColor: "rgb(47, 139, 128)", position: "absolute", bottom: 60, right: 40, alignItems: "center", justifyContent: "center"}}>
               <Pressable onPress={() => navigation.navigate("CreateAnnouncement", {loop_id: loop_id})}>
-                  <Ionicons size={50} color={"white"} name="add" />
+                  <Ionicons size={30} color={"white"} name="add" />
               </Pressable>
           </Animated.View>
         )}

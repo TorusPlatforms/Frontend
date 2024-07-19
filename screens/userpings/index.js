@@ -43,21 +43,21 @@ export default function UserPings({ username }) {
 
     return (
       <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
-          {pings.length == 0 && (
+        {pings.length > 0 ? (
+           <FlatList
+              ref={pings_ref}
+              data={pings}
+              renderItem={({item}) => 
+                <Ping data={item} />
+              }
+              ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+              keyExtractor={(item) => item.post_id}
+            />
+          ) : (
             <TouchableOpacity onPress={() => navigation.navigate("Feed")} style={{justifyContent: 'center', alignItems: 'center', marginTop: 50}}>
-              <Text style={{color: "lightgrey", textAlign: "center", maxWidth: 270}}>Looks like you haven't posted any pings... Send one to your campus!</Text>
+                <Text style={{color: "lightgrey", textAlign: "center", maxWidth: 270}}>Looks like you haven't posted any pings... Send one to your campus!</Text>
             </TouchableOpacity>
           )}
-
-            <FlatList
-                  ref={pings_ref}
-                  data={pings}
-                  renderItem={({item}) => 
-                    <Ping data={item} />
-                  }
-                  ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
-                  keyExtractor={(item) => item.post_id}
-              />
       </View>
     )
 }

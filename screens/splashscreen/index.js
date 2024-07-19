@@ -4,8 +4,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SplashScreen() {
     return (
-        <SafeAreaView style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgb(22, 23, 24)"}}>
-            <Image style={{width: 250, height: 250, resizeMode: "cover"}} source={require('../../assets/torus.png')}></Image>
+        <SafeAreaView style={{flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#0d111a"}}>
+            <Image style={{width: 425, height: 425, resizeMode: "cover"}} source={require('../../assets/torus_w_background.png')}></Image>
         </SafeAreaView>
     )
         

@@ -251,7 +251,6 @@ export async function getLoopEvents(loop_id) {
     });
     
     const responseData = await response.json();
-    console.log(response.status, responseData)
 
     if (response.status === 404) {
       return []
@@ -278,7 +277,6 @@ export async function getUserEvents() {
       });
       
       const responseData = await response.json();
-      console.log(response.status, responseData)
 
       if (response.status === 404) {
         return []

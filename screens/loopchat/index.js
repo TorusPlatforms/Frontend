@@ -38,6 +38,7 @@ export default function LoopChat({ route }) {
   useEffect(() => {
       Notifications.setNotificationHandler({
         handleNotification: async (notification) => {
+          console.log("Notification received! Handling...")
           const data = notification?.request?.content?.data
           return {
               //The alert should be shown if it is 1) not a loop message OR 2) if it is a loop message from a different loop 
@@ -51,6 +52,7 @@ export default function LoopChat({ route }) {
       return () => {
         Notifications.setNotificationHandler({
           handleNotification: async (notification) => {
+            console.log("Notification Recieved. Showing...")
             return {
               shouldShowAlert: true,
               shouldPlaySound: false,
@@ -89,9 +91,9 @@ export default function LoopChat({ route }) {
 
 
   const onSend = useCallback(async (messages = [], image_url = null) => {
-    if (route.name != "LoopChat") {
-      navigation.navigate("LoopChat", {loop: loop, fullScreen: true})
-    }
+    // if (route.name != "LoopChat") {
+    //   navigation.navigate("LoopChat", {loop: loop, fullScreen: true})
+    // }
 
     if (image_url) {
       await sendChat(loop.loop_id, null, image_url);

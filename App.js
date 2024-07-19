@@ -196,11 +196,23 @@ function App() {
       config
     };
 
+    // const lastNotificationResponse = Notifications.useLastNotificationResponse();
+    // useEffect(() => {
+    //     console.log("BACKGROUND NOTIFICATION DETECTED", lastNotificationResponse?.notification?.request?.content)
+    //     if (
+    //       lastNotificationResponse &&
+    //       lastNotificationResponse.notification.request.content.data.url &&
+    //       lastNotificationResponse.actionIdentifier === Notifications.DEFAULT_ACTION_IDENTIFIER
+    //     ) {
+    //       const url = lastNotificationResponse.notification.request.content.data.url
+    //       Linking.openURL(prefix.trim() + url.trim())
+    //     }
+    // }, [lastNotificationResponse]);
     
     useEffect(() => {
       const auth = getAuth()
       const unsubscribe = onAuthStateChanged(auth, user => {
-          console.log("User State Changed")
+          console.log("User State Changed. UID:", user?.uid)
   
           if (user && user.emailVerified) {
             setLoggedIn(true)
@@ -217,14 +229,16 @@ function App() {
 
     }, []);
 
-    useEffect(() => {
-      const subscription = Notifications.addNotificationResponseReceivedListener(response => {
-        const url = response.notification.request.content.data.url;
-        console.log("Opening URL", prefix, url)
-        Linking.openURL(prefix.trim() + url.trim());
-      });
-      return () => subscription.remove();
-    }, []);
+
+    // useEffect(() => {
+    //   const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+    //     console.log("REGULAR NOTIFICATION DETECTED")
+    //     const url = response.notification.request.content.data.url;
+    //     console.log("Opening URL", prefix, url)
+    //     Linking.openURL(prefix.trim() + url.trim());
+    //   });
+    //   return () => subscription.remove();
+    // }, []);
 
 
 
@@ -237,7 +251,37 @@ function App() {
     return (
       <GestureHandlerRootView style={{backgroundColor: "rgb(22, 23, 24)", flex: 1}}>
       <SafeAreaProvider>
-      <NavigationContainer linking={linking}>
+      <NavigationContainer linking={{
+        prefixes: [prefix],
+        config: config,
+        async getInitialURL() {
+          const url = await Linking.getInitialURL();
+
+          if (url != null) {
+            return url;
+          }
+
+          const response = await Notifications.getLastNotificationResponseAsync();
+
+          return response?.notification.request.content.data.url;
+        },
+        subscribe(listener) {
+          const onReceiveURL = ({ url }) => listener(url);
+          const eventListenerSubscription = Linking.addEventListener('url', onReceiveURL);
+
+          const subscription = Notifications.addNotificationResponseReceivedListener(response => {
+            const url = response.notification.request.content.data.url;
+            console.log("Opening URL", prefix.trim() + url.trim())
+            listener(prefix.trim() + url.trim());
+          });
+
+          return () => {
+            eventListenerSubscription.remove();
+            subscription.remove();
+          };
+        },
+      }}
+      >
         <StatusBar barStyle="light-content" backgroundColor="rgb(22, 23, 24)" />
 
         <Stack.Navigator screenOptions={({ navigation }) => ({   
