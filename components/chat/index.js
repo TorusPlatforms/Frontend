@@ -17,8 +17,12 @@ const CustomInputToolbar = props => {
         backgroundColor: 'transparent', 
         borderTopWidth: 0, 
         paddingHorizontal: 10,
-        alignItems: 'center'
+        alignItems: 'center',
       }}
+      textInputStyle={[
+        {paddingVertical: 10},
+        props.textInputStyle,
+      ]}
     />
   );
 };
@@ -174,7 +178,6 @@ export const ChatComponent = ({ messages, onSend, id, loop, route }) => {
               backgroundColor: "rgb(50,50,50)",
               color: "white",
               minHeight: 40,
-              maxHeight: 200,
               maxLength: 100,
               borderRadius: 25,
               lineHeight: 20,

@@ -11,7 +11,7 @@ import styles from "./styles";
 export default function LoopAnnouncements({ route }) {
   const navigation = useNavigation()
 
-  const { loop_id, isOwner } = route.params;
+  const { loop_id, isAdmin } = route.params;
   
   const [announcements, setAnnouncements] = useState();
 
@@ -74,14 +74,14 @@ export default function LoopAnnouncements({ route }) {
             data={announcements}
             renderItem={
               ({item}) => 
-                <Announcement data={item} isOwner={isOwner}/>
+                <Announcement data={item} isAdmin={isAdmin}/>
             }
             ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
             onMomentumScrollBegin={handleScrollBegin}
             onMomentumScrollEnd={handleScrollEnd}
         />
         
-        {isOwner && (
+        {isAdmin && (
           <Animated.View style={{opacity: announcements.length > 0 ? fadeAnim : 1, width: 40, height: 40, borderRadius: 20, backgroundColor: "rgb(47, 139, 128)", position: "absolute", bottom: 60, right: 40, alignItems: "center", justifyContent: "center"}}>
               <Pressable onPress={() => navigation.navigate("CreateAnnouncement", {loop_id: loop_id})}>
                   <Ionicons size={30} color={"white"} name="add" />

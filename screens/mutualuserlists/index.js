@@ -6,7 +6,7 @@ import styles from "./styles";
 
 
 export default function MutualsScreen({ route, navigation }) {
-    const [users, setUsers] = useState([])
+    const [users, setUsers] = useState()
     const [refreshing, setRefreshing] = useState(false)
 
     const onRefresh = useCallback(async() => {
@@ -15,7 +15,7 @@ export default function MutualsScreen({ route, navigation }) {
         setRefreshing(false)
       }, []);
     
-    const User = ({data}) => (
+    const User = ({ data }) => (
         <TouchableOpacity onPress={() => navigation.push("UserProfile", {username: data.username})}>
             <View style={styles.userContainer}>
                 <Image style={styles.pfp} source={{uri: data.pfp_url}}/>

@@ -82,7 +82,7 @@ export default function LoopsPage({ route }) {
 
             {loop.isJoined && (
                 <View style={{flexDirection: "row", justifyContent: "space-between", width: 90}}>
-                    <TouchableOpacity onPress={() => navigation.push("LoopAnnouncements", {loop_id: loop.loop_id, isOwner: loop.isOwner})}>
+                    <TouchableOpacity onPress={() => navigation.push("LoopAnnouncements", {loop_id: loop.loop_id, isAdmin: loop.isAdmin})}>
                       <Entypo name="megaphone" size={24} color="white" /> 
 
                       { loop.hasUnreadAnnouncements && (
@@ -91,10 +91,10 @@ export default function LoopsPage({ route }) {
                     
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => navigation.push("LoopMembers", {loop_id: loop.loop_id, isOwner: loop.isOwner, hasPendingRequests: loop.hasPendingRequests})}>
+                    <TouchableOpacity onPress={() => navigation.push("LoopMembers", {loop_id: loop.loop_id})}>
 
                       <Ionicons name="information-circle" size={24} color="white" />
-                      { loop.hasPendingRequests && loop.isOwner && (
+                      { loop.hasPendingRequests && loop.isAdmin && (
                         <View style={{backgroundColor: "red", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
                       )}
 

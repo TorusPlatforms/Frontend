@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Image, Text, Pressable, Alert, TouchableOpacity, TextInput } from "react-native";
 import Feather from '@expo/vector-icons/Feather';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Lightbox from 'react-native-lightbox-v2';
 import { useNavigation } from '@react-navigation/native';
 import * as Linking from 'expo-linking';
@@ -82,42 +83,49 @@ export const Event = ({ data }) => {
 
             <View style={{flex: 0.8, flexDirection: 'column'}}>
               <View style={{borderRadius: 20, borderWidth: 2, borderColor: "gray"}}>
-                <View style={{ justifyContent: "space-between", padding: 20, minHeight: 150}}>
-                      <View>
-                          <TouchableOpacity onPress={handleUserPress}>
-                              <Text style={{ color: "lightgray", fontSize: 12 }}>{data.author} { (data.loop_id && !data.public) ? `(${data.loop_name})` : "" }</Text>
-                          </TouchableOpacity>
+                <View style={{ padding: 20, minHeight: 150}}>
+                      <TouchableOpacity onPress={handleUserPress}>
+                          <Text style={{ color: "lightgray", fontSize: 12 }}>{data.author} { (data.loop_id && !data.public) ? `(${data.loop_name})` : "" }</Text>
+                      </TouchableOpacity>
 
-                        <View style={{flexDirection: 'row', justifyContent: "space-between", marginVertical: 4}}>
-                          <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>{data.name || data?.name}</Text>
-                        </View>
-
-                        <TouchableOpacity onPress={openCalender}>
-                            <Text style={{ color: "white" }}>{strfEventDate(data.time)} @ {strfEventTime(data.time)}</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={(openMaps)} style={{marginVertical: 4}}>
-                          <Text style={{ color: "white", textDecorationLine: "underline", fontSize: 12 }}>{data.address || data?.address}</Text>
-                        </TouchableOpacity>
+                      <View style={{flexDirection: 'row', justifyContent: "space-between", marginVertical: 4}}>
+                        <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>{data.name || data?.name}</Text>
                       </View>
 
-                      <View style={{marginTop: 10, flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" }}>
-                          <TextInput multiline editable={false} style={{ color: "white", padding: 2 }} value={data.message}></TextInput>
+                      { data.address && (
+                          <TouchableOpacity onPress={(openMaps)} style={{marginTop: 4, flexDirection: 'row', alignItems: 'flex-start'}}>
+                            <FontAwesome name="map-marker" size={18} color="lightgray" />
+                            <Text style={{ color: "white", fontStyle: "italic", fontSize: 12, marginLeft: 8, marginTop: 2, maxWidth: 200, lineHeight: 15 }}>{data.address}</Text>
+                        </TouchableOpacity>
+                      )}
+                      
 
-                          {!data.image_url && data.isCreator && (
-                            <TouchableOpacity onPress={handleDelete}>
-                                <Feather
-                                    name="trash"
-                                    size={20}
-                                    color="gray"
-                                />
+                      <TextInput multiline editable={false} scrollEnabled={false} style={{ color: "white", padding: 2, marginTop: 10 }} value={data.message}></TextInput>
+                    
+                    </View>
+
+                    {!data.image_url && data.isCreator && (
+                        <View style={[styles.footerContainer, {marginBottom: 5}]}>
+                            <TouchableOpacity onPress={openCalender} style={styles.timePill}>
+                                <Text style={{ color: "white" }}>{strfEventDate(data.time, {short: true})}, {strfEventTime(data.time)}</Text>
                             </TouchableOpacity>
-                          )}
+
+                            { data.isCreator && (
+                                <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
+                                    <Feather
+                                        name="trash"
+                                        size={14}
+                                        color="white"
+                                    />
+                                </TouchableOpacity>
+                            )}
                       </View>
-                  </View>
+                    )}
+
 
                   {data.image_url && (
-                      <View style={{ position: 'relative' }}>
+                      <View>
+
                           <Lightbox navigator={navigation} activeProps={{style: styles.fullscreenImage}}>
 
                               <Image
@@ -132,57 +140,53 @@ export const Event = ({ data }) => {
                               />
 
                           </Lightbox>
-
-                          { data.isCreator && (
-                            <TouchableOpacity onPress={handleDelete}>
-                                <Feather
-                                    name="trash"
-                                    size={20}
-                                    color="gray"
-                                    style={{ position: 'absolute', bottom: 10, right: 10, opacity: 0.8 }}
-                                />
-                            </TouchableOpacity>
-                            
-                          )}
                           
+                          <View style={styles.footerContainer}>
+                            <TouchableOpacity onPress={openCalender} style={styles.timePill}>
+                                <Text style={{ color: "white" }}>{strfEventDate(data.time, {short: true})}, {strfEventTime(data.time)}</Text>
+                            </TouchableOpacity>
+
+                            { data.isCreator && (
+                              <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
+                                  <Feather
+                                      name="trash"
+                                      size={14}
+                                      color="white"
+                                  />
+                              </TouchableOpacity>
+                            )}
+                          </View>
+               
+
                       </View>
                   )}
               </View>
                
-                <View style={{flexDirection: "row", justifyContent: data.mutual_usernames.length > 0 ? "space-between" : "flex-end", alignItems: "center", paddingTop: 20, paddingRight: 10}}>
-                  {data.mutual_usernames.length == 1 && (
-                    <Text style={{color: "white", fontSize: 12, maxWidth: 160}}>
-                      <Text onPress={() => navigation.push("UserProfile", {username: data.mutual_usernames[0]})}>{data.mutual_usernames[0]} </Text>
-                      is attending
-                    </Text>
-                  )}
+              <View style={{flexDirection: "row", justifyContent: data.mutual_usernames.length > 0 ? "space-between" : "flex-end", alignItems: "center", paddingTop: 20, paddingRight: 10}}>
+                {data.mutual_usernames.length == 1 && (
+                  <Text style={{color: "white", fontSize: 12, maxWidth: 160}}>
+                    <Text onPress={() => navigation.push("UserProfile", {username: data.mutual_usernames[0]})}>{data.mutual_usernames[0]} </Text>
+                    is attending
+                  </Text>
+                )}
 
-                  {data.mutual_usernames.length == 2 && (
-                    <Text style={{color: "white", fontSize: 12, maxWidth: 160}}>
-                      <Text onPress={() => navigation.push("UserProfile", {username: data.mutual_usernames[0]})}>{data.mutual_usernames[0]} & </Text>
-                      <Text onPress={() => navigation.push("UserProfile", {username: data.mutual_usernames[1]})}>{data.mutual_usernames[1]} </Text>
-                      are attending
-                    </Text>
-                  )}
+                {data.mutual_usernames.length == 2 && (
+                  <Text style={{color: "white", fontSize: 12, maxWidth: 160}}>
+                    <Text onPress={() => navigation.push("UserProfile", {username: data.mutual_usernames[0]})}>{data.mutual_usernames[0]} & </Text>
+                    <Text onPress={() => navigation.push("UserProfile", {username: data.mutual_usernames[1]})}>{data.mutual_usernames[1]} </Text>
+                    are attending
+                  </Text>
+                )}
 
-                  {data.mutual_usernames.length > 2 && (
-                    <Text style={{color: "white", fontSize: 12, maxWidth: 150}}>{data.mutual_usernames.slice(0, 2)?.join(", ")} & {data.mutual_usernames.length - 2} others are attending</Text>
-                  )}
+                {data.mutual_usernames.length > 2 && (
+                  <Text style={{color: "white", fontSize: 12, maxWidth: 150}}>{data.mutual_usernames.slice(0, 2)?.join(", ")} & {data.mutual_usernames.length - 2} others are attending</Text>
+                )}
 
-                  <Pressable onPress={handleJoinLeave} style={{borderRadius: 5, borderColor: "gray", borderWidth: 1, padding: 4, paddingHorizontal: 20, backgroundColor: isJoined ? "rgb(62, 62, 62)" : "rgb(47, 139, 128)"}}>
-                    <Text style={{ color: "white" }}>{isJoined ? "Joined" : "Join"}</Text>
-                  </Pressable>
-                </View>
-                {/* <View style={{marginBottom: 30, marginTop: 20}}>
-                    {data.attendees_url.map((url, index) => (
-                    <Image
-                      key={index}
-                      style={{ position: "absolute", left: index * 10 + 10, width: 30, height: 30, borderRadius: 15 }}
-                      source={{ uri: url }}
-                    />
-                  ))} */}
-            </View>
-
+                <Pressable onPress={handleJoinLeave} style={{borderRadius: 5, borderColor: "gray", borderWidth: 1, padding: 4, paddingHorizontal: 20, backgroundColor: isJoined ? "rgb(62, 62, 62)" : "rgb(47, 139, 128)"}}>
+                  <Text style={{ color: "white" }}>{isJoined ? "Joined" : "Join"}</Text>
+                </Pressable>
+              </View>
+          </View>
         </View>
     );
   }

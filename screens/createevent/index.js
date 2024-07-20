@@ -122,18 +122,19 @@ export default function CreateEvent({ route }) {
         console.log("Event data", eventData)
 
         await createEvent(eventData);
+
+        navigation.goBack()
     } catch(error) {
 
-      if (error instanceof AlreadyExistsError) {
-          setErrorMessage("That event name is taken!")
-      } else if (error instanceof InputError) {
+      if (error instanceof InputError) {
           setErrorMessage(error.message)
       } else {
         alert("Something went wrong!")
         console.error(error)
+        navigation.goBack()
       } 
     } finally {
-      navigation.goBack()
+      setPostEnabled(true)
     }
   }
 

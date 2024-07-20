@@ -149,7 +149,7 @@ export default function EditLoop({ navigation, route }) {
         <ScrollView contentContainerStyle={{paddingBottom: 250}} style={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"}/>}>
           <View style={{alignItems: "center", justifyContent: "center", flex: 0.2}}>
 
-            <TouchableOpacity disabled={!loop.isOwner} onPress={() => pickImage(handleImageSelect)} style={{width: 100, height: 100, borderRadius: 50, borderWidth: 2, justifyContent: 'center', alignItems: "center", borderStyle: 'dashed', borderColor: "gray"}}>
+            <TouchableOpacity disabled={!loop.isAdmin} onPress={() => pickImage(handleImageSelect)} style={{width: 100, height: 100, borderRadius: 50, borderWidth: 2, justifyContent: 'center', alignItems: "center", borderStyle: 'dashed', borderColor: "gray"}}>
                 {!image_url && (
                     <View style={{justifyContent: "center", alignItems: "center"}}>
                       <Ionicons name="camera" size={24} color="gray" />
@@ -163,7 +163,7 @@ export default function EditLoop({ navigation, route }) {
                     </View>
                 )}
 
-                {loop.isOwner && (
+                {loop.isAdmin && (
                   <Ionicons name="add-circle" size={32} color="rgb(47, 139, 128)" style={{position: "absolute", top: 0, right: 0}}/>
                 )}
 
@@ -171,14 +171,14 @@ export default function EditLoop({ navigation, route }) {
           </View>
             
           <View style={{alignContent: "flex-start", flex: 1, marginTop: 20}}>
-            <TouchableOpacity disabled={!loop.isOwner} onPress={() => navigation.push("EditField", {field: "Name", endpoint: "name", varName: "name", loop: loop, type: "loop", maxLength: 50})} style={styles.updateField}>
-              <Text style={{color: loop.isOwner ? "white" : "gray", flex: 0.5}}>Name</Text>
-              <Text style={{color: loop.isOwner ? "white" : "gray", flex: 1}}>{loop.name}</Text>
+            <TouchableOpacity disabled={!loop.isAdmin} onPress={() => navigation.push("EditField", {field: "Name", endpoint: "name", varName: "name", loop: loop, type: "loop", maxLength: 50})} style={styles.updateField}>
+              <Text style={{color: loop.isAdmin ? "white" : "gray", flex: 0.5}}>Name</Text>
+              <Text style={{color: loop.isAdmin ? "white" : "gray", flex: 1}}>{loop.name}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity disabled={!loop.isOwner} onPress={() => navigation.push("EditField", {field: "Description", endpoint: "description", varName: "description", loop: loop, type: "loop", previousState: loop.description})} style={styles.updateField}>
-              <Text style={{color: loop.isOwner ? "white" : "gray", flex: 0.5}}>Description</Text>
-              <Text style={{color: loop.isOwner ? "white" : "gray", flex: 1}}>{loop.description}</Text>
+            <TouchableOpacity disabled={!loop.isAdmin} onPress={() => navigation.push("EditField", {field: "Description", endpoint: "description", varName: "description", loop: loop, type: "loop", previousState: loop.description})} style={styles.updateField}>
+              <Text style={{color: loop.isAdmin ? "white" : "gray", flex: 0.5}}>Description</Text>
+              <Text style={{color: loop.isAdmin ? "white" : "gray", flex: 1}}>{loop.description}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={handleRedPress} style={styles.updateField}>
@@ -190,7 +190,7 @@ export default function EditLoop({ navigation, route }) {
               <Text style={{color: "white", width: 150}}>Allow all members to create events</Text>
 
               <Switch
-                  disabled={!loop.isOwner}
+                  disabled={!loop.isAdmin}
                   trackColor={{true: 'rgb(47, 139, 128)'}}
                   onValueChange={toggleSwitch}
                   value={membersAllowed}
@@ -204,7 +204,7 @@ export default function EditLoop({ navigation, route }) {
               </View>
               
               <Switch
-                  disabled={!loop.isOwner}
+                  disabled={!loop.isAdmin}
                   trackColor={{true: 'rgb(47, 139, 128)'}}
                   onValueChange={togglePrivate}
                   value={isPrivate}

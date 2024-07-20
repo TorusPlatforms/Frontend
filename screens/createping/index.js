@@ -127,10 +127,10 @@ export default function CreatePing({ route }) {
         </View>
 
         <View style={{ flexDirection: "column", alignItems: "center"}}>
-          <View style={{ flexDirection: "row", alignItems: "flex-start", marginTop: Platform.OS === "ios" ? 20 : 0}}>
+          <View style={{ flexDirection: "row", marginTop: Platform.OS === "ios" ? 20 : 0}}>
             <Image style={styles.pfp} source={{ uri: (route.params?.loop && isPublic ? route.params.loop.pfp_url : user.pfp_url) }} />
             <TextInput
-              style={{marginLeft: 20, marginTop: 10, color: "white", fontSize: 18, width: 300, minHeight: 50, maxHeight: 350, paddingRight: 20}}
+              style={{marginLeft: 20, marginTop: Platform.OS === "ios" ? 10 : 0, color: "white", fontSize: 18, width: 300, minHeight: 50, maxHeight: 350, paddingRight: 20}}
               placeholder="Ping your campus..."
               multiline
               numberOfLines={4}

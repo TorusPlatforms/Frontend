@@ -11,7 +11,7 @@ import { resendAnnouncement } from '../handlers/notifications';
 import styles from "./styles"
 
 
-export const Announcement = ({ data, isOwner }) => {
+export const Announcement = ({ data, isAdmin }) => {
   const navigation = useNavigation()
   
   function handleAuthorPress() {
@@ -69,7 +69,7 @@ export const Announcement = ({ data, isOwner }) => {
             <View style={{flexDirection: "row", justifyContent: 'space-between' }}>
                 <Text style={styles.text}>{data.content}</Text>
 
-                {isOwner && (
+                {isAdmin && (
                     <View style={{flexDirection: "row"}}>
                       <TouchableOpacity onPress={handleResendPress}>
                         <MaterialCommunityIcons style={[styles.pingIcon, {marginRight: 10}]} name="bell-ring" size={18} color="white" />                  
@@ -94,7 +94,7 @@ export const Announcement = ({ data, isOwner }) => {
                     source={{uri: data.image_url}}
                     resizeMode='cover'
                   />
-                  
+
               </Lightbox>
             )}
           </View>

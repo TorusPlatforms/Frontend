@@ -154,10 +154,10 @@ export default function Feed() {
 
     async function fetchPings(user) {
         let fetchedPings = []
-        console.log("Getting feed for type:", feedType)
+
         switch (feedType) {
           case "friends":
-            console.log("Fetching friends")
+            console.log("Fetching Friends")
             fetchedPings = await getFollowingPings()
             break;
           case "college":
@@ -165,7 +165,7 @@ export default function Feed() {
             fetchedPings = await getPings(user.college)
             break;
           default:
-            console.log("Fetching college", feedType)
+            console.log("Fetching College:", feedType)
             fetchedPings = await getPings(feedType)
         }
   

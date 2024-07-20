@@ -93,7 +93,7 @@ export default function LoopEvents({ route }) {
       
         
         
-        {(loop.isOwner || loop.allowMembersToCreateEvents) && (
+        {(loop.isAdmin || loop.isOwner || loop.allowMembersToCreateEvents) && (
           <Animated.View style={{opacity: events.length > 0 ? fadeAnim : 1, width: 40, height: 40, borderRadius: 20, backgroundColor: "rgb(47, 139, 128)", position: "absolute", bottom: 40, right: 40, alignItems: "center", justifyContent: "center"}}>
             <Pressable onPress={() => navigation.navigate("CreateEvent", {loop: loop})}>
                 <Ionicons size={35} color={"white"} name="add" />

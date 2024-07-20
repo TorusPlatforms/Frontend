@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { View, Animated, SafeAreaView, RefreshControl, FlatList, TouchableOpacity } from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons"
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-elements";
 
@@ -11,8 +10,6 @@ import styles from "./styles";
 
 
 export default function MyLoops() {
-    const navigation = useNavigation(); 
-
     const [loops, setLoops] = useState();
     const [search, setSearch] = useState("");
     const [filteredLoops, setFilteredLoops] = useState();
@@ -34,10 +31,6 @@ export default function MyLoops() {
         extrapolate: 'clamp',
     });
 
-
-    const goToLoop = (loop_id) => {
-        navigation.navigate('Loop', { loop_id: loop_id });
-    };
 
     useEffect(() => {
         if (search) {
@@ -100,34 +93,27 @@ export default function MyLoops() {
             
     return (
         <SafeAreaView style={styles.container}>
-        <Animated.View style={{ height: headerHeight, opacity: headerOpacity }}>
-            <View style={{  padding: 10, flexDirection: 'row', flex: 1, justifyContent: "space-between", alignItems: "center" }}>
-            <View style={{ flex: 1 }}>
-                <SearchBar
-                placeholder={"Search Your Loops"}
-                containerStyle={{ backgroundColor: "rgb(22, 23, 24)", borderTopWidth: 0, borderBottomWidth: 0 }}
-                onChangeText={setSearch}
-                value={search}
-                />
-            </View> 
+            <Animated.View style={{ height: headerHeight, opacity: headerOpacity }}>
+                <View style={{  padding: 10, flexDirection: 'row', flex: 1, justifyContent: "space-between", alignItems: "center" }}>
+                    <SearchBar
+                    placeholder={"Search Your Loops"}
+                    inputContainerStyle={{borderRadius: 40}}
+                    containerStyle={{ backgroundColor: "rgb(22, 23, 24)", borderTopWidth: 0, borderBottomWidth: 0, flex: 1 }}
+                    onChangeText={setSearch}
+                    value={search}
+                    />
+                </View>
 
-            <View style={{ flex: 0.1 }}>
-            <TouchableOpacity onPress={() => navigation.navigate("CreateLoop")}>
-              <Ionicons name="add" size={24} color="white" />
-            </TouchableOpacity>
-          </View>
-            </View>
-        </Animated.View>
+            </Animated.View>
 
-        <FlatList
-            data={filteredLoops}
-            renderItem={({ item }) => <Loop data={item} goToLoop={goToLoop} />}
-            ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
-            onScroll={onScroll}
-            scrollEventThrottle={16}
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white"/>
-            }
-        />
+            <FlatList
+                data={filteredLoops}
+                renderItem={({ item }) => <Loop data={item}/>}
+                ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
+                onScroll={onScroll}
+                scrollEventThrottle={16}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="white"/>}
+            />
         </SafeAreaView>
     );
 };

@@ -77,11 +77,14 @@ function addSuffix(num) {
 }
 
 const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const shortDayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "Novemeber", "December"];
 
-export function strfEventDate(timestamp) {
+export function strfEventDate(timestamp, options = { short: false }) {
+  const { short } = options;
+
   const date = new Date(timestamp)
-  return `${dayNames[date.getDay()]}, ${monthNames[date.getMonth()]} ${addSuffix(date.getDate())}`
+  return `${short ? shortDayNames[date.getDay()] : dayNames[date.getDay()]}, ${monthNames[date.getMonth()]} ${addSuffix(date.getDate())}`
 }
 
 export function strfEventTime(timestamp) {

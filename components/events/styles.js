@@ -17,6 +17,35 @@ const styles = StyleSheet.create({
         flex: 1,
         resizeMode: "contain"
     },
+
+    footerContainer: {
+        flexDirection: 'row', 
+        justifyContent: 'space-between', 
+        position: 'absolute', 
+        bottom: 10, 
+        width: "100%", 
+        alignItems: 'center', 
+        paddingHorizontal: 10
+    },
+    
+    deleteButton: {
+        width: 25, 
+        height: 25, 
+        borderRadius: 12.5, 
+        backgroundColor: "rgb(62, 62, 62)", 
+        justifyContent: 'center', 
+        alignItems: 'center'
+    },
+
+    timePill: {
+        backgroundColor: 'rgb(47, 139, 128)', 
+        borderRadius: 20, 
+        paddingVertical: 5, 
+        paddingHorizontal: 15, 
+        height: 30, 
+        justifyContent: "center", 
+        alignItems: "center", 
+    }
 })
 
 export default styles;

@@ -10,7 +10,8 @@ const styles = StyleSheet.create({
         width: 50, 
         height: 50, 
         marginLeft: 20, 
-        borderRadius: 25 
+        borderRadius: 25, 
+        marginTop: Platform.OS === "android" ? 20 : 0 
     },
         
     fullscreenImage: {

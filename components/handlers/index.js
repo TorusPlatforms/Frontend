@@ -123,7 +123,6 @@ export async function getPing(post_id) {
   const token = await getToken()
   
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/get/${post_id}`;
-  console.log(serverUrl)
 
   const response = await fetch(serverUrl, {
     method: 'GET',
@@ -150,7 +149,7 @@ export async function getPings(college) {
     const token = await getToken()
     
     const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/college/${college}`;
-    console.log(serverUrl)
+
     try {  
       const response = await fetch(serverUrl, {
         method: 'GET',
@@ -313,7 +312,6 @@ export async function getEvents(query) {
       }
 
       const responseData = await response.json();
-      console.log('Events:', responseData);
       return (responseData)
 
     } catch (error) {
@@ -460,9 +458,6 @@ export async function createEvent({name, address, date, message, image, isPublic
     const responseData = await response.json();
     console.log('Created Event:', responseData);
 
-    if (response.status == 403) {
-      throw new AlreadyExistsError("This event already exists! Try a different name.")
-    }
     if (!response.ok) {
       throw new Error(`Error Creating Event! Status: ${response.status}`);
     }
@@ -739,7 +734,7 @@ export async function deleteComment(comment_id) {
   const token = await getToken()
   
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/${comment_id}/delete`;
-  console.log(serverUrl)
+
   const response = await fetch(serverUrl, {
     method: 'DELETE',
     headers: {
@@ -860,7 +855,6 @@ export async function getLoops(query) {
     });
     
     const responseData = await response.json();
-    console.log('Response Data:', responseData);
 
     if (!response.ok) {
       throw new Error(`Error Getting Loops! Status: ${response.status}`);
@@ -886,7 +880,6 @@ export async function getLoop(loop_id) {
       });
 
       const responseData = await response.json();
-      console.log('Response Data:', responseData);
 
       if (!response.ok) {
         throw new Error(`Error Getting Loop info! Status: ${response.status}`);
@@ -978,11 +971,10 @@ export async function deleteLoop(loop_id) {
 
   
 export async function editLoop(userId, loopId, content) {
-  const token = await getToken();
+    const token = await getToken();
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/edit`;
+    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/edit`;
 
-  try {
     const response = await fetch(serverUrl, {
       method: 'POST',
       headers: {
@@ -997,21 +989,56 @@ export async function editLoop(userId, loopId, content) {
     }
 
     const responseData = await response.json();
-    console.log('Loop Edited:', responseData);
     return responseData;
-
-  } catch (error) {
-    console.error('Error Editing Loop:', error.message);
-  }
 }
 
+export async function addAdmin({loop_id, username}) {
+    const token = await getToken();
+
+    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/admin/${username}`;
+
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error Adding Admin! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    return responseData;
+}
+
+export async function removeAdmin({loop_id, username}) {
+  const token = await getToken();
+
+  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/admin/${username}`;
+
+  const response = await fetch(serverUrl, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error Removing Admin! Status: ${response.status}`);
+  }
+
+  const responseData = await response.json();
+  return responseData;
+}
 
 export async function getUserPings(username) {
-  const token = await getToken()
+    const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/user/${username}`;
+    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/user/${username}`;
 
-  try {
     const response = await fetch(serverUrl, {
       method: 'GET',
       headers: {
@@ -1025,12 +1052,8 @@ export async function getUserPings(username) {
     }
 
     const responseData = await response.json();
-    // console.log('User Pings:', responseData);
     return responseData
 
-  } catch(error) {
-    console.error("Error getting user pings", error.message)
-  }
 }
 
 export async function getFollowings(username, type) {
@@ -1048,7 +1071,6 @@ export async function getFollowings(username, type) {
     })
 
     const responseData = await response.json();
-    console.log(type, responseData);
 
     if (!response.ok) {
       throw new Error(`Error getting ${type}! Status: ${response.status}`);
@@ -1081,7 +1103,6 @@ export async function getLoopOwner(loopId) {
       }
   
       const responseData = await response.json();
-      console.log('Response Data:', responseData);
       return (responseData)
   
     } catch (error) {
@@ -1109,7 +1130,6 @@ export async function getMemberStatus(loopId,userId) {
     }
 
     const responseData = await response.json();
-    console.log('Response Data:', responseData);
     return (responseData)
 
   } catch (error) {
@@ -1133,7 +1153,6 @@ export async function getMemberStatus(loopId,userId) {
       }); 
 
       const responseData = await response.json();
-      console.log('Response Data:', responseData);
       
       if (!response.ok) {
         throw new Error(`Error joining loop! Status: ${response.status}`);
@@ -1162,7 +1181,6 @@ export async function getMemberStatus(loopId,userId) {
       });
       
       const responseData = await response.json();
-      console.log('Response Data:', responseData);
 
       if (!response.ok) {
         throw new Error(`Error leaving loop! Status: ${response.status}`);
@@ -1194,7 +1212,6 @@ export async function getMemberStatus(loopId,userId) {
       }
   
       const responseData = await response.json();
-      console.log('Response Data:', responseData);
       return (responseData)
 
   }
@@ -1202,7 +1219,6 @@ export async function getMemberStatus(loopId,userId) {
 export async function follow(username) {
     const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/user/${username}/follow`;
     const token = await getToken()
-    console.log(serverUrl)
   
     try {
       const response = await fetch(serverUrl, {
@@ -1214,7 +1230,6 @@ export async function follow(username) {
       })
       
       const responseData = await response.json();
-      console.log("Following: ", responseData);
 
       if (!response.ok) {
         throw new Error(`Error following! Status: ${response.status}`);
@@ -1231,7 +1246,6 @@ export async function follow(username) {
 export async function unfollow(username) {
     const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/user/${username}/unfollow`;
     const token = await getToken()
-    console.log(serverUrl)
 
     try {
       const response = await fetch(serverUrl, {
@@ -1243,7 +1257,6 @@ export async function unfollow(username) {
       })
       
       const responseData = await response.json();
-      console.log("Following: ", responseData);
 
       
       if (!response.ok) {
@@ -1257,34 +1270,6 @@ export async function unfollow(username) {
       console.error("Error unfollowing", error.message)
     }
 }
-
-
-  export async function followCheck(username) {
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/followings/isFollowing/${username}`;
-    const token = await getToken()
-    console.log(serverUrl)
-  
-    try {
-      const response = await fetch(serverUrl, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-      })
-  
-      if (!response.ok) {
-        throw new Error(`Error followcheck status! Status: ${response.status}`);
-      }
-  
-      const responseData = await response.json();
-      console.log("is following: ", responseData);
-      return responseData
-  
-    } catch(error) {
-      console.error("Error followcheck", error.message)
-    }
-  }
 
 export async function getAnnouncements(loop_id) {
   

@@ -108,7 +108,7 @@ export default function Loops() {
       if (search) {
         const users = await searchUsers(search, 6)
         sections.push({ title: "Users", data: users });
-      }
+      } 
 
       sections.push({ title: "Loops & Events", data: combined });
 

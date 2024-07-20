@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { StatusBar, StyleSheet, View, TouchableOpacity, Platform, Text, Dimensions, Animated, Easing } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 
 import { NavigationContainer, useFocusEffect, useLinkTo, useNavigation, useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -105,45 +106,50 @@ const Tabs = ({ route }) => {
           headerShown: false,
           tabBarShowLabel: false,
           headerStyle: { backgroundColor: 'rgb(22, 23, 24)' },
-          headerTitleStyle: { color: 'white' }
+          headerTitleStyle: { color: 'white' },
+          headerTitleAlign: "center"
         }}
       >
-        <Tab.Screen name="Feed" component={FeedScreens} options={{
-          tabBarIcon: ({ focused, size }) => (
-            <Ionicons name={focused ? 'home' : 'home-outline'} color={'white'} size={size} />
-          )
-        }} />
-        <Tab.Screen name="Discover" component={Discover} options={{
-          tabBarIcon: ({ focused, size }) => (
-            <Ionicons name={focused ? 'search' : 'search-outline'} color={'white'} size={size} />
-          )
-        }} />
-        <Tab.Screen
-          name="CreateContainer"
-          listeners={({ navigation }) => ({
-            tabPress: (e) => {
-              e.preventDefault();
-              setModalVisible(!modalVisible);
-            },
-          })}
-          component={DummyView}
-          options={{
+          <Tab.Screen name="Feed" component={FeedScreens} options={{
             tabBarIcon: ({ focused, size }) => (
-              <Ionicons name={focused ? 'add-circle' : 'add-circle-outline'} color={'white'} size={size} />
+              <Ionicons name={focused ? 'home' : 'home-outline'} color={'white'} size={size} />
             )
-          }}
-        />
-        <Tab.Screen name="My Loops" component={MyLoops} options={{
-          headerShown: true,
-          tabBarIcon: ({ focused, size }) => (
-            <MaterialCommunityIcons name={focused ? 'account-group' : 'account-group-outline'} color={'white'} size={size} />
-          )
-        }} />
-        <Tab.Screen name="Profile" component={Profile} options={{
-          tabBarIcon: ({ focused, size }) => (
-            <Ionicons name={focused ? 'person' : 'person-outline'} color={'white'} size={size} />
-          )
-        }} />
+          }} />
+
+          <Tab.Screen name="Discover" component={Discover} options={{
+            tabBarIcon: ({ focused, size }) => (
+              <Ionicons name={focused ? 'search' : 'search-outline'} color={'white'} size={size} />
+            )
+          }} />
+
+          <Tab.Screen
+            name="CreateContainer"
+            listeners={({ navigation }) => ({
+              tabPress: (e) => {
+                e.preventDefault();
+                setModalVisible(!modalVisible);
+              },
+            })}
+            component={DummyView}
+            options={{
+              tabBarIcon: ({ focused, size }) => (
+                <Ionicons name={focused ? 'add-circle' : 'add-circle-outline'} color={'white'} size={size} />
+              )
+            }}
+          />
+
+          <Tab.Screen name="My Loops" component={MyLoops} options={{
+            headerShown: true,
+            tabBarIcon: ({ focused, size }) => (
+              <MaterialCommunityIcons name={focused ? 'account-group' : 'account-group-outline'} color={'white'} size={size} />
+            )
+          }} />
+          
+          <Tab.Screen name="Profile" component={Profile} options={{
+            tabBarIcon: ({ focused, size }) => (
+              <MaterialCommunityIcons name={focused ? 'account' : 'account-outline'} color={'white'} size={size + 2} />
+            )
+          }} />
       </Tab.Navigator>
 
       {modalVisible && <CreatePill setModalVisible={setModalVisible} navigation={navigation} />}
@@ -184,7 +190,12 @@ function App() {
             post_id: Number,
           },
         },    
-        Loop: 'loop/:loop_id/:initialScreen?',    
+        Loop: {
+          path: 'loop/:loop_id/:initialScreen?',
+          parse: {
+            loop_id: Number,
+          },
+        },    
         DirectMessage: 'messages/:username',
         UserProfile: 'user/:username',
         Notifications: 'notifications',
@@ -246,6 +257,7 @@ function App() {
 
     return (
       <GestureHandlerRootView style={{backgroundColor: "rgb(22, 23, 24)", flex: 1}}>
+      <ActionSheetProvider>
       <SafeAreaProvider>
       <NavigationContainer linking={{
         prefixes: [prefix],
@@ -267,7 +279,7 @@ function App() {
                 </TouchableOpacity>
               ),  
               gestureEnabled: true, headerShown: false, headerBackTitleVisible: false, headerTitleStyle: {color: "white"}, 
-              headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}, animation: Platform.OS == "android" ? "slide_from_bottom" : null
+              headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}, headerTitleAlign: "center", animation: Platform.OS == "android" ? "slide_from_bottom" : null
             })}>
 
 
@@ -279,7 +291,7 @@ function App() {
                 <Stack.Screen name="CreateEvent" component={CreateEvent} options={{ presentation: "modal", gestureEnabled: true }} />
                 <Stack.Screen name="CreateAnnouncement" component={CreateAnnouncement} options={{ presentation: "modal", gestureEnabled: true }} />
                 <Stack.Screen name="Loop" getId={({ params }) => params.loop_id} component={LoopsPage} />
-                <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: true, headerTitleAlign: "center" }} />
+                <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: true }} />
                 <Stack.Screen name="Comments" component={CommentsScreen} options={{ presentation: "modal", gestureEnabled: true, headerShown: true, headerLeft: () => (<View />), headerBackVisible: false, headerTitleAlign: 'center' }} />
                 <Stack.Screen name="LoopMembers" component={LoopMembers} options={{ presentation: "modal", gestureEnabled: true, title: "Members", headerShown: true }} />
                 <Stack.Screen name="LoopAnnouncements" component={LoopAnnouncements} options={{ presentation: "modal", gestureEnabled: true, title: "Announcements", headerShown: true }} />
@@ -307,7 +319,7 @@ function App() {
             ) : (
               <>
               <Stack.Screen name="Auth" component={AuthScreen} />
-              <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: true }} />
+              <Stack.Screen name="SignUp" component={SignUpScreen} options={{ headerShown: true, headerTitle: "Sign Up" }} />
               <Stack.Screen name="Forgot Password" component={ForgotPassword} options={{ headerShown: true }} />
               <Stack.Screen name="Verify Email" component={VerifyEmail} options={{ headerShown: true }} />
               </>
@@ -317,6 +329,7 @@ function App() {
         </Stack.Navigator>
       </NavigationContainer>
       </SafeAreaProvider>
+      </ActionSheetProvider>
       </GestureHandlerRootView>
     );
 }
