@@ -279,7 +279,7 @@ function App() {
                 </TouchableOpacity>
               ),  
               gestureEnabled: true, headerShown: false, headerBackTitleVisible: false, headerTitleStyle: {color: "white"}, 
-              headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}, headerTitleAlign: "center", animation: Platform.OS == "android" ? "slide_from_bottom" : null
+              headerTintColor: 'white', headerStyle: {backgroundColor: "rgb(22, 23, 24)"}, headerTitleAlign: "center"
             })}>
 
 

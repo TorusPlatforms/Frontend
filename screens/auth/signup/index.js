@@ -99,7 +99,6 @@ export default function SignUpScreen() {
             if (error instanceof InputError) {
                 setErrorMessage(error.message)
             } else {
-                console.log("HEREEe")
                 alert(error.message)
 
                 if (auth.currentUser) {

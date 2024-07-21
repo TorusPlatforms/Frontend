@@ -20,8 +20,9 @@ import { getColleges } from '../../components/handlers/colleges';
 export default function Feed() {
     const navigation = useNavigation()
     
-    const [dropdownData, setDropdownData] = useState([])
+    const [dropdownData, setDropdownData] = useState()
     const [feedType, setFeedType] = useState("college");
+
     const [refreshing, setRefreshing] = useState(false);
 
     const [user, setUser] = useState(null)
@@ -45,12 +46,15 @@ export default function Feed() {
       }
     }, [lastNotificationResponse]);
 
+
+
     const scrollToTop = () => {
       if (flatListRef.current) {
         flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
       }
     };
 
+    //handles appearnce of the Scroll to top button
     onScroll = (event) => {
       currentScrollPosition.current = event.nativeEvent.contentOffset.y
     }
@@ -75,8 +79,7 @@ export default function Feed() {
   
 
     function handleRegistrationError(errorMessage) {
-        console.error(errorMessage);
-        //throw new Error(errorMessage);
+        console.error("Error Registering for Notifications", errorMessage);
     }
 
     async function registerForPushNotificationsAsync() {
@@ -206,7 +209,7 @@ export default function Feed() {
 
 
  
-    if (!user || !pings) {
+    if (!user || !pings || !dropdownData) {
       return (
         <View style={[styles.container, {justifyContent: "center", alignItems: "center"}]}>
             <ActivityIndicator />
@@ -220,13 +223,13 @@ export default function Feed() {
                 <Image style={{width: 60, height: 60, resizeMode: "cover"}} source={require('../../assets/torus.png')}></Image>
 
                 <Dropdown
-                  containerStyle={{width: 140, borderRadius: 10, backgroundColor: "rgb(22, 23, 24)", borderWidth: 1, borderColor: "white" }}
+                  containerStyle={{width: 140, borderRadius: 10, backgroundColor: "rgb(22, 23, 24)", borderWidth: 1, borderColor: "white"}}
                   itemContainerStyle={{borderRadius: 10}}
                   itemTextStyle={styles.text}
                   selectedTextStyle={[styles.text, {fontWeight: "bold"}]}
                   activeColor='rgb(22, 23, 24)'
                   data={dropdownData}
-                  placeholder={user.college_nickname ?? abbreviate(user.college)}
+                  placeholder={Platform.OS === "ios" ? (user.college_nickname ?? abbreviate(user.college)) : 'Torus'}
                   placeholderStyle={styles.text}
                   maxHeight={300}
                   labelField="label"
@@ -254,9 +257,9 @@ export default function Feed() {
                 <TouchableOpacity onPress={() => navigation.navigate("Notifications")}>
                     <Ionicons name="notifications" size={24} color="white" />
                     
-                    { user.notifications > 0 && (
+                    { user.notifications > 0 || true && (
                         <View style={{backgroundColor: "rgb(241, 67, 67)", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute", justifyContent: "center", alignItems: "center"}}>
-                            <Text style={{color: "white", fontSize: 10}}>{user.notifications}</Text>
+                            <Text style={{color: "white", fontSize: 8}}>{user.notifications || 5}</Text>
                         </View>
                     )}
 

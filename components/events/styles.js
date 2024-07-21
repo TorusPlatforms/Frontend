@@ -41,10 +41,16 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(47, 139, 128)', 
         borderRadius: 20, 
         paddingVertical: 5, 
-        paddingHorizontal: 15, 
+        paddingHorizontal: 10,
         height: 30, 
         justifyContent: "center", 
-        alignItems: "center", 
+        alignItems: "center",
+        flexDirection: 'row'
+    },
+
+    timePillText: {
+        color: "white", 
+        marginLeft: 5 
     }
 })
 

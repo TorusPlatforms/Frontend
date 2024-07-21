@@ -44,7 +44,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#161718"
       },
-      "package": "com.torusplatforms.torus"
+      "package": "com.torusplatforms.torus",
+      "versionCode": 3
     },
     "web": {
       "favicon": "./assets/favicon.png"

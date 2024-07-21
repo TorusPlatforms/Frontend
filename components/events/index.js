@@ -107,7 +107,8 @@ export const Event = ({ data }) => {
                     {!data.image_url && data.isCreator && (
                         <View style={[styles.footerContainer, {marginBottom: 5}]}>
                             <TouchableOpacity onPress={openCalender} style={styles.timePill}>
-                                <Text style={{ color: "white" }}>{strfEventDate(data.time, {short: true})}, {strfEventTime(data.time)}</Text>
+                                <Feather name="clock" size={14} color="white" />
+                                <Text style={styles.timePillText}>{strfEventDate(data.time, {short: true})}, {strfEventTime(data.time)}</Text>
                             </TouchableOpacity>
 
                             { data.isCreator && (
@@ -143,7 +144,8 @@ export const Event = ({ data }) => {
                           
                           <View style={styles.footerContainer}>
                             <TouchableOpacity onPress={openCalender} style={styles.timePill}>
-                                <Text style={{ color: "white" }}>{strfEventDate(data.time, {short: true})}, {strfEventTime(data.time)}</Text>
+                                <Feather name="clock" size={14} color="white" />
+                                <Text style={styles.timePillText}>{strfEventDate(data.time, {short: true})}, {strfEventTime(data.time)}</Text>
                             </TouchableOpacity>
 
                             { data.isCreator && (

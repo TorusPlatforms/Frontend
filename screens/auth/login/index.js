@@ -89,7 +89,7 @@ export default function AuthScreen() {
                     </View>
                 
                     <View style={{alignItems: "center", flex: 0.4}}>
-                        <TouchableOpacity onPress={login} style={[styles.submissionBox, {alignItems: "center", width: 300, height: 60, justifyContent: "center"}]}>
+                        <TouchableOpacity onPress={login} style={[styles.submissionBox, {alignItems: "center", width: 300, height: 70, justifyContent: "center"}]}>
                             <Text style={{color: 'white', fontSize: 24, fontWeight: 'bold'}}>Login</Text>
                         </TouchableOpacity>
 
