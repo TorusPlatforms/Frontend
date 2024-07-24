@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Entypo from '@expo/vector-icons/Entypo';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { getLoop, getUser, joinLoop, leaveLoop } from "../../components/handlers";
 import LoopPings from "../looppings";
@@ -34,6 +34,7 @@ export default function LoopsPage({ route }) {
   async function fetchLoop() {
     const loop = await getLoop(loop_id)
     if (loop) {
+      console.log("Fetched loop", loop)
       setLoop(loop)
     } else {
       navigation.goBack()
@@ -55,12 +56,13 @@ export default function LoopsPage({ route }) {
      });
   }
 
-  const isFocused = useIsFocused()
 
-  useEffect(() => {
-    fetchLoop()
-    fetchUser()
-  }, [isFocused]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchLoop()
+      fetchUser()
+    }, [route.params])
+  );
 
 
   if (!loop || !user) {
@@ -163,7 +165,7 @@ export default function LoopsPage({ route }) {
             <View style={{flex: 1, justifyContent: "center", alignItems: "center"}}>
                 <Ionicons name={loop.public ? "lock-open" : "lock-closed"} size={64} color="white"/>
                 <Text style={{color: "white", fontWeight: "bold", fontSize: 24, textAlign: "center", marginVertical: 15}}>This Loop is {loop.public ? "Public" : "Private"}</Text>
-                <Text style={{color: "gray", fontSize: 16, textAlign: "center"}}>{loop.public ? "Join" : "Request to join"} to see announcements, pings, and events. If you are not a student at this campus, you might have to request to join even if it is public.</Text>
+                <Text style={{color: "gray", fontSize: 16, textAlign: "center"}}>{loop.public ? "Join" : "Request to join"} to see announcements, pings, and events. If you are not a student at this campus, you will have to request to join even if it is public.</Text>
             </View>
 
         </View>

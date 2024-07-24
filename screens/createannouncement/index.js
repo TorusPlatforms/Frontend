@@ -126,7 +126,7 @@ export default function CreateAnnouncement({ route }) {
 
               
 
-            <TouchableOpacity style={{ backgroundColor: "rgb(54, 163, 107)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop: 20 }} onPress={handlePost}>
+            <TouchableOpacity disabled={content.length <= 0} style={{ backgroundColor: content.length > 0 ? "rgb(54, 163, 107)" : "gray", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 10, paddingHorizontal: 20, marginTop: 20 }} onPress={handlePost}>
               <Text style={{ color: "white", textAlign: "center", fontWeight: "bold" }}>Post</Text>
             </TouchableOpacity>
           </View>

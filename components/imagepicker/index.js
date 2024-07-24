@@ -35,6 +35,8 @@ export async function pickImage(handleImage, allowsEditing = true) {
       );
       
       handleImage(compressedImage);
+
+      return compressedImage
     }
   } catch (error) {
     console.error("Error picking an image", error);

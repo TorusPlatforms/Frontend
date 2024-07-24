@@ -1,10 +1,10 @@
-import React, { useState, useRef, useEffect, useCallback, useMemo, forwardRef } from 'react'
-import { Text, View, Animated, Pressable, FlatList, Image, TouchableOpacity, Modal, Platform, RefreshControl, Share, Alert, ActivityIndicator } from 'react-native'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
+import { Text, View, Animated, Pressable, FlatList, Image, TouchableOpacity, Modal, Platform, RefreshControl, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import { Dropdown } from 'react-native-element-dropdown';
-import { useFocusEffect, useLinkBuilder, useLinkTo, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useLinkTo } from '@react-navigation/native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
@@ -14,7 +14,7 @@ import { getUser, getPings, getFollowingPings, updateUser } from "../../componen
 import { abbreviate } from '../../components/utils';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
-import { getColleges } from '../../components/handlers/colleges';
+import { getCollegePings, getColleges } from '../../components/handlers/colleges';
 
 
 export default function Feed() {
@@ -164,8 +164,8 @@ export default function Feed() {
             fetchedPings = await getFollowingPings()
             break;
           case "college":
-            console.log("Fetching", user.college)
-            fetchedPings = await getPings(user.college)
+            console.log("Fetching", user?.college)
+            fetchedPings = await getCollegePings()
             break;
           default:
             console.log("Fetching College:", feedType)
@@ -257,9 +257,9 @@ export default function Feed() {
                 <TouchableOpacity onPress={() => navigation.navigate("Notifications")}>
                     <Ionicons name="notifications" size={24} color="white" />
                     
-                    { user.notifications > 0 || true && (
+                    { user.notifications > 0 && (
                         <View style={{backgroundColor: "rgb(241, 67, 67)", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute", justifyContent: "center", alignItems: "center"}}>
-                            <Text style={{color: "white", fontSize: 8}}>{user.notifications || 5}</Text>
+                            <Text style={{color: "white", fontSize: 8}}>{user.notifications <= 99 ? user.notifications : 99}</Text>
                         </View>
                     )}
 

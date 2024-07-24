@@ -13,7 +13,7 @@ import styles from "./styles"
 const torus_default_url = "https://cdn.torusplatforms.com/torus_w_background.jpg"
 
 
-export const Event = ({ data }) => {
+export const Event = ({ data, showLoop = true }) => {
     const navigation = useNavigation()
     const [isJoined, setIsJoined] = useState(data.isJoined)
 
@@ -58,8 +58,7 @@ export const Event = ({ data }) => {
 
     function handleUserPress({ prioritizeUser }) {
       //When we click on the PFP we ALWAYS want to go to the users profile even if its a loop event
-      console.log(prioritizeUser)
-      if (data.loop_id && !prioritizeUser) {
+      if ((data.loop_id && (data.public || !prioritizeUser))) {
         navigation.push("Loop", {loop_id: data.loop_id, initialScreen: "Events"})
       } else {
         navigation.push("UserProfile", {username: data.author})
@@ -73,23 +72,23 @@ export const Event = ({ data }) => {
                   <Image style={{ width: 50, height: 50, borderRadius: 25 }} source={{ uri: data.pfp_url }} />
               </Pressable>
 
-              <View style={{marginVertical: 12, width: 1, flex: 0.9, backgroundColor: "gray"}} />
+              <View style={{marginVertical: 12, width: 1, flex: data.image_url ? 0.9 : 0.75, backgroundColor: "gray"}} />
 
               <View style={{alignItems: 'center'}}>
-                <Image style={{ left: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_pfp_urls[0] || data?.mutual_attendees_pfp_urls[0] || torus_default_url }} />
-                <Image style={{ right: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_pfp_urls[1] || data?.mutual_attendees_pfp_urls[1] || torus_default_url }} />
+                <Image style={{ left: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_pfp_urls[0] || torus_default_url }} />
+                <Image style={{ right: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_pfp_urls[1] || torus_default_url }} />
               </View>
             </View>
 
             <View style={{flex: 0.8, flexDirection: 'column'}}>
               <View style={{borderRadius: 20, borderWidth: 2, borderColor: "gray"}}>
                 <View style={{ padding: 20, minHeight: 150}}>
-                      <TouchableOpacity onPress={handleUserPress}>
-                          <Text style={{ color: "lightgray", fontSize: 12 }}>{data.author} { (data.loop_id && !data.public) ? `(${data.loop_name})` : "" }</Text>
+                      <TouchableOpacity onPress={handleUserPress} style={{flexDirection: "row", alignItems: "center"}}>
+                          <Text style={{ color: "lightgray", fontSize: 12 }}>{data.author} { (data.loop_id && !data.public && showLoop) ? `(${data.loop_name})` : "" }</Text>
                       </TouchableOpacity>
 
                       <View style={{flexDirection: 'row', justifyContent: "space-between", marginVertical: 4}}>
-                        <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>{data.name || data?.name}</Text>
+                        <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>{data.name}</Text>
                       </View>
 
                       { data.address && (
@@ -100,14 +99,14 @@ export const Event = ({ data }) => {
                       )}
                       
 
-                      <TextInput multiline editable={false} scrollEnabled={false} style={{ color: "white", padding: 2, marginTop: 10 }} value={data.message}></TextInput>
+                      <TextInput multiline editable={false} scrollEnabled={false} style={{ color: "white", padding: 2, marginTop: 10, paddingBottom: data.image_url ? 0 : 40 }} value={data.message}></TextInput>
                     
                     </View>
-
+       
                     {!data.image_url && data.isCreator && (
-                        <View style={[styles.footerContainer, {marginBottom: 5}]}>
-                            <TouchableOpacity onPress={openCalender} style={styles.timePill}>
-                                <Feather name="clock" size={14} color="white" />
+                        <View style={[styles.footerContainer, { marginBottom: 5 }]}>
+                          <TouchableOpacity onPress={openCalender} style={[styles.timePill, {backgroundColor: data.isHappeningInNextHour ? "rgb(208, 116, 127)" : (data.isHappeningInNextDay ? "rgb(221, 160, 57)" : "rgb(47, 139, 128)")}]}>
+                            <Feather name="clock" size={14} color="white" />
                                 <Text style={styles.timePillText}>{strfEventDate(data.time, {short: true})}, {strfEventTime(data.time)}</Text>
                             </TouchableOpacity>
 
@@ -143,7 +142,7 @@ export const Event = ({ data }) => {
                           </Lightbox>
                           
                           <View style={styles.footerContainer}>
-                            <TouchableOpacity onPress={openCalender} style={styles.timePill}>
+                            <TouchableOpacity onPress={openCalender} style={[styles.timePill, {backgroundColor: data.isHappeningInNextHour ? "rgb(208, 116, 127)" : (data.isHappeningInNextDay ? "rgb(221, 160, 57)" : "rgb(47, 139, 128)")}]}>
                                 <Feather name="clock" size={14} color="white" />
                                 <Text style={styles.timePillText}>{strfEventDate(data.time, {short: true})}, {strfEventTime(data.time)}</Text>
                             </TouchableOpacity>

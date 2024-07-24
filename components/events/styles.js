@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
     },
 
     timePill: {
-        backgroundColor: 'rgb(47, 139, 128)', 
         borderRadius: 20, 
         paddingVertical: 5, 
         paddingHorizontal: 10,
@@ -50,7 +49,8 @@ const styles = StyleSheet.create({
 
     timePillText: {
         color: "white", 
-        marginLeft: 5 
+        marginLeft: 5,
+        fontWeight: "bold"
     }
 })
 

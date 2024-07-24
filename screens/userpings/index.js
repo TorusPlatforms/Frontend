@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
 import { useNavigation, useFocusEffect, useIsFocused } from '@react-navigation/native';
 
 import { Ping } from '../../components/pings';
@@ -9,6 +9,8 @@ import styles from "./styles";
 
 export default function UserPings({ username }) {
     const navigation = useNavigation()
+
+    const [refreshing, setRefreshing] = useState()
 
     const [pings, setPings] = useState(null);
 
@@ -21,17 +23,18 @@ export default function UserPings({ username }) {
         setPings(pings)
     }   
 
-    // useFocusEffect(
-    //   useCallback(() => {
-    //     fetchUserPings()
-    //   }, [])
-    // );
 
-    const isFocused = useIsFocused()
+    const onRefresh = useCallback(async() => {
+        setRefreshing(true);
+        await fetchUserPings()
+        setRefreshing(false)
+    }, []);
+
     useEffect(() => {
       fetchUserPings()
-    }, [isFocused])
-    
+    }, [])
+
+
     if (!pings) {
       return (
         <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", justifyContent: "center", alignItems: "center"}}>
@@ -48,10 +51,11 @@ export default function UserPings({ username }) {
               ref={pings_ref}
               data={pings}
               renderItem={({item}) => 
-                <Ping data={item} />
+                <Ping data={item}/>
               }
               ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
               keyExtractor={(item) => item.post_id}
+              refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"}/>}
             />
           ) : (
             <TouchableOpacity onPress={() => navigation.navigate("Feed")} style={{justifyContent: 'center', alignItems: 'center', marginTop: 50}}>

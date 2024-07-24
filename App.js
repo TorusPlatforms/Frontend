@@ -110,7 +110,7 @@ const Tabs = ({ route }) => {
           headerTitleAlign: "center"
         }}
       >
-          <Tab.Screen name="Feed" component={FeedScreens} options={{
+          <Tab.Screen name="Feed" component={Feed} options={{
             tabBarIcon: ({ focused, size }) => (
               <Ionicons name={focused ? 'home' : 'home-outline'} color={'white'} size={size} />
             )
@@ -157,15 +157,6 @@ const Tabs = ({ route }) => {
   );
 };
 
-const FeedScreens = () => {
-  return (
-  <Stack.Navigator>
-      <Stack.Screen name="ForYou" component={Feed} initialParams={{get: "foryou"}} options={{headerShown: false}} />
-      <Stack.Screen name="Friends" component={Feed} initialParams={{get: "friends"}} options={{headerShown: false}} />
-  </Stack.Navigator>
-  )
-}
-
 
 const FollowTabs = ({ route }) => {
   return (
@@ -199,6 +190,7 @@ function App() {
         DirectMessage: 'messages/:username',
         UserProfile: 'user/:username',
         Notifications: 'notifications',
+        Profile: 'profile/:initialScreen?'
       },
     };
 
@@ -207,13 +199,14 @@ function App() {
     // useEffect(() => {
     //   if (
     //     lastNotificationResponse &&
-    //     lastNotificationResponse?.notification?.request?.content?.data?.url
+    //     lastNotificationResponse?.notification?.request?.content?.data?.url &&
+    //     loggedIn
     //   ) {
     //     const url = lastNotificationResponse.notification.request.content.data.url
     //     console.log("BACKGROUND NOTIFICATION DETECTED IN HOME. URL", url)
     //     Linking.openURL(prefix + url.trim())
     //   }
-    // }, [lastNotificationResponse]);
+    // }, [lastNotificationResponse, loggedIn]);
     
     useEffect(() => {
       const auth = getAuth()

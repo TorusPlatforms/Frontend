@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     
     fullscreenImage: {
         flex: 1,
-        resizeMode: "contain"
+        resizeMode: "contain",
     },
     
     commentTime: {

@@ -1,9 +1,8 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { ActivityIndicator, View, Text, TouchableOpacity, Image } from "react-native";
-import { GiftedChat } from 'react-native-gifted-chat';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
 import { getFirestore, onSnapshot, doc, query, collection, where, getDocs } from "firebase/firestore"
 import * as Notifications from 'expo-notifications';
 
@@ -37,12 +36,12 @@ export default function DirectMessage({ route }) {
       return null; 
     }
 
-    const isFocused = useIsFocused()
-    useEffect(() => {
+    useFocusEffect(
+      useCallback(() => {
+        fetchDM()
         Notifications.setNotificationHandler({
           handleNotification: async (notification) => {
             const data = notification?.request?.content?.data
-
             return {
               //The alert should be shown if it is 1) not a direct message OR 2) if it is a direct message from a different user 
               shouldShowAlert: (data.type) != "message" || !(data.url.endsWith(route.params.username)),
@@ -54,7 +53,7 @@ export default function DirectMessage({ route }) {
 
         return () => {
           Notifications.setNotificationHandler({
-            handleNotification: async (notification) => {
+            handleNotification: async () => {
               return {
                 shouldShowAlert: true,
                 shouldPlaySound: false,
@@ -62,21 +61,14 @@ export default function DirectMessage({ route }) {
               };
             },
           });
-        }
-  
-        
-    }, [isFocused])
 
+          if (unsubscribe) {
+            unsubscribe()
+          }
+        }      
+      }, [route.params])
+    );
 
-    useEffect(() => {
-      fetchDM();
-        
-      if (unsubscribe) {
-        return () => {
-          unsubscribe()
-        };
-      }
-    }, [route.params])
 
     async function fetchDM() { 
         const user = await getUser();
@@ -109,13 +101,13 @@ export default function DirectMessage({ route }) {
     }
   
 
-    const onSend = useCallback(async (messages = [], image_url = null) => {
+    const onSend = useCallback(async (messages = [], { image_url, reply_id }) => {
         if (image_url) {
           console.log("Sending URL", image_url)
-          await sendMessage(route.params.username, null, image_url)
+          await sendMessage({ username: route.params.username, image_url: image_url })
         }
         
-        await sendMessage(route.params.username, messages[0].text)
+        await sendMessage({ username: route.params.username, content: messages[0].text, reply_id: reply_id })
       }, [])
 
     function handleGoBack() {

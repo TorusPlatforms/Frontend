@@ -17,23 +17,23 @@ import { searchUsers } from '../handlers/search';
 import { pickImage } from '../imagepicker';
 
 
-export const SwipeableRow = ({ item, setParentCommentID, addCommentRef, setImage }) => {
+export const SwipeableRow = ({ item, setParentCommentID, addCommentRef, setImage, showRepliesID, setReplyingToUsername }) => {
   if (item.isAuthor) {
       return (
         <AppleRow comment_id={item.comment_id} reply_id={item.reply_id}>
-          <Comment data={item} setParentCommentID={setParentCommentID} addCommentRef={addCommentRef} setImage={setImage}  />
+          <Comment data={item} setParentCommentID={setParentCommentID} addCommentRef={addCommentRef} setImage={setImage} showRepliesID={showRepliesID} setReplyingToUsername={setReplyingToUsername} />
         </AppleRow>
       );
     } else {
-      return <Comment data={item} setParentCommentID={setParentCommentID} addCommentRef={addCommentRef} setImage={setImage}/>
+      return <Comment data={item} setParentCommentID={setParentCommentID} addCommentRef={addCommentRef} setImage={setImage} showRepliesID={showRepliesID} setReplyingToUsername={setReplyingToUsername}/>
   }
 };
 
 
 
 
-const Comment = ({ data, setParentCommentID, addCommentRef, setImage }) => {
-    const [showReplies, setShowReplies] = useState()
+const Comment = ({ data, setParentCommentID, addCommentRef, setImage, showRepliesID, setReplyingToUsername }) => {
+    const [showReplies, setShowReplies] = useState(data.comment_id && (showRepliesID == data.comment_id))
     const [replies, setReplies] = useState([])
     const [isLiked, setIsLiked] = useState()
     const [numOfLikes, setNumOfLikes] = useState()
@@ -56,14 +56,14 @@ const Comment = ({ data, setParentCommentID, addCommentRef, setImage }) => {
         setShowReplies(previousState => !previousState);
       }
 
-      setImage(null)
-      setParentCommentID(data.comment_id)
+      // setImage(null)
+      setParentCommentID(data.comment_id || data.parent_comment_id)
+      setReplyingToUsername(data.author)
       addCommentRef.current.focus()
     }
 
     async function handleUserClick(username) {
-        navigation.goBack(); 
-        navigation.navigate("Ping", {post_id: data.post_id}); 
+        navigation.replace("Ping", {post_id: data.post_id}); 
         navigation.push("UserProfile", {username: username})
     }
     
@@ -76,11 +76,12 @@ const Comment = ({ data, setParentCommentID, addCommentRef, setImage }) => {
       
       const newLiked = (!isLiked)
       setIsLiked(newLiked)
-      await handleCommentLike({comment_id: data.comment_id, endpoint: newLiked ? "like" : "unlike"})
+      await handleCommentLike({comment_id: data.comment_id || data.parent_comment_id, endpoint: newLiked ? "like" : "unlike", reply_id: data.reply_id})
     }
 
     async function fetchReplies() {
         const fetchedReplies = await getReplies(data.comment_id)
+        console.log("Fetched", fetchedReplies.length, "replies. First entry:", fetchedReplies)
         setReplies(fetchedReplies);
     };
 
@@ -108,7 +109,7 @@ const Comment = ({ data, setParentCommentID, addCommentRef, setImage }) => {
 
 
     return (
-        <View style={{ marginVertical: 10, width: "95%", flexDirection: "row", paddingHorizontal: 10, minHeight: 30, flex: 1, alignItems: "flex-start" }}>
+        <View style={{ marginVertical: 10, width: "100%", flexDirection: "row", paddingLeft: data.reply_id ? 0 : 10, paddingRight: data.reply_id ? 0 : 20, minHeight: 30, flex: 1, alignItems: "flex-start" }}>
           <Pressable onPress={() => handleUserClick(data.author)} style={{flex: 0.15, justifyContent: 'center', alignItems: 'center'}}>
             
             <Image
@@ -146,12 +147,10 @@ const Comment = ({ data, setParentCommentID, addCommentRef, setImage }) => {
                   )}
                 </View>
 
-                {!data.reply_id && (
-                  <Pressable style={{marginTop: 10, alignItems: 'center'}} onPress={handleLikePress}>
-                    <Ionicons style={[styles.pingIcon, {color: isLiked ? "red" : "white"}]} name={isLiked ? "heart" : "heart-outline"} size={18}></Ionicons>
-                    <Text style={{color: "white", marginTop: 2}}>{numOfLikes}</Text>
-                  </Pressable>
-                )}
+                <Pressable style={{marginTop: 10, alignItems: 'center'}} onPress={handleLikePress}>
+                  <Ionicons style={[{color: isLiked ? "red" : "white"}]} name={isLiked ? "heart" : "heart-outline"} size={18}></Ionicons>
+                  <Text style={{color: "white", marginTop: 2}}>{numOfLikes}</Text>
+                </Pressable>
       
               </View>
 
@@ -159,21 +158,19 @@ const Comment = ({ data, setParentCommentID, addCommentRef, setImage }) => {
            
             
               <View style={{flexDirection: 'row', marginBottom: showReplies ? 10 : 0}}>
-                { !data.reply_id && (
                   <TouchableOpacity onPress={handleReply}>
                       <Text style={styles.reply}>Reply</Text>
                   </TouchableOpacity>
-                )}
 
-                { data.reply_count > 0 && !data.reply_id && (
-                  <Text style={{color: "gray", marginLeft: 10}} onPress={() => {setShowReplies(previousState => !previousState); fetchReplies()}}>{showReplies ? "Hide" : "View " + data.reply_count} replies</Text>
-                )}
+                  { data.reply_count > 0 && !data.reply_id && (
+                    <Text style={{color: "gray", marginLeft: 10}} onPress={() => {setShowReplies(previousState => !previousState); fetchReplies()}}>{showReplies ? "Hide" : "View " + data.reply_count} replies</Text>
+                  )}
               </View>
               
 
               {showReplies && replies.map(reply => (
                     <View key={reply.reply_id}>
-                        <SwipeableRow item={reply} />
+                        <SwipeableRow item={reply} setParentCommentID={setParentCommentID} addCommentRef={addCommentRef} setImage={setImage} setReplyingToUsername={setReplyingToUsername}/>
                     </View>
               ))}
           </View>
@@ -182,9 +179,10 @@ const Comment = ({ data, setParentCommentID, addCommentRef, setImage }) => {
       )}
   
 
-export const Comments = ({ headerComponent, post_id, scrollToCommentID }) => {
+export const Comments = ({ headerComponent, post_id, scrollToCommentID, showReplies }) => {
     const [comments, setComments] = useState([])
     const [parentCommentID, setParentCommentID] = useState()
+    const [replyingToUsername, setReplyingToUsername] = useState()
     const addCommentRef = useRef()
     const flatlist_ref = useRef()
     const navigation = useNavigation()
@@ -201,7 +199,7 @@ export const Comments = ({ headerComponent, post_id, scrollToCommentID }) => {
       const index = comments.findIndex(comment => parseInt(comment.comment_id) === parseInt(comment_id));
       console.log(index)
       if (index !== -1) {
-        flatlist_ref.current.scrollToIndex({ index, animated: true });
+        flatlist_ref.current?.scrollToIndex({ index, animated: true });
       }
       
     }
@@ -241,19 +239,20 @@ export const Comments = ({ headerComponent, post_id, scrollToCommentID }) => {
           setRefreshing(true)
           clearInput()
 
+          let uploadedImage;
+
+          if (image) {
+            uploadedImage = await uploadToCDN(image)
+          }
+
+          Keyboard.dismiss()
+          
           if (parentCommentID) { //this means it is a Reply
-            await addReply({ post_id: post_id, content: commentText.trim(), comment_id: parentCommentID})
+            await addReply({ post_id: post_id, content: commentText.trim(), comment_id: parentCommentID, image_url: uploadedImage?.url})
           } else {
-            let uploadedImage;
-
-            if (image) {
-              uploadedImage = await uploadToCDN(image)
-            }
-
-            await postComment(post_id, commentText.trim(), uploadedImage?.url)
+            await postComment({post_id: post_id, content: commentText.trim(), image_url: uploadedImage?.url})
           }
     
-          Keyboard.dismiss()
           await fetchComments()
 
           if (parentCommentID) {
@@ -324,16 +323,18 @@ export const Comments = ({ headerComponent, post_id, scrollToCommentID }) => {
                     setParentCommentID={setParentCommentID} 
                     addCommentRef={addCommentRef} 
                     setImage={setImage}
+                    showRepliesID={showReplies ? scrollToCommentID : null}
+                    setReplyingToUsername={setReplyingToUsername}
                   />}
                   keyExtractor={(item) => item.comment_id}
                   refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} tintColor={"white"} />}
                   ListHeaderComponent={headerComponent}
                   contentContainerStyle={{paddingBottom: 250}}
                   onScrollToIndexFailed={(error) => {
-                    flatlist_ref.current.scrollToOffset({ offset: error.averageItemLength * error.index, animated: true });
+                    flatlist_ref.current?.scrollToOffset({ offset: error.averageItemLength * error.index, animated: true });
                     setTimeout(() => {
                       if (comments.length !== 0 && flatlist_ref !== null) {
-                        flatlist_ref.current.scrollToIndex({ index: error.index, animated: true });
+                        flatlist_ref.current?.scrollToIndex({ index: error.index, animated: true });
                       }
                     }, 100);
                   }}
@@ -345,6 +346,16 @@ export const Comments = ({ headerComponent, post_id, scrollToCommentID }) => {
               <View style={{flexDirection: 'row', alignItems: "flex-end", backgroundColor: 'rgb(22, 23, 24)' , paddingVertical: 20}}>
                     <View style={{width: "75%", paddingLeft: 20}}>
 
+                    {parentCommentID && (
+                          <View style={{justifyContent: 'space-between', flexDirection: "row", paddingBottom: 10}}>
+                            <Text style={{color: "gray", marginLeft: 5}}>Replying to {replyingToUsername}</Text>
+      
+                            <TouchableOpacity onPress={() => setParentCommentID(null)}>
+                                <Feather name="x" size={12} color="gray" />
+                            </TouchableOpacity>
+                          </View>
+                        )}
+                        
                       {image && (
                           <View style={[styles.attatchment, {marginBottom: 20}]}>
                               <Lightbox navigator={navigation} activeProps={{style: styles.fullscreenImage}}>
@@ -357,17 +368,6 @@ export const Comments = ({ headerComponent, post_id, scrollToCommentID }) => {
 
                           </View>
                         )}
-
-                        {parentCommentID && (
-                          <View style={{justifyContent: 'space-between', flexDirection: "row", paddingBottom: 10}}>
-                            <Text style={{color: "gray", marginLeft: 5}}>Replying</Text>
-      
-                            <TouchableOpacity onPress={() => setParentCommentID(null)}>
-                                <Feather name="x" size={12} color="gray" />
-                            </TouchableOpacity>
-                          </View>
-                        )}
-                        
       
                         <MentionInput
                             inputRef={addCommentRef}
@@ -386,8 +386,8 @@ export const Comments = ({ headerComponent, post_id, scrollToCommentID }) => {
                         />
                     </View>
                     
-                    <TouchableOpacity style={{marginBottom: 8}} onPress={() => {setParentCommentID(null); pickImage(handleImageSelect)}}>
-                        <FontAwesome name="image" size={25} color={parentCommentID ? "gray" : "white"} />
+                    <TouchableOpacity style={{marginBottom: 8}} onPress={() => {pickImage(handleImageSelect)}}>
+                        <FontAwesome name="image" size={25} color={"white"} />
                     </TouchableOpacity>
 
                     <Pressable onPress={handlePostClick} style={{ marginBottom: 5, alignItems: 'center', backgroundColor:  commentText.length > 0 ? "rgb(47, 139, 128)" : "gray", borderRadius: 30, width: 40, height: 30, justifyContent: "center", marginLeft: 10 }}>

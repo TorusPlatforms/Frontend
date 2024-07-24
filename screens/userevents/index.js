@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { View, RefreshControl, Image, Text, FlatList, Animated, ActivityIndicator, Pressable, TouchableOpacity } from "react-native";
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 
 import { Event } from "../../components/events";
@@ -10,9 +9,14 @@ import styles from "./styles";
 
 export default function UserEvents() {
   const navigation = useNavigation()
-
+  const [refreshing, setRefreshing] = useState()
   const [events, setEvents] = useState();
 
+  const onRefresh = useCallback(async() => {
+    setRefreshing(true);
+    await fetchEvents()
+    setRefreshing(false)
+  }, []);
 
   async function fetchEvents() {
     const events = await getUserEvents()
@@ -20,12 +24,9 @@ export default function UserEvents() {
     setEvents(events)
   }
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchEvents()
-    }, [])
-  );
-
+  useEffect(() => {
+    fetchEvents()
+  }, [])
 
 
   if (!events) {
@@ -39,21 +40,24 @@ export default function UserEvents() {
 
   return (
     <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
-        {events.length == 0 && (
+        {events.length > 0 ? 
+          (
+          <FlatList
+            style={{paddingHorizontal: 20}}
+            data={events}
+            renderItem={
+              ({item}) => <Event data={item} />}
+            ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
+            keyExtractor={(item) => item.event_id}
+            refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} tintColor={"white"} />}
+        />
+        ) : (
           <TouchableOpacity onPress={() => navigation.navigate("Discover")} style={{justifyContent: 'center', alignItems: 'center', marginTop: 50}}>
             <Text style={{color: "lightgrey", textAlign: "center", maxWidth: 270}}>Looks like you haven't joined any events... Discover some near you!</Text>
           </TouchableOpacity>
         )}
 
-        <FlatList
-            style={{paddingHorizontal: 20}}
-            data={events}
-            renderItem={
-              ({item}) => <Event data={item} navigation={navigation} 
-            />}
-            ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
-            keyExtractor={(item) => item.event_id}
-        />
+        
     </View>
   )
 }

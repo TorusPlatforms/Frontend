@@ -7,13 +7,13 @@ import * as Linking from 'expo-linking';
 import { handleLike, deletePost } from "../handlers";
 import { findTimeAgo } from "../utils";
 import styles from "./styles";
+// import { LinkPreview } from '@flyerhq/react-native-link-preview'
 
 
-export const Ping = ({ data }) => {
+export const Ping = ({ data, showLoop = true }) => {
     const navigation = useNavigation()
     const [isLiked, setIsLiked] = useState(null)
     const [numOfLikes, setNumOfLikes] = useState(null)
-
 
     async function handleLikePress() {
       if (isLiked) {
@@ -27,9 +27,10 @@ export const Ping = ({ data }) => {
       await handleLike({post_id: data.post_id, endpoint: newLiked ? "like" : "unlike"})
     }
 
-    function handleAuthorPress() {
-        if (data.loop_id && data.public) {
-          navigation.push("Loop", {loop_id: data.loop_id})
+    function handleAuthorPress({ prioritizeUser }) {
+        //When we click on the PFP we ALWAYS want to go to the users profile even if its a loop event
+        if ((data.loop_id && (data.public || !prioritizeUser))) {
+          navigation.push("Loop", {loop_id: data.loop_id, initialScreen: "Pings"})
         } else {
           navigation.push("UserProfile", {username: data.author})
         }
@@ -69,12 +70,9 @@ export const Ping = ({ data }) => {
     return (
       <TouchableOpacity onPress={() => navigation.push("Ping", {post_id: data.post_id})} style={{marginVertical: 10, width: "95%", flexDirection: "row", padding: 10, paddingHorizontal: 20}}>
         <View style={{flexDirection: "col", flex: 1}}>
-          <Image
-            style={styles.tinyLogo}
-            source={{
-              uri: data.pfp_url,
-            }}
-          />
+          <Pressable onPress={() => handleAuthorPress({prioritizeUser: true})}>
+              <Image style={styles.tinyLogo} source={{ uri: data.pfp_url }} />
+          </Pressable>
         </View>
     
         <View style={{marginLeft: 10, flex: 6}}>
@@ -82,21 +80,26 @@ export const Ping = ({ data }) => {
               <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
                   <TouchableOpacity onPress={handleAuthorPress}>
                       <Text style={styles.author}>
-                        {(data.loop_id && data.public) ? `[LOOP] ${data.author}` : data.author}
+                        {(data.loop_id && data.public) ? `[LOOP] ` : ""}
+                        {data.author}
+
+                        { data.loop_id && !data.public && showLoop && (
+                          <Text style={{fontWeight: "400", color: "lightgray", fontSize: 14}}>{` (${data.loop_name})`}</Text>
+                        )}
                       </Text>
                   </TouchableOpacity>
               </View>
       
 
               <TextInput multiline scrollEnabled={false} editable={false} style={[styles.text, {paddingVertical: 2}]} value={data.content}></TextInput>
+              {/* <LinkPreview text={data.content.toString()}  /> */}
             </View>
         
           <View style={{flex: 2}}>
             { data.image_url && (
               <Image
-                style={[styles.attatchment]}
+                style={styles.attatchment}
                 source={{uri: data.image_url}}
-                resizeMode='cover'
               />
            )}
           </View>

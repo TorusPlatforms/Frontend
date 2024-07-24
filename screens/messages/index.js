@@ -4,7 +4,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Entypo from '@expo/vector-icons/Entypo';
 
-import { useNavigation, useIsFocused } from "@react-navigation/native";
+import { useNavigation, useIsFocused, useFocusEffect } from "@react-navigation/native";
 
 import { getThreads } from "../../components/handlers";
 import { findTimeAgo } from "../../components/utils";
@@ -24,7 +24,7 @@ export default function Messages() {
             </View>
 
             <View style={{marginLeft: 10, flexDirection: 'col', alignItems: "flex-start", flex: 1}}>
-                <Text style={{color: "white", fontWeight: "bold"}}>{data.username}</Text>
+                <Text style={{color: "white", fontWeight: (data.unread ? "bold" : "600")}}>{data.username}</Text>
                 <Text style={{color: "white", fontWeight: (data.unread ? "bold" : null)}}>{data.lastMessageObj.lastMessage.substring(0, 35)}...</Text>
             </View>
 
@@ -62,12 +62,13 @@ export default function Messages() {
         setDMs(threads);
     }
 
-    const isFocused = useIsFocused()
-
-    useEffect(() => {
-        fetchThreads()
-      }, [isFocused]);
-      
+    
+    useFocusEffect(
+        useCallback(() => {
+          fetchThreads()
+        }, [])
+      );
+    
       
     const header = () => (
         <View>

@@ -17,7 +17,7 @@ export default function CreatePing({ route }) {
   const [image, setImage] = useState(null);
   const [isPublic, setIsPublic] = useState(route.params?.loop ? false : true);
   const [refreshing, setRefreshing] = useState(false)
-  
+
   async function fetchUser() {
       const fetchedUser = await getUser()
       setUser(fetchedUser)
@@ -71,10 +71,10 @@ export default function CreatePing({ route }) {
     let alertTitle, alertMessage = ""
     if (isPublic) {
       alertTitle = "Are you sure you want to make this ping private?"
-      alertMessage = "This means only members of this loop will be able to see this ping."
+      alertMessage = `This means only members of this ${route.params?.loop ? "loop" : 'campus'} will be able to see this ping.`
     } else {
       alertTitle = "Are you sure you want to make this ping public?"
-      alertMessage = "This means anyone from your college will be able to see this ping."
+      alertMessage = "This means anyone will be able to see this ping."
     }
 
     Alert.alert(alertTitle, alertMessage, [
@@ -110,7 +110,7 @@ export default function CreatePing({ route }) {
               <Text style={{ fontWeight: "bold", fontSize: 20, color: "white", marginBottom: 4 }}>Send a Ping</Text>
 
               {!route.params?.loop && (
-                <Text style={{color: "white", fontSize: 12, textAlign: "center"}}>Posting to {user.college}</Text>
+                <Text style={{color: "white", fontSize: 12, textAlign: "center"}}>{isPublic ? "" : `Posting to ${user.college}`}</Text>
               )}
 
               {route.params?.loop && (
@@ -118,7 +118,7 @@ export default function CreatePing({ route }) {
               )}
           </View>
           <View style={{flex: 0.25, justifyContent: "center", alignItems: "flex-end"}}>
-              {route.params?.loop && route.params?.loop?.isOwner && (
+              {(!(route.params?.loop) || (route.params?.loop?.isOwner || route.params?.loop?.isAdmin)) && (
                 <TouchableOpacity onPress={handleLockPress} style={{marginRight: 30}} >
                     <Ionicons name={isPublic ? "lock-open" : "lock-closed"} size={24} color={"white"}/>
                 </TouchableOpacity>                
@@ -170,7 +170,7 @@ export default function CreatePing({ route }) {
 
             
 
-          <TouchableOpacity style={{ backgroundColor: content.length > 0 ? "rgb(47, 139, 128)" : "rgb(62, 62, 62)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 15, paddingHorizontal: 40, marginTop: 20 }} onPress={handlePost}>
+          <TouchableOpacity disabled={content.length <= 0} style={{ backgroundColor: content.length > 0 ? "rgb(47, 139, 128)" : "rgb(62, 62, 62)", borderRadius: 20, borderWidth: 1, borderColor: "black", paddingVertical: 15, paddingHorizontal: 40, marginTop: 20 }} onPress={handlePost}>
             <Text style={{ color: "white", textAlign: "center", fontWeight: "bold" }}>Post</Text>
           </TouchableOpacity>
         </View>        

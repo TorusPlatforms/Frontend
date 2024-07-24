@@ -5,7 +5,7 @@ import Feather from '@expo/vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import * as Linking from "expo-linking";
 import Lightbox from 'react-native-lightbox-v2';
-
+// import { LinkPreview } from '@flyerhq/react-native-link-preview';
 import { findTimeAgo } from '../../components/utils';
 import { getPing, deletePost, handleLike, postComment, getComments } from "../../components/handlers";
 import { Comments } from '../../components/comments';
@@ -14,7 +14,7 @@ import styles from "./styles"
 
 export default function Ping({ route }) {
   const navigation = useNavigation()
-  const { post_id, scrollToComment } = route.params
+  const { post_id, scrollToComment, showReplies } = route.params
 
   const [post, setPost] = useState();
   const [isLiked, setIsLiked] = useState()
@@ -48,14 +48,14 @@ export default function Ping({ route }) {
       await handleLike({post_id: post_id, endpoint: newLiked ? "like" : "unlike"})
   }
 
-  function handleAuthorPress() {
-      if (post.loop_id && post.public) {
-        navigation.push("Loop", {loop_id: post.loop_id})
-      } else {
-        navigation.push("UserProfile", {username: post.author})
-      }
-  }
-
+  function handleAuthorPress({ prioritizeUser }) {
+    //When we click on the PFP we ALWAYS want to go to the users profile even if its a loop event
+    if ((post.loop_id && (post.public || !prioritizeUser))) {
+      navigation.push("Loop", {loop_id: post.loop_id, initialScreen: "Pings"})
+    } else {
+      navigation.push("UserProfile", {username: post.author})
+    }
+}
   function handleDeletePress() {
     Alert.alert("Are you sure you want to delete this Ping?", "This is a permanent action that cannot be undone.", [
       {
@@ -93,26 +93,38 @@ export default function Ping({ route }) {
   const header = (
     <View style={{marginBottom: 20}}>
         <View style={{marginVertical: 10, width: "95%", flexDirection: "row", padding: 10, paddingHorizontal: 20, minHeight: 60}}>
-              <View>
+              <Pressable onPress={() => handleAuthorPress({prioritizeUser: true})}>
                 <Image
                   style={styles.tinyLogo}
                   source={{uri: post.pfp_url}}
                 />
-              </View>
+              </Pressable>
         
               <View style={{marginLeft: 20, flex: 6}}>
                     <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
                         <TouchableOpacity onPress={handleAuthorPress}>
-                            <Text style={styles.author}>
-                              {(post.loop_id && post.public) ? `[LOOP] ${post.author}` : post.author}
-                            </Text>
-                        </TouchableOpacity>
+                          <Text style={styles.author}>
+                            {(post.loop_id && post.public) ? `[LOOP] ` : ""}
+                            {post.author}
 
-                        
+                            { post.loop_id && !post.public && (
+                              <Text style={{fontWeight: "400", color: "lightgray", fontSize: 14}}>{` (${post.loop_name})`}</Text>
+                            )}
+                          </Text>
+                      </TouchableOpacity>
+                          
                     </View>
             
 
                     <TextInput multiline editable={false} style={[styles.text, {padding: 2}]} value={post.content}></TextInput>
+
+                    {/* <LinkPreview 
+                      text={post.content.toString()}  
+                      renderText={(text) => {
+                        return <Text style={{color: "white", fontSize: 16}}>{text}</Text>
+                      }}  
+                      containerStyle={{padding: 2}}
+                    /> */}
 
                     { post.image_url && (
                       <Lightbox navigator={navigation} activeProps={{style: styles.fullscreenImage}}>
@@ -144,7 +156,7 @@ export default function Ping({ route }) {
         
             </View>
             
-            <View style={{flexDirection: 'row', justifyContent: "space-between", paddingVertical: 15}}>
+            <View style={{flexDirection: 'row', justifyContent: "space-between", paddingVertical: 15, height: 100}}>
                 <Text style={styles.stats}>{numOfLikes} Likes • {post.numberof_comments} Comments</Text>
 
                 <Text style={{color: "gray"}}>{findTimeAgo(post.created_at)}</Text>
@@ -165,6 +177,7 @@ export default function Ping({ route }) {
           post_id={post_id}
           headerComponent={header}
           scrollToCommentID={scrollToComment}
+          showReplies={showReplies}
         />
 
     </View>

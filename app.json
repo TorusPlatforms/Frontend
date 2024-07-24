@@ -3,7 +3,7 @@
     "name": "Torus Platforms",
     "scheme": "torus",
     "slug": "torus",
-    "version": "1.0.11",
+    "version": "1.0.12",
     "orientation": "portrait",
     "icon": "./assets/torus_zoomed_in.png",
     "userInterfaceStyle": "light",
@@ -29,7 +29,7 @@
         "NSPhotoLibraryUsageDescription": "This feature requires access to your camera roll"
       },
       "bundleIdentifier": "com.torusplatforms.torus",
-      "buildNumber": "3"
+      "buildNumber": "9"
     },
     "android": {
       "permissions": [
@@ -45,7 +45,7 @@
         "backgroundColor": "#161718"
       },
       "package": "com.torusplatforms.torus",
-      "versionCode": 3
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/favicon.png"

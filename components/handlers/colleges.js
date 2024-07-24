@@ -31,6 +31,35 @@ export async function getColleges() {
     return (colleges)
   }
 
+export async function getCollegePings() {
+    const token = await getToken()
+    
+    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/college`;
+
+    try {  
+      const response = await fetch(serverUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status === 404) {
+        return []
+      }
+
+      if (!response.ok) {
+        throw new Error(`Error Getting Pings! Status: ${response.status}`);
+      }
+
+      const responseData = await response.json();
+      return (responseData)
+
+    } catch (error) {
+      console.error('Error Getting Pings:', error.message);
+    }
+}
 
 export async function addCollege(college_id) {
     const token = await getToken()

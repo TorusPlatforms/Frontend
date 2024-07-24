@@ -13,7 +13,7 @@ import { getUser } from "../../components/handlers";
 import styles from "./styles";
 
 
-export default function Profile() {
+export default function Profile({ route }) {
     const Tab = createMaterialTopTabNavigator();
 
     const navigation = useNavigation()
@@ -35,7 +35,12 @@ export default function Profile() {
           fetchUser()
         }, [])
       );
-  
+    
+    useEffect(() => {
+        if (route.params?.initialScreen) {
+            navigation.navigate(route.params?.initialScreen);
+          }
+    }, [route.params])
 
     if (!user) {
         return (
@@ -105,7 +110,7 @@ export default function Profile() {
             
             <View style={{flex: 2}}>
                 <Tab.Navigator screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)' }, tabBarLabelStyle: { color: "white", fontSize: 10 }}}>
-                    <Tab.Screen name="Pings" children={() =>  <UserPings username={user.username}/>}/>
+                    <Tab.Screen name="Pings" children={() => <UserPings username={user.username}/>}/>
                     <Tab.Screen name="Events" component={UserEvents} />
                 </Tab.Navigator>
             </View>

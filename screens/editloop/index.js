@@ -176,7 +176,7 @@ export default function EditLoop({ navigation, route }) {
               <Text style={{color: loop.isAdmin ? "white" : "gray", flex: 1}}>{loop.name}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity disabled={!loop.isAdmin} onPress={() => navigation.push("EditField", {field: "Description", endpoint: "description", varName: "description", loop: loop, type: "loop", previousState: loop.description})} style={styles.updateField}>
+            <TouchableOpacity disabled={!loop.isAdmin} onPress={() => navigation.push("EditField", {field: "Description", endpoint: "description", varName: "description", loop: loop, type: "loop"})} style={styles.updateField}>
               <Text style={{color: loop.isAdmin ? "white" : "gray", flex: 0.5}}>Description</Text>
               <Text style={{color: loop.isAdmin ? "white" : "gray", flex: 1}}>{loop.description}</Text>
             </TouchableOpacity>

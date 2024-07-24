@@ -32,7 +32,7 @@ export async function getReplies(comment_id) {
   }
 
 
-export async function addReply({ post_id, comment_id, content }) {
+export async function addReply({ post_id, comment_id, content, image_url }) {
     const token = await getToken()
 
     const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/reply`;
@@ -40,7 +40,8 @@ export async function addReply({ post_id, comment_id, content }) {
     const requestBody = {
       post_id: post_id,
       parent_comment_id: comment_id,
-      content: content
+      content: content,
+      image_url: image_url
     }
 
     const response = await fetch(serverUrl, {

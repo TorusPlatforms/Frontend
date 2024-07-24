@@ -37,13 +37,7 @@ export default function EditField({ route, navigation }) {
         setText(defaultValue)
       }, []);
   
-    if (!defaultValue) {
-        return (
-            <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)", justifyContent: "center", alignItems: 'center'}}>
-                <ActivityIndicator />
-            </View>
-        )
-    }
+ 
     return (
         <View style={styles.container}>
             <View style={{alignItems: 'center', flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 20, flex: 0.1}}>

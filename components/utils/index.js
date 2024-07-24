@@ -117,7 +117,6 @@ export function strfEventTime(timestamp) {
     }
 
     return `${hours}:${minutes} ${suffix}`
-
 }
 
 export function combineDateAndTime(date, time) {

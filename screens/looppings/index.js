@@ -75,7 +75,7 @@ export default function LoopPings({ route }) {
               refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"}/>}
               style={{paddingHorizontal: 5}}
               data={pings}
-              renderItem={({item}) => <Ping data={item} />}
+              renderItem={({item}) => <Ping data={item} showLoop={false} />}
               ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
               onMomentumScrollBegin={handleScrollBegin}
               onMomentumScrollEnd={handleScrollEnd}

@@ -1,9 +1,8 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { ActivityIndicator, View, Text, TouchableOpacity, Image } from "react-native";
-import { GiftedChat } from 'react-native-gifted-chat';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { getFirestore, onSnapshot, doc } from "firebase/firestore"
 import * as Notifications from 'expo-notifications';
 
@@ -24,18 +23,11 @@ export default function LoopChat({ route }) {
   
   const { loop, fullScreen, defaultMessage } = route.params;
 
+  useFocusEffect(
+    useCallback(() => {
+      fetchChats();
+      fetchUser();
 
-  useEffect(() => {
-    fetchChats();
-    fetchUser();
-
-    if (unsubscribe) {
-      return () => unsubscribe();
-    }
-  }, [route.params])
-
-  const isFocused = useIsFocused()
-  useEffect(() => {
       Notifications.setNotificationHandler({
         handleNotification: async (notification) => {
           console.log("Notification received! Handling...")
@@ -49,9 +41,14 @@ export default function LoopChat({ route }) {
         },
       });
 
+    
       return () => {
+        if (unsubscribe) {
+          unsubscribe()
+        }
+
         Notifications.setNotificationHandler({
-          handleNotification: async (notification) => {
+          handleNotification: async () => {
             return {
               shouldShowAlert: true,
               shouldPlaySound: false,
@@ -59,10 +56,11 @@ export default function LoopChat({ route }) {
             };
           },
         });
-      }
 
-      
-  }, [isFocused])
+      }      
+    }, [route.params])
+  );
+
 
   async function fetchChats() {
     const messages = await getChats(loop.loop_id);
@@ -89,16 +87,16 @@ export default function LoopChat({ route }) {
   }
 
 
-  const onSend = useCallback(async (messages = [], image_url = null) => {
+  const onSend = useCallback(async (messages = [], { image_url, reply_id }) => {
     // if (route.name != "LoopChat") {
     //   navigation.navigate("LoopChat", {loop: loop, fullScreen: true})
     // }
 
     if (image_url) {
-      await sendChat(loop.loop_id, null, image_url);
+      await sendChat({loop_id: loop.loop_id, image_url: image_url});
     }
 
-    await sendChat(loop.loop_id, messages[0].text);
+    await sendChat({loop_id: loop.loop_id, content: messages[0].text, reply_id: reply_id});
   }, [])
 
 

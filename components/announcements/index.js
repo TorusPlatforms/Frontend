@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Image, Text, TouchableOpacity, Alert, Pressable } from "react-native";
+import { View, Image, Text, TouchableOpacity, Alert, Pressable, TextInput } from "react-native";
 import Feather from '@expo/vector-icons/Feather';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
@@ -15,8 +15,7 @@ export const Announcement = ({ data, isAdmin }) => {
   const navigation = useNavigation()
   
   function handleAuthorPress() {
-      navigation.goBack()
-      navigation.push("UserProfile", {username: data.author});
+      navigation.replace("UserProfile", {username: data.author});
   }
 
   async function handleResendPress() {
@@ -67,7 +66,7 @@ export const Announcement = ({ data, isAdmin }) => {
             </View>
 
             <View style={{flexDirection: "row", justifyContent: 'space-between' }}>
-                <Text style={styles.text}>{data.content}</Text>
+                <TextInput multiline scrollEnabled={false} editable={false} style={[styles.text, {paddingVertical: 2}]} value={data.content}></TextInput>
 
                 {isAdmin && (
                     <View style={{flexDirection: "row"}}>

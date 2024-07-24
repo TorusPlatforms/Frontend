@@ -675,7 +675,7 @@ export async function updateMember({ loop_id, endpoint, value }) {
     console.log('Updated succesfully. Server response:', responseData);
   }
 
-export async function postComment(post_id, content, image_url = null) {
+export async function postComment({post_id, content, image_url}) {
   const token = await getToken()
   
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/add`;
@@ -707,11 +707,16 @@ export async function postComment(post_id, content, image_url = null) {
   }
 }
 
-export async function handleCommentLike({comment_id, endpoint}) {
+export async function handleCommentLike({comment_id, reply_id, endpoint}) {
     const token = await getToken()
     
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/${comment_id}/${endpoint}`;
+    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/${comment_id}/${endpoint}`;
+    
+    if (reply_id) {
+      serverUrl += `/${reply_id}`
+    }
 
+    console.log(serverUrl)
     const response = await fetch(serverUrl, {
       method: 'POST',
       headers: {
@@ -725,7 +730,6 @@ export async function handleCommentLike({comment_id, endpoint}) {
     }
 
     const responseData = await response.json();
-    console.log('Posted Comment:', responseData);
     return responseData
 }
 
@@ -748,7 +752,6 @@ export async function deleteComment(comment_id) {
   }
 
   const responseData = await response.json();
-  console.log('Deleted Comment:', responseData);
   return responseData
 
 }
@@ -805,7 +808,7 @@ export async function getDM(username) {
 }
 
 
-export async function sendMessage(username, content, image_url = null) {
+export async function sendMessage({username, content, image_url, reply_id}) {
   const token = await getToken()
 
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/messages/add`;
@@ -820,7 +823,8 @@ export async function sendMessage(username, content, image_url = null) {
       body: JSON.stringify({
         receiver_username: username, 
         content: content,
-        image_url: image_url
+        image_url: image_url,
+        reply_id: reply_id
       })
     })
 
@@ -1394,7 +1398,7 @@ export async function getChats(loopId) {
 }
 
 
-export async function sendChat(loopId, content, image_url = null) {
+export async function sendChat({loop_id, content, reply_id = null, image_url = null}) {
   const token = await getToken()
 
   const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/createMessage`;
@@ -1407,7 +1411,8 @@ export async function sendChat(loopId, content, image_url = null) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        loop_id: loopId, 
+        loop_id: loop_id, 
+        reply_id: reply_id, 
         content: content,
         image_url: image_url
       })

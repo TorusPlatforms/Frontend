@@ -29,6 +29,7 @@ export default function NotificationsScreen() {
 
 
     function onNotificationsPress(data) {
+        console.log("Linking to URL:", data.url)
         linkTo("/" + data.url)
     }
     
@@ -65,10 +66,6 @@ export default function NotificationsScreen() {
         };
 
         for (const index in raw_notifications) {
-            if (index > 50) {
-                break
-            }
-            
             const notification = raw_notifications[index]
             const notificationDate = moment(notification.created_at);
 
@@ -142,7 +139,6 @@ export default function NotificationsScreen() {
                         <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 16 }}>{title}</Text>
                     </View>
                 )}
-                initialNumToRender={50}
                 ItemSeparatorComponent={() => <View style={styles.item_seperator} />}
                 refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} tintColor={"white"} />}
                 keyExtractor={item => item.notification_id}
