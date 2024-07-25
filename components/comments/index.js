@@ -5,7 +5,7 @@ import Feather from "@expo/vector-icons/Feather"
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"
 import { useNavigation } from '@react-navigation/native';
-import { MentionInput } from 'react-native-controlled-mentions'
+import { MentionInput, onSuggestionPress } from 'react-native-controlled-mentions'
 import Lightbox from 'react-native-lightbox-v2';
 
 import { getComments, handleCommentLike, postComment, uploadToCDN } from '../handlers';
@@ -17,22 +17,38 @@ import { searchUsers } from '../handlers/search';
 import { pickImage } from '../imagepicker';
 
 
-export const SwipeableRow = ({ item, setParentCommentID, addCommentRef, setImage, showRepliesID, setReplyingToUsername }) => {
+export const SwipeableRow = ({ item, setParentCommentID, addCommentRef, showRepliesID, setReplyingToUsername, setCommentText }) => {
   if (item.isAuthor) {
       return (
         <AppleRow comment_id={item.comment_id} reply_id={item.reply_id}>
-          <Comment data={item} setParentCommentID={setParentCommentID} addCommentRef={addCommentRef} setImage={setImage} showRepliesID={showRepliesID} setReplyingToUsername={setReplyingToUsername} />
+          <Comment 
+            data={item} 
+            setParentCommentID={setParentCommentID} 
+            addCommentRef={addCommentRef} 
+            showRepliesID={showRepliesID} 
+            setReplyingToUsername={setReplyingToUsername} 
+            setCommentText={setCommentText}
+          />
         </AppleRow>
       );
     } else {
-      return <Comment data={item} setParentCommentID={setParentCommentID} addCommentRef={addCommentRef} setImage={setImage} showRepliesID={showRepliesID} setReplyingToUsername={setReplyingToUsername}/>
+      return (
+        <Comment 
+          data={item} 
+          setParentCommentID={setParentCommentID} 
+          addCommentRef={addCommentRef}
+          showRepliesID={showRepliesID} 
+          setReplyingToUsername={setReplyingToUsername}
+          setCommentText={setCommentText}
+        />
+      )
   }
 };
 
 
 
 
-const Comment = ({ data, setParentCommentID, addCommentRef, setImage, showRepliesID, setReplyingToUsername }) => {
+const Comment = ({ data, setParentCommentID, addCommentRef, showRepliesID, setReplyingToUsername, setCommentText }) => {
     const [showReplies, setShowReplies] = useState(data.comment_id && (showRepliesID == data.comment_id))
     const [replies, setReplies] = useState([])
     const [isLiked, setIsLiked] = useState()
@@ -56,9 +72,9 @@ const Comment = ({ data, setParentCommentID, addCommentRef, setImage, showReplie
         setShowReplies(previousState => !previousState);
       }
 
-      // setImage(null)
       setParentCommentID(data.comment_id || data.parent_comment_id)
       setReplyingToUsername(data.author)
+      setCommentText(`@[${data.author}](!)`)
       addCommentRef.current.focus()
     }
 
@@ -170,7 +186,13 @@ const Comment = ({ data, setParentCommentID, addCommentRef, setImage, showReplie
 
               {showReplies && replies.map(reply => (
                     <View key={reply.reply_id}>
-                        <SwipeableRow item={reply} setParentCommentID={setParentCommentID} addCommentRef={addCommentRef} setImage={setImage} setReplyingToUsername={setReplyingToUsername}/>
+                        <SwipeableRow 
+                          item={reply} 
+                          setParentCommentID={setParentCommentID} 
+                          addCommentRef={addCommentRef} 
+                          setReplyingToUsername={setReplyingToUsername}
+                          setCommentText={setCommentText}
+                        />
                     </View>
               ))}
           </View>
@@ -181,6 +203,7 @@ const Comment = ({ data, setParentCommentID, addCommentRef, setImage, showReplie
 
 export const Comments = ({ headerComponent, post_id, scrollToCommentID, showReplies }) => {
     const [comments, setComments] = useState([])
+    const [commentText, setCommentText] = useState("")
     const [parentCommentID, setParentCommentID] = useState()
     const [replyingToUsername, setReplyingToUsername] = useState()
     const addCommentRef = useRef()
@@ -227,7 +250,6 @@ export const Comments = ({ headerComponent, post_id, scrollToCommentID, showRepl
 
 
 
-    const [commentText, setCommentText] = useState("")
 
     function clearInput() {
         setImage(null)
@@ -325,6 +347,7 @@ export const Comments = ({ headerComponent, post_id, scrollToCommentID, showRepl
                     setImage={setImage}
                     showRepliesID={showReplies ? scrollToCommentID : null}
                     setReplyingToUsername={setReplyingToUsername}
+                    setCommentText={setCommentText}
                   />}
                   keyExtractor={(item) => item.comment_id}
                   refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} tintColor={"white"} />}

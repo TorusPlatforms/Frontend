@@ -4,16 +4,20 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from "@expo/vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
 import * as Linking from 'expo-linking';
-import { handleLike, deletePost } from "../handlers";
+import RNPoll from "react-native-poll";
+
+import { handleLike, deletePost, vote } from "../handlers";
 import { findTimeAgo } from "../utils";
 import styles from "./styles";
-// import { LinkPreview } from '@flyerhq/react-native-link-preview'
 
+
+// import { LinkPreview } from '@flyerhq/react-native-link-preview'
 
 export const Ping = ({ data, showLoop = true }) => {
     const navigation = useNavigation()
     const [isLiked, setIsLiked] = useState(null)
     const [numOfLikes, setNumOfLikes] = useState(null)
+    const [choices, setChoices] = useState()
 
     async function handleLikePress() {
       if (isLiked) {
@@ -51,6 +55,10 @@ export const Ping = ({ data, showLoop = true }) => {
       ]);
     }
 
+    async function handleVote(selectedChoice) {
+      await vote({poll_id: data.poll.poll_id, choice: selectedChoice.id})
+    }
+    
     async function handleShare() {
       const prefix = Linking.createURL('/');
 
@@ -64,6 +72,16 @@ export const Ping = ({ data, showLoop = true }) => {
     useEffect(() => {
       setIsLiked(data.isLiked)
       setNumOfLikes(data.numberof_likes)
+      
+      if (data.poll?.choices) {
+        const mappedChoices = data.poll.choices.map((choice, index) => ({
+          id: index,
+          choice: choice,
+          votes: data.poll.votes_array[index]
+        }));
+
+        setChoices(mappedChoices)
+      }
     }, [data])
 
 
@@ -102,6 +120,30 @@ export const Ping = ({ data, showLoop = true }) => {
                 source={{uri: data.image_url}}
               />
            )}
+
+            { data.poll && choices && (
+              <View>
+
+                <RNPoll
+                    totalVotes={data.poll.user_vote != null ? data.poll.total_votes : data.poll.total_votes + 1}
+                    choices={choices}
+                    onChoicePress={handleVote}
+                    hasBeenVoted={data.poll.user_vote != null}
+                    votedChoiceByID={data.poll.user_vote}
+                    choiceTextStyle={{color: "white", fontWeight: "bold"}}
+                    percentageTextStyle={{color: "white"}}
+                    fillBackgroundColor="rgb(47, 139, 128)"
+                    checkMarkImageStyle={{tintColor: "white"}}
+                    selectedChoiceBorderWidth={2}
+                    defaultChoiceBorderWidth={1}
+                    borderColor="white"
+                    style={{marginBottom: 10}}
+                />
+
+                <Text style={[styles.stats, {alignSelf: "flex-end"}]}>{data.poll.total_votes} {data.poll.total_votes == 1 ? "Vote" : "Votes"}</Text>
+
+              </View>
+            )}
           </View>
         
     
@@ -133,13 +175,7 @@ export const Ping = ({ data, showLoop = true }) => {
             <Text style={{color: "gray"}}>{findTimeAgo(data.created_at)}</Text>
           </View>
         </View>
-{/* 
-        <CommentModal
-                ping={data}
-                modalVisible={commentModalVisible}
-                setModalVisible={setCommentModalVisible}
-                modalRef={modalRef}
-          /> */}
+
       </TouchableOpacity>
   );
 }

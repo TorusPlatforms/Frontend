@@ -47,7 +47,7 @@ export default function EditField({ route, navigation }) {
 
                 <Text style={{color: "white"}}>{field}</Text>
 
-                <TouchableOpacity onPress={handleUpdate}>
+                <TouchableOpacity disabled={text?.length <= 0} onPress={handleUpdate}>
                     <Text style={{ color: text ? 'rgb(47, 139, 128)' : 'grey' }}>Done</Text>
                 </TouchableOpacity>
             </View>

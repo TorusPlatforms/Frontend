@@ -5,9 +5,11 @@ import Feather from '@expo/vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import * as Linking from "expo-linking";
 import Lightbox from 'react-native-lightbox-v2';
+import RNPoll from "react-native-poll";
 // import { LinkPreview } from '@flyerhq/react-native-link-preview';
+
 import { findTimeAgo } from '../../components/utils';
-import { getPing, deletePost, handleLike, postComment, getComments } from "../../components/handlers";
+import { getPing, deletePost, handleLike } from "../../components/handlers";
 import { Comments } from '../../components/comments';
 import styles from "./styles"
 
@@ -19,7 +21,7 @@ export default function Ping({ route }) {
   const [post, setPost] = useState();
   const [isLiked, setIsLiked] = useState()
   const [numOfLikes, setNumOfLikes] = useState()
-
+  const [choices, setChoices] = useState()
 
   async function fetchPost() {
     const fetchedPost = await getPing(post_id)
@@ -30,6 +32,16 @@ export default function Ping({ route }) {
       setIsLiked(fetchedPost.isLiked)
       setNumOfLikes(fetchedPost.numberof_likes)
       
+      if (fetchedPost.poll?.choices) {
+        const mappedChoices = fetchedPost.poll.choices.map((choice, index) => ({
+          id: index,
+          choice: choice,
+          votes: fetchedPost.poll.votes_array[index]
+        }));
+
+        setChoices(mappedChoices)
+      }
+
     } else {
       navigation.goBack()
     }
@@ -55,7 +67,12 @@ export default function Ping({ route }) {
     } else {
       navigation.push("UserProfile", {username: post.author})
     }
-}
+  }
+
+  async function handleVote(selectedChoice) {
+    await vote({poll_id: post.poll.poll_id, choice: selectedChoice.id})
+  }
+
   function handleDeletePress() {
     Alert.alert("Are you sure you want to delete this Ping?", "This is a permanent action that cannot be undone.", [
       {
@@ -125,7 +142,8 @@ export default function Ping({ route }) {
                       }}  
                       containerStyle={{padding: 2}}
                     /> */}
-
+       
+ 
                     { post.image_url && (
                       <Lightbox navigator={navigation} activeProps={{style: styles.fullscreenImage}}>
 
@@ -135,6 +153,30 @@ export default function Ping({ route }) {
                           />
                       </Lightbox>
                     )}
+
+                    { post.poll && choices && (
+                        <View>
+
+                            <RNPoll
+                                totalVotes={post.poll.user_vote != null ? post.poll.total_votes : post.poll.total_votes + 1}
+                                choices={choices}
+                                onChoicePress={handleVote}
+                                hasBeenVoted={post.poll.user_vote != null}
+                                votedChoiceByID={post.poll.user_vote}
+                                choiceTextStyle={{color: "white", fontWeight: "bold"}}
+                                percentageTextStyle={{color: "white"}}
+                                fillBackgroundColor="rgb(47, 139, 128)"
+                                checkMarkImageStyle={{tintColor: "white"}}
+                                selectedChoiceBorderWidth={2}
+                                defaultChoiceBorderWidth={1}
+                                borderColor="white"
+                                style={{marginBottom: 10}}
+                            />
+
+                            <Text style={{alignSelf: "flex-end", color: "gray"}}>{post.poll.total_votes} {post.poll.total_votes == 1 ? "Vote" : "Votes"}</Text>
+
+                        </View>
+                      )}
               </View>
         </View>
 

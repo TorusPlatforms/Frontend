@@ -6,8 +6,8 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 export default class Reply extends Component {
     renderRightAction = (color, progress) => {
       return (
-        <Animated.View style={{ flex: 1, opacity: progress, justifyContent: "center", backgroundColor: color }}>
-              <FontAwesome name={"reply"} color={"white"} size={20} />
+        <Animated.View style={{ flex: 1, opacity: progress, justifyContent: "center", backgroundColor: color, marginRight: 8 }}>
+            <FontAwesome name={"reply"} color={"white"} size={20} />
         </Animated.View>
       );
     };

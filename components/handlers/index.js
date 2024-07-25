@@ -349,7 +349,7 @@ export async function joinLeaveEvent({ event_id, endpoint }) {
 }
 
 
-export async function createPost({ content, author, loop_id, image, isPublic }) {
+export async function createPost({ content, loop_id, image, isPublic, poll_choices }) {
     const token = await getToken()
     
     const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/add`;
@@ -357,7 +357,8 @@ export async function createPost({ content, author, loop_id, image, isPublic }) 
     const postData = {
       content: content,
       loop_id: loop_id,
-      public: isPublic
+      public: isPublic,
+      poll_choices: poll_choices
     }
 
     if (image) {
@@ -388,6 +389,41 @@ export async function createPost({ content, author, loop_id, image, isPublic }) 
     } catch (error) {
       console.error('Error Creating Ping:', error.message);
     }
+}
+
+export async function vote({ poll_id, choice }) {
+  const token = await getToken()
+  
+  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/vote`;
+
+  const postData = {
+    poll_id: poll_id,
+    choice: choice
+  }
+
+ 
+  try {  
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(postData),
+    });
+    
+    const responseData = await response.json();
+    console.log('Voted:', responseData);
+
+    if (!response.ok) {
+      throw new Error(`Error Creating Ping! Status: ${response.status}`);
+    }
+
+    return (responseData)
+
+  } catch (error) {
+    console.error('Error Voting:', error.message);
+  }
 }
 
 export async function deletePost(post_id) {

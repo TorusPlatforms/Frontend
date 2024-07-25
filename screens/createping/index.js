@@ -8,6 +8,8 @@ import Lightbox from 'react-native-lightbox-v2';
 import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } from "../../components/imagepicker";
 import { getUser, createPost } from "../../components/handlers";
 import styles from "./styles";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { InputError } from "../../components/utils/errors";
 
 
 export default function CreatePing({ route }) {
@@ -17,6 +19,8 @@ export default function CreatePing({ route }) {
   const [image, setImage] = useState(null);
   const [isPublic, setIsPublic] = useState(route.params?.loop ? false : true);
   const [refreshing, setRefreshing] = useState(false)
+  const [pollChoices, setPollChoices] = useState([])
+  const [errorMessage, setErrorMessage] = useState()
 
   async function fetchUser() {
       const fetchedUser = await getUser()
@@ -34,7 +38,6 @@ export default function CreatePing({ route }) {
   const handleImageSelect = (fetchedImage) => {
     if (!fetchedImage.canceled) {
 
-      console.log("Made it here too!", fetchedImage)
       setImage(fetchedImage);
 
       if (content) {
@@ -42,26 +45,62 @@ export default function CreatePing({ route }) {
       }
     }
 
-    console.log("Selected Image in CreatePing: yes here actually", image);
+    console.log("Selected Image in CreatePing:", image);
   };
 
   const removeImage = () => {
       setImage(null);
   };
 
+  const removePoll = (index) => {
+    setPollChoices(
+      pollChoices.filter((_, i) => i !== index)
+    );
+  };
+
+  const handlePollChange = (index, newValue) => {
+    const updatedChoices = [...pollChoices];
+    updatedChoices[index] = newValue;
+    setPollChoices(updatedChoices);
+  };
+
+  function addPollOption() {
+    if (pollChoices?.length <= 3) {
+      setPollChoices([...pollChoices, "New Option"])
+    }
+  }
+
   async function handlePost() {
     setRefreshing(true)
-    const postData = {
-      content: content, 
-      image: image, 
-      loop_id: route.params?.loop?.loop_id,
-      isPublic: isPublic
+    setErrorMessage(null)
+
+    try {
+      if (pollChoices.length == 1) {
+        throw new InputError("Poll must have atleast 2 options")
+      }
+  
+      const postData = {
+        content: content, 
+        image: image, 
+        loop_id: route.params?.loop?.loop_id,
+        isPublic: isPublic,
+        poll_choices: pollChoices
+      }
+  
+      console.log("Creating post with data:", postData)
+      await createPost(postData)
+
+      navigation.goBack()
+    } catch(error) {
+        if (error instanceof InputError) {
+            setErrorMessage(error.message)
+        } else {
+          Alert.alert("Something went wrong!")
+          console.error(error)
+        } 
+    } finally {
+      setRefreshing(false)
     }
-    console.log("Creating post with data:", postData)
-    await createPost(postData)
-    
-    setRefreshing(false)
-    navigation.goBack()
   }
 
 
@@ -96,7 +135,7 @@ export default function CreatePing({ route }) {
 
   return (
       <SafeAreaView style={styles.container}>
-        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} tintColor={"white"}/>}>
+        <KeyboardAwareScrollView refreshControl={<RefreshControl refreshing={refreshing} tintColor={"white"}/>}>
 
         <TouchableOpacity onPress={() => navigation.goBack()} style={{ paddingLeft: 20 }}>
           <Text style={{ fontSize: 16, color: "white" }}>Cancel</Text>
@@ -113,6 +152,10 @@ export default function CreatePing({ route }) {
 
               {route.params?.loop && (
                 <Text style={{color: "white", fontSize: 12, textAlign: "center"}}>Posting {isPublic ? "as" : "in"} {route.params.loop.name}</Text>
+              )}
+
+              {errorMessage && (
+                  <Text style={{ fontSize: 16, color: "red", textAlign: "center", marginTop: 5 }}>{errorMessage}</Text>
               )}
           </View>
           <View style={{flex: 0.25, justifyContent: "center", alignItems: "flex-end"}}>
@@ -152,16 +195,49 @@ export default function CreatePing({ route }) {
               </View>
             )}
 
+            
+            {pollChoices?.length > 0 && (
+              <View style={{marginTop: 10}}>
+                {pollChoices.map((option, index) => {
+                    return (
+                      <View key={index} style={{borderWidth: 2, borderColor: "white", minWidth: 230, padding: 15, borderRadius: 10, marginBottom: 10}}>
+                          
+                          <TextInput 
+                            style={{color: "white"}}
+                            defaultValue={option}
+                            onChangeText={(text) => handlePollChange(index, text)}
+                            maxLength={25}
+                          />
+
+                          <Pressable onPress={() => removePoll(index)} style={{position: "absolute", right: -10, top: -10}} >
+                            <MaterialIcons name="cancel" size={32} color="gray" />
+                          </Pressable>
+
+                      </View> 
+                    )         
+                })}
+                       
+
+  
+                  <Pressable onPress={addPollOption} style={{position: "absolute", right: -10, bottom: -5}} >
+                    <MaterialIcons name="add-circle" size={32} color="rgb(47, 139, 128)" />
+                  </Pressable>
+              </View>
+            )}
 
           <View style={{ flexDirection: "row", marginTop: 20 }}>
 
             {/* Render the ImagePickercomponeent and pass the callback function, image picker contrains both the camera and camera roll buttons */}
-              <TouchableOpacity style={{ marginRight: 10 }} onPress={() => pickImage(handleImageSelect)}>
+              <TouchableOpacity onPress={() => pickImage(handleImageSelect)}>
                 <Ionicons name="image-outline" size={30} color="#FFFFFF" />
               </TouchableOpacity>
 
-              <TouchableOpacity style={{ marginLeft: 10 }} onPress={() => openCamera(handleImageSelect)}>
+              <TouchableOpacity style={{ marginHorizontal: 15 }} onPress={() => openCamera(handleImageSelect)}>
                 <Ionicons name="camera-outline" size={30} color="#FFFFFF" />
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={addPollOption}>
+                <MaterialIcons name="poll" size={30} color="#FFFFFF" />
               </TouchableOpacity>
           </View>
 
@@ -172,7 +248,7 @@ export default function CreatePing({ route }) {
             <Text style={{ color: "white", textAlign: "center", fontWeight: "bold" }}>Post</Text>
           </TouchableOpacity>
         </View>        
-        </ScrollView>
+        </KeyboardAwareScrollView>
 
       </SafeAreaView>
   );
