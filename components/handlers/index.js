@@ -349,15 +349,13 @@ export async function joinLeaveEvent({ event_id, endpoint }) {
 }
 
 
-export async function createPost({ content, author, college, loop_id, image, isPublic }) {
+export async function createPost({ content, author, loop_id, image, isPublic }) {
     const token = await getToken()
     
     const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/add`;
 
     const postData = {
       content: content,
-      author: author,
-      college: college,
       loop_id: loop_id,
       public: isPublic
     }

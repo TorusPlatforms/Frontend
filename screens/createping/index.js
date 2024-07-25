@@ -52,9 +52,7 @@ export default function CreatePing({ route }) {
   async function handlePost() {
     setRefreshing(true)
     const postData = {
-      author: (route.params?.loop && isPublic) ? route.params.loop.name : user.username, 
       content: content, 
-      college: user.college, 
       image: image, 
       loop_id: route.params?.loop?.loop_id,
       isPublic: isPublic
