@@ -17,12 +17,15 @@ export async function requestCameraPerms() {
   }
 }
 
-export async function pickImage(handleImage, allowsEditing = true) {
+export async function pickImage(handleImage, options = { allowsEditing: false }) {
+  const { allowsEditing } = options;
+
   try {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       aspect: [4, 3],
       quality: 1,
+      allowsEditing: allowsEditing
     });
 
     if (!result.canceled) {

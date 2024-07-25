@@ -111,7 +111,7 @@ export default function CreateLoop() {
               </View>
 
               <View style={{alignItems: "center", flex: 1}}>
-                <Pressable onPress={() => pickImage(handleImageSelect)} style={{width: 100, height: 100, borderRadius: 50, borderWidth: 2, justifyContent: 'center', alignItems: "center", borderStyle: 'dashed', borderColor: "gray"}}>
+                <Pressable onPress={() => pickImage(handleImageSelect, {allowsEditing: true})} style={{width: 100, height: 100, borderRadius: 50, borderWidth: 2, justifyContent: 'center', alignItems: "center", borderStyle: 'dashed', borderColor: "gray"}}>
                   {!image && (
                       <View style={{justifyContent: "center", alignItems: "center"}}>
                         <Ionicons name="camera" size={24} color="gray" />

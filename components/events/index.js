@@ -72,7 +72,7 @@ export const Event = ({ data, showLoop = true }) => {
                   <Image style={{ width: 50, height: 50, borderRadius: 25 }} source={{ uri: data.pfp_url }} />
               </Pressable>
 
-              <View style={{marginVertical: 12, width: 1, flex: data.image_url ? 0.9 : 0.75, backgroundColor: "gray"}} />
+              <View style={{marginVertical: 12, width: 1, flex: data.image_url ? 0.925 : 0.8, backgroundColor: "gray"}} />
 
               <View style={{alignItems: 'center'}}>
                 <Image style={{ left: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_pfp_urls[0] || torus_default_url }} />

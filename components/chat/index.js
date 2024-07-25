@@ -90,7 +90,7 @@ export const ChatComponent = ({ messages, onSend, id, loop, route }) => {
         if (loop && route?.name != "LoopChat") {
             navigation.navigate("LoopChat", {loop: loop, fullScreen: true, defaultMessage: defaultMessage})
         } else {
-            pickImage(handleImageSelect, false)
+            pickImage(handleImageSelect)
         }
       }
 

@@ -8,7 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Input } from "react-native-elements";
 import Lightbox from 'react-native-lightbox-v2';
 
-import { requestCameraPerms, requestPhotoLibraryPerms, openCamera, pickImage } from "../../components/imagepicker";
+import { requestCameraPerms, requestPhotoLibraryPerms, pickImage } from "../../components/imagepicker";
 import { getUser, createEvent, getGoogleMapsKey } from "../../components/handlers";
 import { combineDateAndTime, strfEventDate, strfEventTime } from "../../components/utils";
 import { AlreadyExistsError, InputError } from "../../components/utils/errors";
