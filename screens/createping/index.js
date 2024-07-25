@@ -66,7 +66,7 @@ export default function CreatePing({ route }) {
 
   function addPollOption() {
     if (pollChoices?.length <= 3) {
-      setPollChoices([...pollChoices, "New Option"])
+      setPollChoices([...pollChoices, "New Poll Option"])
     }
   }
 
@@ -78,7 +78,7 @@ export default function CreatePing({ route }) {
       if (pollChoices.length == 1) {
         throw new InputError("Poll must have atleast 2 options")
       }
-  
+
       const postData = {
         content: content, 
         image: image, 
@@ -204,7 +204,8 @@ export default function CreatePing({ route }) {
                           
                           <TextInput 
                             style={{color: "white"}}
-                            defaultValue={option}
+                            placeholderTextColor={"gray"}
+                            placeholder={option}
                             onChangeText={(text) => handlePollChange(index, text)}
                             maxLength={25}
                           />
@@ -218,10 +219,12 @@ export default function CreatePing({ route }) {
                 })}
                        
 
-  
-                  <Pressable onPress={addPollOption} style={{position: "absolute", right: -10, bottom: -5}} >
-                    <MaterialIcons name="add-circle" size={32} color="rgb(47, 139, 128)" />
-                  </Pressable>
+                  {pollChoices.length < 4 && (
+                    <Pressable onPress={addPollOption} style={{position: "absolute", right: -10, bottom: -5}} >
+                      <MaterialIcons name="add-circle" size={32} color="rgb(47, 139, 128)" />
+                    </Pressable>
+                  )}
+          
               </View>
             )}
 

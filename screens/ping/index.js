@@ -9,7 +9,7 @@ import RNPoll from "react-native-poll";
 // import { LinkPreview } from '@flyerhq/react-native-link-preview';
 
 import { findTimeAgo } from '../../components/utils';
-import { getPing, deletePost, handleLike } from "../../components/handlers";
+import { getPing, deletePost, handleLike, vote } from "../../components/handlers";
 import { Comments } from '../../components/comments';
 import styles from "./styles"
 
@@ -21,6 +21,7 @@ export default function Ping({ route }) {
   const [post, setPost] = useState();
   const [isLiked, setIsLiked] = useState()
   const [numOfLikes, setNumOfLikes] = useState()
+  const [numOfVotes, setNumOfVotes] = useState()
   const [choices, setChoices] = useState()
 
   async function fetchPost() {
@@ -33,6 +34,8 @@ export default function Ping({ route }) {
       setNumOfLikes(fetchedPost.numberof_likes)
       
       if (fetchedPost.poll?.choices) {
+        setNumOfVotes(fetchedPost.poll.total_votes)
+
         const mappedChoices = fetchedPost.poll.choices.map((choice, index) => ({
           id: index,
           choice: choice,
@@ -158,7 +161,7 @@ export default function Ping({ route }) {
                         <View>
 
                             <RNPoll
-                                totalVotes={post.poll.user_vote != null ? post.poll.total_votes : post.poll.total_votes + 1}
+                                totalVotes={post.poll.user_vote != null ? numOfVotes : numOfVotes + 1}
                                 choices={choices}
                                 onChoicePress={handleVote}
                                 hasBeenVoted={post.poll.user_vote != null}
@@ -173,7 +176,7 @@ export default function Ping({ route }) {
                                 style={{marginBottom: 10}}
                             />
 
-                            <Text style={{alignSelf: "flex-end", color: "gray"}}>{post.poll.total_votes} {post.poll.total_votes == 1 ? "Vote" : "Votes"}</Text>
+                            <Text style={{alignSelf: "flex-end", color: "gray"}}>{numOfVotes} {numOfVotes == 1 ? "Vote" : "Votes"}</Text>
 
                         </View>
                       )}

@@ -18,7 +18,7 @@ export const Ping = ({ data, showLoop = true }) => {
     const [isLiked, setIsLiked] = useState(null)
     const [numOfLikes, setNumOfLikes] = useState(null)
     const [choices, setChoices] = useState()
-
+    //by some cruel trick by the Gods this is the only way to get choices persist as gracefully as possible between Ping screen and Ping component - although it is possible to have the checkmark on a different option
     async function handleLikePress() {
       if (isLiked) {
         setNumOfLikes(Math.max(0, numOfLikes - 1))

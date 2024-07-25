@@ -296,7 +296,7 @@ function App() {
                 <Stack.Screen name="UserProfile" getId={({ params }) => params.username} component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })} />
                 <Stack.Screen name="LoopChat" component={LoopChat} />
                 <Stack.Screen name="Messages" component={Messages} />
-                <Stack.Screen name="Ping" component={Ping} options={{ headerShown: true }} />
+                <Stack.Screen name="Ping" component={Ping} getId={({ params }) => params.post_id} options={{ headerShown: true }} />
                 <Stack.Screen name="JoinRequests" component={JoinRequests} options={{ headerShown: true, headerTitle: "Join Requests" }} />
                 <Stack.Screen name="Search Users" component={SearchUsers} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} />
                 <Stack.Screen name="Search Colleges" component={SearchColleges} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} />
