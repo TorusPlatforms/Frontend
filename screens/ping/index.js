@@ -176,7 +176,9 @@ export default function Ping({ route }) {
                                 style={{marginBottom: 10}}
                             />
 
-                            <Text style={{alignSelf: "flex-end", color: "gray"}}>{numOfVotes} {numOfVotes == 1 ? "Vote" : "Votes"}</Text>
+                            <TouchableOpacity onPress={() => navigation.navigate("VotedUsers", { poll_id: post.poll.poll_id})}>
+                              <Text style={{alignSelf: "flex-end", color: "gray"}}>{numOfVotes} {numOfVotes == 1 ? "Vote" : "Votes"}</Text>
+                            </TouchableOpacity>
 
                         </View>
                       )}
@@ -202,7 +204,9 @@ export default function Ping({ route }) {
             </View>
             
             <View style={{flexDirection: 'row', justifyContent: "space-between", paddingVertical: 15, height: 100}}>
-                <Text style={styles.stats}>{numOfLikes} Likes • {post.numberof_comments} Comments</Text>
+                <TouchableOpacity onPress={() => navigation.navigate("LikedUsers", {post_id: post.post_id})}>
+                  <Text style={styles.stats}>{numOfLikes} Likes • {post.numberof_comments} Comments</Text>
+                </TouchableOpacity>
 
                 <Text style={{color: "gray"}}>{findTimeAgo(post.created_at)}</Text>
 

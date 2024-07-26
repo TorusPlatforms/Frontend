@@ -51,6 +51,7 @@ export default function Feed() {
     const scrollToTop = () => {
       if (flatListRef.current) {
         flatListRef.current.scrollToOffset({ animated: true, offset: 0 });
+        fadeAnim.setValue(0)
       }
     };
 
@@ -66,7 +67,9 @@ export default function Feed() {
           duration: 1500,
           useNativeDriver: true,
         }).start();
-      } 
+      } else {
+        fadeAnim.setValue(0)
+      }
     };
   
     const handleScrollBegin = () => {

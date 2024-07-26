@@ -50,6 +50,8 @@ import Ping from './screens/ping';
 import SplashScreen from './screens/splashscreen';
 import LoopAnnouncements from './screens/loopannouncements';
 import CreatePill from "./screens/createpill";
+import VotedUsers from "./screens/votedusers";
+import LikedUsers from "./screens/likedusers";
 
 
 const firebaseConfig = {
@@ -299,6 +301,8 @@ function App() {
                 <Stack.Screen name="Ping" component={Ping} getId={({ params }) => params.post_id} options={{ headerShown: true }} />
                 <Stack.Screen name="JoinRequests" component={JoinRequests} options={{ headerShown: true, headerTitle: "Join Requests" }} />
                 <Stack.Screen name="Search Users" component={SearchUsers} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} />
+                <Stack.Screen name="VotedUsers" component={VotedUsers} options={{ headerShown: true, headerTitle: "Votes", presentation: "modal", headerLeft: () => (<View />) }} />
+                <Stack.Screen name="LikedUsers" component={LikedUsers} options={{ headerShown: true, headerTitle: "Likes", presentation: "modal", headerLeft: () => (<View />) }} />
                 <Stack.Screen name="Search Colleges" component={SearchColleges} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} />
 
                  {/* <Stack.Screen name="Settings" component={Settings} options={{ headerShown: true }} />

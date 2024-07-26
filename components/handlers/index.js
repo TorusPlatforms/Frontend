@@ -899,9 +899,52 @@ export async function getLoops(query) {
     }
 
     return (responseData)
+}
 
+export async function getVotedUsers(poll_id) {
+  const token = await getToken()
+
+  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/${poll_id}/votes`;
+
+  const response = await fetch(serverUrl, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+  
+  const responseData = await response.json();
+
+  if (!response.ok) {
+    throw new Error(`Error Getting Votes! Status: ${response.status}`);
   }
 
+  return (responseData)
+}
+
+export async function getLikedUsers(post_id) {
+  const token = await getToken()
+
+  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/${post_id}/likes`;
+
+  const response = await fetch(serverUrl, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+  });
+  
+  const responseData = await response.json();
+
+  if (!response.ok) {
+    throw new Error(`Error Getting Likes! Status: ${response.status}`);
+  }
+
+  return (responseData)
+
+}
 
 export async function getLoop(loop_id) {
     const token = await getToken()
