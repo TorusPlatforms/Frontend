@@ -227,6 +227,7 @@ export default function Feed() {
                   itemContainerStyle={{borderRadius: 10}}
                   itemTextStyle={styles.text}
                   selectedTextStyle={[styles.text, {fontWeight: "bold"}]}
+                  style={{borderRadius: 10}}
                   activeColor='rgb(22, 23, 24)'
                   data={dropdownData}
                   placeholder={Platform.OS === "ios" ? (user.college_nickname ?? abbreviate(user.college)) : 'Torus'}

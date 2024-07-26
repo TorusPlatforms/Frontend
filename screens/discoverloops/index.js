@@ -3,7 +3,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { View, Image, Text, Animated, Pressable, FlatList, SafeAreaView, RefreshControl, Keyboard, ActivityIndicator, TouchableOpacity, SectionList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SearchBar } from "react-native-elements";
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 import { getLoops, getEvents } from "../../components/handlers";
 import { searchUsers } from "../../components/handlers/search";
@@ -103,16 +102,16 @@ export default function Loops() {
 
       const combined = combineArrays(loops, events)
 
-      const sections = [];
+      const newSections = [];
 
       if (search) {
         const users = await searchUsers(search, 6)
-        sections.push({ title: "Users", data: users });
+        newSections.push({ title: "Users", data: users });
       } 
 
-      sections.push({ title: "Loops & Events", data: combined });
+      newSections.push({ title: "Loops & Events", data: combined });
 
-      setSections(sections);
+      setSections(newSections);
   }
 
 
@@ -128,10 +127,7 @@ export default function Loops() {
     setRefreshing(true)
     await fetchEventsAndLoops();
     setRefreshing(false)
-  }, []);
-
-  
-
+  }, [search]);
   
 
   if (!sections) {

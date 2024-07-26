@@ -29,7 +29,7 @@
         "NSPhotoLibraryUsageDescription": "This feature requires access to your camera roll"
       },
       "bundleIdentifier": "com.torusplatforms.torus",
-      "buildNumber": "11"
+      "buildNumber": "15"
     },
     "android": {
       "permissions": [
@@ -45,7 +45,7 @@
         "backgroundColor": "#161718"
       },
       "package": "com.torusplatforms.torus",
-      "versionCode": 4
+      "versionCode": 15
     },
     "web": {
       "favicon": "./assets/favicon.png"

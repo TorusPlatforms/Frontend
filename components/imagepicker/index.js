@@ -64,6 +64,8 @@ export async function openCamera(handleImage) {
         );
 
         handleImage(compressedImage);
+
+        return compressedImage
       }
     } catch (error) {
       console.error('Error opening the camera', error);

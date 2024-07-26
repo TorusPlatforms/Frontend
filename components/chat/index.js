@@ -2,12 +2,11 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { View, Text, TouchableOpacity, Image, Pressable, Keyboard } from "react-native";
 import { GiftedChat, Bubble, InputToolbar , Avatar, Send, MessageImage } from 'react-native-gifted-chat';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from "@expo/vector-icons/Feather"
 import _ from 'lodash';
-import { pickImage } from '../imagepicker';
+import { openCamera, pickImage } from '../imagepicker';
 import { getMemberStatus, uploadToCDN } from '../handlers';
 import Reply from "./Reply"
 
@@ -94,19 +93,40 @@ export const ChatComponent = ({ messages, onSend, id, loop, route }) => {
         }
       }
 
+      async function handleCamera({ defaultMessage }) {
+        if (loop && route?.name != "LoopChat") {
+            navigation.navigate("LoopChat", {loop: loop, fullScreen: true, defaultMessage: defaultMessage})
+        } else {
+            openCamera(handleImageSelect)
+        }
+      }
+
       const renderSend = (props) => {
         return (
             <View style={{ flexDirection: 'row', alignItems: "center", marginBottom: 2 }}>
-              <TouchableOpacity disabled={replyingMessage} onPress={() => handleAttatchment({ defaultMessage: props.text })}>
-                <FontAwesome
-                    name="image"
+              <TouchableOpacity disabled={replyingMessage} onPress={() => handleCamera({ defaultMessage: props.text })}>
+                
+                <Ionicons
+                    name="camera-outline"
                     style={{
                       marginLeft: 5,
                       transform: [{rotateY: '180deg'}],
                     }}
-                    size={24}
+                    size={28}
                     color={replyingMessage ? "gray" : "white"}
                 />
+              </TouchableOpacity>
+
+              <TouchableOpacity disabled={replyingMessage} onPress={() => handleAttatchment({ defaultMessage: props.text })}>
+                  <Ionicons
+                      name="image-outline"
+                      style={{
+                        marginLeft: 8,
+                        transform: [{rotateY: '180deg'}],
+                      }}
+                      size={28}
+                      color={replyingMessage ? "gray" : "white"}
+                  />
               </TouchableOpacity>
 
               <Send {...props}>

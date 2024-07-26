@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Text, View, RefreshControl, Image, Keyboard, FlatList, Pressable, Alert, Share, Modal, KeyboardAvoidingView, TextInput, Platform, TouchableOpacity } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from "@expo/vector-icons/Feather"
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import MaterialIcons from "@expo/vector-icons/MaterialIcons"
 import { useNavigation } from '@react-navigation/native';
 import { MentionInput, onSuggestionPress } from 'react-native-controlled-mentions'
@@ -23,11 +22,11 @@ export const SwipeableRow = ({ item, setParentCommentID, addCommentRef, showRepl
         <AppleRow comment_id={item.comment_id} reply_id={item.reply_id}>
           <Comment 
             data={item} 
-            setParentCommentID={setParentCommentID} 
-            addCommentRef={addCommentRef} 
-            showRepliesID={showRepliesID} 
-            setReplyingToUsername={setReplyingToUsername} 
-            setCommentText={setCommentText}
+            setParentCommentID={setParentCommentID} //for setting replyingTo
+            addCommentRef={addCommentRef} //for focusing the keyboard
+            showRepliesID={showRepliesID} //when redirected from notifications we want to auto open the replies
+            setReplyingToUsername={setReplyingToUsername} //for setting replyingToUsername
+            setCommentText={setCommentText} //for auto tagging users when reply is clicked
           />
         </AppleRow>
       );
@@ -74,7 +73,7 @@ const Comment = ({ data, setParentCommentID, addCommentRef, showRepliesID, setRe
 
       setParentCommentID(data.comment_id || data.parent_comment_id)
       setReplyingToUsername(data.author)
-      setCommentText(`@[${data.author}](!)`)
+      setCommentText(`@[${data.author}](!) `)
       addCommentRef.current.focus()
     }
 
@@ -409,8 +408,8 @@ export const Comments = ({ headerComponent, post_id, scrollToCommentID, showRepl
                         />
                     </View>
                     
-                    <TouchableOpacity style={{marginBottom: 8}} onPress={() => {pickImage(handleImageSelect)}}>
-                        <FontAwesome name="image" size={25} color={"white"} />
+                    <TouchableOpacity style={{marginBottom: 6}} onPress={() => {pickImage(handleImageSelect)}}>
+                        <Ionicons name="image-outline" size={28} color={"white"} />
                     </TouchableOpacity>
 
                     <Pressable onPress={handlePostClick} style={{ marginBottom: 5, alignItems: 'center', backgroundColor:  commentText.length > 0 ? "rgb(47, 139, 128)" : "gray", borderRadius: 30, width: 40, height: 30, justifyContent: "center", marginLeft: 10 }}>

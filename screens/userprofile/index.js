@@ -129,7 +129,7 @@ export default function UserProfile({ route, navigation }) {
             {pings.length > 0 ? (
                  <FlatList
                     ListHeaderComponent={Header}
-                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"} />}
                     data={pings}
                     renderItem={({item}) => <Ping data={item} />}
                     ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
