@@ -10,6 +10,7 @@ import UserEvents from "../userevents"
 import UserPings from '../userpings';
 
 import { getUser } from "../../components/handlers";
+import { abbreviate } from '../../components/utils';
 import styles from "./styles";
 
 
