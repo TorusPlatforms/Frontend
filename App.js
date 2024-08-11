@@ -163,8 +163,8 @@ const Tabs = ({ route }) => {
 const FollowTabs = ({ route }) => {
   return (
     <TopTab.Navigator initialRouteName={route.params?.initialScreen} screenOptions={{tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)'}, tabBarLabelStyle: { "color": "white" }}}>
-      <TopTab.Screen name="Following" component={MutualsScreen} initialParams={{get: "following", username: route.params.username}} options={{headerShown: false}} />
       <TopTab.Screen name="Followers" component={MutualsScreen} initialParams={{get: "followers", username: route.params.username}} options={{headerShown: false}} />
+      <TopTab.Screen name="Following" component={MutualsScreen} initialParams={{get: "following", username: route.params.username}} options={{headerShown: false}} />
     </TopTab.Navigator>
   )
 };

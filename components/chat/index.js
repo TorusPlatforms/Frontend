@@ -299,7 +299,7 @@ export const ChatComponent = ({ messages, onSend, id, loop, route }) => {
               borderRadius: 25,
               lineHeight: 20,
               paddingHorizontal: 20,
-              paddingTop: 10,
+              paddingVertical: 10,
             }}
             placeholder='Send a message'
             messages={messages}

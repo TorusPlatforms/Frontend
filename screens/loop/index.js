@@ -2,8 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { View, TouchableOpacity, Image, Text, ScrollView, Alert, ActivityIndicator, RefreshControl, Pressable, Share } from "react-native";
 import * as Linking from 'expo-linking';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import Entypo from '@expo/vector-icons/Entypo';
+import { Ionicons, Entypo, MaterialIcons } from '@expo/vector-icons'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
@@ -83,7 +82,19 @@ export default function LoopsPage({ route }) {
             </TouchableOpacity>
 
             {loop.isJoined && (
-                <View style={{flexDirection: "row", justifyContent: "space-between", width: 90}}>
+                <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center", width: loop.isAdmin ? 125 : 90}}>
+                    { loop.isAdmin && (
+                      <TouchableOpacity onPress={() => navigation.push("LoopChat", {loop: loop, fullScreen: true, admin: true})}>
+                          <MaterialIcons name="admin-panel-settings" size={28} color="white" />
+
+                          { loop.hasUnreadAdminMessages && (
+                            <View style={{backgroundColor: "rgb(241, 67, 67)", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>
+                          )}
+                    
+                      </TouchableOpacity>
+                    )}
+     
+
                     <TouchableOpacity onPress={() => navigation.push("LoopAnnouncements", {loop_id: loop.loop_id, isAdmin: loop.isAdmin})}>
                       <Entypo name="megaphone" size={24} color="white" /> 
 

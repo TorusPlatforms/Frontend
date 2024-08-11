@@ -1,7 +1,8 @@
 import { getAuth } from "firebase/auth";
-import { Share, Alert } from 'react-native'
-import { combineDateAndTme } from "../utils";
-import { AlreadyExistsError } from "../utils/errors";
+import { config } from "./api.config";
+
+const BASE_URL = config.BASE_URL
+
 
 async function getToken() {
   const auth = getAuth()
@@ -12,7 +13,7 @@ async function getToken() {
 export async function getColleges() {
     const token = await getToken()
   
-    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/colleges/user`;
+    let serverUrl = `${BASE_URL}/api/colleges/user`;
 
     const response = await fetch(serverUrl, {
         method: "GET",
@@ -34,7 +35,7 @@ export async function getColleges() {
 export async function getCollegePings() {
     const token = await getToken()
     
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/college`;
+    const serverUrl = `${BASE_URL}/api/posts/college`;
 
     try {  
       const response = await fetch(serverUrl, {
@@ -64,7 +65,7 @@ export async function getCollegePings() {
 export async function addCollege(college_id) {
     const token = await getToken()
 
-    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/colleges/${college_id}/add`;
+    let serverUrl = `${BASE_URL}/api/colleges/${college_id}/add`;
 
     const response = await fetch(serverUrl, {
         method: "POST",
@@ -86,7 +87,7 @@ export async function addCollege(college_id) {
 export async function removeCollege(college_id) {
     const token = await getToken()
 
-    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/colleges/${college_id}/remove`;
+    let serverUrl = `${BASE_URL}/api/colleges/${college_id}/remove`;
 
     const response = await fetch(serverUrl, {
         method: "POST",

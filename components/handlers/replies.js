@@ -1,7 +1,8 @@
 import { getAuth } from "firebase/auth";
-import { Share, Alert } from 'react-native'
-import { combineDateAndTme } from "../utils";
-import { AlreadyExistsError } from "../utils/errors";
+import { config } from "./api.config";
+
+const BASE_URL = config.BASE_URL
+
 
 async function getToken() {
   const auth = getAuth()
@@ -12,7 +13,7 @@ async function getToken() {
 export async function getReplies(comment_id) {
     const token = await getToken()
   
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/${comment_id}/replies`;
+    const serverUrl = `${BASE_URL}/api/comments/${comment_id}/replies`;
 
     const response = await fetch(serverUrl, {
         method: "GET",
@@ -35,7 +36,7 @@ export async function getReplies(comment_id) {
 export async function addReply({ post_id, comment_id, content, image_url }) {
     const token = await getToken()
 
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/reply`;
+    const serverUrl = `${BASE_URL}/api/comments/reply`;
 
     const requestBody = {
       post_id: post_id,
@@ -65,7 +66,7 @@ export async function addReply({ post_id, comment_id, content, image_url }) {
 export async function removeReply(reply_id) {
   const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/reply`;
+  const serverUrl = `${BASE_URL}/api/comments/reply`;
 
   const requestBody = {
     reply_id: reply_id

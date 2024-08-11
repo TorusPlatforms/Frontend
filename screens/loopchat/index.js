@@ -8,7 +8,7 @@ import * as Notifications from 'expo-notifications';
 
 import styles from "./styles";
 import { ChatComponent } from '../../components/chat';
-import { getChats, sendChat, getUser} from '../../components/handlers';
+import { getChats, sendChat, getUser, sendAdminChat, getAdminChats} from '../../components/handlers';
 
 
 export default function LoopChat({ route }) {
@@ -21,10 +21,15 @@ export default function LoopChat({ route }) {
   const [unsubscribe, setUnsubscribe] = useState(null)
   const db = getFirestore();
   
-  const { loop, fullScreen, defaultMessage } = route.params;
+  const { loop, fullScreen, defaultMessage, admin } = route.params;
 
   useFocusEffect(
     useCallback(() => {
+      if (!loop.isAdmin && admin) {
+          console.warn("Unauthorized user accessed admin messages")
+          navigation.goBack()
+      }
+
       fetchChats();
       fetchUser();
 
@@ -34,7 +39,7 @@ export default function LoopChat({ route }) {
           const data = notification?.request?.content?.data
           return {
               //The alert should be shown if it is 1) not a loop message OR 2) if it is a loop message from a different loop 
-              shouldShowAlert: (data.type) != "loop_message" || !(data.url.endsWith(loop.loop_id)),
+              shouldShowAlert: (admin ? data.type != "loop_admin_message" : data.type != "loop_message") || !(data.url.endsWith(loop.loop_id)),
               shouldPlaySound: false,
               shouldSetBadge: false,
           };
@@ -63,12 +68,13 @@ export default function LoopChat({ route }) {
 
 
   async function fetchChats() {
-    const messages = await getChats(loop.loop_id);
+    const getChatsFunction = ( admin ? getAdminChats : getChats )
+    const messages = await getChatsFunction(loop.loop_id);
 
     if (messages) {
         setMessages(messages)
 
-        const unsub = onSnapshot(doc(db, "loops", String(loop.loop_id)), (snapshot) => {
+        const unsub = onSnapshot(doc(db, "loops", admin ? String(loop.loop_id) + "[ADMIN]" : String(loop.loop_id)), (snapshot) => {
             const data = snapshot.data()
             if (data && data?.messages) {
               setMessages(data.messages.reverse());
@@ -88,15 +94,13 @@ export default function LoopChat({ route }) {
 
 
   const onSend = useCallback(async (messages = [], { image_url, reply_id }) => {
-    // if (route.name != "LoopChat") {
-    //   navigation.navigate("LoopChat", {loop: loop, fullScreen: true})
-    // }
+    const sendFunction = (admin ? sendAdminChat : sendChat)
 
     if (image_url) {
-      await sendChat({loop_id: loop.loop_id, image_url: image_url});
+      await sendFunction({loop_id: loop.loop_id, image_url: image_url});
     }
 
-    await sendChat({loop_id: loop.loop_id, content: messages[0].text, reply_id: reply_id});
+    await sendFunction({loop_id: loop.loop_id, content: messages[0].text, reply_id: reply_id});
   }, [])
 
 
@@ -126,7 +130,7 @@ export default function LoopChat({ route }) {
 
             <Image source={{uri: loop.pfp_url}} style={{width: 40, height: 40, borderRadius: 20, marginHorizontal: 10}}/>
 
-            <Text style={{color: 'white', fontSize: 16}}>{loop.name}</Text>
+            <Text style={{color: 'white', fontSize: 16}}>{loop.name} {admin && "(Administrators)"}</Text>
         </View>
       )}
          

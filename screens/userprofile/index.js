@@ -135,7 +135,7 @@ export default function UserProfile({ route, navigation }) {
                     ItemSeparatorComponent={() => <View style={styles.item_seperator}/>}
                 />
             ) : (
-                <View style={{flex: 1}}>
+                <ScrollView refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} tintColor={"white"} />}>
                     <View style={{flex: 0.45}}>
                         <Header />
                     </View>
@@ -143,7 +143,7 @@ export default function UserProfile({ route, navigation }) {
                     <View style={{alignItems: 'center', flex: 0.7}}>
                         <Text style={{color: 'gray', textAlign: "center", maxWidth: 250, marginTop: 50 }}>Looks like they haven't posted any pings...Maybe they are the aloof type?</Text>
                     </View>
-                </View>
+                </ScrollView>
             )}
             
 

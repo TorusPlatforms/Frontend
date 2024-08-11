@@ -1,7 +1,8 @@
 import { getAuth } from "firebase/auth";
-import { Share, Alert } from 'react-native'
-import { combineDateAndTme } from "../utils";
-import { AlreadyExistsError } from "../utils/errors";
+import { config } from "./api.config";
+
+const BASE_URL = config.BASE_URL
+
 
 async function getToken() {
   const auth = getAuth()
@@ -12,7 +13,7 @@ async function getToken() {
 export async function getNotifications() {
     const token = await getToken()
   
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/notifications/get`;
+    const serverUrl = `${BASE_URL}/api/notifications/get`;
 
     try {
         const response = await fetch(serverUrl, {
@@ -28,7 +29,7 @@ export async function getNotifications() {
         }
     
         const notifications = await response.json();
-     
+        
         return (notifications)
     } catch (error) {
         console.error(error.message)
@@ -36,11 +37,38 @@ export async function getNotifications() {
    
   }
 
+export async function markNotificationAsRead(notification_id) {
+  const token = await getToken()
+
+  const serverUrl = `${BASE_URL}/api/notifications/${notification_id}/read`;
+
+  try {
+      const response = await fetch(serverUrl, {
+          method: "POST",
+          headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+          },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error Marking Notifs As Read! Status: ${response.status}`);
+      }
+  
+      const responseData = await response.json();
+      
+      console.log("Marked as read", responseData)
+      return (responseData)
+  } catch (error) {
+      console.error(error.message)
+  }
+}
+
 
 export async function getJoinRequests(loop_id) {
     const token = await getToken()
     
-    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/requests/get`;
+    let serverUrl = `${BASE_URL}/api/loops/requests/get`;
 
     if (loop_id) {
       serverUrl += "?loop_id=" + loop_id
@@ -67,7 +95,7 @@ export async function getJoinRequests(loop_id) {
 export async function approveRequest(data) {
   const token = await getToken()
   
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${data.loop_id}/approve`;
+  const serverUrl = `${BASE_URL}/api/loops/${data.loop_id}/approve`;
 
   try {
       const response = await fetch(serverUrl, {
@@ -97,7 +125,7 @@ export async function approveRequest(data) {
 export async function rejectRequest(data) {
   const token = await getToken()
   
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${data.loop_id}/reject`;
+  const serverUrl = `${BASE_URL}/api/loops/${data.loop_id}/reject`;
 
   try {
       const response = await fetch(serverUrl, {
@@ -126,7 +154,7 @@ export async function rejectRequest(data) {
 export async function resendAnnouncement({announcement_id, loop_id}) {
   const token = await getToken()
   
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/announcements/${announcement_id}/resend`;
+  const serverUrl = `${BASE_URL}/api/loops/${loop_id}/announcements/${announcement_id}/resend`;
 
   try {
       const response = await fetch(serverUrl, {

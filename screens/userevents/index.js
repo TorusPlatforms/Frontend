@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { View, RefreshControl, Image, Text, FlatList, Animated, ActivityIndicator, Pressable, TouchableOpacity } from "react-native";
+import { View, RefreshControl, Image, Text, FlatList, Animated, ActivityIndicator, Pressable, TouchableOpacity, ScrollView } from "react-native";
 import { useFocusEffect, useIsFocused, useNavigation } from '@react-navigation/native';
 
 import { Event } from "../../components/events";
@@ -52,9 +52,11 @@ export default function UserEvents() {
             refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} tintColor={"white"} />}
         />
         ) : (
-          <TouchableOpacity onPress={() => navigation.navigate("Discover")} style={{justifyContent: 'center', alignItems: 'center', marginTop: 50}}>
-            <Text style={{color: "lightgrey", textAlign: "center", maxWidth: 270}}>Looks like you haven't joined any events... Discover some near you!</Text>
-          </TouchableOpacity>
+          <ScrollView refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} tintColor={"white"} />}>
+            <TouchableOpacity onPress={() => navigation.navigate("Discover")} style={{justifyContent: 'center', alignItems: 'center', marginTop: 50}}>
+              <Text style={{color: "lightgrey", textAlign: "center", maxWidth: 270}}>Looks like you haven't joined any events... Discover some near you!</Text>
+            </TouchableOpacity>
+          </ScrollView>
         )}
 
         

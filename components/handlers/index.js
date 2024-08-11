@@ -1,7 +1,7 @@
 import { getAuth } from "firebase/auth";
 import { Share, Alert } from 'react-native'
-import { combineDateAndTime } from "../utils";
 import { AlreadyExistsError, NotLoggedInError } from "../utils/errors";
+import { config } from "./api.config";
 
 async function getToken() {
   const auth = getAuth()
@@ -15,10 +15,12 @@ async function getToken() {
 
 }
 
+const BASE_URL = config.BASE_URL
+
 
 export async function registerUserBackend({username, email, display_name, expo_notification_id}) {
   const token = await getToken();
-  const serverUrl = 'https://hello-26ufgpn3sq-uc.a.run.app/api/user/register';
+  const serverUrl = `${BASE_URL}/api/user/register`;
 
   const data = {
       username: username,
@@ -55,7 +57,7 @@ export async function getUser() {
     const token = await getToken()
     console.log("Authentication Token:", token)
 
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/user`;
+    const serverUrl = `${BASE_URL}/api/user`;
 
     try {
         const response = await fetch(serverUrl, {
@@ -94,7 +96,7 @@ export async function getUser() {
 export async function getUserByUsername(username) {
   const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/user/${username}`;
+  const serverUrl = `${BASE_URL}/api/user/${username}`;
 
   try {
       const response = await fetch(serverUrl, {
@@ -122,7 +124,7 @@ export async function getUserByUsername(username) {
 export async function getPing(post_id) {
   const token = await getToken()
   
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/get/${post_id}`;
+  const serverUrl = `${BASE_URL}/api/posts/get/${post_id}`;
 
   const response = await fetch(serverUrl, {
     method: 'GET',
@@ -148,7 +150,7 @@ export async function getPing(post_id) {
 export async function getPings(college) {
     const token = await getToken()
     
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/college/${college}`;
+    const serverUrl = `${BASE_URL}/api/posts/college/${college}`;
 
     try {  
       const response = await fetch(serverUrl, {
@@ -178,7 +180,7 @@ export async function getPings(college) {
 export async function getFollowingPings() {
   const token = await getToken()
   
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/following`;
+  const serverUrl = `${BASE_URL}/api/posts/following`;
 
   try {  
     const response = await fetch(serverUrl, {
@@ -208,7 +210,7 @@ export async function getLoopPings(loop_id) {
     const token = await getToken()
     
     //if college is none, should fetch by location instead
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/loop/${loop_id}`;
+    const serverUrl = `${BASE_URL}/api/posts/loop/${loop_id}`;
 
     try {  
       const response = await fetch(serverUrl, {
@@ -239,7 +241,7 @@ export async function getLoopPings(loop_id) {
 export async function getLoopEvents(loop_id) {
     const token = await getToken()
     
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/loop/${loop_id}`;
+    const serverUrl = `${BASE_URL}/api/events/loop/${loop_id}`;
 
     const response = await fetch(serverUrl, {
       method: 'GET',
@@ -265,7 +267,7 @@ export async function getLoopEvents(loop_id) {
 export async function getUserEvents() {
     const token = await getToken()
     
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/user`;
+    const serverUrl = `${BASE_URL}/api/events/user`;
 
       const response = await fetch(serverUrl, {
         method: 'GET',
@@ -292,7 +294,7 @@ export async function getUserEvents() {
 export async function getEvents(query) {
     const token = await getToken()
 
-    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/get`;
+    let serverUrl = `${BASE_URL}/api/events/get`;
 
     if (query) {
       serverUrl += `?query=${encodeURIComponent(query)}`;
@@ -323,7 +325,7 @@ export async function getEvents(query) {
 export async function joinLeaveEvent({ event_id, endpoint }) {
     const token = await getToken()
 
-    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/${event_id}/${endpoint}`
+    let serverUrl = `${BASE_URL}/api/events/${event_id}/${endpoint}`
 
     try {
       const response = await fetch(serverUrl, {
@@ -352,7 +354,7 @@ export async function joinLeaveEvent({ event_id, endpoint }) {
 export async function createPost({ content, loop_id, image, isPublic, poll_choices }) {
     const token = await getToken()
     
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/add`;
+    const serverUrl = `${BASE_URL}/api/posts/add`;
 
     const postData = {
       content: content,
@@ -394,7 +396,7 @@ export async function createPost({ content, loop_id, image, isPublic, poll_choic
 export async function vote({ poll_id, choice }) {
   const token = await getToken()
   
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/vote`;
+  const serverUrl = `${BASE_URL}/api/posts/vote`;
 
   const postData = {
     poll_id: poll_id,
@@ -429,7 +431,7 @@ export async function vote({ poll_id, choice }) {
 export async function deletePost(post_id) {
   const token = await getToken()
   
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/delete/${post_id}`;
+  const serverUrl = `${BASE_URL}/api/posts/delete/${post_id}`;
 
   try {  
     const response = await fetch(serverUrl, {
@@ -459,7 +461,7 @@ export async function deletePost(post_id) {
 export async function createEvent({name, address, date, message, image, isPublic, loop_id}) {
   const token = await getToken()
   
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/create`;
+  const serverUrl = `${BASE_URL}/api/events/create`;
 
   const eventData = {
     name: name,
@@ -503,7 +505,7 @@ export async function createEvent({name, address, date, message, image, isPublic
 export async function deleteEvent(event_id) {
     const token = await getToken()
     
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/events/${event_id}/delete`;
+    const serverUrl = `${BASE_URL}/api/events/${event_id}/delete`;
 
     const response = await fetch(serverUrl, {
       method: 'DELETE',
@@ -527,7 +529,7 @@ export async function deleteEvent(event_id) {
 
 export async function uploadToCDN(image) {
 
-    const serverUrl = 'https://hello-26ufgpn3sq-uc.a.run.app/api/upload';
+    const serverUrl = `${BASE_URL}/api/upload`;
 
     const uri = image.uri || image.assets[0].uri
 
@@ -559,7 +561,7 @@ export async function uploadToCDN(image) {
 export async function handleLike({post_id, endpoint}) {
   const token = await getToken()
 
-  let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/${endpoint}`
+  let serverUrl = `${BASE_URL}/api/posts/${endpoint}`
 
   try {
     const response = await fetch(serverUrl, {
@@ -589,7 +591,7 @@ export async function handleLike({post_id, endpoint}) {
 export async function getComments(post_id) {
   const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/post/${post_id}`;
+  const serverUrl = `${BASE_URL}/api/comments/post/${post_id}`;
 
   try {
     const response = await fetch(serverUrl, {
@@ -627,7 +629,7 @@ export async function handleShare(postURL) {
 
 
 export async function updateUser(endpoint, content) {
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/user/update/${endpoint}`;
+  const serverUrl = `${BASE_URL}/api/user/update/${endpoint}`;
   
   const token = await getToken()
 
@@ -658,7 +660,7 @@ export async function updateUser(endpoint, content) {
 }
 
 export async function updateLoop({ loop_id, endpoint, value }) {
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/update/${endpoint}`;
+    const serverUrl = `${BASE_URL}/api/loops/${loop_id}/update/${endpoint}`;
     
     const token = await getToken()
 
@@ -684,7 +686,7 @@ export async function updateLoop({ loop_id, endpoint, value }) {
 }
 
 export async function updateMember({ loop_id, endpoint, value }) {
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/member/update/${endpoint}`;
+    const serverUrl = `${BASE_URL}/api/loops/${loop_id}/member/update/${endpoint}`;
     
     const token = await getToken()
 
@@ -712,7 +714,7 @@ export async function updateMember({ loop_id, endpoint, value }) {
 export async function postComment({post_id, content, image_url}) {
   const token = await getToken()
   
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/add`;
+  const serverUrl = `${BASE_URL}/api/comments/add`;
 
   try {  
     const response = await fetch(serverUrl, {
@@ -744,7 +746,7 @@ export async function postComment({post_id, content, image_url}) {
 export async function handleCommentLike({comment_id, reply_id, endpoint}) {
     const token = await getToken()
     
-    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/${comment_id}/${endpoint}`;
+    let serverUrl = `${BASE_URL}/api/comments/${comment_id}/${endpoint}`;
     
     if (reply_id) {
       serverUrl += `/${reply_id}`
@@ -771,7 +773,7 @@ export async function handleCommentLike({comment_id, reply_id, endpoint}) {
 export async function deleteComment(comment_id) {
   const token = await getToken()
   
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/comments/${comment_id}/delete`;
+  const serverUrl = `${BASE_URL}/api/comments/${comment_id}/delete`;
 
   const response = await fetch(serverUrl, {
     method: 'DELETE',
@@ -794,7 +796,7 @@ export async function deleteComment(comment_id) {
 export async function getThreads() {
     const token = await getToken()
 
-    const serverUrl = 'https://hello-26ufgpn3sq-uc.a.run.app/api/messages/threads';
+    const serverUrl = `${BASE_URL}/api/messages/threads`;
 
     const response = await fetch(serverUrl, {
       method: 'GET',
@@ -822,7 +824,7 @@ export async function getThreads() {
 export async function getDM(username) {
   const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/messages/get/${username}`;
+  const serverUrl = `${BASE_URL}/api/messages/get/${username}`;
 
   const response = await fetch(serverUrl, {
     method: 'GET',
@@ -845,7 +847,7 @@ export async function getDM(username) {
 export async function sendMessage({username, content, image_url, reply_id}) {
   const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/messages/add`;
+  const serverUrl = `${BASE_URL}/api/messages/add`;
 
   try {
     const response = await fetch(serverUrl, {
@@ -879,7 +881,7 @@ export async function sendMessage({username, content, image_url, reply_id}) {
 export async function getLoops(query) {
     const token = await getToken()
 
-    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops`;
+    let serverUrl = `${BASE_URL}/api/loops`;
     if (query) {
       serverUrl += `?query=${encodeURIComponent(query)}`;
     }
@@ -904,7 +906,7 @@ export async function getLoops(query) {
 export async function getVotedUsers(poll_id) {
   const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/${poll_id}/votes`;
+  const serverUrl = `${BASE_URL}/api/posts/${poll_id}/votes`;
 
   const response = await fetch(serverUrl, {
     method: 'GET',
@@ -926,7 +928,7 @@ export async function getVotedUsers(poll_id) {
 export async function getLikedUsers(post_id) {
   const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/${post_id}/likes`;
+  const serverUrl = `${BASE_URL}/api/posts/${post_id}/likes`;
 
   const response = await fetch(serverUrl, {
     method: 'GET',
@@ -949,7 +951,7 @@ export async function getLikedUsers(post_id) {
 export async function getLoop(loop_id) {
     const token = await getToken()
 
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}`;
+    const serverUrl = `${BASE_URL}/api/loops/${loop_id}`;
 
     try {  
       const response = await fetch(serverUrl, {
@@ -980,7 +982,7 @@ export async function getLoop(loop_id) {
 export async function createLoop({ name, image, description, isPublic}) {
     const token = await getToken()
 
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/add`;
+    const serverUrl = `${BASE_URL}/api/loops/add`;
 
     const loopData = {
       name: name,
@@ -1023,7 +1025,7 @@ export async function createLoop({ name, image, description, isPublic}) {
 export async function deleteLoop(loop_id) {
   const token = await getToken()
   
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/delete`;
+  const serverUrl = `${BASE_URL}/api/loops/${loop_id}/delete`;
 
   try {  
     const response = await fetch(serverUrl, {
@@ -1054,7 +1056,7 @@ export async function deleteLoop(loop_id) {
 export async function editLoop(userId, loopId, content) {
     const token = await getToken();
 
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/edit`;
+    const serverUrl = `${BASE_URL}/api/loops/${loopId}/edit`;
 
     const response = await fetch(serverUrl, {
       method: 'POST',
@@ -1076,7 +1078,7 @@ export async function editLoop(userId, loopId, content) {
 export async function addAdmin({loop_id, username}) {
     const token = await getToken();
 
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/admin/${username}`;
+    const serverUrl = `${BASE_URL}/api/loops/${loop_id}/admin/${username}`;
 
     const response = await fetch(serverUrl, {
       method: 'POST',
@@ -1097,7 +1099,7 @@ export async function addAdmin({loop_id, username}) {
 export async function removeAdmin({loop_id, username}) {
   const token = await getToken();
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/admin/${username}`;
+  const serverUrl = `${BASE_URL}/api/loops/${loop_id}/admin/${username}`;
 
   const response = await fetch(serverUrl, {
     method: 'DELETE',
@@ -1118,7 +1120,7 @@ export async function removeAdmin({loop_id, username}) {
 export async function getUserPings(username) {
     const token = await getToken()
 
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/posts/user/${username}`;
+    const serverUrl = `${BASE_URL}/api/posts/user/${username}`;
 
     const response = await fetch(serverUrl, {
       method: 'GET',
@@ -1140,7 +1142,7 @@ export async function getUserPings(username) {
 export async function getFollowings(username, type) {
   const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/user/${username}/${type}`;
+  const serverUrl = `${BASE_URL}/api/user/${username}/${type}`;
 
   try {
     const response = await fetch(serverUrl, {
@@ -1168,7 +1170,7 @@ export async function getFollowings(username, type) {
 export async function getLoopOwner(loopId) {
     const token = await getToken()
 
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/getOwner/${loopId}`;
+    const serverUrl = `${BASE_URL}/api/loops/getOwner/${loopId}`;
 
     try {  
       const response = await fetch(serverUrl, {
@@ -1195,7 +1197,7 @@ export async function getLoopOwner(loopId) {
 export async function getMemberStatus(loopId,userId) {
   const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/isMember/${loopId}/${userId}`;
+  const serverUrl = `${BASE_URL}/api/loops/isMember/${loopId}/${userId}`;
 
   try {  
     const response = await fetch(serverUrl, {
@@ -1222,7 +1224,7 @@ export async function getMemberStatus(loopId,userId) {
   export async function joinLoop(loop_id) {
     const token = await getToken()
 
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/join`;
+    const serverUrl = `${BASE_URL}/api/loops/${loop_id}/join`;
 
     try {  
       const response = await fetch(serverUrl, {
@@ -1250,7 +1252,7 @@ export async function getMemberStatus(loopId,userId) {
   export async function leaveLoop(loop_id) {
     const token = await getToken()
 
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/leave`;
+    const serverUrl = `${BASE_URL}/api/loops/${loop_id}/leave`;
 
     try {  
       const response = await fetch(serverUrl, {
@@ -1278,7 +1280,7 @@ export async function getMemberStatus(loopId,userId) {
   export async function getLoopMembers(loopId) {
     const token = await getToken()
 
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/members`;
+    const serverUrl = `${BASE_URL}/api/loops/${loopId}/members`;
 
       const response = await fetch(serverUrl, {
         method: 'GET',
@@ -1298,7 +1300,7 @@ export async function getMemberStatus(loopId,userId) {
   }
 
 export async function follow(username) {
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/user/${username}/follow`;
+    const serverUrl = `${BASE_URL}/api/user/${username}/follow`;
     const token = await getToken()
   
     try {
@@ -1325,7 +1327,7 @@ export async function follow(username) {
 
 
 export async function unfollow(username) {
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/user/${username}/unfollow`;
+    const serverUrl = `${BASE_URL}/api/user/${username}/unfollow`;
     const token = await getToken()
 
     try {
@@ -1356,7 +1358,7 @@ export async function getAnnouncements(loop_id) {
   
   const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/announcements`;
+  const serverUrl = `${BASE_URL}/api/loops/${loop_id}/announcements`;
 
   try {
     const response = await fetch(serverUrl, {
@@ -1385,7 +1387,7 @@ export async function getAnnouncements(loop_id) {
 export async function sendAnnouncement({loop_id, content, image}) {
     const token = await getToken()
 
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/announcement`;
+    const serverUrl = `${BASE_URL}/api/loops/${loop_id}/announcement`;
 
     const announcementData = {
       content: content,
@@ -1421,7 +1423,7 @@ export async function sendAnnouncement({loop_id, content, image}) {
 export async function deleteAnnouncement({ loop_id, announcement_id }) {
     const token = await getToken()
 
-    const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/announcement`;
+    const serverUrl = `${BASE_URL}/api/loops/${loop_id}/announcement`;
 
     const announcementData = {
       announcement_id: announcement_id,
@@ -1447,11 +1449,16 @@ export async function deleteAnnouncement({ loop_id, announcement_id }) {
     return responseData
 }
 
-export async function getChats(loopId) {
-  
+export async function getChats(loop_id, options = { admin: false }) {
+  const { admin } = options
+
   const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loopId}/messages`;
+  let serverUrl = `${BASE_URL}/api/loops/${loop_id}/messages`;
+
+  if (admin) {
+      serverUrl += "/admin"
+  }
 
   try {
     const response = await fetch(serverUrl, {
@@ -1474,11 +1481,18 @@ export async function getChats(loopId) {
   }
 }
 
+export async function getAdminChats(loop_id) {
+    return await getChats(loop_id, { admin: true })
+}
 
-export async function sendChat({loop_id, content, reply_id = null, image_url = null}) {
+export async function sendChat({loop_id, content, reply_id = null, image_url = null, admin = false}) {
   const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/createMessage`;
+  let serverUrl = `${BASE_URL}/api/loops/createMessage`;
+
+  if (admin) { 
+    serverUrl += "/admin"
+  }
 
   try {
     const response = await fetch(serverUrl, {
@@ -1508,11 +1522,20 @@ export async function sendChat({loop_id, content, reply_id = null, image_url = n
   }
 }
 
+export async function sendAdminChat({ loop_id, content, reply_id = null, image_url = null }) {
+    return await sendChat({
+      loop_id: loop_id,
+      content: content,
+      reply_id: reply_id,
+      image_url: image_url,
+      admin: true
+    })
+}
 
 export async function kickUser(loop_id, username) {
   const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/${loop_id}/kick/${username}`;
+  const serverUrl = `${BASE_URL}/api/loops/${loop_id}/kick/${username}`;
 
   try {
     const response = await fetch(serverUrl, {
@@ -1542,7 +1565,7 @@ export async function getGoogleMapsKey() {
 
   const token = await getToken()
 
-  const serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/googlemaps`;
+  const serverUrl = `${BASE_URL}/api/googlemaps`;
 
   try {
     const response = await fetch(serverUrl, {
@@ -1570,7 +1593,7 @@ export async function getGoogleMapsKey() {
 export async function getJoinedLoops(limit) {
     const token = await getToken()
 
-    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/loops/joined`;
+    let serverUrl = `${BASE_URL}/api/loops/joined`;
 
     if (limit) {
       serverUrl += "?limit=" + limit

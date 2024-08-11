@@ -26,12 +26,12 @@ export const Loop = ({ data }) => {
     <TouchableOpacity onPress={() => navigation.push('Loop', { loop_id: data.loop_id })}>
       <View style={{ marginVertical: 20, width: "100%", flexDirection: "row", paddingHorizontal: 20, justifyContent: "space-between" }}>
         <View style={{flexDirection: "row", flex: 1}}>
-            <Image style={{ width: 100, height: 100, borderRadius: 50 }} source={{ uri: data.pfp_url || data?.pfp_url  }} />
+            <Image style={{ width: 100, height: 100, borderRadius: 50 }} source={{ uri: data.pfp_url }} />
             
             <View style={{ flex: 3, left: 20, maxWidth: 200 }}>
-              <Text style={{ color: "white", fontWeight: "bold", maxWidth: 150}}>{data.name || data?.name}</Text>  
-              <Text style={{ color: "white", fontSize: 12, fontStyle: 'italic', marginTop: 2}}>{data.location || data?.location}</Text>
-              <Text style={{ color: "white", marginTop: 10 }}>{data.description || data?.description}</Text>
+              <Text style={{ color: "white", fontWeight: "bold", maxWidth: 150}}>{data.name}</Text>  
+              <Text style={{ color: "white", fontSize: 12, fontStyle: 'italic', marginTop: 2}}>{data.location}</Text>
+              <Text style={{ color: "white", marginTop: 10 }}>{data.description}</Text>
             </View>
         </View>
           
@@ -42,7 +42,7 @@ export const Loop = ({ data }) => {
                   <Ionicons name={starred ? "star" : "star-outline"} size={24} color={'white'} />
                 </Pressable>
                 
-                {data.hasUnreadMessages && (
+                {(data.hasUnreadMessages || data.hasUnreadAdminMessages) && (
                   <View>
                     <Ionicons name={"chatbubble-ellipses"} size={24} color={'white'} />
                     <View style={{backgroundColor: "rgb(241, 67, 67)", width: 12, height: 12, borderRadius: 6, top: 0, right: 0, position: "absolute"}}/>

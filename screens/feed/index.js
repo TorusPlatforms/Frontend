@@ -15,6 +15,7 @@ import { abbreviate } from '../../components/utils';
 import { Ping } from "../../components/pings";
 import styles from "./styles";
 import { getCollegePings, getColleges } from '../../components/handlers/colleges';
+import { markNotificationAsRead } from '../../components/handlers/notifications';
 
 
 export default function Feed() {
@@ -40,8 +41,11 @@ export default function Feed() {
         lastNotificationResponse &&
         lastNotificationResponse?.notification?.request?.content?.data?.url
       ) {
-        const url = lastNotificationResponse.notification.request.content.data.url
+        const data = lastNotificationResponse?.notification?.request?.content?.data
+        const url = data.url
         console.log("BACKGROUND NOTIFICATION DETECTED IN FEED. URL", url)
+
+        markNotificationAsRead(data.notification_id)
         linkTo("/" + url)
       }
     }, [lastNotificationResponse]);

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, ActivityIndicator, RefreshControl, ScrollView } from "react-native";
 import { useNavigation, useFocusEffect, useIsFocused } from '@react-navigation/native';
 
 import { Ping } from '../../components/pings';
@@ -58,9 +58,12 @@ export default function UserPings({ username }) {
               refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"}/>}
             />
           ) : (
-            <TouchableOpacity onPress={() => navigation.navigate("Feed")} style={{justifyContent: 'center', alignItems: 'center', marginTop: 50}}>
-                <Text style={{color: "lightgrey", textAlign: "center", maxWidth: 270}}>Looks like you haven't posted any pings... Send one to your campus!</Text>
-            </TouchableOpacity>
+            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"}/>}>
+              <TouchableOpacity onPress={() => navigation.navigate("Feed")} style={{justifyContent: 'center', alignItems: 'center', marginTop: 50}}>
+                  <Text style={{color: "lightgrey", textAlign: "center", maxWidth: 270}}>Looks like you haven't posted any pings... Send one to your campus!</Text>
+              </TouchableOpacity>
+            </ScrollView>
+        
           )}
       </View>
     )

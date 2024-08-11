@@ -1,7 +1,8 @@
 import { getAuth } from "firebase/auth";
-import { Share, Alert } from 'react-native'
-import { combineDateAndTme } from "../utils";
-import { AlreadyExistsError } from "../utils/errors";
+import { config } from "./api.config";
+
+const BASE_URL = config.BASE_URL
+
 
 async function getToken() {
   const auth = getAuth()
@@ -12,7 +13,7 @@ async function getToken() {
 export async function searchUsers(query, limit = 20) {
     const token = await getToken()
   
-    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/users?limit=${limit}`;
+    let serverUrl = `${BASE_URL}/api/users?limit=${limit}`;
 
     if (query) {
       serverUrl += "&query=" + query
@@ -38,7 +39,7 @@ export async function searchUsers(query, limit = 20) {
 export async function searchColleges(query) {
     const token = await getToken()
 
-    let serverUrl = `https://hello-26ufgpn3sq-uc.a.run.app/api/colleges`;
+    let serverUrl = `${BASE_URL}/api/colleges`;
 
     if (query) {
       serverUrl += "?query=" + query
