@@ -130,7 +130,7 @@ export default function LoopChat({ route }) {
 
             <Image source={{uri: loop.pfp_url}} style={{width: 40, height: 40, borderRadius: 20, marginHorizontal: 10}}/>
 
-            <Text style={{color: 'white', fontSize: 16}}>{loop.name} {admin && "(Administrators)"}</Text>
+            <Text style={{color: 'white', fontSize: 16, maxWidth: 250}}>{loop.name} {admin && "(Administrators)"}</Text>
         </View>
       )}
          

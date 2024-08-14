@@ -1,4 +1,4 @@
-{
+export default {
   "expo": {
     "name": "Torus Platforms",
     "scheme": "torus",
@@ -32,6 +32,7 @@
       "buildNumber": "21"
     },
     "android": {
+      "googleServicesFile": process.env.GOOGLE_SERVICES_JSON,
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.AUDIO_RECORDING",
@@ -45,7 +46,7 @@
         "backgroundColor": "#161718"
       },
       "package": "com.torusplatforms.torus",
-      "versionCode": 21
+      "versionCode": 22
     },
     "web": {
       "favicon": "./assets/favicon.png"

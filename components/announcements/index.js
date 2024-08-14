@@ -66,7 +66,7 @@ export const Announcement = ({ data, isAdmin }) => {
             </View>
 
             <View style={{flexDirection: "row", justifyContent: 'space-between' }}>
-                <TextInput multiline scrollEnabled={false} editable={false} style={[styles.text, {paddingVertical: 2}]} value={data.content}></TextInput>
+                <TextInput multiline scrollEnabled={false} editable={false} style={[styles.text, {paddingVertical: 2, maxWidth: 220}]} value={data.content}></TextInput>
 
                 {isAdmin && (
                     <View style={{flexDirection: "row"}}>
