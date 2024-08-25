@@ -29,7 +29,7 @@ export default {
         "NSPhotoLibraryUsageDescription": "This feature requires access to your camera roll"
       },
       "bundleIdentifier": "com.torusplatforms.torus",
-      "buildNumber": "22"
+      "buildNumber": "24"
     },
     "android": {
       "googleServicesFile": process.env.GOOGLE_SERVICES_JSON,
@@ -46,7 +46,7 @@ export default {
         "backgroundColor": "#161718"
       },
       "package": "com.torusplatforms.torus",
-      "versionCode": 22
+      "versionCode": 24
     },
     "web": {
       "favicon": "./assets/favicon.png"
