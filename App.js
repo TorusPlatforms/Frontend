@@ -295,7 +295,7 @@ function App() {
                 <Stack.Screen name="Edit Profile" component={EditProfile} options={{ headerShown: true }} />
                 <Stack.Screen name="EditLoop" component={EditLoop} options={{ headerShown: true, headerTitle: "Edit Loop"}} />
                 <Stack.Screen name="EditField" component={EditField} />
-                <Stack.Screen name="UserProfile" getId={({ params }) => params.username} component={UserProfile} options={({ route }) => ({ headerShown: true, title: route.params.username })} />
+                <Stack.Screen name="UserProfile" getId={({ params }) => params.username} component={UserProfile} />
                 <Stack.Screen name="LoopChat" component={LoopChat} />
                 <Stack.Screen name="Messages" component={Messages} />
                 <Stack.Screen name="Ping" component={Ping} getId={({ params }) => params.post_id} options={{ headerShown: true }} />

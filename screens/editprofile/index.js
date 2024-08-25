@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, Image, ActivityIndicator, Pressable, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, Text, Image, ActivityIndicator, Pressable, ScrollView, RefreshControl, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
-import { getAuth, signOut } from 'firebase/auth';
+import { deleteUser, getAuth, signOut } from 'firebase/auth';
 
 import { pickImage } from '../../components/imagepicker';
-import { getUser, uploadToCDN, updateUser } from "../../components/handlers";
+import { getUser, uploadToCDN, updateUser, deleteUserBackend } from "../../components/handlers";
 import styles from './styles'
 
 
@@ -32,6 +32,29 @@ export default function EditProfile() {
           setRefreshing(false)
         }
       };  
+    
+    async function deleteAccount() {
+      Alert.alert("Are you sure you want to delete your account?", "This is a permanent action that cannot be undone. All your posts will be deleted as well.", [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'Confirm', onPress: async() => 
+          Alert.alert("Are you sure you want to delete your account?", "This is your final confirmation. This cannot be undone.", [
+            {
+              text: 'Cancel',
+              onPress: () => console.log('Cancel Pressed'),
+              style: 'cancel',
+            },
+            {text: 'Confirm', onPress: async() => {
+              await deleteUserBackend();
+              await logOut()
+            }},
+          ])
+        },
+      ]);
+    }
 
     async function logOut() {
       const auth = getAuth()
@@ -107,6 +130,10 @@ export default function EditProfile() {
 
             <TouchableOpacity onPress={logOut} style={styles.updateField}>
               <Text style={{color: "red", flex: 0.5}}>Log Out</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity onPress={deleteAccount} style={styles.updateField}>
+              <Text style={{color: "red", flex: 0.5}}>Delete Account</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

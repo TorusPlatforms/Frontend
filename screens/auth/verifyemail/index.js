@@ -36,7 +36,7 @@ export default function VerifyEmail() {
     
                 <View style={{alignItems: "center"}}>
                     <Text style={{color: "white", fontSize: 20}}>Verify Your Email!</Text>
-                    <Text style={{ textAlign:'center', fontSize: 16, color: "white", paddingHorizontal: 50, marginVertical: 20}}>To verify you are from your institution, Torus requires you to verify your email. Please check your inbox for a URL. </Text>
+                    <Text style={{ textAlign:'center', fontSize: 16, color: "white", paddingHorizontal: 50, marginVertical: 20}}>To verify you are from your institution, Torus requires you to verify your email. Please check your inbox, including any spam folders, for a URL. </Text>
                     
                     <TouchableOpacity onPress={() => navigation.navigate("Auth")} style={[styles.submissionBox, {padding: 20, width: 300}]}>
                         <Text style={{color: 'white', fontSize: 16, textAlign: "center"}}>Go to Login</Text>

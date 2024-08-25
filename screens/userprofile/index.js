@@ -1,14 +1,18 @@
 import React, { useState, useEffect, useRef, useCallback} from 'react'
 import { Text, View, SafeAreaView, Image, Animated, FlatList, Pressable, RefreshControl, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native'
 import * as Clipboard from 'expo-clipboard';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import Feather from '@expo/vector-icons/Feather';
+import { useActionSheet } from '@expo/react-native-action-sheet';
 
-import { getUserByUsername, getUserPings, follow, unfollow } from "../../components/handlers";
+import { getUserByUsername, getUserPings, follow, unfollow, block, handleBlock } from "../../components/handlers";
 import { Ping } from "../../components/pings";
 import styles from "./styles";
 import { abbreviate } from '../../components/utils';
 
 
 export default function UserProfile({ route, navigation }) {
+    const { showActionSheetWithOptions } = useActionSheet();
     const [pings, setPings] = useState()
     const [user, setUser] = useState(null)
     const [refreshing, setRefreshing] = useState(false)
@@ -46,7 +50,28 @@ export default function UserProfile({ route, navigation }) {
         await Clipboard.setStringAsync(user.username);
       };
 
-    
+    async function handleWafflePress() {
+        const options = [user.isBlocked ? 'Unblock' : 'Block', 'Cancel'];
+        const destructiveButtonIndex = 0;
+        const cancelButtonIndex = 1;
+
+        showActionSheetWithOptions({
+        options,
+        cancelButtonIndex,
+        destructiveButtonIndex
+        }, async(selectedIndex) => {
+        switch (selectedIndex) {
+            case 0:
+                if (user.isBlocked) {
+                    await handleBlock({username: user.username, endpoint: "unblock"})
+                } else {
+                    await handleBlock({username: user.username, endpoint: "block"})
+                }
+                await onRefresh()
+                break;
+        }});
+    }
+
     const onRefresh = useCallback(async() => {
         setRefreshing(true);
         await fetchUser()
@@ -57,6 +82,9 @@ export default function UserProfile({ route, navigation }) {
         fetchUser()
       }, []);
     
+
+
+
     if (!user || !pings) {
         return (
             <View style={{justifyContent: "center", alignItems: "center", flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
@@ -126,6 +154,18 @@ export default function UserProfile({ route, navigation }) {
 
     return (
         <SafeAreaView style={styles.container}>
+             <View style={{paddingHorizontal: 20, flexDirection: "row", alignItems: "center", padding: 10, justifyContent: "space-between"}}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons name="arrow-back" size={24} color="white" />        
+                </TouchableOpacity>
+                
+                <Text style={{color: 'white', fontSize: 16, fontWeight: "500"}}>{user.username}</Text>
+                
+                <TouchableOpacity onPress={handleWafflePress}>
+                    <Feather name="more-horizontal" size={18} color="white" />        
+                </TouchableOpacity>
+            </View>
+
             {pings.length > 0 ? (
                  <FlatList
                     ListHeaderComponent={Header}

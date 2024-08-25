@@ -3,19 +3,21 @@ import { View, TouchableOpacity, Image, Text, Pressable, Alert, ActivityIndicato
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from '@expo/vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
+import { useActionSheet } from '@expo/react-native-action-sheet';
 import * as Linking from "expo-linking";
 import Lightbox from 'react-native-lightbox-v2';
 import RNPoll from "react-native-poll";
 // import { LinkPreview } from '@flyerhq/react-native-link-preview';
 
 import { findTimeAgo } from '../../components/utils';
-import { getPing, deletePost, handleLike, vote } from "../../components/handlers";
+import { getPing, deletePost, handleLike, vote, reportPost } from "../../components/handlers";
 import { Comments } from '../../components/comments';
 import styles from "./styles"
 
 
 export default function Ping({ route }) {
   const navigation = useNavigation()
+  const { showActionSheetWithOptions } = useActionSheet();
   const { post_id, scrollToComment, showReplies } = route.params
 
   const [post, setPost] = useState();
@@ -50,6 +52,31 @@ export default function Ping({ route }) {
     }
   }
 
+  async function onWafflePress() {
+    const options = [post.isAuthor ? 'Delete' : 'Report', 'Cancel'];
+    const destructiveButtonIndex = 0;
+    const cancelButtonIndex = 1;
+
+    showActionSheetWithOptions({
+      options,
+      cancelButtonIndex,
+      destructiveButtonIndex
+    }, async(selectedIndex) => {
+      switch (selectedIndex) {
+        case 0:
+          console.log(post.isAuthor ? "Deleted" : "Reported")
+
+          if (post.isAuthor) {
+            handleDeletePress()
+          } else {
+            reportPost(post.post_id)
+            Alert.alert("Report submitted!", "Your report will be carefully reviewed by our team to ensure it complies with our Terms of Service. Thank you for helping us make Torus a better community.", [
+              {text: 'OK',},
+            ]);
+          }
+          break;
+      }});
+  }
 
   async function handleLikePress() {
       if (isLiked) {
@@ -123,16 +150,21 @@ export default function Ping({ route }) {
               <View style={{marginLeft: 20, flex: 6}}>
                     <View style={{flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
                         <TouchableOpacity onPress={handleAuthorPress}>
-                          <Text style={styles.author}>
-                            {(post.loop_id && post.public) ? `[LOOP] ` : ""}
-                            {post.author}
+                            <Text style={styles.author}>
+                              {(post.loop_id && post.public) ? `[LOOP] ` : ""}
+                              {post.author}
 
-                            { post.loop_id && !post.public && (
-                              <Text style={{fontWeight: "400", color: "lightgray", fontSize: 14}}>{` (${post.loop_name})`}</Text>
-                            )}
-                          </Text>
-                      </TouchableOpacity>
-                          
+                              { post.loop_id && !post.public && (
+                                <Text style={{fontWeight: "400", color: "lightgray", fontSize: 14}}>{` (${post.loop_name})`}</Text>
+                              )}
+                            </Text>
+                        </TouchableOpacity>
+
+                        
+                        <TouchableOpacity onPress={onWafflePress}>
+                          <Feather name="more-horizontal" size={18} color="white" />
+                        </TouchableOpacity> 
+
                     </View>
             
 
@@ -194,12 +226,6 @@ export default function Ping({ route }) {
               <TouchableOpacity onPress={handleShare}>
                 <Ionicons style={[styles.pingIcon, {color: "white"}]} name={"share-social"} size={20}></Ionicons>
               </TouchableOpacity>
-
-              { post.isAuthor && (
-                <TouchableOpacity onPress={handleDeletePress} style={styles.pingIcon}>
-                  <Feather name="trash" size={20} color="white" />
-                </TouchableOpacity>
-              )}
         
             </View>
             

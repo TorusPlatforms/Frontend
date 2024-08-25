@@ -3,10 +3,11 @@ import { Text, View, SafeAreaView, Image, Share, TextInput, Pressable, Alert, Mo
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Feather from "@expo/vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
+import { useActionSheet } from '@expo/react-native-action-sheet';
 import * as Linking from 'expo-linking';
 import RNPoll from "react-native-poll";
 
-import { handleLike, deletePost, vote } from "../handlers";
+import { handleLike, deletePost, vote, reportPost } from "../handlers";
 import { findTimeAgo } from "../utils";
 import styles from "./styles";
 
@@ -14,6 +15,7 @@ import styles from "./styles";
 // import { LinkPreview } from '@flyerhq/react-native-link-preview'
 
 export const Ping = ({ data, showLoop = true }) => {
+    const { showActionSheetWithOptions } = useActionSheet();
     const navigation = useNavigation()
     const [isLiked, setIsLiked] = useState(null)
     const [numOfLikes, setNumOfLikes] = useState(null)
@@ -69,6 +71,32 @@ export const Ping = ({ data, showLoop = true }) => {
        });
     }
 
+    async function onWafflePress() {
+      const options = [data.isAuthor ? 'Delete' : 'Report', 'Cancel'];
+      const destructiveButtonIndex = 0;
+      const cancelButtonIndex = 1;
+  
+      showActionSheetWithOptions({
+        options,
+        cancelButtonIndex,
+        destructiveButtonIndex
+      }, async(selectedIndex) => {
+        switch (selectedIndex) {
+          case 0:
+            console.log(data.isAuthor ? "Deleted" : "Reported")
+
+            if (data.isAuthor) {
+              handleDeletePress()
+            } else {
+              reportPost(data.post_id)
+              Alert.alert("Report submitted!", "Your report will be carefully reviewed by our team to ensure it complies with our Terms of Service. Thank you for helping us make Torus a better community.", [
+                {text: 'OK',},
+              ]);
+            }
+            break;
+        }});
+    }
+
     useEffect(() => {
       setIsLiked(data.isLiked)
       setNumOfLikes(data.numberof_likes)
@@ -105,6 +133,10 @@ export const Ping = ({ data, showLoop = true }) => {
                           <Text style={{fontWeight: "400", color: "lightgray", fontSize: 14}}>{` (${data.loop_name})`}</Text>
                         )}
                       </Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity onPress={onWafflePress}>
+                    <Feather name="more-horizontal" size={18} color="white" />
                   </TouchableOpacity>
               </View>
       
@@ -160,11 +192,6 @@ export const Ping = ({ data, showLoop = true }) => {
               <Ionicons style={styles.pingIcon} name="share-social-outline" size={20}></Ionicons>
             </TouchableOpacity>
     
-            {data.isAuthor && (
-                <TouchableOpacity onPress={handleDeletePress}>
-                  <Feather style={styles.pingIcon} name="trash" size={20}></Feather>
-                </TouchableOpacity>
-            )}
             {/* <Pressable>
               <Ionicons style={styles.pingIcon} name="paper-plane-outline" size={20}></Ionicons>
             </Pressable> */}

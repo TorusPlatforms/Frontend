@@ -52,6 +52,34 @@ export async function registerUserBackend({username, email, display_name, expo_n
   return responseData
 }
 
+export async function deleteUserBackend() {
+  const token = await getToken()
+  
+  const serverUrl = `${BASE_URL}/api/user/delete`;
+
+  try {  
+    const response = await fetch(serverUrl, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    const responseData = await response.json();
+    console.log('Deleted User:', responseData);
+
+    if (!response.ok) {
+      throw new Error(`Error Deleting User! Status: ${response.status} ${response.message}`);
+    }
+
+
+    return (responseData)
+
+  } catch (error) {
+    console.error(error.message);
+  }
+}
 
 export async function getUser() {
     const token = await getToken()
@@ -584,6 +612,33 @@ export async function handleLike({post_id, endpoint}) {
     
   } catch (error) {
     console.error('Error liking post:', error.message);
+  }
+}
+
+
+export async function reportPost(post_id) {
+  const token = await getToken()
+
+  let serverUrl = `${BASE_URL}/api/posts/${post_id}/report`
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to report post. Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log(`Post reported successfully. Server response:`, responseData);
+    
+  } catch (error) {
+    console.error('Error reporting post:', error.message);
   }
 }
 
@@ -1352,6 +1407,37 @@ export async function unfollow(username) {
     } catch(error) {
       console.error("Error unfollowing", error.message)
     }
+}
+
+export async function handleBlock({username, endpoint}) {
+  if (!['block', 'unblock'].includes(endpoint)) {
+    throw new Error("Passed invalid argument", endpoint, "to block function, Expected block or unblock.")
+  }
+
+  const serverUrl = `${BASE_URL}/api/user/${username}/${endpoint}`;
+  const token = await getToken()
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'POST',
+      headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+    })
+    
+    const responseData = await response.json();
+    console.log("Succesfully", endpoint, "ed", username, "Response Data:", responseData)
+
+    if (!response.ok) {
+      throw new Error(`Error ${endpoint}ing user! Status: ${response.status}`);
+    }
+
+    return responseData
+
+  } catch(error) {
+    console.error(`Error ${endpoint}ing user! ${error.message}`);
+  }
 }
 
 export async function getAnnouncements(loop_id) {

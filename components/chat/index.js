@@ -242,10 +242,12 @@ export const ChatComponent = ({ messages, onSend, id, loop, route }) => {
 
           const index = getMessageIndex(message.scroll_to_reply_id)
           console.log(index)
+          
           if (index != -1) {
               flatListRef.current?.scrollToIndex({
                 animated: true,
                 index: index,
+                viewPosition: 0.5
               });
           }
 
