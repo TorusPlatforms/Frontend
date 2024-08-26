@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, TouchableOpacity, Image, Text, ScrollView, Alert, ActivityIndicator, RefreshControl, Pressable, Share } from "react-native";
+import { View, TouchableOpacity, Image, Text, Animated, Alert, ActivityIndicator, RefreshControl, Pressable, Share } from "react-native";
 import * as Linking from 'expo-linking';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons, Entypo, MaterialIcons } from '@expo/vector-icons'
@@ -24,6 +24,25 @@ export default function LoopsPage({ route }) {
 
   const [loop, setLoop] = useState();
   const [user, setUser] = useState()
+
+  const [scrollY] = useState(new Animated.Value(0));
+
+  const headerHeight = scrollY.interpolate({
+      inputRange: [0, 70],
+      outputRange: [200, 0],
+      extrapolate: 'clamp',
+  });
+
+  const headerOpacity = scrollY.interpolate({
+      inputRange: [0, 70],
+      outputRange: [1, 0],
+      extrapolate: 'clamp',
+  });
+
+  const onScroll = Animated.event(
+    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+    { useNativeDriver: false }
+  );
 
   async function fetchUser() {
     const fetchedUser = await getUser()
@@ -75,8 +94,8 @@ export default function LoopsPage({ route }) {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
-      <View style={{minHeight: 150 }}>
-        <View style={{paddingHorizontal: 20, marginTop: 10, flexDirection: "row", justifyContent: "space-between"}}>
+      <Animated.View style={{ height: headerHeight, opacity: headerOpacity }}>
+        <View style={{ paddingHorizontal: 20, marginTop: 10, flexDirection: "row", justifyContent: "space-between" }}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Ionicons name="arrow-back" size={24} color="white" />        
             </TouchableOpacity>
@@ -149,13 +168,13 @@ export default function LoopsPage({ route }) {
 
         </View>
         
-      </View>
+      </Animated.View>
 
       <View style={{flex: 2.2, marginTop: 20 }}>
         {loop.isJoined ? (
             <Tab.Navigator initialRouteName={route.params?.initialScreen} screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)' }, tabBarLabelStyle: { color: "white", fontSize: 10 }}}>
               <Tab.Screen name="Chat" component={LoopChat} initialParams={{loop: loop, fullScreen: false}} />
-              <Tab.Screen name="Pings" component={LoopPings} initialParams={{loop: loop}}/>
+              <Tab.Screen name="Pings" children={() => <LoopPings loop={loop} onScroll={onScroll}/>} />
               <Tab.Screen name="Events" component={LoopEvents} initialParams={{loop: loop}} />
             </Tab.Navigator>
         ) :

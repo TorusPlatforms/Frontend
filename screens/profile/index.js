@@ -21,6 +21,31 @@ export default function Profile({ route }) {
 
     const [user, setUser] = useState(null)
 
+    const [scrollY] = useState(new Animated.Value(0));
+
+    const headerHeight = scrollY.interpolate({
+        inputRange: [0, 70],
+        outputRange: [200, 0],
+        extrapolate: 'clamp',
+    });
+
+    const headerPadding = scrollY.interpolate({
+        inputRange: [0, 70],
+        outputRange: [25, 0],
+        extrapolate: 'clamp',
+    });
+
+    const headerOpacity = scrollY.interpolate({
+        inputRange: [0, 70],
+        outputRange: [1, 0],
+        extrapolate: 'clamp',
+    });
+
+    const onScroll = Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        { useNativeDriver: false }
+    );
+    
     async function copyUsernameToClipboard() {
         await Clipboard.setStringAsync(user.username);
       };
@@ -51,6 +76,7 @@ export default function Profile({ route }) {
         )
     }
 
+    
     return (
         <SafeAreaView style={styles.container}>
             {/* <View style={{ flexDirection: "row", justifyContent: "flex-end", flex: 0.25, paddingHorizontal: 30, marginTop: 10}}>
@@ -62,8 +88,8 @@ export default function Profile({ route }) {
                     <Ionicons name="settings-outline" size={24} color="white" />
                 </Pressable>
             </View> */}
-        
-            <View style={{ flex: 0.8, flexDirection: 'row', paddingTop: 10 }}>
+
+            <Animated.View style={{ height: headerHeight, flexDirection: 'row', paddingTop: headerPadding, opacity: headerOpacity }}>
                 <View style={{ flex: 1, alignItems: "center" }}>
                     <Pressable onPress={() => navigation.navigate("Edit Profile")}>
                         <Image style={{ width: 100, height: 100, borderRadius: 50 }} source={{uri: user.pfp_url}}/>
@@ -101,18 +127,18 @@ export default function Profile({ route }) {
                    
 
 
-                    <View style={{marginTop: 20}}>
+                    <View style={{ marginTop: 20 }}>
                         <Text style={{textAlign: "center", color: "white", fontSize: 12}}>{user.bio}</Text>
                     </View>
                 </View>
-            </View>
+            </Animated.View>
                     
     
             
-            <View style={{flex: 2}}>
+            <View style={{flex: 1}}>
                 <Tab.Navigator screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)' }, tabBarLabelStyle: { color: "white", fontSize: 10 }}}>
-                    <Tab.Screen name="Pings" children={() => <UserPings username={user.username}/>}/>
-                    <Tab.Screen name="Events" component={UserEvents} />
+                    <Tab.Screen name="Pings" children={() => <UserPings username={user.username} onScroll={onScroll}/>}/>
+                    <Tab.Screen name="Events" children={() => <UserEvents onScroll={onScroll}/>} />
                 </Tab.Navigator>
             </View>
 

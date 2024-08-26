@@ -7,7 +7,7 @@ import { getUserPings } from "../../components/handlers";
 import styles from "./styles";
 
 
-export default function UserPings({ username }) {
+export default function UserPings({ username, onScroll }) {
     const navigation = useNavigation()
 
     const [refreshing, setRefreshing] = useState()
@@ -48,6 +48,7 @@ export default function UserPings({ username }) {
       <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
         {pings.length > 0 ? (
            <FlatList
+              onScroll={onScroll}
               ref={pings_ref}
               data={pings}
               renderItem={({item}) => 

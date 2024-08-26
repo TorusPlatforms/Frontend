@@ -4,7 +4,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "rgb(22, 23, 24)",
-        paddingTop: 25
     },
       
     item_seperator: {

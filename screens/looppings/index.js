@@ -8,10 +8,8 @@ import { postComment, getLoopPings, getLoop } from "../../components/handlers";
 import styles from "./styles";
 
 
-export default function LoopPings({ route }) {
+export default function LoopPings({ loop, onScroll }) {
   const navigation = useNavigation()
-  
-  const { loop } = route.params
   
   const [pings, setPings] = useState();
 
@@ -72,6 +70,7 @@ export default function LoopPings({ route }) {
     <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
         {pings.length > 0 ? (
             <FlatList
+              // onScroll={onScroll}
               refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"}/>}
               style={{paddingHorizontal: 5}}
               data={pings}

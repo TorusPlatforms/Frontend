@@ -7,7 +7,7 @@ import { getUserEvents } from "../../components/handlers";
 import styles from "./styles";
 
 
-export default function UserEvents() {
+export default function UserEvents({ onScroll }) {
   const navigation = useNavigation()
   const [refreshing, setRefreshing] = useState()
   const [events, setEvents] = useState();
@@ -43,6 +43,7 @@ export default function UserEvents() {
         {events.length > 0 ? 
           (
           <FlatList
+            onScroll={onScroll}
             style={{paddingHorizontal: 20}}
             data={events}
             renderItem={
