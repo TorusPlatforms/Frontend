@@ -16,8 +16,7 @@ export default function LoopPings({ loop, onScroll }) {
   const [refreshing, setRefreshing] = useState(false)
 
   const fadeAnim = useRef(new Animated.Value(1)).current;
-
-
+  
 
   const handleScrollEnd = () => {
     Animated.timing(fadeAnim, {
@@ -70,7 +69,7 @@ export default function LoopPings({ loop, onScroll }) {
     <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
         {pings.length > 0 ? (
             <FlatList
-              // onScroll={onScroll}
+              onScroll={onScroll}
               refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"}/>}
               style={{paddingHorizontal: 5}}
               data={pings}

@@ -28,13 +28,13 @@ export default function LoopsPage({ route }) {
   const [scrollY] = useState(new Animated.Value(0));
 
   const headerHeight = scrollY.interpolate({
-      inputRange: [0, 70],
-      outputRange: [200, 0],
+      inputRange: [0, 200],
+      outputRange: [150, 0],
       extrapolate: 'clamp',
   });
 
   const headerOpacity = scrollY.interpolate({
-      inputRange: [0, 70],
+      inputRange: [0, 300],
       outputRange: [1, 0],
       extrapolate: 'clamp',
   });

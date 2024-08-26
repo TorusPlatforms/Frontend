@@ -24,19 +24,19 @@ export default function Profile({ route }) {
     const [scrollY] = useState(new Animated.Value(0));
 
     const headerHeight = scrollY.interpolate({
-        inputRange: [0, 70],
+        inputRange: [0, 400],
         outputRange: [200, 0],
         extrapolate: 'clamp',
     });
 
     const headerPadding = scrollY.interpolate({
-        inputRange: [0, 70],
+        inputRange: [0, 400],
         outputRange: [25, 0],
         extrapolate: 'clamp',
     });
 
     const headerOpacity = scrollY.interpolate({
-        inputRange: [0, 70],
+        inputRange: [0, 350],
         outputRange: [1, 0],
         extrapolate: 'clamp',
     });
