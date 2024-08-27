@@ -49,7 +49,7 @@ export default function SignUpScreen() {
         }
         
         function isValidUsername(username) {
-            const usernameRegex = /^[a-zA-Z0-9_]+$/; // Allows only letters, numbers, and underscores
+            const usernameRegex = /^[a-z0-9_]+$/; // Allows only lowercase letters, numbers, and underscores
             return usernameRegex.test(username);
         }
     
