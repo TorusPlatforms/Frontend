@@ -29,7 +29,7 @@ export default {
         "NSPhotoLibraryUsageDescription": "This feature requires access to your camera roll"
       },
       "bundleIdentifier": "com.torusplatforms.torus",
-      "buildNumber": "24"
+      "buildNumber": "26"
     },
     "android": {
       "googleServicesFile": process.env.GOOGLE_SERVICES_JSON,

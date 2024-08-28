@@ -44,7 +44,6 @@ export default function UserEvents() {
           (
           <FlatList
             // onScroll={onScroll}
-            style={{paddingHorizontal: 20}}
             data={events}
             renderItem={
               ({item}) => <Event data={item} />}
