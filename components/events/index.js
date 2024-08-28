@@ -74,10 +74,10 @@ export const Event = ({ data, showLoop = true }) => {
 
               <View style={{marginVertical: 12, width: 1, flex: data.image_url ? 0.925 : 0.8, backgroundColor: "gray"}} />
 
-              <View style={{alignItems: 'center'}}>
+              <Pressable style={{alignItems: 'center'}} onPress={() => navigation.push("EventAttendees", {event_id: data.event_id})}>
                 <Image style={{ left: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_pfp_urls[0] || torus_default_url }} />
                 <Image style={{ right: -8, width: 30, height: 30, borderRadius: 15, position: "absolute" }} source={{ uri: data.mutual_attendees_pfp_urls[1] || torus_default_url }} />
-              </View>
+              </Pressable>
             </View>
 
             <View style={{flex: 0.8, flexDirection: 'column'}}>
@@ -164,24 +164,26 @@ export const Event = ({ data, showLoop = true }) => {
               </View>
                
               <View style={{flexDirection: "row", justifyContent: data.mutual_usernames.length > 0 ? "space-between" : "flex-end", alignItems: "center", paddingTop: 20, paddingRight: 10}}>
-                {data.mutual_usernames.length == 1 && (
-                  <Text style={{color: "white", fontSize: 12, maxWidth: 160}}>
-                    <Text onPress={() => navigation.push("UserProfile", {username: data.mutual_usernames[0]})}>{data.mutual_usernames[0]} </Text>
-                    is attending
-                  </Text>
-                )}
+                <TouchableOpacity onPress={() => navigation.push("EventAttendees", {event_id: data.event_id})}>
+                    {data.mutual_usernames.length == 1 && (
+                      <Text style={{color: "white", fontSize: 12, maxWidth: 160}}>
+                        <Text onPress={() => navigation.push("UserProfile", {username: data.mutual_usernames[0]})}>{data.mutual_usernames[0]} </Text>
+                        is attending
+                      </Text>
+                    )}
 
-                {data.mutual_usernames.length == 2 && (
-                  <Text style={{color: "white", fontSize: 12, maxWidth: 160}}>
-                    <Text onPress={() => navigation.push("UserProfile", {username: data.mutual_usernames[0]})}>{data.mutual_usernames[0]} & </Text>
-                    <Text onPress={() => navigation.push("UserProfile", {username: data.mutual_usernames[1]})}>{data.mutual_usernames[1]} </Text>
-                    are attending
-                  </Text>
-                )}
+                    {data.mutual_usernames.length == 2 && (
+                      <Text style={{color: "white", fontSize: 12, maxWidth: 160}}>
+                        <Text onPress={() => navigation.push("UserProfile", {username: data.mutual_usernames[0]})}>{data.mutual_usernames[0]} & </Text>
+                        <Text onPress={() => navigation.push("UserProfile", {username: data.mutual_usernames[1]})}>{data.mutual_usernames[1]} </Text>
+                        are attending
+                      </Text>
+                    )}
 
-                {data.mutual_usernames.length > 2 && (
-                  <Text style={{color: "white", fontSize: 12, maxWidth: 150}}>{data.mutual_usernames.slice(0, 2)?.join(", ")} & {data.mutual_usernames.length - 2} others are attending</Text>
-                )}
+                    {data.mutual_usernames.length > 2 && (
+                      <Text style={{color: "white", fontSize: 12, maxWidth: 150}}>{data.mutual_usernames.slice(0, 2)?.join(", ")} & {data.mutual_usernames.length - 2} others are attending</Text>
+                    )}
+                </TouchableOpacity>
 
                 <Pressable onPress={handleJoinLeave} style={{borderRadius: 5, borderColor: "gray", borderWidth: 1, padding: 4, paddingHorizontal: 20, backgroundColor: isJoined ? "rgb(62, 62, 62)" : "rgb(47, 139, 128)"}}>
                   <Text style={{ color: "white" }}>{isJoined ? "Joined" : "Join"}</Text>

@@ -168,7 +168,7 @@ export default function Ping({ route }) {
                     </View>
             
 
-                    <TextInput multiline editable={false} style={[styles.text, {padding: 2}]} value={post.content}></TextInput>
+                    <TextInput multiline editable={false} scrollEnabled={false} style={[styles.text, {padding: 2}]} value={post.content}></TextInput>
 
                     {/* <LinkPreview 
                       text={post.content.toString()}  

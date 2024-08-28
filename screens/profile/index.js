@@ -21,30 +21,30 @@ export default function Profile({ route }) {
 
     const [user, setUser] = useState(null)
 
-    const [scrollY] = useState(new Animated.Value(0));
+    // const [scrollY] = useState(new Animated.Value(0));
 
-    const headerHeight = scrollY.interpolate({
-        inputRange: [0, 70],
-        outputRange: [200, 0],
-        extrapolate: 'clamp',
-    });
+    // const headerHeight = scrollY.interpolate({
+    //     inputRange: [100, 400],
+    //     outputRange: [200, 0],
+    //     extrapolate: 'clamp',
+    // });
 
-    const headerPadding = scrollY.interpolate({
-        inputRange: [0, 70],
-        outputRange: [25, 0],
-        extrapolate: 'clamp',
-    });
+    // const headerPadding = scrollY.interpolate({
+    //     inputRange: [100, 400],
+    //     outputRange: [25, 10],
+    //     extrapolate: 'clamp',
+    // });
 
-    const headerOpacity = scrollY.interpolate({
-        inputRange: [0, 70],
-        outputRange: [1, 0],
-        extrapolate: 'clamp',
-    });
+    // const headerOpacity = scrollY.interpolate({
+    //     inputRange: [100, 200],
+    //     outputRange: [1, 0],
+    //     extrapolate: 'clamp',
+    // });
 
-    const onScroll = Animated.event(
-        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-        { useNativeDriver: false }
-    );
+    // const onScroll = Animated.event(
+    //     [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+    //     { useNativeDriver: false }
+    // );
     
     async function copyUsernameToClipboard() {
         await Clipboard.setStringAsync(user.username);
@@ -89,7 +89,7 @@ export default function Profile({ route }) {
                 </Pressable>
             </View> */}
 
-            <Animated.View style={{ height: headerHeight, flexDirection: 'row', paddingTop: headerPadding, opacity: headerOpacity }}>
+            <View style={{ height: 200, flexDirection: 'row', paddingTop: 25 }}>
                 <View style={{ flex: 1, alignItems: "center" }}>
                     <Pressable onPress={() => navigation.navigate("Edit Profile")}>
                         <Image style={{ width: 100, height: 100, borderRadius: 50 }} source={{uri: user.pfp_url}}/>
@@ -131,14 +131,14 @@ export default function Profile({ route }) {
                         <Text style={{textAlign: "center", color: "white", fontSize: 12}}>{user.bio}</Text>
                     </View>
                 </View>
-            </Animated.View>
+            </View>
                     
     
             
             <View style={{flex: 1}}>
                 <Tab.Navigator screenOptions={{lazy: true, tabBarStyle: { backgroundColor: 'rgb(22, 23, 24)' }, tabBarLabelStyle: { color: "white", fontSize: 10 }}}>
-                    <Tab.Screen name="Pings" children={() => <UserPings username={user.username} onScroll={onScroll}/>}/>
-                    <Tab.Screen name="Events" children={() => <UserEvents onScroll={onScroll}/>} />
+                    <Tab.Screen name="Pings" children={() => <UserPings username={user.username}/>}/>
+                    <Tab.Screen name="Events" children={() => <UserEvents/>} />
                 </Tab.Navigator>
             </View>
 

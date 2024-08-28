@@ -25,25 +25,6 @@ export default function LoopsPage({ route }) {
   const [loop, setLoop] = useState();
   const [user, setUser] = useState()
 
-  const [scrollY] = useState(new Animated.Value(0));
-
-  const headerHeight = scrollY.interpolate({
-      inputRange: [0, 70],
-      outputRange: [200, 0],
-      extrapolate: 'clamp',
-  });
-
-  const headerOpacity = scrollY.interpolate({
-      inputRange: [0, 70],
-      outputRange: [1, 0],
-      extrapolate: 'clamp',
-  });
-
-  const onScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-    { useNativeDriver: false }
-  );
-
   async function fetchUser() {
     const fetchedUser = await getUser()
     setUser(fetchedUser)
@@ -94,7 +75,7 @@ export default function LoopsPage({ route }) {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
-      <Animated.View style={{ height: headerHeight, opacity: headerOpacity }}>
+      <View>
         <View style={{ paddingHorizontal: 20, marginTop: 10, flexDirection: "row", justifyContent: "space-between" }}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Ionicons name="arrow-back" size={24} color="white" />        
@@ -168,7 +149,7 @@ export default function LoopsPage({ route }) {
 
         </View>
         
-      </Animated.View>
+      </View>
 
       <View style={{flex: 2.2, marginTop: 20 }}>
         {loop.isJoined ? (

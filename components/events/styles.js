@@ -25,7 +25,8 @@ const styles = StyleSheet.create({
         bottom: 10, 
         width: "100%", 
         alignItems: 'center', 
-        paddingHorizontal: 10
+        paddingLeft: 10,
+        paddingRight: 6
     },
     
     deleteButton: {

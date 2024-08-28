@@ -52,7 +52,7 @@ import LoopAnnouncements from './screens/loopannouncements';
 import CreatePill from "./screens/createpill";
 import VotedUsers from "./screens/votedusers";
 import LikedUsers from "./screens/likedusers";
-
+import EventAttendees from "./screens/eventattendees";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBJS-LKFsOiuLvapER3-Lfa6uBz5ZasmPI",
@@ -303,6 +303,7 @@ function App() {
                 <Stack.Screen name="Search Users" component={SearchUsers} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} />
                 <Stack.Screen name="VotedUsers" component={VotedUsers} options={{ headerShown: true, headerTitle: "Votes", presentation: "modal", headerLeft: () => (<View />) }} />
                 <Stack.Screen name="LikedUsers" component={LikedUsers} options={{ headerShown: true, headerTitle: "Likes", presentation: "modal", headerLeft: () => (<View />) }} />
+                <Stack.Screen name="EventAttendees" component={EventAttendees} options={{ headerShown: true, headerTitle: "Event Attendees", presentation: "modal", headerLeft: () => (<View />) }} />
                 <Stack.Screen name="Search Colleges" component={SearchColleges} options={{ headerShown: true, presentation: "modal", headerLeft: () => (<View />) }} />
 
                  {/* <Stack.Screen name="Settings" component={Settings} options={{ headerShown: true }} />

@@ -350,6 +350,32 @@ export async function getEvents(query) {
 }
 
 
+export async function getEventAttendees(event_id) {
+  const token = await getToken()
+
+  let serverUrl = `${BASE_URL}/api/events/${event_id}/attendees`;
+
+  try {  
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error Getting Events Attendees! Status: ${response.status} ${JSON.stringify(response)} `);
+    }
+
+    const responseData = await response.json();
+    return (responseData)
+
+  } catch (error) {
+    console.error('Error Getting Events Attendees:', error.message);
+  }
+}
+
 export async function joinLeaveEvent({ event_id, endpoint }) {
     const token = await getToken()
 
