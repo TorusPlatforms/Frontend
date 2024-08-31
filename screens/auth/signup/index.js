@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { View, Text, RefreshControl, TextInput, Platform, TouchableOpacity } from "react-native";
+import { View, Text, RefreshControl, TextInput, Platform, TouchableOpacity, Linking } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { getAuth, createUserWithEmailAndPassword, deleteUser } from "firebase/auth"
@@ -167,7 +167,17 @@ export default function SignUpScreen() {
                     <TouchableOpacity onPress={signUp} style={styles.submissionBox}>
                         <Text style={[{color: 'white', fontSize: 16, textAlign: "center"}]}>Sign Up</Text>
                     </TouchableOpacity>
-                    {/* <Text>By signing up, you are agreeing to our Terms, Privacy, and Cookies policies</Text> */}
+                    <Text style={{color: "white", fontSize: 12, textAlign: "center", marginTop: 15, maxWidth: 300}}>
+                        By signing up, you agree to our{' '}
+                        <Text style={{textDecorationLine: "underline"}} onPress={() => Linking.openURL('https://www.torusplatforms.com/terms-of-service')}>
+                            Terms of Conditions
+                        </Text>
+                        {" & "}
+                        <Text style={{textDecorationLine: "underline"}} onPress={() => Linking.openURL('https://www.torusplatforms.com/privacy-policy')}>
+                            Privacy Policy
+                        </Text>
+                        .
+                    </Text>                
                 </View>
             </KeyboardAwareScrollView>
         </SafeAreaView>
