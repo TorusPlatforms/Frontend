@@ -65,6 +65,19 @@ export const Event = ({ data, showLoop = true }) => {
       }
     }
 
+    function getPillBackgroundColor(data) {
+      switch (true) {
+          case data.isHappeningInNextHour:
+              return "rgb(208, 116, 127)";
+          case data.isHappeningInNextDay:
+              return "rgb(221, 160, 57)";
+          case data.hasAlreadyFinished: 
+              return "rgb(169, 169, 169)";
+          default:
+              return "rgb(47, 139, 128)";
+      }
+  }
+
     return (
         <View style={{ marginVertical: 20, width: "100%", flexDirection: "row", flex: 1, paddingBottom: 10 }}>
             <View style={{flex: 0.2, alignItems: "center"}}>
@@ -105,7 +118,7 @@ export const Event = ({ data, showLoop = true }) => {
        
                     {!data.image_url && data.isCreator && (
                         <View style={[styles.footerContainer, { marginBottom: 5 }]}>
-                          <TouchableOpacity onPress={openCalender} style={[styles.timePill, {backgroundColor: data.isHappeningInNextHour ? "rgb(208, 116, 127)" : (data.isHappeningInNextDay ? "rgb(221, 160, 57)" : "rgb(47, 139, 128)")}]}>
+                          <TouchableOpacity onPress={openCalender} style={[styles.timePill, {backgroundColor: getPillBackgroundColor(data)}]}>
                             <Feather name="clock" size={14} color="white" />
                                 <Text style={styles.timePillText}>{strfEventDate(data.time, {short: true})}, {strfEventTime(data.time)}</Text>
                             </TouchableOpacity>
