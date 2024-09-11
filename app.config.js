@@ -3,7 +3,7 @@ export default {
     "name": "Torus Platforms",
     "scheme": "torus",
     "slug": "torus",
-    "version": "1.0.13",
+    "version": "1.0.14",
     "orientation": "portrait",
     "icon": "./assets/torus_zoomed_in.png",
     "userInterfaceStyle": "light",
@@ -29,7 +29,7 @@ export default {
         "NSPhotoLibraryUsageDescription": "This feature requires access to your camera roll"
       },
       "bundleIdentifier": "com.torusplatforms.torus",
-      "buildNumber": "27"
+      "buildNumber": "28"
     },
     "android": {
       "googleServicesFile": process.env.GOOGLE_SERVICES_JSON,
@@ -46,7 +46,7 @@ export default {
         "backgroundColor": "#161718"
       },
       "package": "com.torusplatforms.torus",
-      "versionCode": 24
+      "versionCode": 28
     },
     "web": {
       "favicon": "./assets/favicon.png"

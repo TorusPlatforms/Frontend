@@ -19,7 +19,7 @@ export default function UserPings({ username }) {
 
     async function fetchUserPings() {
         const pings = await getUserPings(username)
-        console.log("Fetched", pings.length, "pings. Last entry:", pings[pings.length - 1])
+        console.log("Fetched", pings?.length, "pings. Last entry:", pings[pings?.length - 1])
         setPings(pings)
     }   
 
@@ -46,7 +46,7 @@ export default function UserPings({ username }) {
 
     return (
       <View style={{flex: 1, backgroundColor: "rgb(22, 23, 24)"}}>
-        {pings.length > 0 ? (
+        {pings?.length > 0 ? (
            <FlatList
               // onScroll={onScroll}
               ref={pings_ref}

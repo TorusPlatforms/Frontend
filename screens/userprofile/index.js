@@ -106,7 +106,7 @@ export default function UserProfile({ route, navigation }) {
                         <Text style={{color: "white"}}>@{user.username}</Text>
                     </TouchableOpacity>
 
-                    <Text style={{textAlign: "center", color: "lightgray", fontSize: 12, fontStyle: "italic", marginVertical: 5 }}>{user.college_nickname || (user.college.length < 25 ? user.college : abbreviate(user.college))}</Text>
+                    <Text style={{textAlign: "center", color: "lightgray", fontSize: 12, fontStyle: "italic", marginVertical: 5 }}>{user.college_nickname || (user.college?.length < 25 ? user.college : abbreviate(user.college))}</Text>
 
                 </View>
 
@@ -166,7 +166,7 @@ export default function UserProfile({ route, navigation }) {
                 </TouchableOpacity>
             </View>
 
-            {pings.length > 0 ? (
+            {pings?.length > 0 ? (
                  <FlatList
                     ListHeaderComponent={Header}
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={"white"} />}
