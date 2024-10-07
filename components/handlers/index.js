@@ -1597,6 +1597,32 @@ export async function getAdminChats(loop_id) {
     return await getChats(loop_id, { admin: true })
 }
 
+export async function getChatSummary(loop_id) {
+  const token = await getToken()
+
+  let serverUrl = `${BASE_URL}/api/loops/${loop_id}/messages/summary`;
+
+  try {
+    const response = await fetch(serverUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error getting summary! Status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    return responseData;
+
+  } catch (error) {
+    console.error("Error getting summary", error.message);
+  }
+}
+
 export async function sendChat({loop_id, content, reply_id = null, image_url = null, admin = false}) {
   const token = await getToken()
 
