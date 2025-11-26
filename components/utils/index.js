@@ -132,6 +132,11 @@ export function combineDateAndTime(date, time) {
 
 
 export function abbreviate(inputString) {
+    if (!inputString) {
+        console.error("Cannot abbreviate empty string.")
+        return ""
+    }
+    
     const phrases = inputString.split(', ');
   
     const abbreviation = phrases

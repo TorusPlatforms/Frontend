@@ -71,6 +71,7 @@ export default function DirectMessage({ route }) {
 
 
     async function fetchDM() { 
+        console.log("updating user")
         const user = await getUser();
         setUser(user)
 
@@ -106,8 +107,22 @@ export default function DirectMessage({ route }) {
           console.log("Sending URL", image_url)
           await sendMessage({ username: route.params.username, image_url: image_url })
         }
-        
+
         await sendMessage({ username: route.params.username, content: messages[0].text, reply_id: reply_id })
+
+        if (!unsubscribe) {
+          const user = await getUser()
+          const messageDoc = await findThreadFirebase(user.username, route.params.username)
+
+          const unsub = onSnapshot(doc(db, "messages", messageDoc.id), (snapshot) => {
+            const data = snapshot.data()
+            if (data && data?.messages) {
+              setMessages(data.messages.reverse());
+            }
+          })
+        
+          setUnsubscribe(() => unsub);
+      }
       }, [])
 
     function handleGoBack() {

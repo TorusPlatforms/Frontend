@@ -2,13 +2,15 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { ActivityIndicator, View, Text, TouchableOpacity, Image } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Feather from '@expo/vector-icons/Feather';
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { getFirestore, onSnapshot, doc } from "firebase/firestore"
 import * as Notifications from 'expo-notifications';
 
 import styles from "./styles";
 import { ChatComponent } from '../../components/chat';
-import { getChats, sendChat, getUser, sendAdminChat, getAdminChats} from '../../components/handlers';
+import { getChats, sendChat, getUser, sendAdminChat, getAdminChats, getChatSummary} from '../../components/handlers';
 
 
 export default function LoopChat({ route }) {
@@ -17,11 +19,14 @@ export default function LoopChat({ route }) {
 
   const [messages, setMessages] = useState([])
   const [user, setUser] = useState();
+  const [summary, setSummary] = useState(null)
 
   const [unsubscribe, setUnsubscribe] = useState(null)
   const db = getFirestore();
   
   const { loop, fullScreen, defaultMessage, admin } = route.params;
+
+  const [promptSummary, setPromptSummary] = useState(loop.promptSummary)
 
   useFocusEffect(
     useCallback(() => {
@@ -87,6 +92,12 @@ export default function LoopChat({ route }) {
     }
   }
 
+  async function getSummary() {
+      const chatSummary = await getChatSummary(loop.loop_id)
+      setSummary(chatSummary.content)
+  }
+  
+
   async function fetchUser() {
     const user = await getUser()
     setUser(user)
@@ -95,7 +106,7 @@ export default function LoopChat({ route }) {
 
   const onSend = useCallback(async (messages = [], { image_url, reply_id }) => {
     const sendFunction = (admin ? sendAdminChat : sendChat)
-
+    
     if (image_url) {
       await sendFunction({loop_id: loop.loop_id, image_url: image_url});
     }
@@ -123,7 +134,9 @@ export default function LoopChat({ route }) {
     }]}>
 
       {fullScreen && (
-        <View style={{paddingHorizontal: 20, flexDirection: "row", alignItems: "center", borderBottomWidth: 1, borderColor: "gray", padding: 10, marginBottom: 20}}>
+        <View>
+
+        <View style={{paddingHorizontal: 20, flexDirection: "row", alignItems: "center", borderBottomWidth: 1, borderColor: "gray", padding: 10, marginBottom: promptSummary ? 0 : 20}}>
             <TouchableOpacity onPress={() => navigation.goBack()}>
               <Ionicons name="arrow-back" size={24} color="white" />        
             </TouchableOpacity>
@@ -132,6 +145,28 @@ export default function LoopChat({ route }) {
 
             <Text style={{color: 'white', fontSize: 16, maxWidth: 250}}>{loop.name} {admin && "(Administrators)"}</Text>
         </View>
+
+        {promptSummary && (
+          <View style={{paddingHorizontal: 20, flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderBottomWidth: 1, borderColor: "gray", padding: 10, marginBottom: 20}}>
+            <Text style={{color: 'white', fontSize: 12, maxWidth: 250 }}>{summary ? summary : "Want a summary of what happened while you were away?"}</Text>
+
+            {!summary && (
+                <TouchableOpacity onPress={getSummary}>
+                  <MaterialIcons name="notes" size={24} color="gray" />        
+                </TouchableOpacity>
+            )}
+                
+            {summary && (
+                <TouchableOpacity onPress={() => {setPromptSummary(false)}}>
+                  <Feather name="x" size={21} color="gray" />        
+                </TouchableOpacity>
+            )}
+          </View>
+        )}
+        
+
+        </View>
+        
       )}
          
 

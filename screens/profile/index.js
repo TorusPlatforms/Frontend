@@ -103,7 +103,7 @@ export default function Profile({ route }) {
                         <Text style={{color: "white"}}>@{user.username}</Text>
                     </TouchableOpacity>
 
-                    <Text style={{textAlign: "center", color: "lightgray", fontSize: 12, fontStyle: "italic", marginVertical: 5 }}>{user.college_nickname || (user.college.length < 25 ? user.college : abbreviate(user.college))}</Text>
+                    <Text style={{textAlign: "center", color: "lightgray", fontSize: 12, fontStyle: "italic", marginVertical: 5 }}>{user.college_nickname || (user.college?.length < 25 ? user.college : abbreviate(user.college))}</Text>
 
                 </View>
 
